@@ -137,7 +137,7 @@ export default function HomePage() {
       </Stack>
 
       <Box ref={projectRail} role="list" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
-        display: "flex", gap: 1.15, overflowX: "auto", px: .25, py: .45, scrollSnapType: "x proximity",
+        display: "flex", gap: 1.05, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
         WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
         scrollbarColor: projectScrolling ? "#a9d7ba transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: 3 },
@@ -147,30 +147,30 @@ export default function HomePage() {
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
           return <ButtonBase key={value} role="listitem" aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
-            width: { xs: 158, sm: 174 }, minWidth: { xs: 158, sm: 174 }, minHeight: 88, px: 1.25, py: 1, borderRadius: 3,
+            width: { xs: 150, sm: 166 }, minWidth: { xs: 150, sm: 166 }, minHeight: 78, px: 1.15, py: .9, borderRadius: 3.5,
             scrollSnapAlign: "start", display: "grid", gridTemplateColumns: "32px minmax(0,1fr)", columnGap: .8, alignItems: "center", textAlign: "left",
-            color: selected ? "#fff" : "#17653a", border: "1px solid",
-            borderColor: selected ? "rgba(11,103,50,.55)" : "rgba(25,138,74,.14)",
+            color: "#17653a", border: "1px solid",
+            borderColor: selected ? "rgba(25,138,74,.42)" : "rgba(25,138,74,.13)",
             background: selected
-              ? "linear-gradient(140deg,#0b6732 0%,#198a4a 58%,#36b96c 125%)"
-              : "linear-gradient(145deg,rgba(255,255,255,.9),rgba(226,247,234,.72))",
-            boxShadow: selected ? "0 7px 18px rgba(25,138,74,.22)" : "0 3px 12px rgba(23,76,50,.055)",
+              ? "linear-gradient(145deg,#ffffff,#e9f7ee)"
+              : "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,242,.74))",
+            boxShadow: selected ? "0 0 0 3px rgba(54,224,126,.08),0 6px 16px rgba(25,138,74,.09)" : "0 3px 12px rgba(23,76,50,.045)",
             transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
             WebkitTapHighlightColor: "transparent",
-            "&:hover": { transform: "translateY(-2px)", borderColor: "rgba(25,138,74,.38)", boxShadow: "0 7px 18px rgba(25,138,74,.13)" },
+            "@media (hover: hover)": { "&:hover": { transform: "translateY(-1px)", borderColor: "rgba(25,138,74,.3)", boxShadow: "0 6px 16px rgba(25,138,74,.08)" } },
             "&.Mui-focusVisible": { outline: "2px solid #36e07e", outlineOffset: 2 },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
           }}>
             <Icon sx={{ fontSize: 25 }} />
             <Box minWidth={0}>
-              <Typography component="span" display="block" sx={{ opacity: selected ? .82 : .72, fontSize: 9.5, fontWeight: 750, lineHeight: 1.2 }}>{segment}</Typography>
+              <Typography component="span" display="block" sx={{ opacity: .68, fontSize: 9, fontWeight: 750, lineHeight: 1.2 }}>{segment}</Typography>
               <Typography component="span" display="block" sx={{ fontSize: 11, fontWeight: 800, lineHeight: 1.2, mt: .35 }}>{label}</Typography>
             </Box>
           </ButtonBase>;
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 3.25, md: 2.5 } }}>
+      <Box sx={{ mt: { xs: 1.4, md: 1.75 }, pb: { xs: 4.75, md: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>

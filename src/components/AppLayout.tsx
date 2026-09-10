@@ -4,8 +4,9 @@ import { AppBar, Box, Container, IconButton, Stack, TextField, Toolbar } from "@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { BottomNav } from "./BottomNav";
+import { DesktopExploreNav } from "./DesktopExploreNav";
+import { DesktopMenu } from "./DesktopMenu";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -41,7 +42,7 @@ export default function AppLayout() {
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>
-            {!showSearch && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{ color: "#fff", ml: -.8, p: .8 }}>
+            {!showSearch && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{ color: "#fff", ml: -.8, p: .8, display: { xs: "inline-flex", md: "none" } }}>
               <ArrowBackIosNewIcon sx={{ fontSize: 19 }} />
             </IconButton>}
             <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: "flex", flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
@@ -61,11 +62,12 @@ export default function AppLayout() {
               </Stack>
             </Box>}
 
-            <IconButton aria-label="Ver perfil" component={RouterLink} to="/perfil" sx={{ ml: showSearch ? 0 : "auto", color: "#fff", display: { xs: "none", md: "inline-flex" } }}><SettingsOutlinedIcon /></IconButton>
+            <Box sx={{ ml: showSearch ? 0 : "auto" }}><DesktopMenu /></Box>
           </Stack>
         </Container>
       </Toolbar>
     </AppBar>
+    <DesktopExploreNav />
     <Box key={location.pathname} sx={{
       pb: { xs: 10, md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
       "@keyframes pageEnter": {

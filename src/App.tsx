@@ -13,6 +13,10 @@ import FavoritesPage from "./pages/FavoritesPage";
 import ProfilePage from "./pages/ProfilePage";
 import CompositionsPage from "./pages/CompositionsPage";
 import UsersPage from "./pages/UsersPage";
+import LaborPage from "./pages/LaborPage";
+import AboutPage from "./pages/AboutPage";
+import InstitutionalPage from "./pages/InstitutionalPage";
+import ContactPage from "./pages/ContactPage";
 function ProtectedRoute({ admin = false }: { admin?: boolean }) {
   const { user } = useSession(); const location = useLocation();
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
@@ -36,6 +40,10 @@ function SessionRoutes() {
         <Route path="/favoritos" element={<FavoritesPage />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/composicoes" element={<CompositionsPage />} />
+        <Route path="/mao-de-obra" element={<LaborPage />} />
+        <Route path="/sobre" element={<AboutPage />} />
+        <Route path="/institucional" element={<InstitutionalPage />} />
+        <Route path="/contato" element={<ContactPage />} />
         <Route path="/produtos/:code" element={<ProductPage />} />
         <Route path="/busca" element={<Navigate to="/produtos" replace />} />
         <Route element={<ProtectedRoute admin />}>

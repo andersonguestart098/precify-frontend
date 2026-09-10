@@ -46,7 +46,7 @@ import ElevatorOutlined from "@mui/icons-material/ElevatorOutlined";
 import PoolOutlined from "@mui/icons-material/PoolOutlined";
 import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, ButtonBase, IconButton, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
@@ -87,7 +87,7 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
     if (element) element.scrollBy({ left: direction * element.clientWidth * .75,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
-  return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 2.5, minWidth: 0 }}>
+  return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
       <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
       <Stack direction="row" gap={.5}>
@@ -112,32 +112,29 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
       onLostPointerCapture={() => { drag.current.active = false; }}
       onPointerLeave={() => { drag.current.active = false; }}
       onClickCapture={event => { if (drag.current.moved) { event.preventDefault(); event.stopPropagation(); drag.current.moved = false; } }}
-      sx={{ display: "flex", gap: 1, overflowX: "auto", py: 1, px: .5, cursor: "grab",
+      sx={{ display: "flex", gap: { xs: 1.35, sm: 1.6 }, overflowX: "auto", py: .8, px: 0, cursor: "grab",
         "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
         scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7ba transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: 3 }, "&::-webkit-scrollbar-track": { background: "transparent" },
         "&::-webkit-scrollbar-thumb": { backgroundColor: scrolling ? "#a9d7ba" : "transparent", borderRadius: 999 } }}>
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
         const Icon = iconFor(code); const active = code === selected;
-        return <ButtonBase key={code} aria-label={name} aria-pressed={active} title={name}
+        return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
+        <ButtonBase aria-label={name} aria-pressed={active}
           onClick={() => onSelect(code === selected ? "" : code)}
-          sx={{ width: 78, flexShrink: 0, display: "flex", flexDirection: "column", gap: 1,
-            borderRadius: "16px", py: .5, alignSelf: "stretch", justifyContent: "flex-start",
+          sx={{ width: 54, height: 54, flexShrink: 0, display: "grid", placeItems: "center",
+            borderRadius: "50%", p: 0,
             "&.Mui-focusVisible": { outline: "2px solid #198a4a", outlineOffset: 1 },
-            "&:hover .segment-icon": { bgcolor: active ? "#16713d" : "#e5f2e9", transform: "translateY(-2px)" }
+            "&:hover .segment-icon": { bgcolor: active ? "#dff2e6" : "#e9f4ed", borderColor: "#8bcba3", transform: "translateY(-2px)" }
           }}>
           <Box className="segment-icon" sx={{ width: 48, height: 48, borderRadius: "50%", display: "grid", placeItems: "center",
-            color: active ? "#fff" : "#276e45", bgcolor: active ? "#198a4a" : "#f2f8f4",
-            border: "1px solid", borderColor: active ? "#198a4a" : "#d9e9df",
-            boxShadow: active ? "0 5px 14px #198a4a25" : "0 3px 9px #174c3207",
-            transition: "background-color 180ms, transform 180ms",
+            color: active ? "#0b6732" : "#276e45", bgcolor: active ? "#e5f5eb" : "#f5f9f6",
+            border: "1px solid", borderColor: active ? "#78c997" : "#d9e9df",
+            boxShadow: active ? "0 0 0 3px rgba(54,224,126,.1),0 4px 13px rgba(25,138,74,.1)" : "0 3px 9px #174c3207",
+            transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
           }}><Icon sx={{ fontSize: 23 }} /></Box>
-          <Typography component="span" sx={{ fontSize: 10.5, lineHeight: 1.4, fontWeight: active ? 700 : 500,
-            color: active ? "#145f33" : "#617567", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
-            {code ? labels[code] || name : "Todos"}
-          </Typography>
-        </ButtonBase>;
+        </ButtonBase></Tooltip>;
       })}
     </Box>
   </Box>;
