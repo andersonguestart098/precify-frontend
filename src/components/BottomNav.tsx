@@ -33,11 +33,13 @@ export function BottomNav() {
             position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
             borderRadius: "16px 16px 0 0", WebkitTapHighlightColor: "transparent",
             background: active ? "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" : "transparent",
-            transition: "color 180ms ease, background 180ms ease",
-            "&::after": active ? {
-              content: '""', position: "absolute", top: 0, left: "50%", width: 32, height: 3,
-              borderRadius: "0 0 999px 999px", bgcolor: "#DDEFE5", transform: "translateX(-50%)"
+            transition: "color 280ms cubic-bezier(.2,.8,.2,1), background 280ms cubic-bezier(.2,.8,.2,1)",
+            "&::after": active && !featured ? {
+              content: '""', position: "absolute", top: 0, left: "50%", width: 34, height: 2.5,
+              borderRadius: "0 0 999px 999px", background: "linear-gradient(90deg,#cce8d6,#71bd8d,#cce8d6)", transform: "translateX(-50%)",
+              animation: "activeTabIn 280ms cubic-bezier(.2,.8,.2,1) both"
             } : undefined,
+            "@keyframes activeTabIn": { from: { opacity: 0, width: 12 }, to: { opacity: 1, width: 34 } },
             "@media (hover: hover)": {
               "&:hover": { color: "#0b6732", background: "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" }
             },
@@ -85,7 +87,10 @@ export function BottomNav() {
                 }} />
               </Box>
             </Box>
-          </Box> : <DisplayIcon sx={{ fontSize: 22 }} />}
+          </Box> : <DisplayIcon sx={{
+            fontSize: 22, transform: active ? "scale(1.1)" : "scale(1)",
+            transition: "transform 280ms cubic-bezier(.2,.8,.2,1)"
+          }} />}
           <Typography noWrap sx={{ maxWidth: "100%", fontSize: 10, fontWeight: active ? 700 : 500 }}>{label}</Typography>
         </Stack>;
       })}
