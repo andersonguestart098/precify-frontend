@@ -45,7 +45,7 @@ import HotTubOutlined from "@mui/icons-material/HotTubOutlined";
 import ElevatorOutlined from "@mui/icons-material/ElevatorOutlined";
 import PoolOutlined from "@mui/icons-material/PoolOutlined";
 import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, ButtonBase, IconButton, Stack, Typography } from "@mui/material";
 import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
@@ -71,8 +71,16 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
 }) {
   const rail = useRef<HTMLDivElement>(null);
   const drag = useRef({ x: 0, scroll: 0, active: false, moved: false });
+  const scrollTimer = useRef<number | undefined>(undefined);
+  const [scrolling, setScrolling] = useState(false);
   const segments = useMemo(() => [...new Map(catalog.map(m => [m.segmentCode, m.segmentName])).entries()]
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })), [catalog]);
+  const showScrollbar = () => {
+    setScrolling(true);
+    window.clearTimeout(scrollTimer.current);
+    scrollTimer.current = window.setTimeout(() => setScrolling(false), 700);
+  };
+  useEffect(() => () => window.clearTimeout(scrollTimer.current), []);
   if (!segments.length) return null;
   const move = (direction: number) => {
     const element = rail.current;
@@ -87,7 +95,7 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
         <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#397251" }}><ChevronRightRounded /></IconButton>
       </Stack>
     </Stack>
-    <Box ref={rail} onPointerDown={event => {
+    <Box ref={rail} onScroll={showScrollbar} onPointerDown={event => {
       drag.current.moved = false;
       if (event.pointerType !== "mouse" || event.button !== 0) return;
       drag.current = { x: event.clientX, scroll: event.currentTarget.scrollLeft, active: true, moved: false };
@@ -106,7 +114,9 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
       onClickCapture={event => { if (drag.current.moved) { event.preventDefault(); event.stopPropagation(); drag.current.moved = false; } }}
       sx={{ display: "flex", gap: 1, overflowX: "auto", py: 1, px: .5, cursor: "grab",
         "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "thin", scrollbarColor: "#d4e5d9 transparent" }}>
+        scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7ba transparent" : "transparent transparent",
+        "&::-webkit-scrollbar": { height: 3 }, "&::-webkit-scrollbar-track": { background: "transparent" },
+        "&::-webkit-scrollbar-thumb": { backgroundColor: scrolling ? "#a9d7ba" : "transparent", borderRadius: 999 } }}>
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
         const Icon = iconFor(code); const active = code === selected;
         return <ButtonBase key={code} aria-label={name} aria-pressed={active} title={name}
