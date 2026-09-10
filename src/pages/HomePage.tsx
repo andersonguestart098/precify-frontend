@@ -95,19 +95,22 @@ export default function HomePage() {
 
   return <Container maxWidth="xl" component="main" sx={{
     minHeight: { xs: "calc(100dvh - 142px)", md: "calc(100dvh - 70px)" },
-    py: { xs: 3.5, md: 5 }, display: "flex", flexDirection: "column"
+    pt: { xs: 2, md: 3.5 }, pb: { xs: 2.5, md: 4 }, display: "flex", flexDirection: "column"
   }}>
-    <Stack direction="row" gap={2} alignItems="center" mb={2.5}>
-      <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: 68, height: 68, boxShadow: "0 5px 16px #174c3226" }}>
+    <Stack direction="row" gap={2.25} alignItems="center" mb={1.75}>
+      <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #174c322b" }}>
         {user.name.charAt(0).toUpperCase()}
       </Avatar>
-      <Box><Typography variant="body2">Olá,</Typography><Typography fontWeight={800} color="primary.dark">{user.name}!</Typography></Box>
+      <Box>
+        <Typography sx={{ fontSize: { xs: 15, md: 16 }, lineHeight: 1.3 }}>Olá,</Typography>
+        <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.25, fontWeight: 850 }} color="primary.dark">{user.name}!</Typography>
+      </Box>
     </Stack>
 
-    <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1.5, background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+    <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
       Encontre o material certo para a sua obra.
     </Typography>
-    <Typography color="text.secondary" mb={{ xs: 3.5, md: 4.5 }}>Pesquise e compare as opções para o seu projeto.</Typography>
+    <Typography color="text.secondary" mb={{ xs: 2.25, md: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
 
     <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: 680 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
@@ -152,7 +155,7 @@ export default function HomePage() {
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 2.5, md: 3.5 }, pb: { xs: 1.5, md: 2 } }}>
+      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 1, md: 1.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
