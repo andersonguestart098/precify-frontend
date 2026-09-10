@@ -91,8 +91,8 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
       <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
       <Stack direction="row" gap={.5}>
-        <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#397251" }}><ChevronLeftRounded /></IconButton>
-        <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#397251" }}><ChevronRightRounded /></IconButton>
+        <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#397251", width: 44, height: 44 }}><ChevronLeftRounded /></IconButton>
+        <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#397251", width: 44, height: 44 }}><ChevronRightRounded /></IconButton>
       </Stack>
     </Stack>
     <Box ref={rail} onScroll={showScrollbar} onPointerDown={event => {
@@ -134,7 +134,7 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
             transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
           }}><Icon sx={{ fontSize: 23 }} /></Box>
-          <Typography component="span" sx={{ fontSize: 10.5, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#145f33" : "#617567", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
+          <Typography component="span" sx={{ fontSize: 11, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#145f33" : "#526859", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
             {code ? labels[code] || name : "Todos"}
           </Typography>
         </ButtonBase></Tooltip>;

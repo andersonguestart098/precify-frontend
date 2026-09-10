@@ -104,8 +104,8 @@ export default function HomePage() {
   useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
 
   return <Container maxWidth="xl" component="main" sx={{
-    minHeight: { xs: "calc(100dvh - 142px)", md: "calc(100dvh - 70px)" },
-    pt: { xs: 2, md: 3.5 }, pb: { xs: 2.5, md: 4 }, display: "flex", flexDirection: "column"
+    minHeight: { xs: "calc(100dvh - var(--header-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - 70px)" },
+    pt: { xs: 2, md: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 4 }, display: "flex", flexDirection: "column"
   }}>
     <Stack direction="row" gap={2.25} alignItems="center" mb={{ xs: 3, md: 3.5 }}>
       <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #174c322b" }}>
@@ -127,16 +127,16 @@ export default function HomePage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
         <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
         <Stack direction="row" gap={.25}>
-          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#397251", width: 30, height: 30, borderRadius: "50%" }}>
+          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#397251", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #198a4a" } }}>
             <ChevronLeftRoundedIcon />
           </ButtonBase>
-          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#397251", width: 30, height: 30, borderRadius: "50%" }}>
+          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#397251", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #198a4a" } }}>
             <ChevronRightRoundedIcon />
           </ButtonBase>
         </Stack>
       </Stack>
 
-      <Box ref={projectRail} role="list" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
+      <Box ref={projectRail} role="group" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
         display: "flex", gap: 1.05, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
         WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
         scrollbarColor: projectScrolling ? "#a9d7ba transparent" : "transparent transparent",
@@ -146,8 +146,8 @@ export default function HomePage() {
       }}>
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
-          return <ButtonBase key={value} role="listitem" aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
-            width: { xs: 150, sm: 166 }, minWidth: { xs: 150, sm: 166 }, minHeight: 78, px: 1.15, py: .9, borderRadius: 3.5,
+          return <ButtonBase key={value} aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
+            width: { xs: 166, sm: 182 }, minWidth: { xs: 166, sm: 182 }, minHeight: 88, px: 1.5, py: 1.25, borderRadius: "18px",
             scrollSnapAlign: "start", display: "grid", gridTemplateColumns: "32px minmax(0,1fr)", columnGap: .8, alignItems: "center", textAlign: "left",
             color: "#17653a", border: "1px solid",
             borderColor: selected ? "rgba(25,138,74,.42)" : "rgba(25,138,74,.13)",
@@ -163,14 +163,14 @@ export default function HomePage() {
           }}>
             <Icon sx={{ fontSize: 25 }} />
             <Box minWidth={0}>
-              <Typography component="span" display="block" sx={{ opacity: .68, fontSize: 9, fontWeight: 750, lineHeight: 1.2 }}>{segment}</Typography>
-              <Typography component="span" display="block" sx={{ fontSize: 11, fontWeight: 800, lineHeight: 1.2, mt: .35 }}>{label}</Typography>
+              <Typography component="span" display="block" sx={{ color: "#557863", fontSize: 10.5, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
+              <Typography component="span" display="block" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1.35, mt: .35 }}>{label}</Typography>
             </Box>
           </ButtonBase>;
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 1.4, md: 1.75 }, pb: { xs: 4.75, md: 2.5 } }}>
+      <Box sx={{ mt: { xs: 1.5, md: 1.75 }, pb: { xs: 0, md: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>

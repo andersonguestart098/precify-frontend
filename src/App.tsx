@@ -28,7 +28,7 @@ function ProtectedRoute({ admin = false }: { admin?: boolean }) {
 }
 function SessionRoutes() {
   const { checking, error, retry, signOut } = useSession();
-  if (checking) return <Box minHeight="100dvh" display="grid" sx={{ placeItems: "center" }}><CircularProgress aria-label="Validando sessão" /></Box>;
+  if (checking) return <Stack minHeight="100dvh" alignItems="center" justifyContent="center" gap={4} sx={{ bgcolor: "#198A4A" }}><Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: "min(65vw,280px)", height: "auto" }} /><CircularProgress size={24} aria-label="Validando sessão" sx={{ color: "#fff" }} /></Stack>;
   if (error) return <Stack gap={2} sx={{ maxWidth: 440, mx: "auto", mt: 10, p: 3 }}>
     <Alert severity="error">Não foi possível validar sua sessão. Verifique sua conexão.</Alert>
     <Button variant="contained" onClick={retry}>Tentar novamente</Button><Button onClick={signOut}>Voltar ao login</Button>

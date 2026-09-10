@@ -25,8 +25,7 @@ export default function DesktopSidebar() {
   const user = useAccount();
   return <Box component="aside" sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", position: "fixed", inset: "0 auto 0 0", width: 224, zIndex: theme => theme.zIndex.appBar + 1, bgcolor: "#fff", borderRight: "1px solid #e0e9e4", overflowY: "auto" }}>
     <Stack component={RouterLink} to="/inicio" direction="row" alignItems="center" gap={1} sx={{ minHeight: 70, px: 2.5, bgcolor: "#198a4a", color: "white", textDecoration: "none" }}>
-      <Box component="img" src="/precify-mark.svg" alt="" sx={{ width: 34, height: 34 }} />
-      <Typography fontWeight={850} letterSpacing={.8}>PRECIFY</Typography>
+      <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: 156, maxHeight: 42, objectFit: "contain" }} />
     </Stack>
     <Typography variant="overline" sx={{ px: 2.5, pt: 3, pb: 1, color: "#819088", fontSize: 10, letterSpacing: 1.5 }}>Área de trabalho</Typography>
     <List component="nav" aria-label="Navegação desktop" sx={{ px: 1.5 }}>

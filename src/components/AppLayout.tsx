@@ -38,10 +38,13 @@ export default function AppLayout() {
     navigate("/produtos?filters=open");
   };
 
-  return <Box minHeight="100dvh" sx={{ background: "radial-gradient(circle at 78% 8%,rgba(25,138,74,.06),transparent 24rem),#f4f7fb" }}>
+  return <Box minHeight="100dvh" sx={{
+    "--header-height": "70px", "--bottom-nav-height": "70px", "--ai-overhang": "22px", "--content-clearance": "12px",
+    background: "radial-gradient(circle at 78% 8%,rgba(25,138,74,.06),transparent 24rem),#f4f7fb"
+  }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "224px" }, minWidth: 0 }}>
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#198A4A", borderBottom: { md: "1px solid #167c42" } }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#198A4A", pt: "env(safe-area-inset-top, 0px)", borderBottom: { md: "1px solid #167c42" } }}>
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>
@@ -70,7 +73,7 @@ export default function AppLayout() {
       </Toolbar>
     </AppBar>
     <Box key={location.pathname} sx={{
-      pb: { xs: 10, md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
+      pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
       "@keyframes pageEnter": {
         from: { opacity: .55, transform: "translateY(5px)" },
         to: { opacity: 1, transform: "translateY(0)" }

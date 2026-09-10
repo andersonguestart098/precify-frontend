@@ -12,7 +12,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       devOptions: { enabled: false },
-      includeAssets: ["logo.svg", "precify-icon-512.png", "apple-touch-icon.png"],
+      includeAssets: ["logo.svg", "precify-mark.svg", "precify-logo-white.svg", "precify-icon-512.png", "apple-touch-icon.png"],
       manifest: {
         name: "Precify",
         short_name: "Precify",
