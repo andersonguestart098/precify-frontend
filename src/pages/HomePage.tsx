@@ -73,7 +73,15 @@ export default function HomePage() {
   const [projectType, setProjectType] = useState("");
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(catalogCache ?? []);
   const [catalogLoading, setCatalogLoading] = useState(!catalogCache);
+  const [projectScrolling, setProjectScrolling] = useState(false);
   const projectRail = useRef<HTMLDivElement>(null);
+  const projectScrollTimer = useRef<number | undefined>(undefined);
+
+  const showProjectScrollbar = () => {
+    setProjectScrolling(true);
+    window.clearTimeout(projectScrollTimer.current);
+    projectScrollTimer.current = window.setTimeout(() => setProjectScrolling(false), 700);
+  };
 
   const moveProjectTypes = (direction: number) => {
     const rail = projectRail.current;
@@ -92,6 +100,8 @@ export default function HomePage() {
       .finally(() => { if (!controller.signal.aborted) setCatalogLoading(false); });
     return () => controller.abort();
   }, []);
+
+  useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
 
   return <Container maxWidth="xl" component="main" sx={{
     minHeight: { xs: "calc(100dvh - 142px)", md: "calc(100dvh - 70px)" },
@@ -126,9 +136,13 @@ export default function HomePage() {
         </Stack>
       </Stack>
 
-      <Box ref={projectRail} role="list" aria-label="Tipos de obra" sx={{
+      <Box ref={projectRail} role="list" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
         display: "flex", gap: 1.15, overflowX: "auto", px: .25, py: .45, scrollSnapType: "x proximity",
-        WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#d4e5d9 transparent"
+        WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
+        scrollbarColor: projectScrolling ? "#a9d7ba transparent" : "transparent transparent",
+        "&::-webkit-scrollbar": { height: 3 },
+        "&::-webkit-scrollbar-track": { background: "transparent" },
+        "&::-webkit-scrollbar-thumb": { backgroundColor: projectScrolling ? "#a9d7ba" : "transparent", borderRadius: 999 }
       }}>
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
@@ -156,7 +170,7 @@ export default function HomePage() {
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 5.25, md: 2.5 } }}>
+      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 3.25, md: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
