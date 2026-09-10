@@ -1,53 +1,6 @@
-import LandscapeOutlined from "@mui/icons-material/LandscapeOutlined";
-import Inventory2Outlined from "@mui/icons-material/Inventory2Outlined";
-import FormatColorFillOutlined from "@mui/icons-material/FormatColorFillOutlined";
-import FoundationOutlined from "@mui/icons-material/FoundationOutlined";
-import ScienceOutlined from "@mui/icons-material/ScienceOutlined";
-import ViewModuleOutlined from "@mui/icons-material/ViewModuleOutlined";
-import GridViewOutlined from "@mui/icons-material/GridViewOutlined";
-import TerrainOutlined from "@mui/icons-material/TerrainOutlined";
-import ForestOutlined from "@mui/icons-material/ForestOutlined";
-import ViewWeekOutlined from "@mui/icons-material/ViewWeekOutlined";
-import HexagonOutlined from "@mui/icons-material/HexagonOutlined";
-import HardwareOutlined from "@mui/icons-material/HardwareOutlined";
-import LayersOutlined from "@mui/icons-material/LayersOutlined";
-import DonutLargeOutlined from "@mui/icons-material/DonutLargeOutlined";
-import WindowOutlined from "@mui/icons-material/WindowOutlined";
-import UmbrellaOutlined from "@mui/icons-material/UmbrellaOutlined";
-import GraphicEqOutlined from "@mui/icons-material/GraphicEqOutlined";
-import FormatPaintOutlined from "@mui/icons-material/FormatPaintOutlined";
-import ContentPasteOutlined from "@mui/icons-material/ContentPasteOutlined";
-import RoofingOutlined from "@mui/icons-material/RoofingOutlined";
-import SpaceDashboardOutlined from "@mui/icons-material/SpaceDashboardOutlined";
-import TextureOutlined from "@mui/icons-material/TextureOutlined";
-import DoorSlidingOutlined from "@mui/icons-material/DoorSlidingOutlined";
-import PlumbingOutlined from "@mui/icons-material/PlumbingOutlined";
-import BathtubOutlined from "@mui/icons-material/BathtubOutlined";
-import SettingsInputComponentOutlined from "@mui/icons-material/SettingsInputComponentOutlined";
-import CableOutlined from "@mui/icons-material/CableOutlined";
-import ElectricalServicesOutlined from "@mui/icons-material/ElectricalServicesOutlined";
-import LightbulbOutlined from "@mui/icons-material/LightbulbOutlined";
-import RouterOutlined from "@mui/icons-material/RouterOutlined";
-import AcUnitOutlined from "@mui/icons-material/AcUnitOutlined";
-import PropaneTankOutlined from "@mui/icons-material/PropaneTankOutlined";
-import FireExtinguisherOutlined from "@mui/icons-material/FireExtinguisherOutlined";
-import SolarPowerOutlined from "@mui/icons-material/SolarPowerOutlined";
-import WaterOutlined from "@mui/icons-material/WaterOutlined";
-import AddRoadOutlined from "@mui/icons-material/AddRoadOutlined";
-import AccountBalanceOutlined from "@mui/icons-material/AccountBalanceOutlined";
-import YardOutlined from "@mui/icons-material/YardOutlined";
-import ArchitectureOutlined from "@mui/icons-material/ArchitectureOutlined";
-import BuildOutlined from "@mui/icons-material/BuildOutlined";
-import HealthAndSafetyOutlined from "@mui/icons-material/HealthAndSafetyOutlined";
-import LocalFireDepartmentOutlined from "@mui/icons-material/LocalFireDepartmentOutlined";
-import PrecisionManufacturingOutlined from "@mui/icons-material/PrecisionManufacturingOutlined";
-import HotTubOutlined from "@mui/icons-material/HotTubOutlined";
-import ElevatorOutlined from "@mui/icons-material/ElevatorOutlined";
-import PoolOutlined from "@mui/icons-material/PoolOutlined";
-import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
+import { Mountains, Package, PaintBucket, Cube, Flask, Wall, SquaresFour, Tree, Columns, Hammer, Stack as StackIcon, Circle, Umbrella, Waves, PaintBrush, Clipboard, HouseLine, Door, Pipe, Bathtub, Gear, Plugs, ShieldCheck, Lightbulb, WifiHigh, Snowflake, Fire, FireExtinguisher, SolarPanel, Drop, RoadHorizon, Plant, Flower, CraneTower, Wrench, HardHat, Factory, Thermometer, Elevator, SwimmingPool, Buildings, Shapes, Check } from "@phosphor-icons/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from "@mui/material";
-import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import type { CatalogMaterial } from "../domain/search";
@@ -64,8 +17,8 @@ const labels: Record<string, string> = {
   "40": "Ferramentas", "41": "Proteção e EPIs", "42": "Refratários", "43": "Equipamentos",
   "44": "Aquecimento", "45": "Acessibilidade", "46": "Piscinas", "47": "Fachadas"
 };
-const segmentIcons = [LandscapeOutlined, Inventory2Outlined, FormatColorFillOutlined, FoundationOutlined, ScienceOutlined, ViewModuleOutlined, GridViewOutlined, TerrainOutlined, ForestOutlined, ViewWeekOutlined, HexagonOutlined, HardwareOutlined, LayersOutlined, DonutLargeOutlined, WindowOutlined, UmbrellaOutlined, GraphicEqOutlined, FormatPaintOutlined, ContentPasteOutlined, RoofingOutlined, SpaceDashboardOutlined, TextureOutlined, DoorSlidingOutlined, PlumbingOutlined, BathtubOutlined, SettingsInputComponentOutlined, CableOutlined, ElectricalServicesOutlined, LightbulbOutlined, RouterOutlined, AcUnitOutlined, PropaneTankOutlined, FireExtinguisherOutlined, SolarPowerOutlined, WaterOutlined, AddRoadOutlined, AccountBalanceOutlined, YardOutlined, ArchitectureOutlined, BuildOutlined, HealthAndSafetyOutlined, LocalFireDepartmentOutlined, PrecisionManufacturingOutlined, HotTubOutlined, ElevatorOutlined, PoolOutlined, ApartmentOutlined];
-function iconFor(code: string) { return segmentIcons[Number(code) - 1] ?? CategoryOutlined; }
+const segmentIcons = [Mountains, Package, PaintBucket, Cube, Flask, Wall, SquaresFour, Mountains, Tree, Columns, Cube, Hammer, StackIcon, Circle, SquaresFour, Umbrella, Waves, PaintBrush, Clipboard, HouseLine, Wall, SquaresFour, Door, Pipe, Bathtub, Gear, Plugs, ShieldCheck, Lightbulb, WifiHigh, Snowflake, Fire, FireExtinguisher, SolarPanel, Drop, RoadHorizon, Plant, Flower, CraneTower, Wrench, HardHat, Fire, Factory, Thermometer, Elevator, SwimmingPool, Buildings];
+function iconFor(code: string) { return segmentIcons[Number(code) - 1] ?? Shapes; }
 export function SegmentCarousel({ catalog, selected, onSelect }: {
   catalog: CatalogMaterial[]; selected: string; onSelect: (code: string) => void;
 }) {
@@ -127,13 +80,15 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
             "&.Mui-focusVisible": { outline: "2px solid #198a4a", outlineOffset: 1 },
             "&:hover .segment-icon": { bgcolor: active ? "#dff2e6" : "#e9f4ed", borderColor: "#8bcba3", transform: "translateY(-2px)" }
           }}>
-          <Box className="segment-icon" sx={{ width: 48, height: 48, borderRadius: "50%", display: "grid", placeItems: "center",
-            color: active ? "#0b6732" : "#276e45", bgcolor: active ? "#e5f5eb" : "#f5f9f6",
+          <Box className="segment-icon" sx={{ position: "relative", width: 52, height: 52, borderRadius: "50%", display: "grid", placeItems: "center",
+            color: active ? "#0b6732" : "#276e45", background: active ? "linear-gradient(145deg,#f3fbf6,#e1f1e7)" : "linear-gradient(145deg,#ffffff,#edf5f0)",
             border: "1px solid", borderColor: active ? "#78c997" : "#d9e9df",
             boxShadow: active ? "0 0 0 3px rgba(54,224,126,.1),0 4px 13px rgba(25,138,74,.1)" : "0 3px 9px #174c3207",
             transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
-          }}><Icon sx={{ fontSize: 23 }} /></Box>
+          }}><Icon size={28} weight="duotone" aria-hidden="true" />
+            {active && <Box aria-hidden="true" sx={{ position: "absolute", right: -2, bottom: -1, width: 16, height: 16, borderRadius: "50%", bgcolor: "#ecf7f0", color: "#26754b", border: "2px solid #f5f8fa", display: "grid", placeItems: "center" }}><Check size={10} weight="bold" /></Box>}
+          </Box>
           <Typography component="span" sx={{ fontSize: 11, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#145f33" : "#526859", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
             {code ? labels[code] || name : "Todos"}
           </Typography>

@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
-import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
-import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import FactoryOutlinedIcon from "@mui/icons-material/FactoryOutlined";
-import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-import AddRoadOutlinedIcon from "@mui/icons-material/AddRoadOutlined";
+import { HouseLine, Buildings, BuildingApartment, Storefront, Factory, Bank, RoadHorizon, MapTrifold, Check, GraduationCap, Hospital, ForkKnife, Bed, Warehouse, Lightning, Broadcast, Drop, Tree } from "@phosphor-icons/react";
+import type { Icon } from "@phosphor-icons/react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useAccount } from "../auth/session";
@@ -15,7 +12,7 @@ import type { CatalogMaterial } from "../domain/search";
 
 const projectTypeGroups = [
   {
-    code: "1", segment: "Residencial", icon: HomeWorkOutlinedIcon, types: [
+    code: "1", segment: "Residencial", icon: HouseLine, types: [
       ["1.1", "Unifamiliar (casa térrea / sobrado)"],
       ["1.2", "Multifamiliar horizontal (condomínio de casas)"],
       ["1.3", "Multifamiliar vertical – padrão econômico"],
@@ -25,7 +22,7 @@ const projectTypeGroups = [
     ],
   },
   {
-    code: "2", segment: "Comercial", icon: StorefrontOutlinedIcon, types: [
+    code: "2", segment: "Comercial", icon: Storefront, types: [
       ["2.1", "Varejo / lojas"],
       ["2.2", "Edifícios corporativos / escritórios"],
       ["2.3", "Shopping centers"],
@@ -34,7 +31,7 @@ const projectTypeGroups = [
     ],
   },
   {
-    code: "3", segment: "Institucional", icon: AccountBalanceOutlinedIcon, types: [
+    code: "3", segment: "Institucional", icon: Bank, types: [
       ["3.1", "Educacional (escolas, universidades)"],
       ["3.2", "Saúde (hospitais, clínicas, UBS)"],
       ["3.3", "Público / administrativo"],
@@ -43,7 +40,7 @@ const projectTypeGroups = [
     ],
   },
   {
-    code: "4", segment: "Industrial", icon: FactoryOutlinedIcon, types: [
+    code: "4", segment: "Industrial", icon: Factory, types: [
       ["4.1", "Galpões industriais"],
       ["4.2", "Plantas fabris / produtivas"],
       ["4.3", "Armazéns / centros logísticos"],
@@ -51,7 +48,7 @@ const projectTypeGroups = [
     ],
   },
   {
-    code: "5", segment: "Infraestrutura", icon: AddRoadOutlinedIcon, types: [
+    code: "5", segment: "Infraestrutura", icon: RoadHorizon, types: [
       ["5.1", "Viária (rodovias, pontes, pavimentação)"],
       ["5.2", "Saneamento (água, esgoto)"],
       ["5.3", "Energia (subestações, transmissão)"],
@@ -61,8 +58,15 @@ const projectTypeGroups = [
   },
 ] as const;
 
+const projectIcons: Record<string, Icon> = {
+  "1.1": HouseLine, "1.2": Buildings, "1.3": BuildingApartment, "1.4": BuildingApartment, "1.5": BuildingApartment, "1.6": MapTrifold,
+  "2.2": Buildings, "2.4": Bed, "2.5": ForkKnife,
+  "3.1": GraduationCap, "3.2": Hospital,
+  "4.1": Warehouse, "4.3": Warehouse, "4.4": Tree,
+  "5.2": Drop, "5.3": Lightning, "5.4": Broadcast, "5.5": MapTrifold,
+};
 const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value, label]) => ({
-  value, label, segment: group.segment, icon: group.icon,
+  value, label, segment: group.segment, icon: projectIcons[value] ?? group.icon,
 })));
 
 let catalogCache: CatalogMaterial[] | null = null;
@@ -147,8 +151,8 @@ export default function HomePage() {
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
           return <ButtonBase key={value} aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
-            width: { xs: 166, sm: 182 }, minWidth: { xs: 166, sm: 182 }, minHeight: 88, px: 1.5, py: 1.25, borderRadius: "18px",
-            scrollSnapAlign: "start", display: "grid", gridTemplateColumns: "32px minmax(0,1fr)", columnGap: .8, alignItems: "center", textAlign: "left",
+            width: { xs: 174, sm: 190 }, minWidth: { xs: 174, sm: 190 }, minHeight: 126, px: 1.5, py: 1.5, borderRadius: "14px",
+            scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: 1, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
             color: "#17653a", border: "1px solid",
             borderColor: selected ? "rgba(25,138,74,.42)" : "rgba(25,138,74,.13)",
             background: selected
@@ -161,7 +165,14 @@ export default function HomePage() {
             "&.Mui-focusVisible": { outline: "2px solid #36e07e", outlineOffset: 2 },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
           }}>
-            <Icon sx={{ fontSize: 25 }} />
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Box sx={{ width: 40, height: 40, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f1,#dff0e6)", color: "#28754e" }}>
+                <Icon size={29} weight="duotone" aria-hidden="true" />
+              </Box>
+              <Box aria-hidden="true" sx={{ width: 18, height: 18, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad88" : "#dbe8df", bgcolor: selected ? "#e4f3e9" : "transparent", display: "grid", placeItems: "center" }}>
+                {selected && <Check size={12} weight="bold" />}
+              </Box>
+            </Stack>
             <Box minWidth={0}>
               <Typography component="span" display="block" sx={{ color: "#557863", fontSize: 10.5, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
               <Typography component="span" display="block" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1.35, mt: .35 }}>{label}</Typography>
