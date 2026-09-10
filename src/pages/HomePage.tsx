@@ -97,7 +97,7 @@ export default function HomePage() {
     minHeight: { xs: "calc(100dvh - 142px)", md: "calc(100dvh - 70px)" },
     pt: { xs: 2, md: 3.5 }, pb: { xs: 2.5, md: 4 }, display: "flex", flexDirection: "column"
   }}>
-    <Stack direction="row" gap={2.25} alignItems="center" mb={1.75}>
+    <Stack direction="row" gap={2.25} alignItems="center" mb={{ xs: 3, md: 3.5 }}>
       <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #174c322b" }}>
         {user.name.charAt(0).toUpperCase()}
       </Avatar>
@@ -155,7 +155,7 @@ export default function HomePage() {
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 1, md: 1.5 } }}>
+      <Box sx={{ mt: { xs: 1.25, md: 1.75 }, pb: { xs: 5.25, md: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
