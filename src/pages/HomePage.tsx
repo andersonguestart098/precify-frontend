@@ -109,12 +109,7 @@ export default function HomePage() {
     </Typography>
     <Typography color="text.secondary" mb={{ xs: 3.5, md: 4.5 }}>Pesquise e compare as opções para o seu projeto.</Typography>
 
-    <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: 680, mb: { xs: 3, md: 4 } }}>
-      <Typography sx={{
-        display: "inline-block", mb: .55, fontSize: 12, fontWeight: 850, letterSpacing: ".055em", textTransform: "uppercase",
-        background: "linear-gradient(90deg,#0b6732 0%,#198a4a 58%,#36b96c 100%)",
-        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
-      }}>Comece pelo seu projeto</Typography>
+    <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: 680 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
         <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
         <Stack direction="row" gap={.25}>
@@ -156,25 +151,21 @@ export default function HomePage() {
           </ButtonBase>;
         })}
       </Box>
-    </Box>
 
-    <Box component="section" sx={{
-      flex: 1, minHeight: { xs: 178, md: 210 }, display: "flex", flexDirection: "column", justifyContent: "flex-end",
-      pt: { xs: 2.5, md: 4 }, pb: { xs: 2.5, md: 2.5 }, position: "relative"
-    }}>
-      <Typography variant="h5" fontWeight={800} mb={1.25}>Atalhos para o catálogo</Typography>
-      {catalogLoading ? <>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-          <Skeleton variant="rounded" width={142} height={18} sx={{ bgcolor: "rgba(25,138,74,.08)" }} />
-          <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(25,138,74,.06)" }} />
-        </Stack>
-        <Stack direction="row" gap={{ xs: 2.5, sm: 4 }} sx={{ minHeight: 92, overflow: "hidden", px: .5 }}>
-          {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
-            <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(25,138,74,.09)" }} />
-            <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(25,138,74,.07)" }} />
-          </Stack>)}
-        </Stack>
-      </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
+      <Box sx={{ mt: { xs: 2.5, md: 3.5 }, pb: { xs: 1.5, md: 2 } }}>
+        {catalogLoading ? <>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
+            <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
+            <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(25,138,74,.06)" }} />
+          </Stack>
+          <Stack direction="row" gap={{ xs: 2.5, sm: 4 }} sx={{ minHeight: 92, overflow: "hidden", px: .5 }}>
+            {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
+              <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(25,138,74,.09)" }} />
+              <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(25,138,74,.07)" }} />
+            </Stack>)}
+          </Stack>
+        </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
+      </Box>
     </Box>
   </Container>;
 }
