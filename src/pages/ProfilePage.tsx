@@ -1,5 +1,5 @@
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { Avatar, Chip, Container, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import { Avatar, Container, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -30,7 +30,9 @@ export default function ProfilePage() {
       <ListItemButton component={RouterLink} to="/composicoes" selected={location.pathname === "/composicoes"}>
         <ListItemIcon><MenuBookOutlinedIcon /></ListItemIcon><ListItemText primary="Composições próprias" secondary="Listas de compra e valores" />
       </ListItemButton>
-      <ListItemButton disabled><ListItemIcon><ConstructionOutlinedIcon /></ListItemIcon><ListItemText primary="Grupos de composições / Obras" /><Chip label="Em breve" size="small" /></ListItemButton>
+      <ListItemButton component={RouterLink} to="/obras"><ListItemIcon><ConstructionOutlinedIcon /></ListItemIcon><ListItemText primary="Grupos de composições / Obras" /></ListItemButton>
+      <ListItemButton component={RouterLink} to="/comparar"><ListItemIcon><Inventory2OutlinedIcon /></ListItemIcon><ListItemText primary="Comparar produtos" /></ListItemButton>
+      <ListItemButton component={RouterLink} to="/historico"><ListItemIcon><MenuBookOutlinedIcon /></ListItemIcon><ListItemText primary="Histórico de buscas" /></ListItemButton>
     </List>
 
     <Typography variant="overline" color="text.secondary" sx={{ display: "block", mt: 3, mb: 1 }}>Atalhos</Typography>

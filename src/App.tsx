@@ -17,6 +17,9 @@ import LaborPage from "./pages/LaborPage";
 import AboutPage from "./pages/AboutPage";
 import InstitutionalPage from "./pages/InstitutionalPage";
 import ContactPage from "./pages/ContactPage";
+import PlanningPage from "./pages/PlanningPage";
+import HistoryPage from "./pages/HistoryPage";
+import ComparePage from "./pages/ComparePage";
 function ProtectedRoute({ admin = false }: { admin?: boolean }) {
   const { user } = useSession(); const location = useLocation();
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
@@ -40,6 +43,9 @@ function SessionRoutes() {
         <Route path="/favoritos" element={<FavoritesPage />} />
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/composicoes" element={<CompositionsPage />} />
+        <Route path="/obras" element={<PlanningPage />} />
+        <Route path="/historico" element={<HistoryPage />} />
+        <Route path="/comparar" element={<ComparePage />} />
         <Route path="/mao-de-obra" element={<LaborPage />} />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="/institucional" element={<InstitutionalPage />} />

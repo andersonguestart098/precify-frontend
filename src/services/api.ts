@@ -3,6 +3,15 @@ import type { Composition, CompositionItemInput } from "../domain/composition";
 
 const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8080/api").replace(/\/$/, "");
 
+export interface Project { id: string; name: string; compositionIds: string[]; }
+export interface SearchHistory { id: string; query: string; createdAt: string; }
+export const listProjects = () => apiRequest<Project[]>("/planning/projects");
+export const saveProject = (project: Omit<Project, "id">, id?: string) => apiRequest<Project>(`/planning/projects${id ? `/${id}` : ""}`, { method: id ? "PUT" : "POST", body: JSON.stringify(project) });
+export const deleteProject = async (id: string) => { await apiResponse(`/planning/projects/${id}`, { method: "DELETE" }); };
+export const listHistory = () => apiRequest<SearchHistory[]>("/planning/history");
+export const rememberSearch = (query: string) => apiRequest<SearchHistory>("/planning/history", { method: "POST", body: JSON.stringify({ query }) });
+export const clearHistory = async () => { await apiResponse("/planning/history", { method: "DELETE" }); };
+
 async function apiResponse(path: string, init?: RequestInit): Promise<Response> {
   const headers = new Headers(init?.headers);
   if (!(init?.body instanceof FormData)) headers.set("Content-Type", "application/json");

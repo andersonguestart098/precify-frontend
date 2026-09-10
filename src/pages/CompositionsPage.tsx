@@ -16,6 +16,7 @@ import {
   updateCompositionItemQuantity
 } from "../services/api";
 import { ProtectedImage } from "../components/ProtectedImage";
+import { downloadCompositions } from "../domain/export";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
@@ -114,6 +115,7 @@ export default function CompositionsPage() {
     </Paper>
 
     {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+    <Stack direction="row" gap={1} my={2}><Button component={RouterLink} to="/obras">Organizar por obra</Button><Button disabled={loading || !compositions.length} onClick={() => downloadCompositions(compositions)}>Exportar CSV</Button></Stack>
     {loading ? <Box minHeight={240} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box> :
       !compositions.length ? <Paper variant="outlined" sx={{ mt: 2, p: 4, borderRadius: 4, textAlign: "center", borderStyle: "dashed" }}>
         <PlaylistAddCheckRoundedIcon color="primary" sx={{ fontSize: 42 }} />

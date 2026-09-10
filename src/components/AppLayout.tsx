@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
+import { rememberSearch } from "../services/api";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export default function AppLayout() {
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
+    if (query.trim()) void rememberSearch(query.trim()).catch(() => undefined);
     const params = isProducts ? new URLSearchParams(location.search) : new URLSearchParams();
     if (query.trim()) params.set("q", query.trim()); else params.delete("q");
     params.delete("page");
@@ -39,7 +41,7 @@ export default function AppLayout() {
   return <Box minHeight="100dvh" sx={{ background: "radial-gradient(circle at 78% 8%,rgba(25,138,74,.06),transparent 24rem),#f4f7fb" }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "224px" }, minWidth: 0 }}>
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: { xs: "#198A4A", md: "#fff" }, borderBottom: { md: "1px solid #e0e9e4" } }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#198A4A", borderBottom: { md: "1px solid #167c42" } }}>
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>

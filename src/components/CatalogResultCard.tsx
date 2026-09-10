@@ -32,6 +32,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
       <ProtectedImage src={photo} alt={featured?.name ?? material.materialName}
         sx={{ width: { xs: 76, sm: 108 }, flexShrink: 0, alignSelf: "stretch", borderRadius: 1, border: "1px solid #e1e4e7" }} />
       <Box minWidth={0} flex={1}>
+        <Button size="small" component={RouterLink} to={`/comparar?codes=${encodeURIComponent(material.materialCode)}`}>Comparar produto</Button>
         <Stack direction="row" justifyContent="space-between" alignItems="start" gap={1}>
           <Box minWidth={0}><Typography variant="caption" color="primary" sx={{ fontWeight: 700, letterSpacing: ".02em", fontSize: { xs: 10.5, sm: 12 } }}>{material.materialCode} · {material.familyName}</Typography>
             <Typography component="h2" sx={{ fontSize: { xs: 14, sm: 16.5 }, fontWeight: 700, lineHeight: 1.2 }}>{material.materialName}</Typography>

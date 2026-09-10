@@ -15,6 +15,9 @@ const links = [
   { to: "/favoritos", label: "Favoritos", icon: StarOutline },
   { to: "/ia", label: "Assistente IA", icon: AutoAwesome },
   { to: "/perfil", label: "Meu perfil", icon: PersonOutline },
+  { to: "/obras", label: "Obras e projetos", icon: HomeOutlined },
+  { to: "/comparar", label: "Comparar produtos", icon: Inventory2Outlined },
+  { to: "/historico", label: "Histórico de buscas", icon: StarOutline },
 ];
 
 export default function DesktopSidebar() {
