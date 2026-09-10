@@ -32,16 +32,22 @@ export function BottomNav() {
           aria-current={active ? "page" : undefined} sx={{
             position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
             borderRadius: 0, WebkitTapHighlightColor: "transparent",
-            background: active ? "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" : "transparent",
+            background: active
+              ? "linear-gradient(90deg,transparent 0%,rgba(54,224,126,.08) 18%,rgba(25,138,74,.12) 50%,rgba(54,224,126,.08) 82%,transparent 100%)"
+              : "transparent",
             transition: "color 280ms cubic-bezier(.2,.8,.2,1), background 280ms cubic-bezier(.2,.8,.2,1)",
             "&::after": active && !featured ? {
-              content: '""', position: "absolute", top: 0, left: "50%", width: 34, height: 2.5,
-              borderRadius: "0 0 999px 999px", background: "linear-gradient(90deg,#cce8d6,#71bd8d,#cce8d6)", transform: "translateX(-50%)",
+              content: '""', position: "absolute", top: 0, left: "50%", width: 52, height: 2,
+              borderRadius: "0 0 999px 999px", background: "linear-gradient(90deg,transparent,#69bd88 28%,#198a4a 50%,#69bd88 72%,transparent)",
+              boxShadow: "0 2px 8px rgba(25,138,74,.18)", transform: "translateX(-50%)",
               animation: "activeTabIn 280ms cubic-bezier(.2,.8,.2,1) both"
             } : undefined,
-            "@keyframes activeTabIn": { from: { opacity: 0, width: 12 }, to: { opacity: 1, width: 34 } },
+            "@keyframes activeTabIn": { from: { opacity: 0, width: 16 }, to: { opacity: 1, width: 52 } },
             "@media (hover: hover)": {
-              "&:hover": { color: "#0b6732", background: "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" }
+              "&:hover": {
+                color: "#0b6732",
+                background: "linear-gradient(90deg,transparent 0%,rgba(54,224,126,.08) 18%,rgba(25,138,74,.12) 50%,rgba(54,224,126,.08) 82%,transparent 100%)"
+              }
             },
             "&:focus-visible": { outline: "2px solid #36e07e", outlineOffset: -3 }
           }}>
