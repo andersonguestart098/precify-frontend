@@ -1,25 +1,69 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import FactoryOutlinedIcon from "@mui/icons-material/FactoryOutlined";
-import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import AddRoadOutlinedIcon from "@mui/icons-material/AddRoadOutlined";
-import AppsOutlinedIcon from "@mui/icons-material/AppsOutlined";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import { useAccount } from "../auth/session";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import { getCatalog } from "../services/api";
 import type { CatalogMaterial } from "../domain/search";
 
-const projectTypes = [
-  { value: "residencial", label: "Residencial", icon: HomeWorkOutlinedIcon },
-  { value: "comercial", label: "Comercial", icon: StorefrontOutlinedIcon },
-  { value: "industrial", label: "Industrial", icon: FactoryOutlinedIcon },
-  { value: "reforma", label: "Reforma", icon: HandymanOutlinedIcon },
-  { value: "infraestrutura", label: "Infraestrutura", icon: AddRoadOutlinedIcon },
-  { value: "outro", label: "Outro", icon: AppsOutlinedIcon },
-];
+const projectTypeGroups = [
+  {
+    code: "1", segment: "Residencial", icon: HomeWorkOutlinedIcon, types: [
+      ["1.1", "Unifamiliar (casa térrea / sobrado)"],
+      ["1.2", "Multifamiliar horizontal (condomínio de casas)"],
+      ["1.3", "Multifamiliar vertical – padrão econômico"],
+      ["1.4", "Multifamiliar vertical – padrão médio"],
+      ["1.5", "Multifamiliar vertical – alto padrão"],
+      ["1.6", "Loteamento / urbanização residencial"],
+    ],
+  },
+  {
+    code: "2", segment: "Comercial", icon: StorefrontOutlinedIcon, types: [
+      ["2.1", "Varejo / lojas"],
+      ["2.2", "Edifícios corporativos / escritórios"],
+      ["2.3", "Shopping centers"],
+      ["2.4", "Hotelaria / flats"],
+      ["2.5", "Restaurantes / food service"],
+    ],
+  },
+  {
+    code: "3", segment: "Institucional", icon: AccountBalanceOutlinedIcon, types: [
+      ["3.1", "Educacional (escolas, universidades)"],
+      ["3.2", "Saúde (hospitais, clínicas, UBS)"],
+      ["3.3", "Público / administrativo"],
+      ["3.4", "Religioso"],
+      ["3.5", "Cultural / esportivo"],
+    ],
+  },
+  {
+    code: "4", segment: "Industrial", icon: FactoryOutlinedIcon, types: [
+      ["4.1", "Galpões industriais"],
+      ["4.2", "Plantas fabris / produtivas"],
+      ["4.3", "Armazéns / centros logísticos"],
+      ["4.4", "Agroindustrial"],
+    ],
+  },
+  {
+    code: "5", segment: "Infraestrutura", icon: AddRoadOutlinedIcon, types: [
+      ["5.1", "Viária (rodovias, pontes, pavimentação)"],
+      ["5.2", "Saneamento (água, esgoto)"],
+      ["5.3", "Energia (subestações, transmissão)"],
+      ["5.4", "Telecomunicações"],
+      ["5.5", "Urbana (drenagem, urbanização)"],
+    ],
+  },
+] as const;
+
+const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value, label]) => ({
+  value, label, segment: group.segment, icon: group.icon,
+})));
 
 let catalogCache: CatalogMaterial[] | null = null;
 
@@ -29,6 +73,15 @@ export default function HomePage() {
   const [projectType, setProjectType] = useState("");
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(catalogCache ?? []);
   const [catalogLoading, setCatalogLoading] = useState(!catalogCache);
+  const projectRail = useRef<HTMLDivElement>(null);
+
+  const moveProjectTypes = (direction: number) => {
+    const rail = projectRail.current;
+    if (rail) rail.scrollBy({
+      left: direction * rail.clientWidth * .78,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
 
   useEffect(() => {
     if (catalogCache) return;
@@ -62,13 +115,27 @@ export default function HomePage() {
         background: "linear-gradient(90deg,#0b6732 0%,#198a4a 58%,#36b96c 100%)",
         WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
       }}>Comece pelo seu projeto</Typography>
-      <Typography id="project-type-title" variant="h6" fontWeight={800} mb={1.4}>O que você vai construir?</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
+        <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
+        <Stack direction="row" gap={.25}>
+          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#397251", width: 30, height: 30, borderRadius: "50%" }}>
+            <ChevronLeftRoundedIcon />
+          </ButtonBase>
+          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#397251", width: 30, height: 30, borderRadius: "50%" }}>
+            <ChevronRightRoundedIcon />
+          </ButtonBase>
+        </Stack>
+      </Stack>
 
-      <Box role="list" sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(3,minmax(0,1fr))", sm: "repeat(6,minmax(0,1fr))" }, gap: { xs: 1, sm: 1.25 } }}>
-        {projectTypes.map(({ value, label, icon: Icon }) => {
+      <Box ref={projectRail} role="list" aria-label="Tipos de obra" sx={{
+        display: "flex", gap: 1.15, overflowX: "auto", px: .25, py: .45, scrollSnapType: "x proximity",
+        WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#d4e5d9 transparent"
+      }}>
+        {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
           return <ButtonBase key={value} role="listitem" aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
-            minWidth: 0, minHeight: { xs: 68, sm: 76 }, px: .75, py: 1, borderRadius: 3, display: "flex", flexDirection: "column", gap: .55,
+            width: { xs: 158, sm: 174 }, minWidth: { xs: 158, sm: 174 }, minHeight: 88, px: 1.25, py: 1, borderRadius: 3,
+            scrollSnapAlign: "start", display: "grid", gridTemplateColumns: "32px minmax(0,1fr)", columnGap: .8, alignItems: "center", textAlign: "left",
             color: selected ? "#fff" : "#17653a", border: "1px solid",
             borderColor: selected ? "rgba(11,103,50,.55)" : "rgba(25,138,74,.14)",
             background: selected
@@ -81,8 +148,11 @@ export default function HomePage() {
             "&.Mui-focusVisible": { outline: "2px solid #36e07e", outlineOffset: 2 },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
           }}>
-            <Icon sx={{ fontSize: { xs: 23, sm: 25 } }} />
-            <Typography component="span" noWrap sx={{ maxWidth: "100%", fontSize: { xs: 10.5, sm: 11 }, fontWeight: 750 }}>{label}</Typography>
+            <Icon sx={{ fontSize: 25 }} />
+            <Box minWidth={0}>
+              <Typography component="span" display="block" sx={{ opacity: selected ? .82 : .72, fontSize: 9.5, fontWeight: 750, lineHeight: 1.2 }}>{segment}</Typography>
+              <Typography component="span" display="block" sx={{ fontSize: 11, fontWeight: 800, lineHeight: 1.2, mt: .35 }}>{label}</Typography>
+            </Box>
           </ButtonBase>;
         })}
       </Box>
