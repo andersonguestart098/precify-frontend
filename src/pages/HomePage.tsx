@@ -107,12 +107,13 @@ export default function HomePage() {
       </Box>
     </Stack>
 
-    <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-      Encontre o material certo para a sua obra.
-    </Typography>
-    <Typography color="text.secondary" mb={{ xs: 2.25, md: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
+    <Box sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+      <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+        Encontre o material certo para a sua obra.
+      </Typography>
+      <Typography color="text.secondary" mb={{ xs: 2.25, md: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
 
-    <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: 680 }}>
+      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: 680 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
         <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
         <Stack direction="row" gap={.25}>
@@ -168,6 +169,7 @@ export default function HomePage() {
             </Stack>)}
           </Stack>
         </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
+      </Box>
       </Box>
     </Box>
   </Container>;
