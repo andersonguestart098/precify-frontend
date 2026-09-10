@@ -32,12 +32,15 @@ export function BottomNav() {
           aria-current={active ? "page" : undefined} sx={{
             position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
             borderRadius: "16px 16px 0 0", WebkitTapHighlightColor: "transparent",
+            background: active ? "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" : "transparent",
             transition: "color 180ms ease, background 180ms ease",
             "&::after": active ? {
               content: '""', position: "absolute", top: 0, left: "50%", width: 32, height: 3,
               borderRadius: "0 0 999px 999px", bgcolor: "#DDEFE5", transform: "translateX(-50%)"
             } : undefined,
-            "&:hover": { color: "#0b6732", background: "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" },
+            "@media (hover: hover)": {
+              "&:hover": { color: "#0b6732", background: "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" }
+            },
             "&:focus-visible": { outline: "2px solid #36e07e", outlineOffset: -3 }
           }}>
           {featured ? <Box sx={{
