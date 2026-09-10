@@ -1,0 +1,23 @@
+import { afterEach, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import UsersPage from "./UsersPage";
+import { createUser, listUsers, updateUserAvatar } from "../services/api";
+vi.mock("../services/api", () => ({ createUser: vi.fn(), listUsers: vi.fn(), updateUserAvatar: vi.fn() }));
+afterEach(() => { cleanup(); vi.clearAllMocks(); });
+it("salva a URL do avatar de um usuário existente e envia avatar no cadastro", async () => {
+  const user = { id: "admin@example.test", email: "admin@example.test", name: "Anderson", role: "ADMIN" as const };
+  const url = "https://res.cloudinary.com/precify/image/upload/avatar.jpg";
+  vi.mocked(listUsers).mockResolvedValue([user]);
+  vi.mocked(updateUserAvatar).mockResolvedValue({ ...user, avatarUrl: url });
+  vi.mocked(createUser).mockResolvedValue({ ...user, id: "new@example.test", email: "new@example.test", name: "Novo", avatarUrl: url });
+  render(<UsersPage />);
+  fireEvent.change(await screen.findByLabelText("URL do avatar de Anderson"), { target: { value: url } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar foto" }));
+  await waitFor(() => expect(updateUserAvatar).toHaveBeenCalledWith(user.id, url));
+  fireEvent.change(screen.getByLabelText(/^Nome/), { target: { value: "Novo" } });
+  fireEvent.change(screen.getByLabelText(/^E-mail/), { target: { value: "new@example.test" } });
+  fireEvent.change(screen.getByLabelText(/^Senha inicial/), { target: { value: "test-only-password" } });
+  fireEvent.change(screen.getByLabelText("URL do avatar (Cloudinary)"), { target: { value: url } });
+  fireEvent.click(screen.getByRole("button", { name: "Criar usuário" }));
+  await waitFor(() => expect(createUser).toHaveBeenCalledWith({ name: "Novo", email: "new@example.test", password: "test-only-password", role: "ADMIN", avatarUrl: url }));
+});
