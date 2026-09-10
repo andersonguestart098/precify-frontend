@@ -22,7 +22,7 @@ export function BottomNav() {
   const location = useLocation();
   return <Paper elevation={0} sx={{
     display: { xs: "flex", md: "none" }, position: "fixed", left: 0, right: 0, bottom: 0, zIndex: theme => theme.zIndex.appBar,
-    borderTop: "1px solid #e3ece6", borderRadius: 0, bgcolor: "#fff", pb: "env(safe-area-inset-bottom)", overflow: "visible"
+    minHeight: 70, borderTop: "1px solid #e3ece6", borderRadius: 0, bgcolor: "#fff", pb: "env(safe-area-inset-bottom)", overflow: "visible"
   }}>
     <Stack direction="row" width="100%" alignItems="flex-end">
       {items.map(({ to, label, icon: Icon, activeIcon: ActiveIcon, featured }) => {
@@ -30,14 +30,18 @@ export function BottomNav() {
         const DisplayIcon = active ? ActiveIcon : Icon;
         return <Stack key={to} component={RouterLink} to={to} flex={1} alignItems="center" justifyContent="center" gap={.25}
           aria-current={active ? "page" : undefined} sx={{
-            position: "relative", minWidth: 0, py: 1, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
+            position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
             borderRadius: "16px 16px 0 0", WebkitTapHighlightColor: "transparent",
             transition: "color 180ms ease, background 180ms ease",
+            "&::after": active ? {
+              content: '""', position: "absolute", top: 0, left: "50%", width: 32, height: 3,
+              borderRadius: "0 0 999px 999px", bgcolor: "#DDEFE5", transform: "translateX(-50%)"
+            } : undefined,
             "&:hover": { color: "#0b6732", background: "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" },
             "&:focus-visible": { outline: "2px solid #36e07e", outlineOffset: -3 }
           }}>
           {featured ? <Box sx={{
-            mt: -3.6, width: 52, height: 52, display: "grid", placeItems: "center", borderRadius: "50%", position: "relative",
+            mt: -4.2, width: 58, height: 58, display: "grid", placeItems: "center", borderRadius: "50%", position: "relative",
             filter: "drop-shadow(0 5px 9px rgba(23,76,50,.16))",
             "&::before": {
               content: '""', position: "absolute", inset: 0, borderRadius: "inherit",
@@ -51,7 +55,7 @@ export function BottomNav() {
             }
           }}>
             <Box sx={{
-              width: 48, height: 48, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff",
+              width: 54, height: 54, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff",
               bgcolor: active ? "#166b3b" : "#198A4A", position: "relative", zIndex: 1,
               boxShadow: "inset 0 0 0 1px rgba(255,255,255,.24)"
             }}>
@@ -69,7 +73,7 @@ export function BottomNav() {
                 }
               }}>
                 <DisplayIcon className="ai-spark-icon" sx={{
-                  fontSize: 24, filter: "drop-shadow(0 0 0 rgba(255,255,255,0))",
+                  fontSize: 27, filter: "drop-shadow(0 0 0 rgba(255,255,255,0))",
                   animation: "aiSparkBreath 3.6s ease-in-out infinite",
                   "@keyframes aiSparkBreath": {
                     "0%, 100%": { opacity: .88, transform: "scale(.96)", filter: "drop-shadow(0 0 0 rgba(255,255,255,0))" },
