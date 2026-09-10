@@ -122,8 +122,8 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
         return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
         <ButtonBase aria-label={name} aria-pressed={active}
           onClick={() => onSelect(code === selected ? "" : code)}
-          sx={{ width: 54, height: 54, flexShrink: 0, display: "grid", placeItems: "center",
-            borderRadius: "50%", p: 0,
+          sx={{ width: 78, minHeight: 94, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", gap: 1,
+            borderRadius: 2, py: .5,
             "&.Mui-focusVisible": { outline: "2px solid #198a4a", outlineOffset: 1 },
             "&:hover .segment-icon": { bgcolor: active ? "#dff2e6" : "#e9f4ed", borderColor: "#8bcba3", transform: "translateY(-2px)" }
           }}>
@@ -134,6 +134,9 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
             transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
           }}><Icon sx={{ fontSize: 23 }} /></Box>
+          <Typography component="span" sx={{ fontSize: 10.5, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#145f33" : "#617567", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
+            {code ? labels[code] || name : "Todos"}
+          </Typography>
         </ButtonBase></Tooltip>;
       })}
     </Box>

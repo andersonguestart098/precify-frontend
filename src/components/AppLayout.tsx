@@ -5,8 +5,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import { BottomNav } from "./BottomNav";
-import { DesktopExploreNav } from "./DesktopExploreNav";
-import { DesktopMenu } from "./DesktopMenu";
+import DesktopSidebar from "./DesktopSidebar";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -38,14 +37,16 @@ export default function AppLayout() {
   };
 
   return <Box minHeight="100dvh" sx={{ background: "radial-gradient(circle at 78% 8%,rgba(25,138,74,.06),transparent 24rem),#f4f7fb" }}>
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#198A4A" }}>
+    <DesktopSidebar />
+    <Box sx={{ ml: { xs: 0, md: "224px" }, minWidth: 0 }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: { xs: "#198A4A", md: "#fff" }, borderBottom: { md: "1px solid #e0e9e4" } }}>
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>
             {!showSearch && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{ color: "#fff", ml: -.8, p: .8, display: { xs: "inline-flex", md: "none" } }}>
               <ArrowBackIosNewIcon sx={{ fontSize: 19 }} />
             </IconButton>}
-            <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: "flex", flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
+            <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
               <Box component="img" src="/precify-mark.svg" alt="Precify" sx={{ width: 39, height: 39 }} />
             </Box>
 
@@ -62,12 +63,10 @@ export default function AppLayout() {
               </Stack>
             </Box>}
 
-            <Box sx={{ ml: showSearch ? 0 : "auto" }}><DesktopMenu /></Box>
           </Stack>
         </Container>
       </Toolbar>
     </AppBar>
-    <DesktopExploreNav />
     <Box key={location.pathname} sx={{
       pb: { xs: 10, md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
       "@keyframes pageEnter": {
@@ -76,6 +75,7 @@ export default function AppLayout() {
       },
       "@media (prefers-reduced-motion: reduce)": { animation: "none" }
     }}><Outlet /></Box>
+    </Box>
     <BottomNav />
   </Box>;
 }
