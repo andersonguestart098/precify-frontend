@@ -66,7 +66,7 @@ export default function AppLayout() {
         </Container>
       </Toolbar>
     </AppBar>
-    <Box sx={{ pb: { xs: 9, md: 0 } }}><Outlet /></Box>
+    <Box sx={{ pb: { xs: 10, md: 0 } }}><Outlet /></Box>
     <BottomNav />
   </Box>;
 }
