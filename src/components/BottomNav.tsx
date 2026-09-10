@@ -31,7 +31,7 @@ export function BottomNav() {
         return <Stack key={to} component={RouterLink} to={to} flex={1} alignItems="center" justifyContent="center" gap={.25}
           aria-current={active ? "page" : undefined} sx={{
             position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
-            borderRadius: "16px 16px 0 0", WebkitTapHighlightColor: "transparent",
+            borderRadius: 0, WebkitTapHighlightColor: "transparent",
             background: active ? "linear-gradient(180deg,rgba(54,224,126,.13),rgba(25,138,74,.04))" : "transparent",
             transition: "color 280ms cubic-bezier(.2,.8,.2,1), background 280ms cubic-bezier(.2,.8,.2,1)",
             "&::after": active && !featured ? {
