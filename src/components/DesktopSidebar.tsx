@@ -15,7 +15,7 @@ const links = [
   { to: "/favoritos", label: "Favoritos", icon: StarOutline },
   { to: "/ia", label: "Assistente IA", icon: AutoAwesome },
   { to: "/perfil", label: "Meu perfil", icon: PersonOutline },
-  { to: "/obras", label: "Obras e projetos", icon: HomeOutlined },
+  { to: "/obras", label: "Obra", icon: HomeOutlined },
   { to: "/comparar", label: "Comparar produtos", icon: Inventory2Outlined },
   { to: "/historico", label: "Histórico de buscas", icon: StarOutline },
 ];
@@ -23,8 +23,8 @@ const links = [
 export default function DesktopSidebar() {
   const { pathname } = useLocation();
   const user = useAccount();
-  return <Box component="aside" sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", position: "fixed", inset: "0 auto 0 0", width: 224, zIndex: theme => theme.zIndex.appBar + 1, bgcolor: "#fff", borderRight: "1px solid #e0e9e6", overflowY: "auto" }}>
-    <Stack component={RouterLink} to="/inicio" direction="row" alignItems="center" gap={1} sx={{ minHeight: 70, px: 2.5, bgcolor: "#006b4f", color: "white", textDecoration: "none" }}>
+  return <Box component="aside" sx={{ display: { xs: "none", md: "flex" }, flexDirection: "column", position: "fixed", inset: "0 auto 0 0", width: 224, zIndex: theme => theme.zIndex.appBar + 1, bgcolor: "#fff", borderRight: 0, boxShadow: "6px 0 24px rgba(19,56,46,.10), 1px 0 4px rgba(19,56,46,.06)", overflowY: "auto" }}>
+    <Stack component={RouterLink} to="/inicio" direction="row" alignItems="center" gap={1} sx={{ minHeight: 70, flexShrink: 0, px: 2.5, bgcolor: "#006b4f", color: "white", textDecoration: "none" }}>
       <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: 156, maxHeight: 42, objectFit: "contain" }} />
     </Stack>
     <Typography variant="overline" sx={{ px: 2.5, pt: 3, pb: 1, color: "#819088", fontSize: 10, letterSpacing: 1.5 }}>Área de trabalho</Typography>

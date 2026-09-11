@@ -30,7 +30,7 @@ export default function ProfilePage() {
       <ListItemButton component={RouterLink} to="/composicoes" selected={location.pathname === "/composicoes"}>
         <ListItemIcon><MenuBookOutlinedIcon /></ListItemIcon><ListItemText primary="Composições próprias" secondary="Listas de compra e valores" />
       </ListItemButton>
-      <ListItemButton component={RouterLink} to="/obras"><ListItemIcon><ConstructionOutlinedIcon /></ListItemIcon><ListItemText primary="Grupos de composições / Obras" /></ListItemButton>
+      <ListItemButton component={RouterLink} to="/obras"><ListItemIcon><ConstructionOutlinedIcon /></ListItemIcon><ListItemText primary="Obra" /></ListItemButton>
       <ListItemButton component={RouterLink} to="/comparar"><ListItemIcon><Inventory2OutlinedIcon /></ListItemIcon><ListItemText primary="Comparar produtos" /></ListItemButton>
       <ListItemButton component={RouterLink} to="/historico"><ListItemIcon><MenuBookOutlinedIcon /></ListItemIcon><ListItemText primary="Histórico de buscas" /></ListItemButton>
     </List>

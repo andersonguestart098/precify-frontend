@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
 import { HouseLine, Buildings, BuildingApartment, Storefront, Factory, Bank, RoadHorizon, MapTrifold, Check, GraduationCap, Hospital, ForkKnife, Bed, Warehouse, Lightning, Broadcast, Drop, Tree } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import { useAccount } from "../auth/session";
+import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import { getCatalog } from "../services/api";
 import type { CatalogMaterial } from "../domain/search";
@@ -72,7 +72,6 @@ const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value,
 let catalogCache: CatalogMaterial[] | null = null;
 
 export default function HomePage() {
-  const user = useAccount();
   const navigate = useNavigate();
   const [projectType, setProjectType] = useState("");
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(catalogCache ?? []);
@@ -111,15 +110,7 @@ export default function HomePage() {
     minHeight: { xs: "calc(100dvh - var(--header-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - 70px)" },
     pt: { xs: 2, md: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 4 }, display: "flex", flexDirection: "column"
   }}>
-    <Stack direction="row" gap={2.25} alignItems="center" mb={{ xs: 3, md: 3.5 }}>
-      <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2ed", color: "primary.dark", border: "2px solid #006b4f", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #183c302b" }}>
-        {user.name.charAt(0).toUpperCase()}
-      </Avatar>
-      <Box>
-        <Typography sx={{ fontSize: { xs: 15, md: 16 }, lineHeight: 1.3 }}>Olá,</Typography>
-        <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.25, fontWeight: 850 }} color="primary.dark">{user.name}!</Typography>
-      </Box>
-    </Stack>
+    <AccountGreeting />
 
     <Box sx={{ flex: { xs: 1, md: "initial" }, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: { xs: "flex-end", md: "flex-start" } }}>
       <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>

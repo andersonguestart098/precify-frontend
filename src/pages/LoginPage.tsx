@@ -31,7 +31,7 @@ export default function LoginPage() {
   return <Box component="main" sx={{ minHeight: "100dvh", display: "grid", alignItems: "center",
     background: "radial-gradient(ellipse at 55% 54%, rgba(0,107,79,.055), transparent 65%), #f7f9f8", py: 4 }}>
     <Container maxWidth="sm" sx={{ px: { xs: 3, sm: 5 }, maxWidth: "480px !important" }}>
-      <Box component="img" src="/precify-signature.png" alt="Precify" sx={{ display: "block", width: { xs: 220, sm: 260 }, maxWidth: "100%", height: "auto", mb: 3 }} />
+      <Box component="img" src="/precify-signature.png" alt="Precify" sx={{ display: "block", width: { xs: 220, sm: 260 }, maxWidth: "100%", height: "auto", mb: 3, mixBlendMode: "multiply" }} />
       <Typography component="h1" variant="h4" sx={{ fontSize: { xs: 24, sm: 27 }, fontWeight: 800, letterSpacing: "-.045em", mb: .75 }}>Bem-vindo de volta</Typography>
       <Typography color="text.secondary" sx={{ fontSize: 14.5, lineHeight: 1.6, mb: 3 }}>Entre com suas credenciais para acessar o sistema.</Typography>
       <Box component="form" onSubmit={submit}>

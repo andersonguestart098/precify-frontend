@@ -44,7 +44,7 @@ export default function AppLayout() {
   }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "224px" }, minWidth: 0 }}>
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#006b4f", pt: "env(safe-area-inset-top, 0px)", borderBottom: { md: "1px solid #1b614a" } }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#006b4f", pt: "env(safe-area-inset-top, 0px)", borderBottom: 0 }}>
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>

@@ -2,10 +2,11 @@ import { SearchSkeleton, ResultSkeletons } from "../components/SearchSkeleton";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import { Alert, Avatar, Box, Button, Container, Drawer, IconButton, Paper, Pagination, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Drawer, IconButton, Paper, Pagination, Stack, Typography } from "@mui/material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import AccountGreeting from "../components/AccountGreeting";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
 import { getCatalog, searchFavorites, searchProducts } from "../services/api";
@@ -14,7 +15,8 @@ import type { CatalogMaterial, CatalogSearchPage, TechnicalCriterion } from "../
 import { SearchFilters } from "../components/SearchFilters";
 import { CatalogResultCard } from "../components/CatalogResultCard";
 export default function SearchPage() {
-  const user = useAccount(); const favorites = useFavorites();
+  const user = useAccount();
+  const favorites = useFavorites();
   const [params, setParams] = useSearchParams();
   const query = params.get("q") ?? ""; const familyCode = params.get("family") ?? "";
   const onlyFavorites = params.get("scope") === "favorites";
@@ -73,13 +75,10 @@ export default function SearchPage() {
     })}
     onFamilyChange={(family, segment) => change({ family, segmentCode: segment, materialCode: "", optionCode: "" })}
     onClearFilters={clearFilters} />;
-  return <Container maxWidth="xl" sx={{ py: { xs: 4, md: 5 } }}>
+  return <Container maxWidth="xl" sx={{ pt: { xs: 2, md: 3.5 }, pb: { xs: 4, md: 5 } }}>
     <Box sx={{ display: "contents" }}>
       <Box sx={{ mb: 3 }}>
-        <Stack direction="row" gap={2} alignItems="center" mb={2.5}>
-          <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2ed", color: "primary.dark", border: "2px solid #006b4f", width: 68, height: 68, boxShadow: "0 5px 16px #183c3026" }}>{user.name.charAt(0).toUpperCase()}</Avatar>
-          <Box><Typography variant="body2">Olá,</Typography><Typography fontWeight={800} color="primary.dark">{user.name}!</Typography></Box>
-        </Stack>
+        <AccountGreeting />
         <Typography component="h1" sx={{ fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1.5,
           background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Encontre o material certo pelas especificações.</Typography>
         <Typography color="text.secondary">Pesquise e compare as opções para o seu projeto.</Typography>

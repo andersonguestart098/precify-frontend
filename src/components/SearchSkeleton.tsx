@@ -18,11 +18,11 @@ export function ResultSkeletons() {
   </Stack>;
 }
 export function SearchSkeleton() {
-  return <Container maxWidth="xl" aria-busy="true" aria-label="Carregando busca" sx={{ py: { xs: 4, md: 5 }, ...motion }}>
+  return <Container maxWidth="xl" aria-busy="true" aria-label="Carregando busca" sx={{ pt: { xs: 2, md: 3.5 }, pb: { xs: 4, md: 5 }, ...motion }}>
     <Box aria-hidden="true" display="grid" gridTemplateColumns={{ xs: "1fr", lg: "1fr 1fr" }} gap={3} alignItems="end" mb={4}>
       <Box>
-        <Stack direction="row" alignItems="center" gap={2} mb={2.5}>
-          <Skeleton animation="wave" variant="circular" width={68} height={68} />
+        <Stack direction="row" alignItems="center" gap={2.25} mb={{ xs: 3, md: 3.5 }}>
+          <Skeleton animation="wave" variant="circular" sx={{ width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 } }} />
           <Box><Skeleton animation="wave" width={40} /><Skeleton animation="wave" width={100} height={28} /></Box>
         </Stack>
         <Skeleton animation="wave" variant="rounded" height={112} sx={{ maxWidth: 440, mb: 1.5 }} />

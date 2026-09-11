@@ -31,7 +31,7 @@ async function apiResponse(path: string, init?: RequestInit): Promise<Response> 
       window.dispatchEvent(new Event("precify-session-expired"));
     }
     const problem = await response.json().catch(() => null) as { detail?: string; message?: string } | null;
-    throw new Error(problem?.detail ?? problem?.message ?? (response.status === 401 ? (path === "/auth/login" ? "E-mail ou senha inválidos." : "Sua sessão expirou. Entre novamente.") : response.status === 403 ? "Esta ação exige uma conta ADMIN." : `Erro HTTP ${response.status}`));
+    throw new Error(problem?.detail ?? problem?.message ?? (response.status === 401 ? (path === "/auth/login" ? "E-mail ou senha inválidos." : "Sua sessão expirou. Entre novamente.") : response.status === 403 ? "Você não tem permissão para esta ação." : `Erro HTTP ${response.status}`));
   }
   return response;
 }
