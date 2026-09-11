@@ -42,10 +42,10 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
   };
   return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-      <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
+      <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
       <Stack direction="row" gap={.5}>
-        <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#397251", width: 44, height: 44 }}><ChevronLeftRounded /></IconButton>
-        <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#397251", width: 44, height: 44 }}><ChevronRightRounded /></IconButton>
+        <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#39725f", width: 44, height: 44 }}><ChevronLeftRounded /></IconButton>
+        <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#39725f", width: 44, height: 44 }}><ChevronRightRounded /></IconButton>
       </Stack>
     </Stack>
     <Box ref={rail} onScroll={showScrollbar} onPointerDown={event => {
@@ -67,9 +67,9 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
       onClickCapture={event => { if (drag.current.moved) { event.preventDefault(); event.stopPropagation(); drag.current.moved = false; } }}
       sx={{ display: "flex", gap: { xs: 1.35, sm: 1.6 }, overflowX: "auto", py: .8, px: 0, cursor: "grab",
         "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7ba transparent" : "transparent transparent",
+        scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7c8 transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: 3 }, "&::-webkit-scrollbar-track": { background: "transparent" },
-        "&::-webkit-scrollbar-thumb": { backgroundColor: scrolling ? "#a9d7ba" : "transparent", borderRadius: 999 } }}>
+        "&::-webkit-scrollbar-thumb": { backgroundColor: scrolling ? "#a9d7c8" : "transparent", borderRadius: 999 } }}>
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
         const Icon = iconFor(code); const active = code === selected;
         return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
@@ -77,19 +77,19 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
           onClick={() => onSelect(code === selected ? "" : code)}
           sx={{ width: 78, minHeight: 94, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", gap: 1,
             borderRadius: 2, py: .5,
-            "&.Mui-focusVisible": { outline: "2px solid #198a4a", outlineOffset: 1 },
-            "&:hover .segment-icon": { bgcolor: active ? "#dff2e6" : "#e9f4ed", borderColor: "#8bcba3", transform: "translateY(-2px)" }
+            "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
+            "&:hover .segment-icon": { bgcolor: active ? "#dff2ec" : "#e9f4f0", borderColor: "#8bcbb6", transform: "translateY(-2px)" }
           }}>
           <Box className="segment-icon" sx={{ position: "relative", width: 52, height: 52, borderRadius: "50%", display: "grid", placeItems: "center",
-            color: active ? "#0b6732" : "#276e45", background: active ? "linear-gradient(145deg,#f3fbf6,#e1f1e7)" : "linear-gradient(145deg,#ffffff,#edf5f0)",
-            border: "1px solid", borderColor: active ? "#78c997" : "#d9e9df",
-            boxShadow: active ? "0 0 0 3px rgba(54,224,126,.1),0 4px 13px rgba(25,138,74,.1)" : "0 3px 9px #174c3207",
+            color: active ? "#13382e" : "#275747", background: active ? "linear-gradient(145deg,#f3fbf8,#e1f1ec)" : "linear-gradient(145deg,#ffffff,#edf5f2)",
+            border: "1px solid", borderColor: active ? "#60b196" : "#d9e9e4",
+            boxShadow: active ? "0 0 0 3px rgba(38,155,120,.1),0 4px 13px rgba(0,107,79,.1)" : "0 3px 9px #183c3007",
             transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
           }}><Icon size={28} weight="duotone" aria-hidden="true" />
-            {active && <Box aria-hidden="true" sx={{ position: "absolute", right: -2, bottom: -1, width: 16, height: 16, borderRadius: "50%", bgcolor: "#ecf7f0", color: "#26754b", border: "2px solid #f5f8fa", display: "grid", placeItems: "center" }}><Check size={10} weight="bold" /></Box>}
+            {active && <Box aria-hidden="true" sx={{ position: "absolute", right: -2, bottom: -1, width: 16, height: 16, borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8", display: "grid", placeItems: "center" }}><Check size={10} weight="bold" /></Box>}
           </Box>
-          <Typography component="span" sx={{ fontSize: 11, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#145f33" : "#526859", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
+          <Typography component="span" sx={{ fontSize: 11, lineHeight: 1.4, fontWeight: active ? 700 : 500, color: active ? "#174a39" : "#526861", textAlign: "center", px: .25, overflowWrap: "anywhere" }}>
             {code ? labels[code] || name : "Todos"}
           </Typography>
         </ButtonBase></Tooltip>;

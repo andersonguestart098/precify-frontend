@@ -24,10 +24,10 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
   const logoUrl = featured?.supplierLogoUrl || result.supplierLogoUrl || material.supplierLogoUrl;
   const highlighted = result.featured === true;
   return <><Paper variant="outlined" sx={{ position: "relative", overflow: "hidden", p: { xs: 1.5, sm: 2 }, borderRadius: 3,
-    borderColor: "#d7e9de", boxShadow: "0 6px 24px #133b2310",
+    borderColor: "#d7e9e3", boxShadow: "0 6px 24px #142f2610",
     transition: "box-shadow 180ms ease, border-color 180ms ease",
-    "&:hover": { borderColor: "#9ecfb0", boxShadow: "0 10px 30px #133b2316" },
-    "&::before": { content: '""', position: "absolute", inset: "0 auto 0 0", width: 3, background: "linear-gradient(#198A4A,#36E07E)" } }}>
+    "&:hover": { borderColor: "#9ecfbf", boxShadow: "0 10px 30px #142f2616" },
+    "&::before": { content: '""', position: "absolute", inset: "0 auto 0 0", width: 3, background: "linear-gradient(#006b4f,#269b78)" } }}>
     <Stack direction="row" gap={{ xs: 1.25, sm: 2 }}>
       <ProtectedImage src={photo} alt={featured?.name ?? material.materialName}
         sx={{ width: { xs: 76, sm: 108 }, flexShrink: 0, alignSelf: "stretch", borderRadius: 1, border: "1px solid #e1e4e7" }} />
@@ -40,23 +40,23 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <Stack direction="row" gap={.5} flexShrink={0}>
             <IconButton aria-label="Adicionar à composição" onClick={() => setCompositionOpen(true)}
               sx={{ width: 32, height: 32, color: "#fff", border: "1px solid rgba(255,255,255,.75)",
-                background: "linear-gradient(135deg,#11733b 0%,#21a75a 55%,#35d978 100%)",
-                boxShadow: "0 4px 13px rgba(25,138,74,.22)", transition: "transform 180ms, box-shadow 180ms",
-                "&:hover": { transform: "translateY(-1px)", boxShadow: "0 7px 17px rgba(25,138,74,.3)" },
+                background: "linear-gradient(135deg,#175943 0%,#278364 55%,#34b188 100%)",
+                boxShadow: "0 4px 13px rgba(0,107,79,.22)", transition: "transform 180ms, box-shadow 180ms",
+                "&:hover": { transform: "translateY(-1px)", boxShadow: "0 7px 17px rgba(0,107,79,.3)" },
                 "&:active": { transform: "scale(.94)" }, "& svg": { fontSize: 19 },
-                "&.Mui-focusVisible": { outline: "3px solid #198a4a55", outlineOffset: 3 } }}>
+                "&.Mui-focusVisible": { outline: "3px solid #006b4f55", outlineOffset: 3 } }}>
               <AddRoundedIcon />
             </IconButton>
             <IconButton aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"} aria-pressed={favorite}
               loading={favoriteBusy} disabled={favoriteBusy} onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
               sx={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%",
-                color: favorite ? "#c18a08" : "#8c9691", bgcolor: favorite ? "#fff7db" : "#f5f8f6",
-                border: "1px solid", borderColor: favorite ? "#efdb99" : "#e3ebe6",
+                color: favorite ? "#c18a08" : "#8c9691", bgcolor: favorite ? "#fff7db" : "#f5f8f7",
+                border: "1px solid", borderColor: favorite ? "#efdb99" : "#e3ebe8",
                 boxShadow: favorite ? "0 3px 12px #b88b1015" : "none",
                 transition: "background-color 180ms, border-color 180ms, transform 180ms",
-                "&:hover": { bgcolor: favorite ? "#fff0bb" : "#eaf2ed", transform: "translateY(-1px)" },
+                "&:hover": { bgcolor: favorite ? "#fff0bb" : "#eaf2ef", transform: "translateY(-1px)" },
                 "&:active": { transform: "scale(.94)" },
-                "&.Mui-focusVisible": { outline: "3px solid #198a4a55", outlineOffset: 3 },
+                "&.Mui-focusVisible": { outline: "3px solid #006b4f55", outlineOffset: 3 },
                 "&.Mui-disabled": { color: favorite ? "#c18a08" : "#8c9691", opacity: .65 },
                 "@keyframes favoritePop": { "0%": { transform: "scale(.7) rotate(-18deg)" }, "55%": { transform: "scale(1.3) rotate(10deg)" }, "100%": { transform: "scale(1) rotate(0deg)" } },
                 "& svg": { fontSize: 16, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
@@ -66,9 +66,9 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         </Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={.5} mt={.5}>
           <Stack direction="row" flexWrap="wrap" gap={.5}>
-            {highlighted && <Chip size="small" label="Em destaque" sx={{ height: 20, fontSize: 10.5, bgcolor: "#edf6f0", color: "#166b3b", fontWeight: 700 }} />}
+            {highlighted && <Chip size="small" label="Em destaque" sx={{ height: 20, fontSize: 10.5, bgcolor: "#edf6f3", color: "#13382e", fontWeight: 700 }} />}
             <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")} sx={{ height: 20, fontSize: 10.5 }} />
-            <Chip size="small" sx={{ height: 20, fontSize: 10.5, bgcolor: "#E9F9EF", color: "primary.dark" }} label={offers.length ? `${offers.length} oferta(s)` : "Sem cotação"} />
+            <Chip size="small" sx={{ height: 20, fontSize: 10.5, bgcolor: "#e9f9f4", color: "primary.dark" }} label={offers.length ? `${offers.length} oferta(s)` : "Sem cotação"} />
           </Stack>
           {logoUrl && <ProtectedImage src={logoUrl} alt={`Logo de ${featured?.quote.supplier ?? material.materialName}`}
             sx={{ display: { xs: "none", sm: "grid" }, width: 56, height: 34, bgcolor: "transparent", p: 0, flexShrink: 0 }} />}
@@ -82,11 +82,11 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <Button component={RouterLink} to={`/produtos/${encodeURIComponent(material.materialCode)}`}
             state={{ fromSearch: location.pathname + location.search }} startIcon={<VisibilityOutlinedIcon />} variant="text" sx={{
               minHeight: { xs: 32, sm: 38 }, px: { xs: 1.25, sm: 1.75 }, borderRadius: "999px", fontWeight: 700, fontSize: { xs: 12, sm: 13 },
-              color: "#166b3b", bgcolor: "#edf6f0", border: "1px solid #d8eade",
+              color: "#13382e", bgcolor: "#edf6f3", border: "1px solid #d8eae4",
               textTransform: "none", gap: .5, whiteSpace: "nowrap", transition: "background-color 180ms, box-shadow 180ms",
               "& .MuiButton-startIcon": { m: 0, mr: .5, "& svg": { fontSize: 15 } },
-              "&:hover": { bgcolor: "#dfefe4", boxShadow: "0 3px 10px #198a4a10" },
-              "&.Mui-focusVisible": { outline: "3px solid #198a4a55", outlineOffset: 2 }
+              "&:hover": { bgcolor: "#dfefea", boxShadow: "0 3px 10px #006b4f10" },
+              "&.Mui-focusVisible": { outline: "3px solid #006b4f55", outlineOffset: 2 }
             }}>Ver detalhes</Button>
         </Stack>
       </Box>

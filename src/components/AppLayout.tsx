@@ -40,11 +40,11 @@ export default function AppLayout() {
 
   return <Box minHeight="100dvh" sx={{
     "--header-height": "70px", "--bottom-nav-height": "70px", "--ai-overhang": "22px", "--content-clearance": "12px",
-    background: "radial-gradient(circle at 78% 8%,rgba(25,138,74,.06),transparent 24rem),#f4f7fb"
+    background: "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
   }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "224px" }, minWidth: 0 }}>
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#198A4A", pt: "env(safe-area-inset-top, 0px)", borderBottom: { md: "1px solid #167c42" } }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#006b4f", pt: "env(safe-area-inset-top, 0px)", borderBottom: { md: "1px solid #1b614a" } }}>
       <Toolbar sx={{ minHeight: "70px !important", px: { xs: 2.5, sm: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.5 }}>
@@ -58,7 +58,7 @@ export default function AppLayout() {
             {showSearch && <Box sx={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "center" }}>
               <Stack component="form" onSubmit={submitSearch} direction="row" alignItems="center" sx={{
                 width: { xs: "94%", md: "92%" }, maxWidth: 680, minHeight: { xs: 38, md: 42 }, bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.5, md: 2 },
-                pr: .25, boxShadow: "0 3px 12px rgba(11,103,50,.12)", border: "1px solid rgba(255,255,255,.42)",
+                pr: .25, boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
                 "& .MuiInputBase-input": { fontSize: { xs: 13, md: 14 }, py: .7 }, "& .MuiIconButton-root": { p: { xs: .7, md: 1 } }, "& .MuiSvgIcon-root": { fontSize: { xs: 20, md: 22 } }
               }}>
                 <TextField fullWidth variant="standard" placeholder="Buscar materiais ou produtos" value={query} onChange={event => setQuery(event.target.value)}

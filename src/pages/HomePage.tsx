@@ -112,7 +112,7 @@ export default function HomePage() {
     pt: { xs: 2, md: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 4 }, display: "flex", flexDirection: "column"
   }}>
     <Stack direction="row" gap={2.25} alignItems="center" mb={{ xs: 3, md: 3.5 }}>
-      <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #174c322b" }}>
+      <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2ed", color: "primary.dark", border: "2px solid #006b4f", width: { xs: 76, md: 82 }, height: { xs: 76, md: 82 }, boxShadow: "0 6px 18px #183c302b" }}>
         {user.name.charAt(0).toUpperCase()}
       </Avatar>
       <Box>
@@ -122,7 +122,7 @@ export default function HomePage() {
     </Stack>
 
     <Box sx={{ flex: { xs: 1, md: "initial" }, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: { xs: "flex-end", md: "flex-start" } }}>
-      <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+      <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
         Encontre o material certo para a sua obra.
       </Typography>
       <Typography color="text.secondary" mb={{ xs: 2.25, md: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
@@ -131,10 +131,10 @@ export default function HomePage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
         <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
         <Stack direction="row" gap={.25}>
-          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#397251", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #198a4a" } }}>
+          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
             <ChevronLeftRoundedIcon />
           </ButtonBase>
-          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#397251", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #198a4a" } }}>
+          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#39725f", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
             <ChevronRightRoundedIcon />
           </ButtonBase>
         </Stack>
@@ -143,38 +143,38 @@ export default function HomePage() {
       <Box ref={projectRail} role="group" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
         display: "flex", gap: 1.05, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
         WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
-        scrollbarColor: projectScrolling ? "#a9d7ba transparent" : "transparent transparent",
+        scrollbarColor: projectScrolling ? "#a9d7c8 transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: 3 },
         "&::-webkit-scrollbar-track": { background: "transparent" },
-        "&::-webkit-scrollbar-thumb": { backgroundColor: projectScrolling ? "#a9d7ba" : "transparent", borderRadius: 999 }
+        "&::-webkit-scrollbar-thumb": { backgroundColor: projectScrolling ? "#a9d7c8" : "transparent", borderRadius: 999 }
       }}>
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
           return <ButtonBase key={value} aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
             width: { xs: 174, sm: 190 }, minWidth: { xs: 174, sm: 190 }, minHeight: 126, px: 1.5, py: 1.5, borderRadius: "14px",
             scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: 1, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
-            color: "#17653a", border: "1px solid",
-            borderColor: selected ? "rgba(25,138,74,.42)" : "rgba(25,138,74,.13)",
+            color: "#1a4f3e", border: "1px solid",
+            borderColor: selected ? "rgba(0,107,79,.42)" : "rgba(0,107,79,.13)",
             background: selected
-              ? "linear-gradient(145deg,#ffffff,#e9f7ee)"
-              : "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,242,.74))",
-            boxShadow: selected ? "0 0 0 3px rgba(54,224,126,.08),0 6px 16px rgba(25,138,74,.09)" : "0 3px 12px rgba(23,76,50,.045)",
+              ? "linear-gradient(145deg,#ffffff,#e8f3ed)"
+              : "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,245,.74))",
+            boxShadow: selected ? "0 0 0 3px rgba(38,155,120,.08),0 6px 16px rgba(0,107,79,.09)" : "0 3px 12px rgba(24,60,48,.045)",
             transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
             WebkitTapHighlightColor: "transparent",
-            "@media (hover: hover)": { "&:hover": { transform: "translateY(-1px)", borderColor: "rgba(25,138,74,.3)", boxShadow: "0 6px 16px rgba(25,138,74,.08)" } },
-            "&.Mui-focusVisible": { outline: "2px solid #36e07e", outlineOffset: 2 },
+            "@media (hover: hover)": { "&:hover": { transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.3)", boxShadow: "0 6px 16px rgba(0,107,79,.08)" } },
+            "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
           }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Box sx={{ width: 40, height: 40, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f1,#dff0e6)", color: "#28754e" }}>
+              <Box sx={{ width: 40, height: 40, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b" }}>
                 <Icon size={29} weight="duotone" aria-hidden="true" />
               </Box>
-              <Box aria-hidden="true" sx={{ width: 18, height: 18, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad88" : "#dbe8df", bgcolor: selected ? "#e4f3e9" : "transparent", display: "grid", placeItems: "center" }}>
+              <Box aria-hidden="true" sx={{ width: 18, height: 18, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad99" : "#dbe8e4", bgcolor: selected ? "#e8f3ed" : "transparent", display: "grid", placeItems: "center" }}>
                 {selected && <Check size={12} weight="bold" />}
               </Box>
             </Stack>
             <Box minWidth={0}>
-              <Typography component="span" display="block" sx={{ color: "#557863", fontSize: 10.5, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
+              <Typography component="span" display="block" sx={{ color: "#55786c", fontSize: 10.5, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
               <Typography component="span" display="block" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1.35, mt: .35 }}>{label}</Typography>
             </Box>
           </ButtonBase>;
@@ -184,13 +184,13 @@ export default function HomePage() {
       <Box sx={{ mt: { xs: 1.5, md: 1.75 }, pb: { xs: 0, md: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-            <Typography variant="subtitle2" color="#24583b" fontWeight={700}>Explore por segmento</Typography>
-            <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(25,138,74,.06)" }} />
+            <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
+            <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
           </Stack>
           <Stack direction="row" gap={{ xs: 2.5, sm: 4 }} sx={{ minHeight: 92, overflow: "hidden", px: .5 }}>
             {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
-              <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(25,138,74,.09)" }} />
-              <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(25,138,74,.07)" }} />
+              <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(0,107,79,.09)" }} />
+              <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(0,107,79,.07)" }} />
             </Stack>)}
           </Stack>
         </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}

@@ -13,7 +13,7 @@ const suggestions = [
 export default function AiPage() {
   return <Container maxWidth="sm" component="main" sx={{ py: { xs: 4, md: 6 } }}>
     <Stack alignItems="center" textAlign="center" gap={1.5} mb={4}>
-      <Box sx={{ width: 72, height: 72, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff", background: "linear-gradient(135deg,#166b3b,#36E07E)", boxShadow: "0 10px 28px #198a4a42" }}>
+      <Box sx={{ width: 72, height: 72, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff", background: "linear-gradient(135deg,#13382e,#269b78)", boxShadow: "0 10px 28px #006b4f42" }}>
         <AutoAwesomeIcon sx={{ fontSize: 34 }} />
       </Box>
       <Chip label="Em breve" color="primary" size="small" />

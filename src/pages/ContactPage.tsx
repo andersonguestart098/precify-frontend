@@ -15,7 +15,7 @@ export default function ContactPage() {
     <Typography component="h1" variant="h3" fontWeight={900} letterSpacing="-.04em">Fale com a gente</Typography>
     <Typography color="text.secondary" mt={1} mb={4}>Estamos preparando os canais oficiais para dúvidas, sugestões e demonstrações do Precify.</Typography>
     <Grid container spacing={2}>
-      {channels.map(({ title, caption, icon: Icon }) => <Grid key={title} size={{ xs: 12, sm: 4 }}><Paper variant="outlined" sx={{ p: 2.5, height: "100%", borderRadius: 4, textAlign: "center" }}><Box sx={{ mx: "auto", mb: 1.5, width: 48, height: 48, display: "grid", placeItems: "center", borderRadius: "50%", bgcolor: "#eaf6ee", color: "#0b6732" }}><Icon /></Box><Typography fontWeight={850}>{title}</Typography><Chip label={caption} size="small" variant="outlined" sx={{ mt: 1.25, maxWidth: "100%" }} /></Paper></Grid>)}
+      {channels.map(({ title, caption, icon: Icon }) => <Grid key={title} size={{ xs: 12, sm: 4 }}><Paper variant="outlined" sx={{ p: 2.5, height: "100%", borderRadius: 4, textAlign: "center" }}><Box sx={{ mx: "auto", mb: 1.5, width: 48, height: 48, display: "grid", placeItems: "center", borderRadius: "50%", bgcolor: "#eaf6f2", color: "#13382e" }}><Icon /></Box><Typography fontWeight={850}>{title}</Typography><Chip label={caption} size="small" variant="outlined" sx={{ mt: 1.25, maxWidth: "100%" }} /></Paper></Grid>)}
     </Grid>
   </Container>;
 }

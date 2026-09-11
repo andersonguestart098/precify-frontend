@@ -54,7 +54,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     <Button component={RouterLink} to={back} startIcon={<ArrowBackIcon />} sx={{ mb: 1 }}>Voltar à busca</Button>
     <Breadcrumbs sx={{ mb: 3, fontSize: 13 }}><Link component={RouterLink} to="/busca" underline="hover">Produtos</Link><Typography variant="caption">{material.familyName}</Typography><Typography variant="caption">{material.materialName}</Typography></Breadcrumbs>
     {favorites.error && <Alert severity="error" sx={{ mb: 2 }}>{favorites.error}</Alert>}
-    <Paper variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e3" }}>
+    <Paper variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e5" }}>
       <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "1.1fr 1fr" }} gap={{ xs: 3, md: 5 }}>
         <Box minWidth={0}>
           <ProtectedImage src={product?.imageUrl || material.imageUrl} alt={product?.name ?? material.materialName} sx={{ width: "100%", height: { xs: 290, sm: 400 }, borderRadius: 3 }} />
@@ -66,7 +66,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <Typography component="h1" variant="h4" sx={{ fontWeight: 800, fontSize: { xs: 26, md: 32 }, letterSpacing: "-.035em" }}>{product?.name ?? material.materialName}</Typography>
             <IconButton aria-label={favorites.codes.has(code) ? "Remover dos favoritos" : "Adicionar aos favoritos"} aria-pressed={favorites.codes.has(code)}
               loading={favorites.loading || favorites.busy.has(code)} disabled={favorites.loading || favorites.busy.has(code)} onClick={() => void favorites.toggle(code)}
-              sx={{ color: favorites.codes.has(code) ? "#F4B400" : "#9CA3AF" }}><StarIcon /></IconButton>
+              sx={{ color: favorites.codes.has(code) ? "#f4b400" : "#9ca3af" }}><StarIcon /></IconButton>
           </Stack>
           <Typography color="text.secondary" mt={1}>{[product?.brand, product?.model].filter(Boolean).join(" · ") || material.familyName}</Typography>
           <Chip label={material.status.replaceAll("_", " ")} size="small" variant="outlined" sx={{ mt: 1.5 }} />
@@ -79,13 +79,13 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
           <Divider />
           {material.variations.length > 0 && <Box component="section" aria-label="Características e opções" sx={{ my: 2.5 }}>
             <Typography variant="subtitle2" fontWeight={700} color="primary.dark" mb={1.5}>Características e opções</Typography>
-            <Box sx={{ border: "1px solid #e2ebe5", borderRadius: "18px", overflow: "hidden" }}>
+            <Box sx={{ border: "1px solid #e2ebe8", borderRadius: "18px", overflow: "hidden" }}>
               {material.variations.map(variation => <Box key={variation.variationCode} sx={{
-                px: 2, py: 1.75, borderBottom: "1px solid #e8eee9", "&:last-child": { borderBottom: 0 },
+                px: 2, py: 1.75, borderBottom: "1px solid #e8eeec", "&:last-child": { borderBottom: 0 },
                 bgcolor: variation.options.length ? "#fff" : "#f8faf9"
               }}>
                 {variation.options.length ? <>
-                  <Typography variant="body2" fontWeight={600} color="#244f37" mb={1.25}>{variation.name}</Typography>
+                  <Typography variant="body2" fontWeight={600} color="#244f41" mb={1.25}>{variation.name}</Typography>
                   <Box role="group" aria-label={variation.name} sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                     {variation.options.map(option => {
                       const selected = selection?.variationCode === variation.variationCode && selection.optionCode === option.optionCode;
@@ -94,26 +94,26 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                         onClick={() => select({ variationCode: variation.variationCode, optionCode: option.optionCode })}
                         sx={{ borderRadius: "12px", minWidth: 64, minHeight: 44, px: 1.75, fontSize: 13,
                           fontWeight: selected ? 700 : 500, textTransform: "none",
-                          color: selected ? "#176238" : "#53665b", bgcolor: selected ? "#eaf5ee" : "#fff",
-                          borderColor: selected ? "#198a4a" : "#dce5df",
-                          "&:hover": { bgcolor: "#f0f7f2", borderColor: "#198a4a" }
+                          color: selected ? "#1a4d3c" : "#536660", bgcolor: selected ? "#eaf5f1" : "#fff",
+                          borderColor: selected ? "#006b4f" : "#dce5e2",
+                          "&:hover": { bgcolor: "#f0f7f5", borderColor: "#006b4f" }
                         }}>{option.name}</Button>;
                     })}
                   </Box>
                 </> : <Stack direction="row" alignItems="baseline" justifyContent="space-between" gap={2}>
-                  <Typography variant="body2" fontWeight={600} color="#52665a">{variation.name}</Typography>
+                  <Typography variant="body2" fontWeight={600} color="#52665f">{variation.name}</Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ textAlign: "right", flexShrink: 0 }}>Não informado</Typography>
                 </Stack>}
               </Box>)}
             </Box>
-            {selection && <Button size="small" startIcon={<RestartAltRoundedIcon />} sx={{ mt: 1, color: "#587062" }}
+            {selection && <Button size="small" startIcon={<RestartAltRoundedIcon />} sx={{ mt: 1, color: "#587068" }}
               onClick={() => { setSelection(null); setOfferKey(""); }}>Limpar seleção</Button>}
           </Box>}
-          {!quote && material.supplierLogoUrl && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 2, bgcolor: "#f0f7f2", borderRadius: 3 }}>
+          {!quote && material.supplierLogoUrl && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 2, bgcolor: "#f0f7f5", borderRadius: 3 }}>
             <ProtectedImage src={material.supplierLogoUrl} alt="Logo cadastrada no material" sx={{ width: 64, height: 52, borderRadius: 2 }} />
             <Typography variant="body2" color="text.secondary">Fornecedor · cotação pendente</Typography>
           </Stack>}
-          {quote && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 2, bgcolor: "#f0f7f2", borderRadius: 3 }}>
+          {quote && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 2, bgcolor: "#f0f7f5", borderRadius: 3 }}>
             <ProtectedImage src={product?.supplierLogoUrl} alt={`Logo de ${quote.supplier}`} sx={{ width: 64, height: 52, borderRadius: 2, flexShrink: 0 }} />
             <Box><Typography variant="caption" color="text.secondary">Fornecedor</Typography><Typography fontWeight={700}>{quote.supplier}</Typography><Typography variant="caption">{quote.region}</Typography></Box>
           </Stack>}

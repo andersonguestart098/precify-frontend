@@ -22,7 +22,7 @@ export function BottomNav() {
   const location = useLocation();
   return <Paper elevation={0} sx={{
     display: { xs: "flex", md: "none" }, position: "fixed", left: 0, right: 0, bottom: 0, zIndex: theme => theme.zIndex.appBar,
-    minHeight: 70, borderTop: "1px solid #e3ece6", borderRadius: 0, bgcolor: "#fff", pb: "env(safe-area-inset-bottom)", overflow: "visible"
+    minHeight: 70, borderTop: "1px solid #e3ece9", borderRadius: 0, bgcolor: "#fff", pb: "env(safe-area-inset-bottom)", overflow: "visible"
   }}>
     <Stack direction="row" width="100%" alignItems="flex-end">
       {items.map(({ to, label, icon: Icon, activeIcon: ActiveIcon, featured }) => {
@@ -30,33 +30,33 @@ export function BottomNav() {
         const DisplayIcon = active ? ActiveIcon : Icon;
         return <Stack key={to} component={RouterLink} to={to} flex={1} alignItems="center" justifyContent="center" gap={.25}
           aria-current={active ? "page" : undefined} sx={{
-            position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#166b3b" : "#84928a",
+            position: "relative", minWidth: 0, minHeight: 70, py: 1.2, textDecoration: "none", color: active ? "#13382e" : "#84928a",
             borderRadius: 0, WebkitTapHighlightColor: "transparent",
             background: active
-              ? "linear-gradient(90deg,transparent 0%,rgba(54,224,126,.08) 18%,rgba(25,138,74,.12) 50%,rgba(54,224,126,.08) 82%,transparent 100%)"
+              ? "linear-gradient(90deg,transparent 0%,rgba(38,155,120,.08) 18%,rgba(0,107,79,.12) 50%,rgba(38,155,120,.08) 82%,transparent 100%)"
               : "transparent",
             transition: "color 280ms cubic-bezier(.2,.8,.2,1), background 280ms cubic-bezier(.2,.8,.2,1)",
             "&::after": active && !featured ? {
               content: '""', position: "absolute", top: 0, left: "50%", width: 52, height: 2,
-              borderRadius: "0 0 999px 999px", background: "linear-gradient(90deg,transparent,#69bd88 28%,#198a4a 50%,#69bd88 72%,transparent)",
-              boxShadow: "0 2px 8px rgba(25,138,74,.18)", transform: "translateX(-50%)",
+              borderRadius: "0 0 999px 999px", background: "linear-gradient(90deg,transparent,#69bda1 28%,#006b4f 50%,#69bda1 72%,transparent)",
+              boxShadow: "0 2px 8px rgba(0,107,79,.18)", transform: "translateX(-50%)",
               animation: "activeTabIn 280ms cubic-bezier(.2,.8,.2,1) both"
             } : undefined,
             "@keyframes activeTabIn": { from: { opacity: 0, width: 16 }, to: { opacity: 1, width: 52 } },
             "@media (hover: hover)": {
               "&:hover": {
-                color: "#0b6732",
-                background: "linear-gradient(90deg,transparent 0%,rgba(54,224,126,.08) 18%,rgba(25,138,74,.12) 50%,rgba(54,224,126,.08) 82%,transparent 100%)"
+                color: "#13382e",
+                background: "linear-gradient(90deg,transparent 0%,rgba(38,155,120,.08) 18%,rgba(0,107,79,.12) 50%,rgba(38,155,120,.08) 82%,transparent 100%)"
               }
             },
-            "&:focus-visible": { outline: "2px solid #36e07e", outlineOffset: -3 }
+            "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: -3 }
           }}>
           {featured ? <Box sx={{
             mt: -4.2, width: 58, height: 58, display: "grid", placeItems: "center", borderRadius: "50%", position: "relative",
-            filter: "drop-shadow(0 5px 9px rgba(23,76,50,.16))",
+            filter: "drop-shadow(0 5px 9px rgba(24,60,48,.16))",
             "&::before": {
               content: '""', position: "absolute", inset: 0, borderRadius: "inherit",
-              background: "conic-gradient(from 0deg,#bfe9cf,#63d993,#198a4a,#78dfa1,#d8f4e2,#36b96c,#bfe9cf)",
+              background: "conic-gradient(from 0deg,#bfe9db,#4cc19a,#006b4f,#78dfbd,#d8f4eb,#399274,#bfe9db)",
               animation: "aiBorderOrbit 8s linear infinite"
             },
             "@keyframes aiBorderOrbit": { to: { transform: "rotate(360deg)" } },
@@ -67,13 +67,13 @@ export function BottomNav() {
           }}>
             <Box sx={{
               width: 54, height: 54, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff",
-              bgcolor: active ? "#166b3b" : "#198A4A", position: "relative", zIndex: 1,
+              bgcolor: active ? "#13382e" : "#006b4f", position: "relative", zIndex: 1,
               boxShadow: "inset 0 0 0 1px rgba(255,255,255,.24)"
             }}>
               <Box className="ai-spark-glow" sx={{
                 position: "relative", display: "grid", placeItems: "center",
                 "&::before, &::after": {
-                  content: '""', position: "absolute", borderRadius: "50%", bgcolor: "#eafff1",
+                  content: '""', position: "absolute", borderRadius: "50%", bgcolor: "#eafff8",
                   boxShadow: "0 0 5px rgba(255,255,255,.8)", animation: "aiTinySpark 3.6s ease-in-out infinite"
                 },
                 "&::before": { width: 3, height: 3, top: 1, right: 1 },

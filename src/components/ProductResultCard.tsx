@@ -33,8 +33,8 @@ export function ProductResultCard({ result, index }: ProductResultCardProps) {
         overflow: "hidden",
         p: { xs: 2, sm: 2.5 },
         borderRadius: 4,
-        borderColor: result.compatible && result.compatibility === 100 ? "primary.light" : "rgba(148, 163, 184, 0.22)",
-        boxShadow: "0 3px 10px rgba(15, 23, 42, 0.06), 0 12px 30px rgba(15, 23, 42, 0.05)",
+        borderColor: result.compatible && result.compatibility === 100 ? "primary.light" : "rgba(148,163,184, 0.22)",
+        boxShadow: "0 3px 10px rgba(19,56,46, 0.06), 0 12px 30px rgba(19,56,46, 0.05)",
         opacity: 0,
         transform: "translateY(16px)",
         animation: "fadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards",
@@ -45,12 +45,12 @@ export function ProductResultCard({ result, index }: ProductResultCardProps) {
           position: "absolute",
           inset: "0 auto 0 0",
           width: 3,
-          background: result.compatible ? "linear-gradient(180deg, #198A4A, #36E07E)" : "linear-gradient(180deg, #d97706, #fbbf24)",
+          background: result.compatible ? "linear-gradient(180deg, #006b4f, #269b78)" : "linear-gradient(180deg, #d97706, #fbbf24)",
           opacity: result.compatibility / 100,
         },
         "&:hover": {
           transform: "translateY(-3px)",
-          boxShadow: "0 7px 20px rgba(15, 23, 42, 0.10), 0 18px 38px rgba(15, 23, 42, 0.08)",
+          boxShadow: "0 7px 20px rgba(19,56,46, 0.10), 0 18px 38px rgba(19,56,46, 0.08)",
           borderColor: result.compatible ? "primary.light" : "warning.light",
         },
         "@media (prefers-reduced-motion: reduce)": {
@@ -93,7 +93,7 @@ export function ProductResultCard({ result, index }: ProductResultCardProps) {
               <Typography variant="overline" color="primary">{result.product.brand} · {result.product.model}</Typography>
               <Typography variant="h6">{result.product.name}</Typography>
             </Box>
-            <Box sx={{ minWidth: 90, textAlign: "center", p: 1, borderRadius: 2.5, bgcolor: result.compatible ? "#E9F9EF" : "#fff3df", color: result.compatible ? "primary.dark" : "warning.dark" }}>
+            <Box sx={{ minWidth: 90, textAlign: "center", p: 1, borderRadius: 2.5, bgcolor: result.compatible ? "#e9f9f4" : "#fff3df", color: result.compatible ? "primary.dark" : "warning.dark" }}>
               <Typography fontWeight={800}>{result.compatibility}%</Typography>
               <Typography variant="caption" textTransform="uppercase">{result.compatible ? "compatível" : "alternativa"}</Typography>
             </Box>

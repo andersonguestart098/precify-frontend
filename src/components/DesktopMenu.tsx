@@ -25,9 +25,9 @@ export function DesktopMenu() {
     <IconButton aria-label="Abrir menu" onClick={() => setOpen(true)} sx={{ color: "#fff", display: { xs: "none", md: "inline-flex" } }}>
       <MenuRoundedIcon />
     </IconButton>
-    <Drawer anchor="right" open={open} onClose={() => setOpen(false)} slotProps={{ paper: { sx: { width: 360, maxWidth: "92vw", bgcolor: "#f8fbf9" } } }}>
+    <Drawer anchor="right" open={open} onClose={() => setOpen(false)} slotProps={{ paper: { sx: { width: 360, maxWidth: "92vw", bgcolor: "#f8fbfa" } } }}>
       <Stack component="aside" height="100%" aria-label="Menu principal">
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 3, py: 2.25, bgcolor: "#198a4a", color: "#fff" }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 3, py: 2.25, bgcolor: "#006b4f", color: "#fff" }}>
           <Stack direction="row" alignItems="center" gap={1.25}>
             <Box component="img" src="/precify-mark.svg" alt="" sx={{ width: 34, height: 34 }} />
             <Typography fontWeight={850}>Menu Precify</Typography>
@@ -35,13 +35,13 @@ export function DesktopMenu() {
           <IconButton aria-label="Fechar menu" onClick={() => setOpen(false)} sx={{ color: "inherit" }}><CloseRoundedIcon /></IconButton>
         </Stack>
         <Stack direction="row" alignItems="center" gap={1.5} sx={{ px: 3, py: 2.5 }}>
-          <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ width: 50, height: 50, border: "2px solid #b8dfc7", bgcolor: "#e5f4ea", color: "#0b6732" }}>{user.name.charAt(0).toUpperCase()}</Avatar>
+          <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ width: 50, height: 50, border: "2px solid #b8dfd2", bgcolor: "#e5f4ef", color: "#13382e" }}>{user.name.charAt(0).toUpperCase()}</Avatar>
           <Box minWidth={0}><Typography fontWeight={800} noWrap>{user.name}</Typography><Typography color="text.secondary" fontSize={12.5} noWrap>{user.email}</Typography></Box>
         </Stack>
         <Divider />
         <List sx={{ px: 1.5, py: 2 }}>
           {links.map(({ to, label, caption, icon: Icon }) => <ListItemButton key={to} component={RouterLink} to={to} selected={location.pathname === to} onClick={() => setOpen(false)} sx={{ borderRadius: 2.5, mb: .65, py: 1.15 }}>
-            <ListItemIcon sx={{ minWidth: 43, color: "#17653a" }}><Icon /></ListItemIcon>
+            <ListItemIcon sx={{ minWidth: 43, color: "#1a4f3e" }}><Icon /></ListItemIcon>
             <ListItemText primary={label} secondary={caption} primaryTypographyProps={{ fontWeight: 750 }} secondaryTypographyProps={{ fontSize: 12 }} />
           </ListItemButton>)}
         </List>

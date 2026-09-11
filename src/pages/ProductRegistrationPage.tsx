@@ -69,7 +69,7 @@ export default function ProductRegistrationPage() {
     <Button component={RouterLink} to="/busca" startIcon={<ArrowBackIcon />} sx={{ mb: 1 }}>Voltar à busca</Button>
     <Breadcrumbs sx={{ mb: 3, fontSize: 13 }}><Link component={RouterLink} to="/busca" underline="hover">Produtos</Link><Typography variant="caption">Cadastrar produto</Typography></Breadcrumbs>
     {(error || catalogError) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError}</Alert>}
-    <Paper component="form" onSubmit={submit} variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e3" }}>
+    <Paper component="form" onSubmit={submit} variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e5" }}>
       <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "1.1fr 1fr" }} gap={{ xs: 3, md: 5 }}>
         <Box minWidth={0}>
           <ImageUpload label="Foto do produto" value={form.imageUrl} onChange={url => setForm(current => ({ ...current, imageUrl: url }))} onBusy={busy => setUploads(n => n + (busy ? 1 : -1))} />
@@ -95,7 +95,7 @@ export default function ProductRegistrationPage() {
           </Stack>
           <Stack gap={2} mt={1.5}>{form.quotes.map((row, index) => {
             const variation = selectedMaterial?.variations.find((item) => item.variationCode === row.variationCode);
-            return <Box key={index} sx={{ p: 2, border: "1px solid #e2ebe5", borderRadius: 3 }}>
+            return <Box key={index} sx={{ p: 2, border: "1px solid #e2ebe8", borderRadius: 3 }}>
               <Stack direction="row" justifyContent="flex-end">{form.quotes.length > 1 ? <IconButton size="small" onClick={() => setForm({ ...form, quotes: form.quotes.filter((_, position) => position !== index) })}><DeleteOutlineIcon fontSize="small" /></IconButton> : null}</Stack>
               <Box display="grid" gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }} gap={2}>
                 <FormControl required><InputLabel>Variação</InputLabel><Select value={row.variationCode} label="Variação" onChange={(e) => updateQuote(index, { variationCode: e.target.value, optionCode: "" })}>{selectedMaterial?.variations.map((item) => <MenuItem key={item.variationCode} value={item.variationCode}>{item.name}</MenuItem>)}</Select></FormControl>

@@ -26,7 +26,7 @@ export default function LaborPage() {
       </Box>
     </Stack>
 
-    <Paper variant="outlined" sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 4, mb: 4, background: "linear-gradient(135deg,#fff,#f0faf4)" }}>
+    <Paper variant="outlined" sx={{ p: { xs: 2, md: 2.5 }, borderRadius: 4, mb: 4, background: "linear-gradient(135deg,#fff,#f0faf7)" }}>
       <Grid container spacing={1.5} alignItems="center">
         <Grid size={{ xs: 12, md: 4 }}><TextField fullWidth label="Localização" placeholder="Cidade ou estado" /></Grid>
         <Grid size={{ xs: 12, md: 4 }}><TextField select fullWidth label="Tipo de obra" defaultValue=""><MenuItem value="">Todos os tipos</MenuItem><MenuItem value="residencial">Residencial</MenuItem><MenuItem value="comercial">Comercial</MenuItem><MenuItem value="industrial">Industrial</MenuItem></TextField></Grid>
@@ -37,8 +37,8 @@ export default function LaborPage() {
     <Typography variant="h5" fontWeight={850} mb={2}>Explore por especialidade</Typography>
     <Grid container spacing={2}>
       {specialties.map(({ label, caption, icon: Icon }) => <Grid key={label} size={{ xs: 12, sm: 6, md: 4 }}>
-        <Paper variant="outlined" sx={{ p: 2.25, height: "100%", borderRadius: 3.5, display: "flex", alignItems: "center", gap: 1.6, transition: "border-color 180ms ease,box-shadow 180ms ease,transform 180ms ease", "&:hover": { borderColor: "#a7d9b9", boxShadow: "0 10px 26px rgba(23,76,50,.08)", transform: "translateY(-2px)" } }}>
-          <Box sx={{ width: 48, height: 48, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#0b6732", bgcolor: "#eaf6ee" }}><Icon /></Box>
+        <Paper variant="outlined" sx={{ p: 2.25, height: "100%", borderRadius: 3.5, display: "flex", alignItems: "center", gap: 1.6, transition: "border-color 180ms ease,box-shadow 180ms ease,transform 180ms ease", "&:hover": { borderColor: "#a7d9c8", boxShadow: "0 10px 26px rgba(24,60,48,.08)", transform: "translateY(-2px)" } }}>
+          <Box sx={{ width: 48, height: 48, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: "50%", color: "#13382e", bgcolor: "#eaf6f2" }}><Icon /></Box>
           <Box><Typography fontWeight={800}>{label}</Typography><Typography color="text.secondary" fontSize={12.5} mt={.25}>{caption}</Typography></Box>
         </Paper>
       </Grid>)}

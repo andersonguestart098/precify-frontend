@@ -101,12 +101,12 @@ export default function CompositionsPage() {
         sx={{ borderRadius: 999, px: 2.5, alignSelf: { xs: "stretch", sm: "auto" } }}>Nova composição</Button>
     </Stack>
 
-    <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 4, borderColor: "#d9eadf",
-      background: "linear-gradient(135deg,#f9fcfa 0%,#edf8f1 58%,#f7fffa 100%)" }}>
+    <Paper variant="outlined" sx={{ mt: 3, p: 2, borderRadius: 4, borderColor: "#d9eae4",
+      background: "linear-gradient(135deg,#f9fcfb 0%,#edf8f4 58%,#f7fffc 100%)" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2}>
         <Stack direction="row" gap={1.25} alignItems="center">
           <Box sx={{ width: 42, height: 42, borderRadius: 3, display: "grid", placeItems: "center", color: "#fff",
-            background: "linear-gradient(135deg,#13743d,#31c96e)" }}><PlaylistAddCheckRoundedIcon /></Box>
+            background: "linear-gradient(135deg,#185a44,#379e7b)" }}><PlaylistAddCheckRoundedIcon /></Box>
           <Box><Typography variant="caption" color="text.secondary">{compositions.length} composições · {itemCount} itens</Typography>
             <Typography fontWeight={800}>Total estimado</Typography></Box>
         </Stack>
@@ -125,9 +125,9 @@ export default function CompositionsPage() {
       </Paper> :
       <Stack gap={1.5} mt={2}>
         {compositions.map((composition, index) => <Accordion key={composition.id} defaultExpanded={index === 0}
-          disableGutters elevation={0} sx={{ border: "1px solid #dce9e0", borderRadius: "18px !important", overflow: "hidden",
+          disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "18px !important", overflow: "hidden",
             "&::before": { display: "none" } }}>
-          <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, py: .5, bgcolor: "#fbfdfb" }}>
+          <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, py: .5, bgcolor: "#fbfdfc" }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
               <Box minWidth={0}>
                 <Typography fontWeight={800} noWrap>{composition.name}</Typography>

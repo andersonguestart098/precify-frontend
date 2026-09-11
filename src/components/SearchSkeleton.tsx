@@ -2,9 +2,9 @@ import { Box, Container, Paper, Skeleton, Stack } from "@mui/material";
 const motion = { "@media (prefers-reduced-motion: reduce)": { "& .MuiSkeleton-root, & .MuiSkeleton-root::after": { animation: "none" } } };
 export function ResultSkeletons() {
   return <Stack gap={2} role="status" aria-label="Carregando materiais" aria-busy="true" sx={motion}>
-    {[0, 1, 2].map(n => <Paper key={n} variant="outlined" aria-hidden="true" sx={{ p: 2, borderRadius: 4, borderColor: "#e0ebe4" }}>
+    {[0, 1, 2].map(n => <Paper key={n} variant="outlined" aria-hidden="true" sx={{ p: 2, borderRadius: 4, borderColor: "#e0ebe7" }}>
       <Stack direction={{ xs: "column", sm: "row" }} gap={2.5}>
-        <Skeleton animation="wave" variant="rounded" sx={{ width: { xs: "100%", sm: 230 }, height: 220, borderRadius: 3, flexShrink: 0, bgcolor: "#edf2ef" }} />
+        <Skeleton animation="wave" variant="rounded" sx={{ width: { xs: "100%", sm: 230 }, height: 220, borderRadius: 3, flexShrink: 0, bgcolor: "#edf2f0" }} />
         <Stack gap={1} flex={1}>
           <Skeleton animation="wave" width="45%" height={22} />
           <Skeleton animation="wave" width="85%" height={34} />

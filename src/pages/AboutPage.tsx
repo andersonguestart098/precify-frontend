@@ -9,13 +9,13 @@ export default function AboutPage() {
     <Stack gap={2}>
       <Paper variant="outlined" sx={{ p: { xs: 2.5, md: 4 }, borderRadius: 4 }}>
         <Stack direction={{ xs: "column", sm: "row" }} gap={2.5}>
-          <Box sx={{ width: 52, height: 52, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: 3, bgcolor: "#e9f6ee", color: "#0b6732" }}><AutoGraphRoundedIcon /></Box>
+          <Box sx={{ width: 52, height: 52, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: 3, bgcolor: "#e9f6f2", color: "#13382e" }}><AutoGraphRoundedIcon /></Box>
           <Box><Typography variant="h5" fontWeight={850} mb={1}>O Precify</Typography><Typography color="text.secondary" lineHeight={1.8}>O Precify é uma plataforma tecnológica que integra inteligência artificial à gestão de custos na construção civil. A solução transforma dados de obra em informações úteis para reduzir desperdícios e ampliar a previsibilidade financeira.</Typography></Box>
         </Stack>
       </Paper>
       <Paper variant="outlined" sx={{ p: { xs: 2.5, md: 4 }, borderRadius: 4 }}>
         <Stack direction={{ xs: "column", sm: "row" }} gap={2.5}>
-          <Box sx={{ width: 52, height: 52, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: 3, bgcolor: "#e9f6ee", color: "#0b6732" }}><GroupsOutlinedIcon /></Box>
+          <Box sx={{ width: 52, height: 52, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: 3, bgcolor: "#e9f6f2", color: "#13382e" }}><GroupsOutlinedIcon /></Box>
           <Box><Typography variant="h5" fontWeight={850} mb={1}>Quem somos</Typography><Typography color="text.secondary" lineHeight={1.8}>Nascemos da percepção de que a construção ainda depende de processos dispersos para prever custos. Reunimos engenharia, tecnologia e ciência de dados para criar uma gestão mais clara, colaborativa e orientada por evidências.</Typography></Box>
         </Stack>
       </Paper>

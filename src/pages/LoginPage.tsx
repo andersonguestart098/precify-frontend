@@ -29,10 +29,9 @@ export default function LoginPage() {
     finally { setBusy(false); }
   };
   return <Box component="main" sx={{ minHeight: "100dvh", display: "grid", alignItems: "center",
-    background: "radial-gradient(ellipse at 55% 54%, rgba(25,138,74,.055), transparent 65%), #f5f7fa", py: 4 }}>
+    background: "radial-gradient(ellipse at 55% 54%, rgba(0,107,79,.055), transparent 65%), #f7f9f8", py: 4 }}>
     <Container maxWidth="sm" sx={{ px: { xs: 3, sm: 5 }, maxWidth: "480px !important" }}>
-      <Box component="img" src="/logo.svg" alt="PRECIFY" sx={{ display: "block", width: 168, mb: 2.5,
-        filter: "brightness(0) saturate(100%) invert(40%) sepia(49%) saturate(814%) hue-rotate(94deg) brightness(91%) contrast(89%)" }} />
+      <Box component="img" src="/precify-signature.png" alt="Precify" sx={{ display: "block", width: { xs: 220, sm: 260 }, maxWidth: "100%", height: "auto", mb: 3 }} />
       <Typography component="h1" variant="h4" sx={{ fontSize: { xs: 24, sm: 27 }, fontWeight: 800, letterSpacing: "-.045em", mb: .75 }}>Bem-vindo de volta</Typography>
       <Typography color="text.secondary" sx={{ fontSize: 14.5, lineHeight: 1.6, mb: 3 }}>Entre com suas credenciais para acessar o sistema.</Typography>
       <Box component="form" onSubmit={submit}>
@@ -57,8 +56,8 @@ export default function LoginPage() {
         {help && <Alert severity="info" sx={{ mb: 2 }}>Solicite a recuperação do acesso ao administrador do sistema.</Alert>}
         <Button type="submit" fullWidth size="large" loading={busy} loadingPosition="end" endIcon={<ArrowForwardIcon />}
           sx={{ height: 48, borderRadius: 10, textTransform: "none", fontSize: 16, color: "#fff", fontWeight: 700,
-            background: "linear-gradient(100deg,#128545,#28b367)", boxShadow: "0 14px 32px rgba(25,138,74,.23)",
-            "&:hover": { background: "linear-gradient(100deg,#106d39,#209b58)" }, "&.Mui-disabled": { color: "#fff", opacity: .7 } }}>
+            background: "linear-gradient(100deg,#006b4f,#218567)", boxShadow: "0 14px 32px rgba(0,107,79,.23)",
+            "&:hover": { background: "linear-gradient(100deg,#13382e,#006b4f)" }, "&.Mui-disabled": { color: "#fff", opacity: .7 } }}>
           Entrar
         </Button>
       </Box>

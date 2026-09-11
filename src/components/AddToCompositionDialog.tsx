@@ -89,7 +89,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
       <Typography component="div" variant="h6" fontWeight={800}>Adicionar à composição</Typography>
     </DialogTitle>
     <DialogContent>
-      <Stack direction="row" gap={1.25} alignItems="center" sx={{ p: 1.25, bgcolor: "#f5faf6", border: "1px solid #dcebe1", borderRadius: 3 }}>
+      <Stack direction="row" gap={1.25} alignItems="center" sx={{ p: 1.25, bgcolor: "#f5faf8", border: "1px solid #dcebe6", borderRadius: 3 }}>
         <ProtectedImage src={photo} alt="" sx={{ width: 54, height: 54, borderRadius: 2, bgcolor: "#fff", flexShrink: 0 }} />
         <Box minWidth={0} flex={1}>
           <Typography fontWeight={750} fontSize={14} lineHeight={1.2}>{result.material.materialName}</Typography>
@@ -115,7 +115,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
       {loading ? <Box display="grid" sx={{ placeItems: "center", minHeight: 110 }}><CircularProgress size={28} /></Box> :
         <List disablePadding sx={{ display: "grid", gap: .75 }}>
           {compositions.map(composition => <ListItemButton key={composition.id} disabled={Boolean(savingId)}
-            onClick={() => addTo(composition)} sx={{ border: "1px solid #e0ebe4", borderRadius: 2.5, py: 1 }}>
+            onClick={() => addTo(composition)} sx={{ border: "1px solid #e0ebe7", borderRadius: 2.5, py: 1 }}>
             <ListItemIcon sx={{ minWidth: 38, color: "primary.main" }}>
               {savingId === composition.id ? <CircularProgress size={21} /> : <PlaylistAddRoundedIcon />}
             </ListItemIcon>

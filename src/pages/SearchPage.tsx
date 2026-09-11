@@ -77,11 +77,11 @@ export default function SearchPage() {
     <Box sx={{ display: "contents" }}>
       <Box sx={{ mb: 3 }}>
         <Stack direction="row" gap={2} alignItems="center" mb={2.5}>
-          <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2e8", color: "primary.dark", border: "2px solid #198A4A", width: 68, height: 68, boxShadow: "0 5px 16px #174c3226" }}>{user.name.charAt(0).toUpperCase()}</Avatar>
+          <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{ bgcolor: "#e3f2ed", color: "primary.dark", border: "2px solid #006b4f", width: 68, height: 68, boxShadow: "0 5px 16px #183c3026" }}>{user.name.charAt(0).toUpperCase()}</Avatar>
           <Box><Typography variant="body2">Olá,</Typography><Typography fontWeight={800} color="primary.dark">{user.name}!</Typography></Box>
         </Stack>
         <Typography component="h1" sx={{ fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1.5,
-          background: "linear-gradient(112deg,#0f172a,#198A4A 65%,#36E07E)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Encontre o material certo pelas especificações.</Typography>
+          background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Encontre o material certo pelas especificações.</Typography>
         <Typography color="text.secondary">Pesquise e compare as opções para o seu projeto.</Typography>
       </Box>
     </Box>
@@ -110,7 +110,7 @@ export default function SearchPage() {
     </Box>
     <Drawer anchor="bottom" open={filterOpen} onClose={() => setFilterOpen(false)} slotProps={{ paper: { sx: { borderRadius: "24px 24px 0 0", maxHeight: "85dvh" } } }}>
       {filters}<Box sx={{ p: 2, position: "sticky", bottom: 0, bgcolor: "background.paper" }}>
-        <Button variant="contained" disableElevation fullWidth loading={loading} loadingPosition="start" startIcon={<VisibilityOutlinedIcon />} sx={{ minHeight: 52, borderRadius: "999px", textTransform: "none", fontWeight: 700, background: "linear-gradient(110deg,#16783f,#198a4a)", boxShadow: "0 5px 14px #198a4a20", "&:hover": { background: "#126e38" } }} onClick={() => setFilterOpen(false)}>Ver resultados</Button>
+        <Button variant="contained" disableElevation fullWidth loading={loading} loadingPosition="start" startIcon={<VisibilityOutlinedIcon />} sx={{ minHeight: 52, borderRadius: "999px", textTransform: "none", fontWeight: 700, background: "linear-gradient(110deg,#1b5e47,#006b4f)", boxShadow: "0 5px 14px #006b4f20", "&:hover": { background: "#175641" } }} onClick={() => setFilterOpen(false)}>Ver resultados</Button>
       </Box>
     </Drawer>
   </Container>;
