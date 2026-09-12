@@ -4,7 +4,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import { Box, Button, FormControl, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
@@ -30,6 +30,50 @@ function decodePrice(value: string) {
   return { min: "", max: "" };
 }
 
+const fixedCurrency = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const editableCurrency = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
+
+function formatPriceValue(value: string, fixed = true) {
+  if (!value) return "";
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return "";
+  return (fixed ? fixedCurrency : editableCurrency).format(numeric);
+}
+
+function maskPriceInput(input: string) {
+  const cleaned = input.replace(/[^\d,.]/g, "");
+  let decimalIndex = cleaned.lastIndexOf(",");
+
+  if (decimalIndex < 0) {
+    const dotIndexes = [...cleaned.matchAll(/\./g)].map(match => match.index ?? -1).filter(index => index >= 0);
+    if (dotIndexes.length === 1) {
+      const index = dotIndexes[0];
+      const digitsBefore = cleaned.slice(0, index).replace(/\D/g, "").length;
+      const digitsAfter = cleaned.slice(index + 1).replace(/\D/g, "").length;
+      const looksLikeThousandsSeparator = digitsBefore >= 1 && digitsBefore <= 3 && digitsAfter === 3;
+      if (!looksLikeThousandsSeparator && digitsAfter <= 2) decimalIndex = index;
+    }
+  }
+
+  const integerSource = decimalIndex >= 0 ? cleaned.slice(0, decimalIndex) : cleaned;
+  const decimalSource = decimalIndex >= 0 ? cleaned.slice(decimalIndex + 1) : "";
+  const integerDigits = integerSource.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+  const decimalDigits = decimalSource.replace(/\D/g, "").slice(0, 2);
+  const integer = integerDigits || (decimalIndex >= 0 ? "0" : "");
+  const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  return decimalIndex >= 0 ? `${grouped},${decimalDigits}` : grouped;
+}
+
+function priceInputToRaw(input: string) {
+  const normalized = input.replace(/\./g, "");
+  const [integer = "", decimal = ""] = normalized.split(",", 2);
+  const integerDigits = integer.replace(/\D/g, "");
+  const decimalDigits = decimal.replace(/\D/g, "").slice(0, 2);
+  if (!integerDigits && !decimalDigits) return "";
+  return decimalDigits ? `${integerDigits || "0"}.${decimalDigits}` : integerDigits || "0";
+}
+
 export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, onOnlyFavoritesChange, onCriterionChange, onFamilyChange, onClearFilters }: Props) {
   const id = useId();
   const value = (key: string) => criteria.find((criterion) => criterion.key === key)?.value ?? "";
@@ -37,11 +81,20 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
   const segmentCode = value("segmentCode");
   const materialCode = value("materialCode");
   const price = decodePrice(value("price"));
+  const [priceText, setPriceText] = useState(() => ({ min: formatPriceValue(price.min), max: formatPriceValue(price.max) }));
+  const [editingPrice, setEditingPrice] = useState<"min" | "max" | null>(null);
   const segments = uniqueBy(catalog, (item) => item.segmentCode);
   const families = uniqueBy(catalog.filter((item) => !segmentCode || item.segmentCode === segmentCode), (item) => item.familyCode);
   const materials = catalog.filter((item) => (!segmentCode || item.segmentCode === segmentCode) && (!familyCode || item.familyCode === familyCode));
   const selectedMaterial = materialByCode(catalog, materialCode);
   const options = selectedMaterial?.variations.flatMap((variation) => variation.options.map((option) => ({ ...option, variationName: variation.name }))) ?? [];
+
+  useEffect(() => {
+    setPriceText(current => ({
+      min: editingPrice === "min" ? current.min : formatPriceValue(price.min),
+      max: editingPrice === "max" ? current.max : formatPriceValue(price.max),
+    }));
+  }, [price.min, price.max, editingPrice]);
 
   const filterIcons: Record<string, ReactNode> = {
     scope: <StarOutlineIcon fontSize="small" />, segmentCode: <CategoryOutlinedIcon fontSize="small" />,
@@ -51,10 +104,22 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
   const select = (key: string, label: string, current: string, choices: { code: string; name: string }[], all = "Todos", onChange?: (value: string) => void) => (
     <Box sx={{ py: { xs: 1.25, md: .65, xl: 1.25 } }}><FormControl fullWidth size="small"><InputLabel shrink={key === "scope" ? true : undefined} id={`${id}-${key}-label`}>{label}</InputLabel><Select displayEmpty={key === "scope"} startAdornment={<InputAdornment position="start" sx={{ color: "#518070", ml: { xs: .5, md: .2, xl: .5 } }}>{filterIcons[key]}</InputAdornment>} labelId={`${id}-${key}-label`} value={current} label={label} onChange={(event) => (onChange ?? ((next) => update(key, next)))(event.target.value)}><MenuItem value="">{all}</MenuItem>{choices.map((choice) => <MenuItem key={choice.code} value={choice.code}>{choice.name}</MenuItem>)}</Select></FormControl></Box>
   );
-  const setPrice = (min: string, max: string) => {
-    const cleanMin = min.replace(",", ".");
-    const cleanMax = max.replace(",", ".");
-    update("price", cleanMin || cleanMax ? `${cleanMin}:${cleanMax}` : "");
+  const setPrice = (min: string, max: string) => update("price", min || max ? `${min}:${max}` : "");
+  const editPrice = (field: "min" | "max", input: string) => {
+    const masked = maskPriceInput(input);
+    setPriceText(current => ({ ...current, [field]: masked }));
+    const raw = priceInputToRaw(masked);
+    if (field === "min") setPrice(raw, price.max);
+    else setPrice(price.min, raw);
+  };
+  const focusPrice = (field: "min" | "max") => {
+    setEditingPrice(field);
+    setPriceText(current => ({ ...current, [field]: formatPriceValue(field === "min" ? price.min : price.max, false) }));
+  };
+  const blurPrice = (field: "min" | "max") => {
+    const raw = priceInputToRaw(priceText[field]);
+    setPriceText(current => ({ ...current, [field]: formatPriceValue(raw) }));
+    setEditingPrice(null);
   };
 
   return <Box sx={{
@@ -93,10 +158,12 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
           <Typography sx={{ fontSize: { xs: 12.5, md: 10.5, xl: 12.5 }, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
         </Stack>
         <Stack direction="row" gap={{ xs: 1, md: .65, xl: 1 }}>
-          <TextField fullWidth size="small" type="number" label="De" value={price.min} onChange={event => setPrice(event.target.value, price.max)}
-            slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { min: 0, step: .01, inputMode: "decimal" } }} />
-          <TextField fullWidth size="small" type="number" label="Até" value={price.max} onChange={event => setPrice(price.min, event.target.value)}
-            slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { min: 0, step: .01, inputMode: "decimal" } }} />
+          <TextField fullWidth size="small" type="text" label="De" value={priceText.min}
+            onFocus={() => focusPrice("min")} onBlur={() => blurPrice("min")} onChange={event => editPrice("min", event.target.value)}
+            placeholder="0,00" slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { inputMode: "decimal", maxLength: 18 } }} />
+          <TextField fullWidth size="small" type="text" label="Até" value={priceText.max}
+            onFocus={() => focusPrice("max")} onBlur={() => blurPrice("max")} onChange={event => editPrice("max", event.target.value)}
+            placeholder="0,00" slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { inputMode: "decimal", maxLength: 18 } }} />
         </Stack>
         <Typography sx={{ mt: { xs: .7, md: .45, xl: .7 }, px: .5, fontSize: { xs: 11.5, md: 9.5, xl: 11.5 }, lineHeight: 1.3, color: "#879791" }}>Digite o mínimo, o máximo ou os dois valores.</Typography>
       </Box>
