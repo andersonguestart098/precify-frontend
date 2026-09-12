@@ -3,6 +3,14 @@ import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
+const gradientText = {
+  background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
+} as const;
+
 const channels = [
   { label: "E-mail", value: "Canal oficial em definição", icon: MailOutlineRoundedIcon },
   { label: "WhatsApp", value: "Número oficial em definição", icon: WhatsAppIcon },
@@ -13,7 +21,7 @@ export default function ContactPage() {
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 4, md: 7 } }}>
     <Box sx={{ maxWidth: 860 }}>
       <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.5 }}>Contato</Typography>
-      <Typography component="h1" sx={{ mt: .8, maxWidth: 760, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+      <Typography component="h1" sx={{ mt: .8, maxWidth: 760, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", ...gradientText }}>
         Vamos conversar sobre o seu projeto.
       </Typography>
       <Typography sx={{ mt: 2.2, maxWidth: 700, fontSize: { xs: 16, md: 18 }, lineHeight: 1.75, color: "#61756e" }}>
@@ -26,7 +34,7 @@ export default function ContactPage() {
     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(0,.75fr) minmax(0,1.25fr)" }, gap: { xs: 4, md: 9 }, alignItems: "start" }}>
       <Box>
         <Typography sx={{ fontSize: 12, fontWeight: 850, textTransform: "uppercase", letterSpacing: 1.4, color: "#6d837b" }}>Fale com a gente</Typography>
-        <Typography sx={{ mt: 1.5, maxWidth: 360, fontSize: { xs: 24, md: 30 }, lineHeight: 1.25, fontWeight: 850, letterSpacing: "-.03em", color: "#1c4739" }}>
+        <Typography sx={{ mt: 1.5, maxWidth: 360, fontSize: { xs: 24, md: 30 }, lineHeight: 1.25, fontWeight: 850, letterSpacing: "-.03em", ...gradientText }}>
           Atendimento simples, direto e sem formulários desnecessários.
         </Typography>
         <Typography sx={{ mt: 1.7, maxWidth: 420, fontSize: 15.5, lineHeight: 1.8, color: "#5f726b" }}>
@@ -40,7 +48,7 @@ export default function ContactPage() {
             <Icon sx={{ fontSize: 21 }} />
           </Box>
           <Box minWidth={0}>
-            <Typography sx={{ fontSize: 14.5, fontWeight: 800, color: "#234a3d" }}>{label}</Typography>
+            <Typography sx={{ fontSize: 14.5, fontWeight: 800, ...gradientText }}>{label}</Typography>
             <Typography sx={{ mt: .2, fontSize: 13.5, color: "#788a84" }}>{value}</Typography>
           </Box>
         </Box>)}
