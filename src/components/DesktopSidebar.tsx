@@ -4,6 +4,7 @@ import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import Inventory2Outlined from "@mui/icons-material/Inventory2Outlined";
 import AutoAwesome from "@mui/icons-material/AutoAwesome";
 import StarOutline from "@mui/icons-material/StarOutline";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import CalculateOutlined from "@mui/icons-material/CalculateOutlined";
 import PersonOutline from "@mui/icons-material/PersonOutline";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
@@ -20,7 +21,7 @@ const workspaceLinks = [
   { to: "/perfil", label: "Meu perfil", icon: PersonOutline },
   { to: "/obras", label: "Obra", icon: HomeOutlined },
   { to: "/comparar", label: "Comparar produtos", icon: Inventory2Outlined },
-  { to: "/historico", label: "Histórico de buscas", icon: StarOutline },
+  { to: "/historico", label: "Histórico de buscas", icon: HistoryRoundedIcon },
 ] as const;
 
 const institutionalLinks = [
