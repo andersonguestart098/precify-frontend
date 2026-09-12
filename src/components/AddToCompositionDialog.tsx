@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import {
   Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, List, ListItemButton, ListItemIcon, ListItemText, MenuItem, Stack, TextField, Typography
+  Divider, InputAdornment, List, ListItemButton, ListItemIcon, ListItemText, MenuItem, Stack, TextField, Typography
 } from "@mui/material";
 import type { CatalogResult } from "../domain/search";
 import type { Composition } from "../domain/composition";
@@ -28,15 +29,21 @@ export function AddToCompositionDialog({ open, result, onClose }: {
   const [unit, setUnit] = useState("un");
   const [error, setError] = useState("");
   const [savedName, setSavedName] = useState("");
+  const [compositionQuery, setCompositionQuery] = useState("");
 
   const featured = useMemo(() => [...result.offers].sort((a, b) =>
     a.quote.value - b.quote.value || a.productId.localeCompare(b.productId))[0], [result.offers]);
   const photo = result.imageUrl || featured?.imageUrl || result.material.imageUrl;
+  const filteredCompositions = useMemo(() => {
+    const query = compositionQuery.trim().toLocaleLowerCase("pt-BR");
+    if (!query) return compositions;
+    return compositions.filter(composition => composition.name.toLocaleLowerCase("pt-BR").includes(query));
+  }, [compositions, compositionQuery]);
 
   useEffect(() => {
     if (!open) return;
     const controller = new AbortController();
-    setLoading(true); setError(""); setSavedName(""); setCreating(false); setNewName("");
+    setLoading(true); setError(""); setSavedName(""); setCreating(false); setNewName(""); setCompositionQuery("");
     listCompositions(controller.signal)
       .then(setCompositions)
       .catch(err => { if (err.name !== "AbortError") setError(err.message); })
@@ -75,7 +82,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
       const created = await createComposition(name);
       const updated = await addCompositionItem(created.id, itemPayload());
       setCompositions(current => [updated, ...current]);
-      setSavedName(updated.name); setCreating(false); setNewName("");
+      setSavedName(updated.name); setCreating(false); setNewName(""); setCompositionQuery("");
       window.dispatchEvent(new Event("precify-compositions-updated"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível criar a composição.");
@@ -112,10 +119,34 @@ export function AddToCompositionDialog({ open, result, onClose }: {
       </Alert>}
 
       <Divider sx={{ my: 2 }} />
+      {!loading && compositions.length > 0 && <TextField
+        fullWidth
+        size="small"
+        value={compositionQuery}
+        onChange={event => setCompositionQuery(event.target.value)}
+        placeholder="Buscar composição..."
+        aria-label="Buscar composição"
+        slotProps={{
+          input: {
+            startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ fontSize: 19, color: "#5f776f" }} /></InputAdornment>,
+          },
+        }}
+        sx={{
+          mb: 1.25,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 999,
+            bgcolor: "#f8faf9",
+            "& fieldset": { borderColor: "#dfe8e5" },
+          },
+        }}
+      />}
+
       {loading ? <Box display="grid" sx={{ placeItems: "center", minHeight: 110 }}><CircularProgress size={28} /></Box> :
-        <List disablePadding sx={{ display: "grid", gap: .75 }}>
-          {compositions.map(composition => <ListItemButton key={composition.id} disabled={Boolean(savingId)}
-            onClick={() => addTo(composition)} sx={{ border: "1px solid #e0ebe7", borderRadius: 2.5, py: 1 }}>
+        <List disablePadding sx={{ display: "grid", gap: .75, maxHeight: 270, overflowY: "auto", pr: .5,
+          scrollbarWidth: "thin", scrollbarColor: "#b9cbc5 transparent" }}>
+          {filteredCompositions.map(composition => <ListItemButton key={composition.id} disabled={Boolean(savingId)}
+            onClick={() => addTo(composition)} sx={{ border: "1px solid #e0ebe7", borderRadius: 2.5, py: 1, flexShrink: 0,
+              "&:hover": { bgcolor: "#f4faf7", borderColor: "#bcd8cf" } }}>
             <ListItemIcon sx={{ minWidth: 38, color: "primary.main" }}>
               {savingId === composition.id ? <CircularProgress size={21} /> : <PlaylistAddRoundedIcon />}
             </ListItemIcon>
@@ -127,6 +158,10 @@ export function AddToCompositionDialog({ open, result, onClose }: {
           {!compositions.length && !creating && <Typography color="text.secondary" variant="body2" textAlign="center" py={1}>
             Você ainda não criou nenhuma composição.
           </Typography>}
+          {compositions.length > 0 && !filteredCompositions.length && <Box sx={{ py: 2.5, textAlign: "center" }}>
+            <Typography fontWeight={750} color="#34574b" fontSize={14}>Nenhuma composição encontrada.</Typography>
+            <Typography color="text.secondary" fontSize={12.5} mt={.25}>Tente buscar por outro nome.</Typography>
+          </Box>}
         </List>}
 
       {creating ? <Stack gap={1} mt={1.25}>
