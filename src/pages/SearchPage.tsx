@@ -75,35 +75,45 @@ export default function SearchPage() {
     })}
     onFamilyChange={(family, segment) => change({ family, segmentCode: segment, materialCode: "", optionCode: "" })}
     onClearFilters={clearFilters} />;
-  return <Container maxWidth="xl" sx={{ pt: { xs: 2, md: 3.5 }, pb: { xs: 4, md: 5 } }}>
+  return <Container maxWidth="xl" sx={{
+    pt: { xs: 2, md: 2.25, xl: 3.5 }, pb: { xs: 4, md: 3, xl: 5 }, px: { xs: 2, sm: 3, md: 2.75, xl: 3 }
+  }}>
     <Box sx={{ display: "contents" }}>
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: { xs: 3, md: 2, xl: 3 } }}>
         <AccountGreeting />
-        <Typography component="h1" sx={{ fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1.5,
-          background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Encontre o material certo pelas especificações.</Typography>
-        <Typography color="text.secondary">Pesquise e compare as opções para o seu projeto.</Typography>
+        <Typography component="h1" sx={{
+          maxWidth: { md: 720, xl: 940 }, fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
+          mb: { xs: 1.5, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
+        }}>Encontre o material certo pelas especificações.</Typography>
+        <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 } }}>Pesquise e compare as opções para o seu projeto.</Typography>
       </Box>
     </Box>
     <SegmentCarousel catalog={catalog} selected={params.get("segmentCode") ?? ""}
       onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />
-    <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "300px minmax(0,1fr)" }} gap={3} alignItems="start">
-      <Paper variant="outlined" sx={{ display: { xs: "none", md: "block" }, borderRadius: 4, overflow: "hidden", position: "sticky", top: 95 }}>{filters}</Paper>
+    <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "250px minmax(0,1fr)", xl: "300px minmax(0,1fr)" }}
+      gap={{ xs: 3, md: 2, xl: 3 }} alignItems="start">
+      <Paper variant="outlined" sx={{
+        display: { xs: "none", md: "block" }, borderRadius: { md: 3, xl: 4 }, overflow: "hidden", position: "sticky",
+        top: { md: 78, xl: 95 }
+      }}>{filters}</Paper>
       <Box minWidth={0}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={2}>
-          <Box><Typography variant="overline" color="primary" fontWeight={800}>Resultados classificados</Typography>
-            <Typography variant="h5" fontWeight={800}>{loading ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}</Typography></Box>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={{ xs: 2, md: 1.25, xl: 2 }}>
+          <Box><Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { md: 9.5, xl: 12 } }}>Resultados classificados</Typography>
+            <Typography variant="h5" fontWeight={800} sx={{ fontSize: { md: 18, xl: 24 } }}>{loading ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}</Typography></Box>
           <Stack direction="row" alignItems="center" gap={.5}>
             <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)} sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: 1.25 }}>{hasFilters ? "Filtros ativos" : "Filtros"}</Button>
-            {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"><AddIcon /></IconButton>}
+            {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"
+              sx={{ width: { md: 34, xl: 40 }, height: { md: 34, xl: 40 } }}><AddIcon /></IconButton>}
           </Stack>
         </Stack>
         {(error || catalogError || favorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError || favorites.error}</Alert>}
         {loading ? <ResultSkeletons /> :
-          <Stack gap={2}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
+          <Stack gap={{ xs: 2, md: 1.25, xl: 2 }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
             favorite={favorites.codes.has(result.material.materialCode)} favoriteBusy={favorites.loading || favorites.busy.has(result.material.materialCode)}
             onFavorite={() => { void favorites.toggle(result.material.materialCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />)}</Stack>}
         {!loading && !error && !response?.content.length && <Alert severity="info">{onlyFavorites ? "Nenhum favorito corresponde aos filtros selecionados." : "Nenhum material corresponde aos filtros. Tente ampliar sua busca."}</Alert>}
-        {(response?.totalPages ?? 0) > 1 && <Stack mt={3} alignItems="center"><Pagination color="primary" count={response!.totalPages} page={page + 1} disabled={loading}
+        {(response?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary" count={response!.totalPages} page={page + 1} disabled={loading}
           onChange={(_, value) => change({ page: String(value - 1) }, false)} /></Stack>}
       </Box>
     </Box>
