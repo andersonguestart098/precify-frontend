@@ -58,7 +58,7 @@ export function createProduct(product: ProductInput) {
   return apiRequest<Product>("/products", { method: "POST", body: JSON.stringify(product) });
 }
 
-export interface Account { id: string; name: string; email: string; role: "USER" | "ADMIN"; avatarUrl?: string; }
+export interface Account { id: string; name: string; email: string; role: "USER" | "ADMIN"; avatarUrl?: string; active?: boolean; }
 export interface AuthSession { accessToken: string; expiresAt: string; user: Account; }
 export function authenticate(email: string, password: string) {
   return apiRequest<AuthSession>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
@@ -92,6 +92,8 @@ export const productDetail = (code: string, signal?: AbortSignal) =>
 export const listUsers = (signal?: AbortSignal) => apiRequest<Account[]>("/users", { signal });
 export const createUser = (user: { name: string; email: string; password: string; role: Account["role"]; avatarUrl?: string }) =>
   apiRequest<Account>("/users", { method: "POST", body: JSON.stringify(user) });
+export const updateUserActive = (id: string, active: boolean) =>
+  apiRequest<Account>(`/users/${encodeURIComponent(id)}/active`, { method: "PATCH", body: JSON.stringify({ active }) });
 export function internalImagePath(src: string) {
   const base = new URL(API_URL, window.location.origin);
   const image = new URL(src, base);
