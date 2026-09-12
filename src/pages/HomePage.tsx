@@ -107,32 +107,33 @@ export default function HomePage() {
   useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
 
   return <Container maxWidth="xl" component="main" sx={{
-    minHeight: { xs: "calc(100dvh - var(--header-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - 70px)" },
-    pt: { xs: 2, md: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 4 }, display: "flex", flexDirection: "column"
+    minHeight: { xs: "calc(100dvh - var(--header-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - var(--header-height))" },
+    pt: { xs: 2, md: 2.25, xl: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 2.5, xl: 4 },
+    px: { xs: 2, sm: 3, md: 2.75, xl: 3 }, display: "flex", flexDirection: "column"
   }}>
     <AccountGreeting />
 
     <Box sx={{ flex: { xs: 1, md: "initial" }, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: { xs: "flex-end", md: "flex-start" } }}>
-      <Typography component="h1" sx={{ maxWidth: 820, fontWeight: 900, fontSize: { xs: 35, md: 49 }, letterSpacing: "-.045em", lineHeight: 1.05, mb: 1, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+      <Typography component="h1" sx={{ maxWidth: { md: 690, xl: 820 }, fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03, mb: { xs: 1, md: .65, xl: 1 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
         Encontre o material certo para a sua obra.
       </Typography>
-      <Typography color="text.secondary" mb={{ xs: 2.25, md: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
+      <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 } }} mb={{ xs: 2.25, md: 1.75, xl: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
 
-      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { md: 2 } }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.1}>
-        <Typography id="project-type-title" variant="h6" fontWeight={800}>O que você vai construir?</Typography>
+      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { md: .5, xl: 2 } }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
+        <Typography id="project-type-title" variant="h6" fontWeight={800} sx={{ fontSize: { md: 17, xl: 20 } }}>O que você vai construir?</Typography>
         <Stack direction="row" gap={.25}>
-          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
-            <ChevronLeftRoundedIcon />
+          <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
+            <ChevronLeftRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
           </ButtonBase>
-          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#39725f", width: 44, height: 44, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
-            <ChevronRightRoundedIcon />
+          <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
+            <ChevronRightRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
           </ButtonBase>
         </Stack>
       </Stack>
 
       <Box ref={projectRail} role="group" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
-        display: "flex", gap: 1.05, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
+        display: "flex", gap: { xs: 1.05, md: .8, xl: 1.05 }, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
         WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
         scrollbarColor: projectScrolling ? "#a9d7c8 transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: 3 },
@@ -142,8 +143,8 @@ export default function HomePage() {
         {projectTypes.map(({ value, label, segment, icon: Icon }) => {
           const selected = projectType === value;
           return <ButtonBase key={value} aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
-            width: { xs: 174, sm: 190 }, minWidth: { xs: 174, sm: 190 }, minHeight: 126, px: 1.5, py: 1.5, borderRadius: "14px",
-            scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: 1, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
+            width: { xs: 174, sm: 190, md: 158, xl: 190 }, minWidth: { xs: 174, sm: 190, md: 158, xl: 190 }, minHeight: { xs: 126, md: 104, xl: 126 }, px: { xs: 1.5, md: 1.2, xl: 1.5 }, py: { xs: 1.5, md: 1.05, xl: 1.5 }, borderRadius: "14px",
+            scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: { xs: 1, md: .7, xl: 1 }, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
             color: "#1a4f3e", border: "1px solid",
             borderColor: selected ? "rgba(0,107,79,.42)" : "rgba(0,107,79,.13)",
             background: selected
@@ -157,28 +158,28 @@ export default function HomePage() {
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
           }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Box sx={{ width: 40, height: 40, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b" }}>
+              <Box sx={{ width: { xs: 40, md: 34, xl: 40 }, height: { xs: 40, md: 34, xl: 40 }, borderRadius: { xs: "12px", md: "10px", xl: "12px" }, display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b", "& svg": { width: { md: 24, xl: 29 }, height: { md: 24, xl: 29 } } }}>
                 <Icon size={29} weight="duotone" aria-hidden="true" />
               </Box>
-              <Box aria-hidden="true" sx={{ width: 18, height: 18, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad99" : "#dbe8e4", bgcolor: selected ? "#e8f3ed" : "transparent", display: "grid", placeItems: "center" }}>
+              <Box aria-hidden="true" sx={{ width: { xs: 18, md: 16, xl: 18 }, height: { xs: 18, md: 16, xl: 18 }, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad99" : "#dbe8e4", bgcolor: selected ? "#e8f3ed" : "transparent", display: "grid", placeItems: "center" }}>
                 {selected && <Check size={12} weight="bold" />}
               </Box>
             </Stack>
             <Box minWidth={0}>
-              <Typography component="span" display="block" sx={{ color: "#55786c", fontSize: 10.5, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
-              <Typography component="span" display="block" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1.35, mt: .35 }}>{label}</Typography>
+              <Typography component="span" display="block" sx={{ color: "#55786c", fontSize: { xs: 10.5, md: 9.5, xl: 10.5 }, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
+              <Typography component="span" display="block" sx={{ fontSize: { xs: 12, md: 10.8, xl: 12 }, fontWeight: 700, lineHeight: 1.32, mt: .35 }}>{label}</Typography>
             </Box>
           </ButtonBase>;
         })}
       </Box>
 
-      <Box sx={{ mt: { xs: 1.5, md: 1.75 }, pb: { xs: 0, md: 2.5 } }}>
+      <Box sx={{ mt: { xs: 1.5, md: 1.15, xl: 1.75 }, pb: { xs: 0, md: 1, xl: 2.5 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
             <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
           </Stack>
-          <Stack direction="row" gap={{ xs: 2.5, sm: 4 }} sx={{ minHeight: 92, overflow: "hidden", px: .5 }}>
+          <Stack direction="row" gap={{ xs: 2.5, sm: 4, md: 2.75, xl: 4 }} sx={{ minHeight: { xs: 92, md: 78, xl: 92 }, overflow: "hidden", px: .5 }}>
             {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
               <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(0,107,79,.09)" }} />
               <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(0,107,79,.07)" }} />
