@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
+import { DesktopMenu } from "./DesktopMenu";
 import { rememberSearch } from "../services/api";
 
 export default function AppLayout() {
@@ -68,6 +69,8 @@ export default function AppLayout() {
               </Stack>
             </Box>}
 
+            {!showSearch && <Box sx={{ flex: 1 }} />}
+            <DesktopMenu />
           </Stack>
         </Container>
       </Toolbar>
