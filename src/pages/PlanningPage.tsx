@@ -95,7 +95,7 @@ export default function PlanningPage() {
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.4 }}>Planejamento</Typography>
           <Typography component="h1" sx={{ mt: .35, fontSize: { xs: 34, md: 44 }, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-.045em",
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            Minhas obras
+            Obras cadastradas
           </Typography>
           <Typography color="text.secondary" mt={.7}>Agrupe suas composições por projeto e acompanhe os custos de cada obra.</Typography>
         </Box>
