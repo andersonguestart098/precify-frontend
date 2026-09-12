@@ -78,7 +78,7 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
       {options.length ? select("optionCode", "Opção técnica", value("optionCode"), options.map((item) => ({ code: item.optionCode, name: `${item.variationName}: ${item.name}` })), "Todas") : null}
 
       <Box sx={{ py: 1.25 }}>
-        <Stack direction="row" alignItems="center" gap={.75} mb=.8>
+        <Stack direction="row" alignItems="center" gap={.75} mb={.8}>
           <PaymentsOutlinedIcon sx={{ fontSize: 18, color: "#518070" }} />
           <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
         </Stack>
