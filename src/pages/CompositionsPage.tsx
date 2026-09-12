@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import type { Composition } from "../domain/composition";
 import {
-  createComposition, deleteComposition, listCompositions, listProjects, removeCompositionItem,
+  createComposition, deleteComposition, listCompositions, listProjects, removeCompositionItem, saveProject,
   updateCompositionItemQuantity, type Project
 } from "../services/api";
 import { ProtectedImage } from "../components/ProtectedImage";
@@ -76,6 +76,26 @@ export default function CompositionsPage() {
     try { replace(await removeCompositionItem(compositionId, itemId)); }
     catch (err) { setError(err instanceof Error ? err.message : "Não foi possível remover o item."); }
     finally { setBusy(""); }
+  };
+
+  const linkToProject = async (compositionId: string, projectId: string) => {
+    const key = `project:${compositionId}`;
+    setBusy(key); setError("");
+    try {
+      const changed = projects.filter(project => {
+        const linked = project.compositionIds.includes(compositionId);
+        return linked !== (project.id === projectId);
+      });
+      const saved = await Promise.all(changed.map(project => saveProject({
+        name: project.name,
+        compositionIds: project.id === projectId
+          ? [...new Set([...project.compositionIds, compositionId])]
+          : project.compositionIds.filter(id => id !== compositionId),
+      }, project.id)));
+      setProjects(current => current.map(project => saved.find(item => item.id === project.id) ?? project));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Não foi possível vincular a composição à obra.");
+    } finally { setBusy(""); }
   };
 
   const removeList = async (composition: Composition) => {
@@ -147,69 +167,94 @@ export default function CompositionsPage() {
           <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)} sx={{ mt: 2, borderRadius: 999 }}>Criar composição</Button>
         </Paper> : !visibleCompositions.length ? <Box sx={{ py: 5, textAlign: "center", borderTop: "1px solid #e6eeeb", borderBottom: "1px solid #e6eeeb" }}>
           <Typography fontWeight={800} color="#294d41">Nenhuma composição nessa obra.</Typography>
-          <Typography color="text.secondary" fontSize={14} mt={.5}>Altere o filtro ou vincule composições em “Gerenciar obras”.</Typography>
+          <Typography color="text.secondary" fontSize={14} mt={.5}>Altere o filtro ou vincule uma composição a esta obra.</Typography>
         </Box> :
         <Stack gap={1.15} mt={1}>
-          {visibleCompositions.map(composition => <Accordion key={composition.id}
-            disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden",
-              "&::before": { display: "none" } }}>
-            <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1 } }}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
-                <Box minWidth={0}>
-                  <Typography fontWeight={800} noWrap>{composition.name}</Typography>
-                  <Typography variant="caption" color="text.secondary">{composition.items.length} {composition.items.length === 1 ? "item" : "itens"}</Typography>
-                </Box>
-                <Typography color="primary.dark" fontWeight={850} ml={2}>{currency.format(composition.total)}</Typography>
-              </Stack>
-            </AccordionSummary>
-            <AccordionDetails sx={{ p: { xs: 1.25, sm: 2 }, pt: 0 }}>
-              <Divider sx={{ mb: 1.25 }} />
-              {!composition.items.length ? <Box textAlign="center" py={3}>
-                <Inventory2OutlinedIcon color="disabled" />
-                <Typography color="text.secondary" variant="body2">Nenhum material nesta composição.</Typography>
-                <Button component={RouterLink} to="/produtos" size="small" sx={{ mt: 1 }}>Explorar produtos</Button>
-              </Box> : <Stack divider={<Divider flexItem />}>
-                {composition.items.map(item => {
-                  const key = `${composition.id}:${item.id}`;
-                  return <Stack key={item.id} direction="row" gap={1.25} py={1.25} alignItems="center">
-                    <ProtectedImage src={item.imageUrl} alt="" sx={{ width: 52, height: 52, borderRadius: 2, flexShrink: 0, bgcolor: "#fff" }} />
-                    <Box minWidth={0} flex={1}>
-                      <Typography component={RouterLink} to={`/produtos/${encodeURIComponent(item.materialCode)}`}
-                        color="text.primary" fontWeight={750} fontSize={13.5} lineHeight={1.2}
-                        sx={{ textDecoration: "none", display: "block", "&:hover": { color: "primary.main" } }}>{item.name}</Typography>
-                      <Typography variant="caption" color="text.secondary" noWrap display="block">
-                        {item.supplier || "Sem fornecedor"} · {currency.format(item.unitPrice)}/{item.unit}
-                      </Typography>
-                      <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mt={.75}>
-                        <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
-                          disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
-                          slotProps={{ htmlInput: { min: .01, step: .01 } }}
-                          onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
-                          onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
-                          sx={{ width: 92, "& .MuiInputBase-input": { py: .65, fontSize: 13 } }} />
-                        <Stack direction="row" alignItems="center" gap={.25}>
-                          <Box textAlign="right"><Typography variant="caption" color="text.secondary">{number.format(item.quantity)} {item.unit}</Typography>
-                            <Typography fontWeight={800} color="primary.dark" fontSize={14}>{currency.format(item.quantity * item.unitPrice)}</Typography></Box>
-                          <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
-                            onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b" }}>
-                            {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon fontSize="small" />}
-                          </IconButton></span></Tooltip>
+          {visibleCompositions.map(composition => {
+            const linkedProject = projects.find(project => project.compositionIds.includes(composition.id));
+            const projectBusy = busy === `project:${composition.id}`;
+            return <Accordion key={composition.id}
+              disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden",
+                "&::before": { display: "none" } }}>
+              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1 } }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
+                  <Box minWidth={0}>
+                    <Typography fontWeight={800} noWrap>{composition.name}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {linkedProject ? `${linkedProject.name} · ` : "Sem obra · "}{composition.items.length} {composition.items.length === 1 ? "item" : "itens"}
+                    </Typography>
+                  </Box>
+                  <Typography color="primary.dark" fontWeight={850} ml={2}>{currency.format(composition.total)}</Typography>
+                </Stack>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: { xs: 1.25, sm: 2 }, pt: 0 }}>
+                <Divider sx={{ mb: 1.25 }} />
+
+                <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.25}
+                  sx={{ py: 1, mb: 1.25, px: .25 }}>
+                  <Box>
+                    <Typography fontWeight={800} fontSize={13.5} color="#294d41">Obra vinculada</Typography>
+                    <Typography variant="caption" color="text.secondary">Defina em qual obra esta composição será utilizada.</Typography>
+                  </Box>
+                  {projects.length ? <TextField select size="small" value={linkedProject?.id ?? ""} disabled={projectBusy}
+                    onChange={event => void linkToProject(composition.id, event.target.value)}
+                    aria-label={`Obra da composição ${composition.name}`}
+                    sx={{ width: { xs: "100%", sm: 260 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}>
+                    <MenuItem value="">Sem obra vinculada</MenuItem>
+                    {projects.map(project => <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>)}
+                  </TextField> : <Button component={RouterLink} to="/obras" size="small" variant="outlined" sx={{ borderRadius: 999, textTransform: "none" }}>
+                    Criar uma obra
+                  </Button>}
+                </Stack>
+
+                <Divider sx={{ mb: 1.25 }} />
+                {!composition.items.length ? <Box textAlign="center" py={3}>
+                  <Inventory2OutlinedIcon color="disabled" />
+                  <Typography color="text.secondary" variant="body2">Nenhum material nesta composição.</Typography>
+                  <Button component={RouterLink} to="/produtos" size="small" sx={{ mt: 1 }}>Explorar produtos</Button>
+                </Box> : <Stack divider={<Divider flexItem />}>
+                  {composition.items.map(item => {
+                    const key = `${composition.id}:${item.id}`;
+                    return <Stack key={item.id} direction="row" gap={1.25} py={1.25} alignItems="center">
+                      <ProtectedImage src={item.imageUrl} alt="" sx={{ width: 52, height: 52, borderRadius: 2, flexShrink: 0, bgcolor: "#fff" }} />
+                      <Box minWidth={0} flex={1}>
+                        <Typography component={RouterLink} to={`/produtos/${encodeURIComponent(item.materialCode)}`}
+                          color="text.primary" fontWeight={750} fontSize={13.5} lineHeight={1.2}
+                          sx={{ textDecoration: "none", display: "block", "&:hover": { color: "primary.main" } }}>{item.name}</Typography>
+                        <Typography variant="caption" color="text.secondary" noWrap display="block">
+                          {item.supplier || "Sem fornecedor"} · {currency.format(item.unitPrice)}/{item.unit}
+                        </Typography>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mt={.75}>
+                          <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
+                            disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
+                            slotProps={{ htmlInput: { min: .01, step: .01 } }}
+                            onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
+                            onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
+                            sx={{ width: 92, "& .MuiInputBase-input": { py: .65, fontSize: 13 } }} />
+                          <Stack direction="row" alignItems="center" gap={.25}>
+                            <Box textAlign="right"><Typography variant="caption" color="text.secondary">{number.format(item.quantity)} {item.unit}</Typography>
+                              <Typography fontWeight={800} color="primary.dark" fontSize={14}>{currency.format(item.quantity * item.unitPrice)}</Typography></Box>
+                            <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
+                              onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b" }}>
+                              {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon fontSize="small" />}
+                            </IconButton></span></Tooltip>
+                          </Stack>
                         </Stack>
-                      </Stack>
-                    </Box>
-                  </Stack>;
-                })}
-              </Stack>}
-              <Divider sx={{ mt: 1.25 }} />
-              <Stack direction="row" alignItems="center" justifyContent="space-between" pt={1.5}>
-                <Button component={RouterLink} to="/produtos" size="small" startIcon={<AddRoundedIcon />}>Adicionar materiais</Button>
-                <Tooltip title="Excluir composição"><span><IconButton size="small" disabled={busy === composition.id}
-                  aria-label={`Excluir composição ${composition.name}`} onClick={() => void removeList(composition)} sx={{ color: "#9d4b4b" }}>
-                  {busy === composition.id ? <CircularProgress size={18} /> : <DeleteOutlineRoundedIcon />}
-                </IconButton></span></Tooltip>
-              </Stack>
-            </AccordionDetails>
-          </Accordion>)}
+                      </Box>
+                    </Stack>;
+                  })}
+                </Stack>}
+                <Divider sx={{ mt: 1.25 }} />
+                <Stack direction="row" alignItems="center" justifyContent="space-between" pt={1.5}>
+                  <Button component={RouterLink} to="/produtos" size="small" startIcon={<AddRoundedIcon />}>Adicionar materiais</Button>
+                  <Tooltip title="Excluir composição"><span><IconButton size="small" disabled={busy === composition.id}
+                    aria-label={`Excluir composição ${composition.name}`} onClick={() => void removeList(composition)} sx={{ color: "#9d4b4b" }}>
+                    {busy === composition.id ? <CircularProgress size={18} /> : <DeleteOutlineRoundedIcon />}
+                  </IconButton></span></Tooltip>
+                </Stack>
+              </AccordionDetails>
+            </Accordion>;
+          })}
         </Stack>}
 
       <Dialog open={createOpen} onClose={busy === "new" ? undefined : () => setCreateOpen(false)} fullWidth maxWidth="xs"
