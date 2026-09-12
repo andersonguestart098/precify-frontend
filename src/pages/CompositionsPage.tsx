@@ -56,10 +56,6 @@ export default function CompositionsPage() {
     ...projects.map(project => ({ id: project.id, label: project.name })),
     { id: UNASSIGNED, label: "Sem obra vinculada" },
   ], [projects]);
-  const linkProjectOptions = useMemo<ProjectOption[]>(() => [
-    { id: "", label: "Sem obra vinculada" },
-    ...projects.map(project => ({ id: project.id, label: project.name })),
-  ], [projects]);
 
   const visibleCompositions = useMemo(() => {
     if (!projectFilter) return compositions;
@@ -90,23 +86,21 @@ export default function CompositionsPage() {
     finally { setBusy(""); }
   };
 
-  const linkToProject = async (compositionId: string, projectId: string) => {
+  const setLinkedProjects = async (compositionId: string, projectIds: string[]) => {
     const key = `project:${compositionId}`;
+    const selected = new Set(projectIds);
     setBusy(key); setError("");
     try {
-      const changed = projects.filter(project => {
-        const linked = project.compositionIds.includes(compositionId);
-        return linked !== (project.id === projectId);
-      });
+      const changed = projects.filter(project => project.compositionIds.includes(compositionId) !== selected.has(project.id));
       const saved = await Promise.all(changed.map(project => saveProject({
         name: project.name,
-        compositionIds: project.id === projectId
+        compositionIds: selected.has(project.id)
           ? [...new Set([...project.compositionIds, compositionId])]
           : project.compositionIds.filter(id => id !== compositionId),
       }, project.id)));
       setProjects(current => current.map(project => saved.find(item => item.id === project.id) ?? project));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Não foi possível vincular a composição à obra.");
+      setError(err instanceof Error ? err.message : "Não foi possível atualizar as obras vinculadas.");
     } finally { setBusy(""); }
   };
 
@@ -181,7 +175,7 @@ export default function CompositionsPage() {
         !compositions.length ? <Paper variant="outlined" sx={{ mt: 2, p: 4, borderRadius: 4, textAlign: "center", borderStyle: "dashed" }}>
           <PlaylistAddCheckRoundedIcon color="primary" sx={{ fontSize: 42 }} />
           <Typography variant="h6" fontWeight={800} mt={1}>Sua primeira lista começa aqui</Typography>
-          <Typography color="text.secondary" variant="body2" mt={.5}>Crie uma composição ou use o botão + nos cards dos produtos.</Typography>
+          <Typography color="text.secondary" variant="body2" mt={.5}>Crie uma composição ou use o botão de adicionar nos materiais.</Typography>
           <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)} sx={{ mt: 2, borderRadius: 999 }}>Criar composição</Button>
         </Paper> : !visibleCompositions.length ? <Box sx={{ py: 5, textAlign: "center", borderTop: "1px solid #e6eeeb", borderBottom: "1px solid #e6eeeb" }}>
           <Typography fontWeight={800} color="#294d41">Nenhuma composição nessa obra.</Typography>
@@ -189,8 +183,13 @@ export default function CompositionsPage() {
         </Box> :
         <Stack gap={1.15} mt={1}>
           {visibleCompositions.map(composition => {
-            const linkedProject = projects.find(project => project.compositionIds.includes(composition.id));
+            const linkedProjects = projects.filter(project => project.compositionIds.includes(composition.id));
             const projectBusy = busy === `project:${composition.id}`;
+            const linkedLabel = linkedProjects.length === 0
+              ? "Sem obra"
+              : linkedProjects.length === 1
+                ? linkedProjects[0].name
+                : `${linkedProjects[0].name} +${linkedProjects.length - 1} ${linkedProjects.length === 2 ? "obra" : "obras"}`;
             return <Accordion key={composition.id}
               disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden",
                 "&::before": { display: "none" } }}>
@@ -199,7 +198,7 @@ export default function CompositionsPage() {
                   <Box minWidth={0}>
                     <Typography fontWeight={800} noWrap>{composition.name}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {linkedProject ? `${linkedProject.name} · ` : "Sem obra · "}{composition.items.length} {composition.items.length === 1 ? "item" : "itens"}
+                      {linkedLabel} · {composition.items.length} {composition.items.length === 1 ? "item" : "itens"}
                     </Typography>
                   </Box>
                   <Typography color="primary.dark" fontWeight={850} ml={2}>{currency.format(composition.total)}</Typography>
@@ -208,24 +207,28 @@ export default function CompositionsPage() {
               <AccordionDetails sx={{ p: { xs: 1.25, sm: 2 }, pt: 0 }}>
                 <Divider sx={{ mb: 1.25 }} />
 
-                <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.25}
+                <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "flex-start" }} gap={1.25}
                   sx={{ py: 1, mb: 1.25, px: .25 }}>
-                  <Box>
-                    <Typography fontWeight={800} fontSize={13.5} color="#294d41">Obra vinculada</Typography>
-                    <Typography variant="caption" color="text.secondary">Defina em qual obra esta composição será utilizada.</Typography>
+                  <Box sx={{ pt: .6 }}>
+                    <Typography fontWeight={800} fontSize={13.5} color="#294d41">Obras vinculadas</Typography>
+                    <Typography variant="caption" color="text.secondary">Uma composição pode ser utilizada em várias obras.</Typography>
                   </Box>
                   {projects.length ? <Autocomplete
+                    multiple
                     size="small"
-                    disableClearable
                     disabled={projectBusy}
-                    options={linkProjectOptions}
-                    value={linkProjectOptions.find(option => option.id === (linkedProject?.id ?? "")) ?? linkProjectOptions[0]}
+                    options={projects}
+                    value={linkedProjects}
+                    getOptionLabel={option => option.name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                    onChange={(_, option) => void linkToProject(composition.id, option.id)}
+                    onChange={(_, selected) => void setLinkedProjects(composition.id, selected.map(project => project.id))}
                     noOptionsText="Nenhuma obra encontrada"
+                    limitTags={2}
                     slotProps={{ listbox: { sx: { maxHeight: 240, overflowY: "auto" } } }}
-                    renderInput={params => <TextField {...params} placeholder="Digite para buscar uma obra" aria-label={`Obra da composição ${composition.name}`} />}
-                    sx={{ width: { xs: "100%", sm: 290 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}
+                    renderInput={params => <TextField {...params} placeholder={linkedProjects.length ? "Buscar outra obra" : "Buscar e vincular obras"} aria-label={`Obras da composição ${composition.name}`} />}
+                    sx={{ width: { xs: "100%", sm: 390 },
+                      "& .MuiOutlinedInput-root": { borderRadius: 3, bgcolor: "#fbfcfc", minHeight: 42 },
+                      "& .MuiChip-root": { bgcolor: "#eaf5f1", color: "#245342", borderRadius: 2, fontWeight: 700 } }}
                   /> : <Button component={RouterLink} to="/obras" size="small" variant="outlined" sx={{ borderRadius: 999, textTransform: "none" }}>
                     Criar uma obra
                   </Button>}
