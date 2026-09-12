@@ -6,8 +6,8 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PlaylistAddCheckRoundedIcon from "@mui/icons-material/PlaylistAddCheckRounded";
 import {
-  Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Container,
-  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, MenuItem, Paper, Stack, TextField,
+  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, CircularProgress, Container,
+  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
   Tooltip, Typography
 } from "@mui/material";
 import type { Composition } from "../domain/composition";
@@ -21,6 +21,8 @@ import { downloadCompositions } from "../domain/export";
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
 const UNASSIGNED = "__unassigned__";
+
+type ProjectOption = { id: string; label: string };
 
 export default function CompositionsPage() {
   const [compositions, setCompositions] = useState<Composition[]>([]);
@@ -49,6 +51,16 @@ export default function CompositionsPage() {
   }, []);
 
   const assignedIds = useMemo(() => new Set(projects.flatMap(project => project.compositionIds)), [projects]);
+  const projectOptions = useMemo<ProjectOption[]>(() => [
+    { id: "", label: "Todas as obras" },
+    ...projects.map(project => ({ id: project.id, label: project.name })),
+    { id: UNASSIGNED, label: "Sem obra vinculada" },
+  ], [projects]);
+  const linkProjectOptions = useMemo<ProjectOption[]>(() => [
+    { id: "", label: "Sem obra vinculada" },
+    ...projects.map(project => ({ id: project.id, label: project.name })),
+  ], [projects]);
+
   const visibleCompositions = useMemo(() => {
     if (!projectFilter) return compositions;
     if (projectFilter === UNASSIGNED) return compositions.filter(composition => !assignedIds.has(composition.id));
@@ -149,12 +161,18 @@ export default function CompositionsPage() {
       {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
 
       <Stack direction={{ xs: "column", sm: "row" }} gap={1.25} my={2.25} alignItems={{ sm: "center" }}>
-        <TextField select size="small" label="Filtrar por obra" value={projectFilter} onChange={event => setProjectFilter(event.target.value)}
-          sx={{ width: { xs: "100%", sm: 260 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}>
-          <MenuItem value="">Todas as obras</MenuItem>
-          {projects.map(project => <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>)}
-          <MenuItem value={UNASSIGNED}>Sem obra vinculada</MenuItem>
-        </TextField>
+        <Autocomplete
+          size="small"
+          disableClearable
+          options={projectOptions}
+          value={projectOptions.find(option => option.id === projectFilter) ?? projectOptions[0]}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(_, option) => setProjectFilter(option.id)}
+          noOptionsText="Nenhuma obra encontrada"
+          slotProps={{ listbox: { sx: { maxHeight: 240, overflowY: "auto" } } }}
+          renderInput={params => <TextField {...params} label="Filtrar por obra" placeholder="Digite para buscar" />}
+          sx={{ width: { xs: "100%", sm: 290 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}
+        />
         <Button component={RouterLink} to="/obras" sx={{ textTransform: "none", fontWeight: 700 }}>Gerenciar obras</Button>
         <Button disabled={loading || !visibleCompositions.length} onClick={() => downloadCompositions(visibleCompositions)} sx={{ ml: { sm: "auto" }, textTransform: "none", fontWeight: 700 }}>Exportar CSV</Button>
       </Stack>
@@ -196,13 +214,19 @@ export default function CompositionsPage() {
                     <Typography fontWeight={800} fontSize={13.5} color="#294d41">Obra vinculada</Typography>
                     <Typography variant="caption" color="text.secondary">Defina em qual obra esta composição será utilizada.</Typography>
                   </Box>
-                  {projects.length ? <TextField select size="small" value={linkedProject?.id ?? ""} disabled={projectBusy}
-                    onChange={event => void linkToProject(composition.id, event.target.value)}
-                    aria-label={`Obra da composição ${composition.name}`}
-                    sx={{ width: { xs: "100%", sm: 260 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}>
-                    <MenuItem value="">Sem obra vinculada</MenuItem>
-                    {projects.map(project => <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>)}
-                  </TextField> : <Button component={RouterLink} to="/obras" size="small" variant="outlined" sx={{ borderRadius: 999, textTransform: "none" }}>
+                  {projects.length ? <Autocomplete
+                    size="small"
+                    disableClearable
+                    disabled={projectBusy}
+                    options={linkProjectOptions}
+                    value={linkProjectOptions.find(option => option.id === (linkedProject?.id ?? "")) ?? linkProjectOptions[0]}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    onChange={(_, option) => void linkToProject(composition.id, option.id)}
+                    noOptionsText="Nenhuma obra encontrada"
+                    slotProps={{ listbox: { sx: { maxHeight: 240, overflowY: "auto" } } }}
+                    renderInput={params => <TextField {...params} placeholder="Digite para buscar uma obra" aria-label={`Obra da composição ${composition.name}`} />}
+                    sx={{ width: { xs: "100%", sm: 290 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}
+                  /> : <Button component={RouterLink} to="/obras" size="small" variant="outlined" sx={{ borderRadius: 999, textTransform: "none" }}>
                     Criar uma obra
                   </Button>}
                 </Stack>
