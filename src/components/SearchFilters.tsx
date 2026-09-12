@@ -1,14 +1,14 @@
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import { useId, type ReactNode } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
-import { Box, Button, FormControl, InputAdornment, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
-import { materialByCode, priceOptions, stateOptions, uniqueBy } from "../data/familyConfig";
+import { Box, Button, FormControl, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { materialByCode, stateOptions, uniqueBy } from "../data/familyConfig";
 import type { CatalogMaterial, TechnicalCriterion } from "../domain/search";
 
 interface Props {
@@ -18,12 +18,25 @@ interface Props {
   onOnlyFavoritesChange: (value: boolean) => void; onClearFilters: () => void;
 }
 
+function decodePrice(value: string) {
+  if (value.includes(":")) {
+    const [min = "", max = ""] = value.split(":", 2);
+    return { min, max };
+  }
+  if (value === "Até R$ 100") return { min: "", max: "100" };
+  if (value === "R$ 100 a R$ 150") return { min: "100", max: "150" };
+  if (value === "R$ 150 a R$ 200") return { min: "150", max: "200" };
+  if (value === "Acima de R$ 200") return { min: "200", max: "" };
+  return { min: "", max: "" };
+}
+
 export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, onOnlyFavoritesChange, onCriterionChange, onFamilyChange, onClearFilters }: Props) {
   const id = useId();
   const value = (key: string) => criteria.find((criterion) => criterion.key === key)?.value ?? "";
   const update = (key: string, next: string) => { const index = criteria.findIndex((criterion) => criterion.key === key); if (index >= 0) onCriterionChange(index, { value: next }); };
   const segmentCode = value("segmentCode");
   const materialCode = value("materialCode");
+  const price = decodePrice(value("price"));
   const segments = uniqueBy(catalog, (item) => item.segmentCode);
   const families = uniqueBy(catalog.filter((item) => !segmentCode || item.segmentCode === segmentCode), (item) => item.familyCode);
   const materials = catalog.filter((item) => (!segmentCode || item.segmentCode === segmentCode) && (!familyCode || item.familyCode === familyCode));
@@ -33,11 +46,16 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
   const filterIcons: Record<string, ReactNode> = {
     scope: <StarOutlineIcon fontSize="small" />, segmentCode: <CategoryOutlinedIcon fontSize="small" />,
     materialCode: <Inventory2OutlinedIcon fontSize="small" />, optionCode: <TuneOutlinedIcon fontSize="small" />,
-    price: <PaymentsOutlinedIcon fontSize="small" />, state: <LocationOnOutlinedIcon fontSize="small" />
+    state: <LocationOnOutlinedIcon fontSize="small" />
   };
   const select = (key: string, label: string, current: string, choices: { code: string; name: string }[], all = "Todos", onChange?: (value: string) => void) => (
     <Box sx={{ py: 1.25 }}><FormControl fullWidth size="small"><InputLabel shrink={key === "scope" ? true : undefined} id={`${id}-${key}-label`}>{label}</InputLabel><Select displayEmpty={key === "scope"} startAdornment={<InputAdornment position="start" sx={{ color: "#518070", ml: .5 }}>{filterIcons[key]}</InputAdornment>} labelId={`${id}-${key}-label`} value={current} label={label} onChange={(event) => (onChange ?? ((next) => update(key, next)))(event.target.value)}><MenuItem value="">{all}</MenuItem>{choices.map((choice) => <MenuItem key={choice.code} value={choice.code}>{choice.name}</MenuItem>)}</Select></FormControl></Box>
   );
+  const setPrice = (min: string, max: string) => {
+    const cleanMin = min.replace(",", ".");
+    const cleanMax = max.replace(",", ".");
+    update("price", cleanMin || cleanMax ? `${cleanMin}:${cleanMax}` : "");
+  };
 
   return <Box sx={{
     "& .MuiOutlinedInput-root": {
@@ -58,7 +76,21 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
       <Box sx={{ py: 1.25 }}><FormControl fullWidth size="small"><InputLabel id={`${id}-family-label`}>Família</InputLabel><Select startAdornment={<InputAdornment position="start" sx={{ color: "#518070", ml: .5 }}><LayersOutlinedIcon fontSize="small" /></InputAdornment>} labelId={`${id}-family-label`} value={familyCode} label="Família" onChange={(event) => { const item = catalog.find((entry) => entry.familyCode === event.target.value); onFamilyChange(event.target.value, item?.segmentCode ?? segmentCode); }}><MenuItem value="">Todas</MenuItem>{families.map((item) => <MenuItem key={item.familyCode} value={item.familyCode}>{item.familyName}</MenuItem>)}</Select></FormControl></Box>
       {select("materialCode", "Material", materialCode, materials.map((item) => ({ code: item.materialCode, name: item.materialName })))}
       {options.length ? select("optionCode", "Opção técnica", value("optionCode"), options.map((item) => ({ code: item.optionCode, name: `${item.variationName}: ${item.name}` })), "Todas") : null}
-      {select("price", "Preço", value("price"), priceOptions.map((name) => ({ code: name, name })))}
+
+      <Box sx={{ py: 1.25 }}>
+        <Stack direction="row" alignItems="center" gap={.75} mb=.8>
+          <PaymentsOutlinedIcon sx={{ fontSize: 18, color: "#518070" }} />
+          <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
+        </Stack>
+        <Stack direction="row" gap={1}>
+          <TextField fullWidth size="small" type="number" label="De" value={price.min} onChange={event => setPrice(event.target.value, price.max)}
+            slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { min: 0, step: .01, inputMode: "decimal" } }} />
+          <TextField fullWidth size="small" type="number" label="Até" value={price.max} onChange={event => setPrice(price.min, event.target.value)}
+            slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { min: 0, step: .01, inputMode: "decimal" } }} />
+        </Stack>
+        <Typography sx={{ mt: .7, px: .5, fontSize: 11.5, color: "#879791" }}>Digite o mínimo, o máximo ou os dois valores.</Typography>
+      </Box>
+
       {select("state", "Estado", value("state"), stateOptions.map((name) => ({ code: name, name })))}
     </Box>
   </Box>;
