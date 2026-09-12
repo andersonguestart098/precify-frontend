@@ -1,10 +1,18 @@
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 
+const gradientText = {
+  background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
+} as const;
+
 export default function AboutPage() {
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 4, md: 7 } }}>
     <Box sx={{ maxWidth: 920 }}>
       <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.5 }}>Sobre o Precify</Typography>
-      <Typography component="h1" sx={{ mt: .8, maxWidth: 820, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+      <Typography component="h1" sx={{ mt: .8, maxWidth: 820, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", ...gradientText }}>
         Inteligência aplicada a decisões melhores na construção.
       </Typography>
       <Typography sx={{ mt: 2.2, maxWidth: 760, fontSize: { xs: 16, md: 18 }, lineHeight: 1.75, color: "#61756e" }}>
@@ -17,7 +25,7 @@ export default function AboutPage() {
     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(0,.82fr) minmax(0,1.18fr)" }, gap: { xs: 4, md: 9 }, alignItems: "start" }}>
       <Box>
         <Typography sx={{ fontSize: 12, fontWeight: 850, textTransform: "uppercase", letterSpacing: 1.4, color: "#6d837b" }}>O Precify</Typography>
-        <Typography sx={{ mt: 1.5, fontSize: { xs: 25, md: 30 }, lineHeight: 1.2, fontWeight: 850, letterSpacing: "-.025em", color: "#1c4739" }}>
+        <Typography sx={{ mt: 1.5, fontSize: { xs: 25, md: 30 }, lineHeight: 1.2, fontWeight: 850, letterSpacing: "-.025em", ...gradientText }}>
           Dados de obra transformados em informação útil.
         </Typography>
       </Box>
@@ -36,7 +44,7 @@ export default function AboutPage() {
     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(0,.82fr) minmax(0,1.18fr)" }, gap: { xs: 4, md: 9 }, alignItems: "start" }}>
       <Box>
         <Typography sx={{ fontSize: 12, fontWeight: 850, textTransform: "uppercase", letterSpacing: 1.4, color: "#6d837b" }}>Quem somos</Typography>
-        <Typography sx={{ mt: 1.5, fontSize: { xs: 25, md: 30 }, lineHeight: 1.2, fontWeight: 850, letterSpacing: "-.025em", color: "#1c4739" }}>
+        <Typography sx={{ mt: 1.5, fontSize: { xs: 25, md: 30 }, lineHeight: 1.2, fontWeight: 850, letterSpacing: "-.025em", ...gradientText }}>
           Engenharia, tecnologia e dados olhando para o mesmo problema.
         </Typography>
       </Box>
