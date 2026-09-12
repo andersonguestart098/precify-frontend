@@ -138,12 +138,12 @@ export default function ProfilePage() {
 
         <Box sx={{ mt: 2.5, borderTop: "1px solid #e3ebe8", borderBottom: "1px solid #e3ebe8" }}>
           <Box sx={{ display: { xs: "none", md: "grid" }, gridTemplateColumns: "minmax(0,1.7fr) 120px 110px 110px", gap: 2, px: 1, py: 1.2 }}>
-            {['Usuário', 'Perfil', 'Status', 'Ação'].map(label => <Typography key={label} sx={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: 1.1, color: "#8a9a95", fontWeight: 800 }}>{label}</Typography>)}
+            {["Usuário", "Perfil", "Status", "Ação"].map(label => <Typography key={label} sx={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: 1.1, color: "#8a9a95", fontWeight: 800 }}>{label}</Typography>)}
           </Box>
-          {loadingUsers ? <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>Carregando usuários...</Typography> : visibleUsers.map((account, index) => {
+          {loadingUsers ? <Typography color="text.secondary" sx={{ py: 4, textAlign: "center" }}>Carregando usuários...</Typography> : visibleUsers.map(account => {
             const active = account.active !== false;
             const ownAccount = account.id === user.id;
-            return <Box key={account.id} sx={{ display: "grid", gridTemplateColumns: { xs: "1fr auto", md: "minmax(0,1.7fr) 120px 110px 110px" }, gap: { xs: 1.5, md: 2 }, alignItems: "center", px: 1, py: 1.65, borderTop: index || { xs: 0, md: 1 } ? "1px solid #edf1ef" : 0 }}>
+            return <Box key={account.id} sx={{ display: "grid", gridTemplateColumns: { xs: "1fr auto", md: "minmax(0,1.7fr) 120px 110px 110px" }, gap: { xs: 1.5, md: 2 }, alignItems: "center", px: 1, py: 1.65, borderTop: "1px solid #edf1ef" }}>
               <Stack direction="row" gap={1.25} alignItems="center" minWidth={0}>
                 <Avatar src={account.avatarUrl || undefined} sx={{ width: 38, height: 38, bgcolor: "#edf5f2", color: "#214d3f", fontSize: 14 }}>{account.name.charAt(0).toUpperCase()}</Avatar>
                 <Box minWidth={0}><Typography fontWeight={750} fontSize={14} noWrap>{account.name}{ownAccount ? " (você)" : ""}</Typography><Typography color="text.secondary" fontSize={12.5} noWrap>{account.email}</Typography></Box>
