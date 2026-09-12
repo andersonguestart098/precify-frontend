@@ -4,7 +4,7 @@ import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartm
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { Alert, Box, Button, Chip, CircularProgress, Container, Divider, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Chip, CircularProgress, Container, Stack, Typography } from "@mui/material";
 import { clearHistory, listHistory, type SearchHistory } from "../services/api";
 
 type HistoryRow = SearchHistory & { count?: number };
