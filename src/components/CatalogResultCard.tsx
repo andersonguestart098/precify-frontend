@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import StarIcon from "@mui/icons-material/Star";
+import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { Box, Button, Chip, Divider, IconButton, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Divider, IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { ProtectedImage } from "./ProtectedImage";
 import { AddToCompositionDialog } from "./AddToCompositionDialog";
 import type { CatalogResult } from "../domain/search";
@@ -37,31 +38,36 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <Box minWidth={0}><Typography variant="caption" color="primary" sx={{ fontWeight: 700, letterSpacing: ".02em", fontSize: { xs: 10.5, sm: 12 } }}>{material.materialCode} · {material.familyName}</Typography>
             <Typography component="h2" sx={{ fontSize: { xs: 14, sm: 16.5 }, fontWeight: 700, lineHeight: 1.2 }}>{material.materialName}</Typography>
             <Typography variant="caption" color="text.secondary" display={{ xs: "none", sm: "block" }} mt={.25}>{material.segmentName}</Typography></Box>
-          <Stack direction="row" gap={.5} flexShrink={0}>
-            <IconButton aria-label="Adicionar à composição" onClick={() => setCompositionOpen(true)}
-              sx={{ width: 32, height: 32, color: "#fff", border: "1px solid rgba(255,255,255,.75)",
-                background: "linear-gradient(135deg,#175943 0%,#278364 55%,#34b188 100%)",
-                boxShadow: "0 4px 13px rgba(0,107,79,.22)", transition: "transform 180ms, box-shadow 180ms",
-                "&:hover": { transform: "translateY(-1px)", boxShadow: "0 7px 17px rgba(0,107,79,.3)" },
-                "&:active": { transform: "scale(.94)" }, "& svg": { fontSize: 19 },
-                "&.Mui-focusVisible": { outline: "3px solid #006b4f55", outlineOffset: 3 } }}>
-              <AddRoundedIcon />
-            </IconButton>
-            <IconButton aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"} aria-pressed={favorite}
-              loading={favoriteBusy} disabled={favoriteBusy} onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
-              sx={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%",
-                color: favorite ? "#c18a08" : "#8c9691", bgcolor: favorite ? "#fff7db" : "#f5f8f7",
-                border: "1px solid", borderColor: favorite ? "#efdb99" : "#e3ebe8",
-                boxShadow: favorite ? "0 3px 12px #b88b1015" : "none",
-                transition: "background-color 180ms, border-color 180ms, transform 180ms",
-                "&:hover": { bgcolor: favorite ? "#fff0bb" : "#eaf2ef", transform: "translateY(-1px)" },
-                "&:active": { transform: "scale(.94)" },
-                "&.Mui-focusVisible": { outline: "3px solid #006b4f55", outlineOffset: 3 },
-                "&.Mui-disabled": { color: favorite ? "#c18a08" : "#8c9691", opacity: .65 },
-                "@keyframes favoritePop": { "0%": { transform: "scale(.7) rotate(-18deg)" }, "55%": { transform: "scale(1.3) rotate(10deg)" }, "100%": { transform: "scale(1) rotate(0deg)" } },
-                "& svg": { fontSize: 16, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
-                "@media (prefers-reduced-motion: reduce)": { transition: "none", "& svg": { animation: "none" } }
-              }}><StarIcon /></IconButton>
+          <Stack direction="row" gap={.55} flexShrink={0} alignItems="center">
+            <Tooltip title="Adicionar à composição">
+              <Button aria-label="Adicionar à composição" onClick={() => setCompositionOpen(true)} startIcon={<PlaylistAddRoundedIcon />}
+                sx={{ minWidth: { xs: 34, sm: "auto" }, width: { xs: 34, sm: "auto" }, height: 32, px: { xs: 0, sm: 1.15 }, borderRadius: 999,
+                  color: "#006b4f", bgcolor: "#edf6f3", border: "1px solid #d5e8e1", textTransform: "none", fontWeight: 800, fontSize: 11.5,
+                  transition: "background-color 180ms, border-color 180ms, transform 180ms",
+                  "& .MuiButton-startIcon": { m: { xs: 0, sm: "0 5px 0 0" }, "& svg": { fontSize: 18 } },
+                  "&:hover": { bgcolor: "#e4f1ed", borderColor: "#b8d8cd", transform: "translateY(-1px)" },
+                  "&:active": { transform: "scale(.96)" }, "&.Mui-focusVisible": { outline: "3px solid #006b4f40", outlineOffset: 2 } }}>
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>Adicionar</Box>
+              </Button>
+            </Tooltip>
+            <Tooltip title={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}>
+              <span>
+                <IconButton aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"} aria-pressed={favorite}
+                  loading={favoriteBusy} disabled={favoriteBusy} onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
+                  sx={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", color: favorite ? "#b77b00" : "#587067",
+                    bgcolor: favorite ? "#fff7d9" : "transparent", border: "1px solid", borderColor: favorite ? "#efd78a" : "#dce8e4",
+                    transition: "background-color 180ms, border-color 180ms, transform 180ms, color 180ms",
+                    "&:hover": { bgcolor: favorite ? "#fff0bb" : "#f0f6f4", color: favorite ? "#a97000" : "#006b4f", transform: "translateY(-1px)" },
+                    "&:active": { transform: "scale(.94)" }, "&.Mui-focusVisible": { outline: "3px solid #006b4f40", outlineOffset: 2 },
+                    "&.Mui-disabled": { color: favorite ? "#b77b00" : "#8c9691", opacity: .65 },
+                    "@keyframes favoritePop": { "0%": { transform: "scale(.7) rotate(-18deg)" }, "55%": { transform: "scale(1.28) rotate(9deg)" }, "100%": { transform: "scale(1) rotate(0deg)" } },
+                    "& svg": { fontSize: 18, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
+                    "@media (prefers-reduced-motion: reduce)": { transition: "none", "& svg": { animation: "none" } }
+                  }}>
+                  {favorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+                </IconButton>
+              </span>
+            </Tooltip>
           </Stack>
         </Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={.5} mt={.5}>
