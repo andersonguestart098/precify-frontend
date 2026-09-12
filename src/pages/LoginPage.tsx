@@ -31,7 +31,7 @@ export default function LoginPage() {
   return <Box component="main" sx={{ minHeight: "100dvh", display: "grid", alignItems: "center",
     background: "radial-gradient(ellipse at 55% 54%, rgba(0,107,79,.055), transparent 65%), #f7f9f8", py: { xs: 4, md: 2.25, xl: 4 } }}>
     <Container maxWidth="sm" sx={{ px: { xs: 3, sm: 5, md: 3.5, xl: 5 }, maxWidth: { md: "410px !important", xl: "480px !important" } }}>
-      <Box component="img" src="/precify-signature.png" alt="Precify" sx={{ display: "block", width: { xs: 220, sm: 260, md: 205, xl: 260 }, maxWidth: "100%", height: "auto", mb: { xs: 3, md: 2, xl: 3 }, mixBlendMode: "multiply" }} />
+      <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: "block", width: { xs: 220, sm: 260, md: 205, xl: 260 }, maxWidth: "100%", height: "auto", mb: { xs: 3, md: 2, xl: 3 } }} />
       <Typography component="h1" variant="h4" sx={{ fontSize: { xs: 24, sm: 27, md: 23, xl: 27 }, fontWeight: 800, letterSpacing: "-.045em", mb: .6 }}>Bem-vindo de volta</Typography>
       <Typography color="text.secondary" sx={{ fontSize: { xs: 14.5, md: 13.5, xl: 14.5 }, lineHeight: 1.55, mb: { xs: 3, md: 2, xl: 3 } }}>Entre com suas credenciais para acessar o sistema.</Typography>
       <Box component="form" onSubmit={submit}>
