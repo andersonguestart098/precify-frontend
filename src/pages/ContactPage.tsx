@@ -13,7 +13,7 @@ export default function ContactPage() {
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 4, md: 7 } }}>
     <Box sx={{ maxWidth: 860 }}>
       <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.5 }}>Contato</Typography>
-      <Typography component="h1" sx={{ mt: .8, maxWidth: 760, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", color: "#163e32" }}>
+      <Typography component="h1" sx={{ mt: .8, maxWidth: 760, fontSize: { xs: 38, md: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
         Vamos conversar sobre o seu projeto.
       </Typography>
       <Typography sx={{ mt: 2.2, maxWidth: 700, fontSize: { xs: 16, md: 18 }, lineHeight: 1.75, color: "#61756e" }}>
