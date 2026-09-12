@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
+import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import type { CatalogMaterial } from "../domain/search";
 
 const labels: Record<string, string> = {
@@ -42,7 +43,33 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
   };
   return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-      <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
+      <Stack direction="row" alignItems="center" gap={.35} minWidth={0}>
+        <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
+        <Tooltip
+          arrow
+          enterTouchDelay={0}
+          leaveTouchDelay={2800}
+          title="Escolha um segmento para ver apenas materiais daquela categoria. Você pode deslizar a lista para explorar todas as opções."
+        >
+          <IconButton
+            size="small"
+            aria-label="Como funciona a navegação por segmentos"
+            sx={{
+              width: 28,
+              height: 28,
+              ml: .15,
+              color: "#4f7569",
+              bgcolor: "rgba(0,107,79,.045)",
+              border: "1px solid rgba(0,107,79,.10)",
+              transition: "transform 180ms ease, background-color 180ms ease",
+              "&:hover": { bgcolor: "rgba(0,107,79,.09)", transform: "translateY(-1px) rotate(-4deg)" },
+              "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: 2 },
+            }}
+          >
+            <HelpOutlineRoundedIcon sx={{ fontSize: 17 }} />
+          </IconButton>
+        </Tooltip>
+      </Stack>
       <Stack direction="row" gap={.5}>
         <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#39725f", width: 44, height: 44 }}><ChevronLeftRounded /></IconButton>
         <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#39725f", width: 44, height: 44 }}><ChevronRightRounded /></IconButton>
