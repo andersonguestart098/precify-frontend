@@ -49,6 +49,7 @@ export default function LoginPage() {
   };
 
   return <Box component="main" sx={{
+    "--login-panel-width": "clamp(360px, 31vw, 520px)",
     minHeight: "100dvh",
     position: "relative",
     overflow: "hidden",
@@ -64,9 +65,7 @@ export default function LoginPage() {
       display: { xs: "none", md: "block" },
       position: "absolute",
       inset: "0 auto 0 0",
-      width: "31vw",
-      minWidth: 360,
-      maxWidth: 520,
+      width: "var(--login-panel-width)",
       overflow: "hidden",
       background: "linear-gradient(150deg,#006b4f 0%,#08795a 48%,#004d3a 100%)",
       "&::before": {
@@ -96,14 +95,14 @@ export default function LoginPage() {
     <Box sx={{
       display: { xs: "none", md: "flex" },
       position: "absolute",
-      left: "31vw",
+      left: "var(--login-panel-width)",
       right: 0,
       insetBlock: 0,
       alignItems: "center",
       justifyContent: "center",
       pointerEvents: "none",
     }}>
-      <Stack alignItems="center" gap={2} sx={{ transform: { md: "translateX(8%)", xl: "translateX(4%)" } }}>
+      <Stack alignItems="center" gap={2}>
         <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ width: { md: 280, xl: 350 }, height: "auto" }} />
         <Typography textAlign="center" sx={{ color: "#71817b", fontSize: { md: 15, xl: 18 }, lineHeight: 1.35 }}>
           Inteligência em materiais<br />para decisões melhores.
@@ -114,7 +113,7 @@ export default function LoginPage() {
     <Box sx={{
       position: { xs: "relative", md: "absolute" },
       zIndex: 2,
-      left: { md: "31vw" },
+      left: { md: "var(--login-panel-width)" },
       top: { md: "50%" },
       transform: { md: "translate(-50%,-50%)" },
       width: { xs: "100%", sm: 430, md: 382, xl: 430 },
