@@ -14,9 +14,6 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const showSearch = location.pathname === "/inicio" || location.pathname === "/produtos";
   const isProducts = location.pathname === "/produtos";
-  const compactNotebookContent = location.pathname !== "/inicio"
-    && !location.pathname.startsWith("/produtos")
-    && !location.pathname.startsWith("/busca");
   const [query, setQuery] = useState("");
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
@@ -118,12 +115,10 @@ export default function AppLayout() {
     </AppBar>
     <Box key={location.pathname} sx={{
       pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
-      ...(compactNotebookContent ? {
-        "@media (min-width:900px) and (max-width:1535.95px)": {
-          width: "119.05%",
-          zoom: .84,
-        }
-      } : {}),
+      "@media (min-width:900px) and (max-width:1799.95px)": {
+        width: "119.05%",
+        zoom: .84,
+      },
       "@keyframes pageEnter": {
         from: { opacity: .55, transform: "translateY(5px)" },
         to: { opacity: 1, transform: "translateY(0)" }
