@@ -121,7 +121,7 @@ export default function LoginPage() {
       borderRadius: { xs: 3, md: 2.5, xl: 2.7 },
       boxShadow: "0 24px 65px rgba(17,54,43,.16),0 3px 12px rgba(17,54,43,.08)",
       px: { xs: 3, sm: 4, md: 2.75, xl: 3.25 },
-      py: { xs: 3.5, sm: 4.4, md: 3.2, xl: 3.6 },
+      py: { xs: 3.5, sm: 4.4, md: 4.2, xl: 4.6 },
     }}>
       <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: { xs: "block", md: "none" }, width: 172, height: "auto", mb: 3 }} />
       <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 1.8, xl: 2.2 }, fontSize: { xs: 14, md: 12, xl: 13 }, lineHeight: 1.48 }}>
