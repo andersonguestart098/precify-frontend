@@ -47,7 +47,7 @@ export default function LoginPage() {
   };
 
   return <Box component="main" sx={{
-    "--login-panel-width": "clamp(360px, 31vw, 520px)",
+    "--login-panel-width": "clamp(340px, 29vw, 480px)",
     minHeight: "100dvh",
     position: "relative",
     overflow: "hidden",
@@ -75,18 +75,18 @@ export default function LoginPage() {
         right: -190, top: -120, border: "54px solid rgba(255,255,255,.035)",
       },
     }}>
-      <Stack sx={{ position: "absolute", top: "14%", left: { md: 34, xl: 58 }, right: 120, color: "#fff" }} gap={2.2}>
-        <Typography sx={{ fontSize: { md: 25, xl: 31 }, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-.035em" }}>
+      <Stack sx={{ position: "absolute", top: "6%", left: { md: 30, xl: 38 }, right: { md: 80, xl: 110 }, color: "#fff" }} gap={1.5}>
+        <Typography sx={{ fontSize: { md: 21, xl: 24 }, lineHeight: 1.08, fontWeight: 800, letterSpacing: "-.035em" }}>
           Construindo obras melhores, juntos.
         </Typography>
-        <Box sx={{ width: 42, height: 2, bgcolor: "rgba(255,255,255,.72)", borderRadius: 99 }} />
-        <Typography sx={{ maxWidth: 240, color: "rgba(255,255,255,.72)", fontSize: { md: 13, xl: 15 }, lineHeight: 1.55 }}>
+        <Box sx={{ width: 36, height: 2, bgcolor: "rgba(255,255,255,.72)", borderRadius: 99 }} />
+        <Typography sx={{ maxWidth: 225, color: "rgba(255,255,255,.72)", fontSize: { md: 12, xl: 13 }, lineHeight: 1.5 }}>
           Mais eficiência na escolha de materiais para a sua obra.
         </Typography>
       </Stack>
-      <Stack direction="row" alignItems="center" gap={1} sx={{ position: "absolute", left: { md: 34, xl: 58 }, bottom: { md: 28, xl: 44 }, color: "rgba(255,255,255,.72)" }}>
-        <ShieldOutlinedIcon sx={{ fontSize: 20 }} />
-        <Typography sx={{ fontSize: { md: 10.5, xl: 12 } }}>Seus dados estão seguros conosco.</Typography>
+      <Stack direction="row" alignItems="center" gap={.8} sx={{ position: "absolute", left: { md: 30, xl: 38 }, bottom: { md: 24, xl: 32 }, color: "rgba(255,255,255,.72)" }}>
+        <ShieldOutlinedIcon sx={{ fontSize: 18 }} />
+        <Typography sx={{ fontSize: { md: 10, xl: 11 } }}>Seus dados estão seguros conosco.</Typography>
       </Stack>
     </Box>
 
@@ -100,9 +100,9 @@ export default function LoginPage() {
       justifyContent: "center",
       pointerEvents: "none",
     }}>
-      <Stack alignItems="center" gap={2}>
-        <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ width: { md: 280, xl: 350 }, height: "auto" }} />
-        <Typography textAlign="center" sx={{ color: "#71817b", fontSize: { md: 15, xl: 18 }, lineHeight: 1.35 }}>
+      <Stack alignItems="center" gap={1.5}>
+        <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ width: { md: 240, xl: 280 }, height: "auto" }} />
+        <Typography textAlign="center" sx={{ color: "#71817b", fontSize: { md: 13, xl: 14 }, lineHeight: 1.35 }}>
           Inteligência em materiais<br />para decisões melhores.
         </Typography>
       </Stack>
@@ -114,66 +114,66 @@ export default function LoginPage() {
       left: { md: "var(--login-panel-width)" },
       top: { md: "50%" },
       transform: { md: "translate(-50%,-50%)" },
-      width: { xs: "100%", sm: 430, md: 382, xl: 430 },
+      width: { xs: "100%", sm: 430, md: 350, xl: 382 },
       maxWidth: "100%",
       bgcolor: "rgba(255,255,255,.98)",
       border: "1px solid rgba(19,56,46,.08)",
-      borderRadius: { xs: 3, md: 2.5, xl: 3 },
+      borderRadius: { xs: 3, md: 2.5, xl: 2.7 },
       boxShadow: "0 24px 65px rgba(17,54,43,.16),0 3px 12px rgba(17,54,43,.08)",
-      px: { xs: 3, sm: 4, md: 3.25, xl: 4 },
-      py: { xs: 3.5, sm: 4.4, md: 4, xl: 4.6 },
+      px: { xs: 3, sm: 4, md: 2.75, xl: 3.25 },
+      py: { xs: 3.5, sm: 4.4, md: 3.2, xl: 3.6 },
     }}>
       <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: { xs: "block", md: "none" }, width: 172, height: "auto", mb: 3 }} />
-      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 2.4, xl: 3 }, fontSize: { xs: 14, md: 13, xl: 14 }, lineHeight: 1.5 }}>
+      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 1.8, xl: 2.2 }, fontSize: { xs: 14, md: 12, xl: 13 }, lineHeight: 1.48 }}>
         Acesse sua conta e continue encontrando os melhores materiais para a sua obra.
       </Typography>
 
       <Box component="form" onSubmit={submit}>
-        <Stack gap={{ xs: 1.6, md: 1.25, xl: 1.6 }}>
+        <Stack gap={{ xs: 1.6, md: 1.05, xl: 1.25 }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             required fullWidth placeholder="Seu e-mail" type="email" autoComplete="username"
             value={email} onChange={e => setEmail(e.target.value)}
-            slotProps={{ input: { startAdornment: <InputAdornment position="start"><MailOutlineIcon sx={{ color: "#6f817a", fontSize: 20 }} /></InputAdornment> } }}
+            slotProps={{ input: { startAdornment: <InputAdornment position="start"><MailOutlineIcon sx={{ color: "#6f817a", fontSize: { xs: 20, md: 18, xl: 19 } }} /></InputAdornment> } }}
             sx={{
-              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 45, xl: 50 }, borderRadius: 2.3, bgcolor: "#fbfcfc" },
-              "& input": { fontSize: { xs: 14.5, md: 13.5, xl: 14.5 } },
+              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 41, xl: 44 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
+              "& input": { fontSize: { xs: 14.5, md: 12.5, xl: 13.5 } },
             }}
           />
           <TextField
             required fullWidth placeholder="Sua senha" type={visible ? "text" : "password"} autoComplete="current-password"
             value={password} onChange={e => setPassword(e.target.value)}
             slotProps={{ input: {
-              startAdornment: <InputAdornment position="start"><LockOutlinedIcon sx={{ color: "#6f817a", fontSize: 20 }} /></InputAdornment>,
+              startAdornment: <InputAdornment position="start"><LockOutlinedIcon sx={{ color: "#6f817a", fontSize: { xs: 20, md: 18, xl: 19 } }} /></InputAdornment>,
               endAdornment: <InputAdornment position="end"><IconButton aria-label={visible ? "Ocultar senha" : "Mostrar senha"} onClick={() => setVisible(!visible)} edge="end" size="small">{visible ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}</IconButton></InputAdornment>,
             } }}
             sx={{
-              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 45, xl: 50 }, borderRadius: 2.3, bgcolor: "#fbfcfc" },
-              "& input": { fontSize: { xs: 14.5, md: 13.5, xl: 14.5 } },
+              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 41, xl: 44 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
+              "& input": { fontSize: { xs: 14.5, md: 12.5, xl: 13.5 } },
             }}
           />
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.4} mb={{ xs: 2, md: 1.45, xl: 2 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.25} mb={{ xs: 2, md: 1.25, xl: 1.5 }}>
           <FormControlLabel
             sx={{ mr: 0, "& .MuiFormControlLabel-label": { lineHeight: 1.1 } }}
             control={<Checkbox checked={remember} onChange={e => setRemember(e.target.checked)} size="small" />}
-            label={<Typography variant="body2" sx={{ fontSize: { xs: 12, md: 11, xl: 12 } }}>Lembrar e-mail</Typography>}
+            label={<Typography variant="body2" sx={{ fontSize: { xs: 12, md: 10.5, xl: 11 } }}>Lembrar e-mail</Typography>}
           />
-          <Link component="button" type="button" underline="hover" onClick={() => setHelp(!help)} sx={{ fontWeight: 700, fontSize: { xs: 12, md: 11, xl: 12 } }}>
+          <Link component="button" type="button" underline="hover" onClick={() => setHelp(!help)} sx={{ fontWeight: 700, fontSize: { xs: 12, md: 10.5, xl: 11 } }}>
             Recuperar acesso
           </Link>
         </Stack>
 
-        {help && <Alert severity="info" sx={{ mb: 1.6, py: { md: .15, xl: .6 }, fontSize: { md: 11.5, xl: 13 } }}>
+        {help && <Alert severity="info" sx={{ mb: 1.3, py: { md: .1, xl: .25 }, fontSize: { md: 11, xl: 11.5 } }}>
           Solicite a recuperação do acesso ao administrador do sistema.
         </Alert>}
 
         <Button
           type="submit" fullWidth loading={busy} loadingPosition="end" endIcon={<ArrowForwardIcon />}
           sx={{
-            height: { xs: 48, md: 43, xl: 48 }, borderRadius: 2.3, textTransform: "none",
-            fontSize: { xs: 15, md: 13.5, xl: 15 }, color: "#fff", fontWeight: 800,
+            height: { xs: 48, md: 40, xl: 43 }, borderRadius: 2.15, textTransform: "none",
+            fontSize: { xs: 15, md: 12.5, xl: 13.5 }, color: "#fff", fontWeight: 800,
             background: "linear-gradient(100deg,#006b4f,#218567)", boxShadow: "0 12px 28px rgba(0,107,79,.22)",
             "&:hover": { background: "linear-gradient(100deg,#075c46,#18785d)", boxShadow: "0 14px 32px rgba(0,107,79,.28)" },
             "&.Mui-disabled": { color: "#fff", opacity: .7 },
@@ -183,9 +183,9 @@ export default function LoginPage() {
         </Button>
       </Box>
 
-      <Stack direction="row" alignItems="center" justifyContent="center" gap={.7} mt={{ xs: 2.6, md: 2, xl: 2.6 }} sx={{ color: "#87958f" }}>
-        <ShieldOutlinedIcon sx={{ fontSize: 17 }} />
-        <Typography sx={{ fontSize: { xs: 11.5, md: 10.5, xl: 11.5 } }}>Acesso restrito a usuários autorizados</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="center" gap={.6} mt={{ xs: 2.6, md: 1.5, xl: 1.8 }} sx={{ color: "#87958f" }}>
+        <ShieldOutlinedIcon sx={{ fontSize: { xs: 17, md: 15, xl: 16 } }} />
+        <Typography sx={{ fontSize: { xs: 11.5, md: 10, xl: 10.5 } }}>Acesso restrito a usuários autorizados</Typography>
       </Stack>
     </Box>
   </Box>;
