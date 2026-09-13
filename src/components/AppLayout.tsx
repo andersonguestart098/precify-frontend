@@ -73,14 +73,14 @@ export default function AppLayout() {
               <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
             </IconButton>}
             <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
-              <Box component="img" src="/precify-mark.svg" alt="Precify" sx={{ width: 39, height: 39 }} />
+              <Box component="img" src="/precify-mark.svg" alt="Precify" sx={{ width: 35, height: 35 }} />
             </Box>
 
             {showSearch && <Box sx={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "center" }}>
               <Stack component="form" onSubmit={submitSearch} direction="row" alignItems="center" sx={{
                 width: { xs: "94%", md: "82%", xl: "92%" }, maxWidth: { md: 600, xl: 680 }, minHeight: { xs: 38, md: 38, xl: 42 }, bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.5, md: 1.75, xl: 2 },
                 pr: .25, boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
-                "& .MuiInputBase-input": { fontSize: { xs: 13, md: 13, xl: 14 }, py: .65 }, "& .MuiIconButton-root": { p: { xs: .7, md: .75, xl: 1 } }, "& .MuiSvgIcon-root": { fontSize: { xs: 20, md: 20, xl: 22 } }
+                "& .MuiInputBase-input": { fontSize: { xs: 13, md: 13, xl: 14 }, py: .65 }, "& .MuiIconButton-root": { p: { xs: .65, md: .7, xl: .9 } }, "& .MuiSvgIcon-root": { fontSize: { xs: 19, md: 19, xl: 21 } }
               }}>
                 <TextField fullWidth variant="standard" placeholder="Buscar materiais ou produtos" value={query} onChange={event => setQuery(event.target.value)}
                   slotProps={{ input: { disableUnderline: true }, htmlInput: { "aria-label": "Buscar materiais ou produtos" } }} />
