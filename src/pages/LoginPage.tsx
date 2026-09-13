@@ -67,12 +67,12 @@ export default function LoginPage() {
       overflow: "hidden",
       background: "linear-gradient(150deg,#006b4f 0%,#08795a 48%,#004d3a 100%)",
       "&::before": {
-        content: '""', position: "absolute", width: 520, height: 520, borderRadius: "50%",
-        left: -310, bottom: -250, border: "72px solid rgba(255,255,255,.045)",
+        content: '""', position: "absolute", width: 430, height: 430, borderRadius: "50%",
+        left: -245, bottom: -215, background: "rgba(255,255,255,.045)",
       },
       "&::after": {
-        content: '""', position: "absolute", width: 300, height: 300, borderRadius: "50%",
-        right: -190, top: -120, border: "54px solid rgba(255,255,255,.035)",
+        content: '""', position: "absolute", width: 245, height: 245, borderRadius: "50%",
+        right: -128, top: -105, background: "rgba(255,255,255,.04)",
       },
     }}>
       <Stack sx={{ position: "absolute", top: "6%", left: { md: 30, xl: 38 }, right: { md: 80, xl: 110 }, color: "#fff" }} gap={1.5}>
