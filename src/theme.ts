@@ -14,6 +14,14 @@ export const theme = createTheme({
     button: { textTransform: "none", fontWeight: 700 },
   },
   components: {
+    MuiCssBaseline: { styleOverrides: {
+      "@media (hover: hover) and (pointer: fine)": {
+        body: { cursor: "default" },
+        "input, textarea, [contenteditable='true'], .MuiInputBase-input": { cursor: "text" },
+        "button, a, [role='button'], [role='link']": { cursor: "pointer" },
+        "button:disabled, [aria-disabled='true']": { cursor: "default" },
+      },
+    } },
     MuiButton: { defaultProps: { disableElevation: true }, styleOverrides: { root: {
       borderRadius: 999, minHeight: 42, paddingInline: 20, gap: 4,
       transition: "background-color 180ms ease, box-shadow 180ms ease",
