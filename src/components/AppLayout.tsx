@@ -4,6 +4,7 @@ import { AppBar, Box, Container, IconButton, Stack, TextField, Toolbar } from "@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
 import { rememberSearch } from "../services/api";
@@ -83,6 +84,19 @@ export default function AppLayout() {
               }}>
                 <TextField fullWidth variant="standard" placeholder="Buscar materiais ou produtos" value={query} onChange={event => setQuery(event.target.value)}
                   slotProps={{ input: { disableUnderline: true }, htmlInput: { "aria-label": "Buscar materiais ou produtos" } }} />
+                <IconButton
+                  type="button"
+                  aria-label="Abrir Assistente IA"
+                  onClick={() => navigate("/ia")}
+                  sx={{
+                    color: "#006b4f",
+                    bgcolor: "rgba(0,107,79,.07)",
+                    border: "1px solid rgba(0,107,79,.08)",
+                    transition: "transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease",
+                    "&:hover": { bgcolor: "rgba(0,107,79,.12)", transform: "translateY(-1px)", boxShadow: "0 4px 10px rgba(0,107,79,.10)" },
+                    "&:active": { transform: "scale(.95)" },
+                  }}
+                ><AutoAwesomeIcon /></IconButton>
                 <IconButton type="button" aria-label="Abrir filtros" onClick={openFilters} sx={{ color: "primary.dark" }}><TuneOutlinedIcon /></IconButton>
                 <IconButton type="submit" aria-label="Buscar" sx={{ color: "primary.dark" }}><SearchIcon /></IconButton>
               </Stack>
