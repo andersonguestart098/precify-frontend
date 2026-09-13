@@ -70,7 +70,7 @@ export function SegmentCarousel({ catalog, selected, onSelect }: {
           </IconButton>
         </Tooltip>
       </Stack>
-      <Stack direction="row" gap={.5}>
+      <Stack direction="row" gap={.5} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
         <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 } }}><ChevronLeftRounded sx={{ fontSize: { md: 20, xl: 24 } }} /></IconButton>
         <IconButton size="small" aria-label="Próximos segmentos" onClick={() => move(1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 } }}><ChevronRightRounded sx={{ fontSize: { md: 20, xl: 24 } }} /></IconButton>
       </Stack>
