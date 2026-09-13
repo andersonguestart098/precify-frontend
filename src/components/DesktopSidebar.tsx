@@ -89,7 +89,7 @@ export default function DesktopSidebar() {
     boxShadow: "6px 0 24px rgba(19,56,46,.10), 1px 0 4px rgba(19,56,46,.06)", overflow: "hidden"
   }}>
     <Stack component={RouterLink} to="/inicio" direction="row" alignItems="center" gap={1} sx={{ minHeight: "var(--header-height)", flexShrink: 0, px: { md: 2, xl: 2.5 }, bgcolor: "#006b4f", color: "white", textDecoration: "none" }}>
-      <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: { md: 124, xl: 156 }, maxHeight: { md: 34, xl: 42 }, objectFit: "contain" }} />
+      <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: { md: 116, xl: 146 }, maxHeight: { md: 32, xl: 39 }, objectFit: "contain" }} />
     </Stack>
 
     <Typography variant="overline" sx={{ px: { md: 1.75, xl: 2.5 }, pt: { md: 1.7, xl: 3 }, pb: { md: .45, xl: 1 }, color: "#819088", fontSize: { md: 8.5, xl: 10 }, letterSpacing: { md: 1.2, xl: 1.5 }, "@media (max-height: 720px)": { pt: 1, pb: .2 } }}>Área de trabalho</Typography>
