@@ -22,7 +22,7 @@ export default defineConfig({
         display: "standalone",
         start_url: "/",
         icons: [
-          { src: "/precify-icon-full.svg?v=3", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }
+          { src: "/precify-icon-full.svg?v=4", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }
         ]
       }
     })
