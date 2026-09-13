@@ -70,6 +70,20 @@ const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value,
 })));
 
 let catalogCache: CatalogMaterial[] | null = null;
+let catalogRequest: Promise<CatalogMaterial[]> | null = null;
+
+function loadCatalogOnce() {
+  if (catalogCache) return Promise.resolve(catalogCache);
+  if (!catalogRequest) {
+    catalogRequest = getCatalog()
+      .then(data => {
+        catalogCache = data;
+        return data;
+      })
+      .finally(() => { catalogRequest = null; });
+  }
+  return catalogRequest;
+}
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -95,13 +109,18 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    if (catalogCache) return;
-    const controller = new AbortController();
-    getCatalog(controller.signal)
-      .then(data => { catalogCache = data; setCatalog(data); })
+    if (catalogCache) {
+      setCatalog(catalogCache);
+      setCatalogLoading(false);
+      return;
+    }
+    let mounted = true;
+    setCatalogLoading(true);
+    loadCatalogOnce()
+      .then(data => { if (mounted) setCatalog(data); })
       .catch(() => undefined)
-      .finally(() => { if (!controller.signal.aborted) setCatalogLoading(false); });
-    return () => controller.abort();
+      .finally(() => { if (mounted) setCatalogLoading(false); });
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
