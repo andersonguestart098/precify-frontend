@@ -52,20 +52,23 @@ export default function AppLayout() {
     <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#006b4f", pt: "env(safe-area-inset-top, 0px)", borderBottom: 0 }}>
       <Toolbar sx={{ minHeight: "var(--header-height) !important", px: { xs: 2.5, sm: 3, md: 2.5, xl: 3 } }}>
         <Container maxWidth="xl" disableGutters>
-          <Stack direction="row" alignItems="center" gap={{ xs: .65, md: 1.25, xl: 1.5 }}>
-            {location.pathname !== "/inicio" && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{
-              color: "rgba(255,255,255,.88)",
-              width: 28,
-              height: 28,
-              ml: -.45,
-              mr: .05,
-              p: 0,
-              display: { xs: "inline-flex", md: "none" },
-              borderRadius: 999,
-              transition: "background-color 160ms ease, color 160ms ease, transform 160ms ease",
-              "&:hover": { bgcolor: "rgba(255,255,255,.08)", color: "#fff" },
-              "&:active": { transform: "scale(.94)" },
-            }}>
+          <Stack direction="row" alignItems="center" gap={{ xs: .5, md: 1.25, xl: 1.5 }}>
+            {location.pathname !== "/inicio" && <IconButton
+              aria-label="Voltar"
+              onClick={() => navigate(-1)}
+              sx={{
+                width: 28,
+                height: 28,
+                p: 0,
+                ml: -.35,
+                mr: .1,
+                color: "rgba(255,255,255,.86)",
+                display: { xs: "inline-flex", md: "none" },
+                transition: "background-color 160ms ease, color 160ms ease, transform 120ms ease",
+                "&:hover": { bgcolor: "rgba(255,255,255,.08)", color: "#fff" },
+                "&:active": { bgcolor: "rgba(255,255,255,.12)", transform: "scale(.94)" },
+                "&.Mui-focusVisible": { outline: "2px solid rgba(255,255,255,.45)", outlineOffset: 1 }
+              }}>
               <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
             </IconButton>}
             <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
