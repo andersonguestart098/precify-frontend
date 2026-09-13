@@ -88,8 +88,8 @@ export default function PlanningPage() {
     } finally { setBusy(false); }
   };
 
-  return <Container maxWidth="lg" component="main" sx={{ py: { xs: 3, md: 5 } }}>
-    <Box sx={{ maxWidth: 980, mx: "auto" }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 3, md: 5 } }}>
+    <Box sx={{ maxWidth: 1160, mx: "auto" }}>
       <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.4 }}>Planejamento</Typography>
