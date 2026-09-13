@@ -114,29 +114,29 @@ export default function LoginPage() {
       left: { md: "var(--login-panel-width)" },
       top: { md: "50%" },
       transform: { md: "translate(-50%,-50%)" },
-      width: { xs: "100%", sm: 430, md: 350, xl: 382 },
+      width: { xs: "100%", sm: 430, md: 390, xl: 420 },
       maxWidth: "100%",
       bgcolor: "rgba(255,255,255,.98)",
       border: "1px solid rgba(19,56,46,.08)",
       borderRadius: { xs: 3, md: 2.5, xl: 2.7 },
       boxShadow: "0 24px 65px rgba(17,54,43,.16),0 3px 12px rgba(17,54,43,.08)",
-      px: { xs: 3, sm: 4, md: 2.75, xl: 3.25 },
-      py: { xs: 3.5, sm: 4.4, md: 4.2, xl: 4.6 },
+      px: { xs: 3, sm: 4, md: 3.4, xl: 3.8 },
+      py: { xs: 3.5, sm: 4.4, md: 5, xl: 5.5 },
     }}>
       <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: { xs: "block", md: "none" }, width: 172, height: "auto", mb: 3 }} />
-      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 1.8, xl: 2.2 }, fontSize: { xs: 14, md: 12, xl: 13 }, lineHeight: 1.48 }}>
+      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 2.3, xl: 2.7 }, fontSize: { xs: 14, md: 12.5, xl: 13.5 }, lineHeight: 1.5 }}>
         Acesse sua conta e continue encontrando os melhores materiais para a sua obra.
       </Typography>
 
       <Box component="form" onSubmit={submit}>
-        <Stack gap={{ xs: 1.6, md: 1.05, xl: 1.25 }}>
+        <Stack gap={{ xs: 1.6, md: 1.25, xl: 1.4 }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             required fullWidth placeholder="Seu e-mail" type="email" autoComplete="username"
             value={email} onChange={e => setEmail(e.target.value)}
             slotProps={{ input: { startAdornment: <InputAdornment position="start"><MailOutlineIcon sx={{ color: "#6f817a", fontSize: { xs: 20, md: 18, xl: 19 } }} /></InputAdornment> } }}
             sx={{
-              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 41, xl: 44 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
+              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 44, xl: 47 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
               "& input": { fontSize: { xs: 14.5, md: 12.5, xl: 13.5 } },
             }}
           />
@@ -148,13 +148,13 @@ export default function LoginPage() {
               endAdornment: <InputAdornment position="end"><IconButton aria-label={visible ? "Ocultar senha" : "Mostrar senha"} onClick={() => setVisible(!visible)} edge="end" size="small">{visible ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}</IconButton></InputAdornment>,
             } }}
             sx={{
-              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 41, xl: 44 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
+              "& .MuiOutlinedInput-root": { height: { xs: 50, md: 44, xl: 47 }, borderRadius: 2.15, bgcolor: "#fbfcfc" },
               "& input": { fontSize: { xs: 14.5, md: 12.5, xl: 13.5 } },
             }}
           />
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.25} mb={{ xs: 2, md: 1.25, xl: 1.5 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.4} mb={{ xs: 2, md: 1.6, xl: 1.8 }}>
           <FormControlLabel
             sx={{ mr: 0, "& .MuiFormControlLabel-label": { lineHeight: 1.1 } }}
             control={<Checkbox checked={remember} onChange={e => setRemember(e.target.checked)} size="small" />}
@@ -172,7 +172,7 @@ export default function LoginPage() {
         <Button
           type="submit" fullWidth loading={busy} loadingPosition="end" endIcon={<ArrowForwardIcon />}
           sx={{
-            height: { xs: 48, md: 40, xl: 43 }, borderRadius: 2.15, textTransform: "none",
+            height: { xs: 48, md: 43, xl: 46 }, borderRadius: 2.15, textTransform: "none",
             fontSize: { xs: 15, md: 12.5, xl: 13.5 }, color: "#fff", fontWeight: 800,
             background: "linear-gradient(100deg,#006b4f,#218567)", boxShadow: "0 12px 28px rgba(0,107,79,.22)",
             "&:hover": { background: "linear-gradient(100deg,#075c46,#18785d)", boxShadow: "0 14px 32px rgba(0,107,79,.28)" },
@@ -183,7 +183,7 @@ export default function LoginPage() {
         </Button>
       </Box>
 
-      <Stack direction="row" alignItems="center" justifyContent="center" gap={.6} mt={{ xs: 2.6, md: 1.5, xl: 1.8 }} sx={{ color: "#87958f" }}>
+      <Stack direction="row" alignItems="center" justifyContent="center" gap={.6} mt={{ xs: 2.6, md: 2, xl: 2.2 }} sx={{ color: "#87958f" }}>
         <ShieldOutlinedIcon sx={{ fontSize: { xs: 17, md: 15, xl: 16 } }} />
         <Typography sx={{ fontSize: { xs: 11.5, md: 10, xl: 10.5 } }}>Acesso restrito a usuários autorizados</Typography>
       </Stack>
