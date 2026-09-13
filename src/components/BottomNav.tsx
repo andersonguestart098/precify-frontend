@@ -52,7 +52,7 @@ export function BottomNav() {
             "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: -3 }
           }}>
           {featured ? <Box sx={{
-            mt: -4.2, width: 58, height: 58, display: "grid", placeItems: "center", borderRadius: "50%", position: "relative",
+            mt: -4.05, width: 56, height: 56, display: "grid", placeItems: "center", borderRadius: "50%", position: "relative",
             filter: "drop-shadow(0 5px 9px rgba(24,60,48,.16))",
             "&::before": {
               content: '""', position: "absolute", inset: 0, borderRadius: "inherit",
@@ -66,7 +66,7 @@ export function BottomNav() {
             }
           }}>
             <Box sx={{
-              width: 54, height: 54, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff",
+              width: 52, height: 52, display: "grid", placeItems: "center", borderRadius: "50%", color: "#fff",
               bgcolor: active ? "#13382e" : "#006b4f", position: "relative", zIndex: 1,
               boxShadow: "inset 0 0 0 1px rgba(255,255,255,.24)"
             }}>
@@ -84,7 +84,7 @@ export function BottomNav() {
                 }
               }}>
                 <DisplayIcon className="ai-spark-icon" sx={{
-                  fontSize: 27, filter: "drop-shadow(0 0 0 rgba(255,255,255,0))",
+                  fontSize: 25, filter: "drop-shadow(0 0 0 rgba(255,255,255,0))",
                   animation: "aiSparkBreath 3.6s ease-in-out infinite",
                   "@keyframes aiSparkBreath": {
                     "0%, 100%": { opacity: .88, transform: "scale(.96)", filter: "drop-shadow(0 0 0 rgba(255,255,255,0))" },
@@ -94,7 +94,7 @@ export function BottomNav() {
               </Box>
             </Box>
           </Box> : <DisplayIcon sx={{
-            fontSize: 22, transform: active ? "scale(1.1)" : "scale(1)",
+            fontSize: 21, transform: active ? "scale(1.08)" : "scale(1)",
             transition: "transform 280ms cubic-bezier(.2,.8,.2,1)"
           }} />}
           <Typography noWrap sx={{ maxWidth: "100%", fontSize: 10, fontWeight: active ? 700 : 500 }}>{label}</Typography>
