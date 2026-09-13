@@ -4,16 +4,18 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import {
-  Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
+  Alert, Autocomplete, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, InputAdornment, List, ListItemButton, ListItemIcon, ListItemText, MenuItem, Stack, TextField, Typography
 } from "@mui/material";
 import type { CatalogResult } from "../domain/search";
 import type { Composition } from "../domain/composition";
-import { addCompositionItem, createComposition, listCompositions } from "../services/api";
+import { addCompositionItem, createComposition, listCompositions, listProjects, type Project } from "../services/api";
 import { ProtectedImage } from "./ProtectedImage";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const units = ["un", "m²", "m", "kg", "L", "saco", "caixa"];
+const UNASSIGNED = "__unassigned__";
+type ProjectOption = { id: string; label: string };
 
 export function AddToCompositionDialog({ open, result, onClose }: {
   open: boolean;
@@ -21,6 +23,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
   onClose: () => void;
 }) {
   const [compositions, setCompositions] = useState<Composition[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -30,24 +33,40 @@ export function AddToCompositionDialog({ open, result, onClose }: {
   const [error, setError] = useState("");
   const [savedName, setSavedName] = useState("");
   const [compositionQuery, setCompositionQuery] = useState("");
+  const [projectFilter, setProjectFilter] = useState("");
 
   const featured = useMemo(() => [...result.offers].sort((a, b) =>
     a.quote.value - b.quote.value || a.productId.localeCompare(b.productId))[0], [result.offers]);
   const photo = result.imageUrl || featured?.imageUrl || result.material.imageUrl;
+  const assignedIds = useMemo(() => new Set(projects.flatMap(project => project.compositionIds)), [projects]);
+  const projectOptions = useMemo<ProjectOption[]>(() => [
+    { id: "", label: "Todas as obras" },
+    ...projects.map(project => ({ id: project.id, label: project.name })),
+    { id: UNASSIGNED, label: "Sem obra vinculada" },
+  ], [projects]);
   const filteredCompositions = useMemo(() => {
     const query = compositionQuery.trim().toLocaleLowerCase("pt-BR");
-    if (!query) return compositions;
-    return compositions.filter(composition => composition.name.toLocaleLowerCase("pt-BR").includes(query));
-  }, [compositions, compositionQuery]);
+    return compositions.filter(composition => {
+      if (query && !composition.name.toLocaleLowerCase("pt-BR").includes(query)) return false;
+      if (!projectFilter) return true;
+      if (projectFilter === UNASSIGNED) return !assignedIds.has(composition.id);
+      const project = projects.find(item => item.id === projectFilter);
+      return project ? project.compositionIds.includes(composition.id) : true;
+    });
+  }, [compositions, compositionQuery, projectFilter, projects, assignedIds]);
 
   useEffect(() => {
     if (!open) return;
     const controller = new AbortController();
-    setLoading(true); setError(""); setSavedName(""); setCreating(false); setNewName(""); setCompositionQuery("");
-    listCompositions(controller.signal)
-      .then(setCompositions)
+    setLoading(true); setError(""); setSavedName(""); setCreating(false); setNewName(""); setCompositionQuery(""); setProjectFilter("");
+    Promise.all([listCompositions(controller.signal), listProjects()])
+      .then(([lists, works]) => {
+        if (controller.signal.aborted) return;
+        setCompositions(lists);
+        setProjects(works);
+      })
       .catch(err => { if (err.name !== "AbortError") setError(err.message); })
-      .finally(() => setLoading(false));
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [open]);
 
@@ -131,24 +150,40 @@ export function AddToCompositionDialog({ open, result, onClose }: {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
         <Box>
           <Typography fontWeight={850} color="#284d40" fontSize={13.5}>Suas composições</Typography>
-          <Typography color="text.secondary" fontSize={11.5}>{compositions.length} {compositions.length === 1 ? "lista disponível" : "listas disponíveis"}</Typography>
+          <Typography color="text.secondary" fontSize={11.5}>
+            {filteredCompositions.length === compositions.length ? `${compositions.length} ${compositions.length === 1 ? "lista disponível" : "listas disponíveis"}` : `${filteredCompositions.length} de ${compositions.length} listas`}
+          </Typography>
         </Box>
       </Stack>
 
-      {!loading && compositions.length > 0 && <TextField
-        fullWidth
-        size="small"
-        value={compositionQuery}
-        onChange={event => setCompositionQuery(event.target.value)}
-        placeholder="Buscar composição..."
-        aria-label="Buscar composição"
-        slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ fontSize: 19, color: "#5f776f" }} /></InputAdornment> } }}
-        sx={{ mb: 1, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#f8faf9", "& fieldset": { borderColor: "#dfe8e5" } } }}
-      />}
+      {!loading && compositions.length > 0 && <Stack gap={.8} mb={1}>
+        <TextField
+          fullWidth
+          size="small"
+          value={compositionQuery}
+          onChange={event => setCompositionQuery(event.target.value)}
+          placeholder="Buscar composição..."
+          aria-label="Buscar composição"
+          slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon sx={{ fontSize: 19, color: "#5f776f" }} /></InputAdornment> } }}
+          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#f8faf9", "& fieldset": { borderColor: "#dfe8e5" } } }}
+        />
+        <Autocomplete
+          size="small"
+          disableClearable
+          options={projectOptions}
+          value={projectOptions.find(option => option.id === projectFilter) ?? projectOptions[0]}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(_, option) => setProjectFilter(option.id)}
+          noOptionsText="Nenhuma obra encontrada"
+          slotProps={{ listbox: { sx: { maxHeight: 190, overflowY: "auto" } } }}
+          renderInput={params => <TextField {...params} label="Filtrar por obra" placeholder="Digite para buscar" />}
+          sx={{ "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#f8faf9", "& fieldset": { borderColor: "#dfe8e5" } } }}
+        />
+      </Stack>}
 
       {loading ? <Box display="grid" sx={{ placeItems: "center", minHeight: 130 }}><CircularProgress size={28} /></Box> :
         <Box sx={{ border: compositions.length ? "1px solid #e1ebe7" : 0, borderRadius: 3, overflow: "hidden", bgcolor: "#fff" }}>
-          <List disablePadding sx={{ maxHeight: 250, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "#b9cbc5 transparent" }}>
+          <List disablePadding sx={{ maxHeight: 186, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "#b9cbc5 transparent" }}>
             {filteredCompositions.map((composition, index) => {
               const saved = savedName === composition.name;
               return <ListItemButton key={composition.id} disabled={Boolean(savingId)} onClick={() => addTo(composition)}
@@ -176,7 +211,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
             </Box>}
             {compositions.length > 0 && !filteredCompositions.length && <Box sx={{ py: 2.5, textAlign: "center" }}>
               <Typography fontWeight={750} color="#34574b" fontSize={14}>Nenhuma composição encontrada.</Typography>
-              <Typography color="text.secondary" fontSize={12.5} mt={.25}>Tente buscar por outro nome.</Typography>
+              <Typography color="text.secondary" fontSize={12.5} mt={.25}>Tente outro nome ou altere o filtro de obra.</Typography>
             </Box>}
           </List>
         </Box>}
