@@ -126,8 +126,8 @@ export default function CompositionsPage() {
     finally { setBusy(""); }
   };
 
-  return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.5, md: 5 } }}>
-    <Box sx={{ maxWidth: 980, mx: "auto" }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.5, md: 5 } }}>
+    <Box sx={{ maxWidth: 1160, mx: "auto" }}>
       <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" color="primary" fontWeight={850}>Meu planejamento</Typography>
