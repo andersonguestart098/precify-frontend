@@ -116,20 +116,25 @@ export default function LoginPage() {
       transform: { md: "translate(-50%,-50%)" },
       width: { xs: "100%", sm: 430, md: 390, xl: 420 },
       maxWidth: "100%",
+      minHeight: { md: 330, xl: 360 },
+      boxSizing: "border-box",
+      display: { xs: "block", md: "flex" },
+      flexDirection: "column",
+      justifyContent: { md: "center" },
       bgcolor: "rgba(255,255,255,.98)",
       border: "1px solid rgba(19,56,46,.08)",
       borderRadius: { xs: 3, md: 2.5, xl: 2.7 },
       boxShadow: "0 24px 65px rgba(17,54,43,.16),0 3px 12px rgba(17,54,43,.08)",
       px: { xs: 3, sm: 4, md: 3.4, xl: 3.8 },
-      py: { xs: 3.5, sm: 4.4, md: 5, xl: 5.5 },
+      py: { xs: 3.5, sm: 4.4, md: 5.4, xl: 5.9 },
     }}>
       <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: { xs: "block", md: "none" }, width: 172, height: "auto", mb: 3 }} />
-      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 2.3, xl: 2.7 }, fontSize: { xs: 14, md: 12.5, xl: 13.5 }, lineHeight: 1.5 }}>
+      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 2.6, xl: 3 }, fontSize: { xs: 14, md: 12.5, xl: 13.5 }, lineHeight: 1.5 }}>
         Acesse sua conta e continue encontrando os melhores materiais para a sua obra.
       </Typography>
 
       <Box component="form" onSubmit={submit}>
-        <Stack gap={{ xs: 1.6, md: 1.25, xl: 1.4 }}>
+        <Stack gap={{ xs: 1.6, md: 1.45, xl: 1.6 }}>
           {error && <Alert severity="error">{error}</Alert>}
           <TextField
             required fullWidth placeholder="Seu e-mail" type="email" autoComplete="username"
@@ -154,7 +159,7 @@ export default function LoginPage() {
           />
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.4} mb={{ xs: 2, md: 1.6, xl: 1.8 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mt={.6} mb={{ xs: 2, md: 1.9, xl: 2.1 }}>
           <FormControlLabel
             sx={{ mr: 0, "& .MuiFormControlLabel-label": { lineHeight: 1.1 } }}
             control={<Checkbox checked={remember} onChange={e => setRemember(e.target.checked)} size="small" />}
@@ -183,7 +188,7 @@ export default function LoginPage() {
         </Button>
       </Box>
 
-      <Stack direction="row" alignItems="center" justifyContent="center" gap={.6} mt={{ xs: 2.6, md: 2, xl: 2.2 }} sx={{ color: "#87958f" }}>
+      <Stack direction="row" alignItems="center" justifyContent="center" gap={.6} mt={{ xs: 2.6, md: 2.5, xl: 2.8 }} sx={{ color: "#87958f" }}>
         <ShieldOutlinedIcon sx={{ fontSize: { xs: 17, md: 15, xl: 16 } }} />
         <Typography sx={{ fontSize: { xs: 11.5, md: 10, xl: 10.5 } }}>Acesso restrito a usuários autorizados</Typography>
       </Stack>
