@@ -141,7 +141,7 @@ export default function HomePage() {
       <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { md: .5, xl: 2 } }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
         <Typography id="project-type-title" variant="h6" fontWeight={800} sx={{ fontSize: { md: 17, xl: 20 } }}>O que você vai construir?</Typography>
-        <Stack direction="row" gap={.25}>
+        <Stack direction="row" gap={.25} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
           <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
             <ChevronLeftRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
           </ButtonBase>
