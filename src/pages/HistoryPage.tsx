@@ -48,8 +48,8 @@ export default function HistoryPage() {
     finally { setBusy(false); }
   };
 
-  return <Container maxWidth="lg" component="main" sx={{ py: { xs: 3, md: 6 } }}>
-    <Box sx={{ maxWidth: 900, mx: "auto" }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 3, md: 6 } }}>
+    <Box sx={{ maxWidth: 1100, mx: "auto" }}>
       <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.4 }}>Sua atividade</Typography>
@@ -57,7 +57,7 @@ export default function HistoryPage() {
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             Histórico de buscas
           </Typography>
-          <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 640, lineHeight: 1.7 }}>
+          <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 700, lineHeight: 1.7 }}>
             Retome pesquisas recentes e acesse rapidamente os termos que você consulta com mais frequência.
           </Typography>
         </Box>
