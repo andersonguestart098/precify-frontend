@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   Alert, Box, Button, Checkbox, FormControlLabel, IconButton, InputAdornment, Link,
   Stack, TextField, Typography,
@@ -16,7 +16,6 @@ import { useSession } from "../auth/session";
 export default function LoginPage() {
   const session = useSession();
   const navigate = useNavigate();
-  const location = useLocation();
   const [email, setEmail] = useState(() => localStorage.getItem("precify-remembered-email") ?? "");
   const [remember, setRemember] = useState(() => Boolean(localStorage.getItem("precify-remembered-email")));
   const [password, setPassword] = useState("");
@@ -24,8 +23,7 @@ export default function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [help, setHelp] = useState(false);
-  const from = (location.state as { from?: string } | null)?.from;
-  const destination = from?.startsWith("/") && !from.startsWith("//") && !from.startsWith("/login") ? from : "/busca";
+  const destination = "/inicio";
 
   if (session.user) return <Navigate to={destination} replace />;
 
