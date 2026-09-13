@@ -150,7 +150,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               </Stack>
             </Box> : <Typography color="text.secondary" sx={{ fontSize: { xs: 12, md: 10.5, xl: 13 }, fontWeight: 600 }}>Cotação pendente</Typography>}
 
-            <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
               <Button
                 onClick={() => setCompositionOpen(true)}
                 startIcon={<PlaylistAddRoundedIcon />}
@@ -158,17 +158,38 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                 disableElevation
                 sx={{
                   order: 1,
-                  flex: { sm: 1 },
-                  minHeight: { xs: 36, md: 30, xl: 36 },
-                  px: { xs: 1.25, md: 1, xl: 1.35 },
+                  flex: { sm: "0 0 auto" },
+                  alignSelf: { sm: "flex-start" },
+                  minHeight: { xs: 36, md: 28, xl: 34 },
+                  px: { xs: 1.4, md: 1.05, xl: 1.3 },
                   borderRadius: 999,
                   textTransform: "none",
                   whiteSpace: "nowrap",
-                  fontWeight: 800,
-                  fontSize: { xs: 11.5, md: 10, xl: 12 },
-                  background: "linear-gradient(105deg,#006b4f,#218567)",
-                  "&:hover": { background: "linear-gradient(105deg,#075c46,#18785d)" },
-                  "& .MuiButton-startIcon": { mr: .55, "& svg": { fontSize: { md: 16, xl: 18 } } },
+                  fontWeight: 850,
+                  letterSpacing: "-.01em",
+                  fontSize: { xs: 11.5, md: 9.5, xl: 11.25 },
+                  color: "#fff",
+                  border: "1px solid rgba(0,82,61,.12)",
+                  background: "linear-gradient(105deg,#087458 0%,#078b67 100%)",
+                  boxShadow: "0 4px 11px rgba(0,107,79,.18)",
+                  transition: "transform 160ms ease, box-shadow 160ms ease, background 160ms ease",
+                  "&:hover": {
+                    background: "linear-gradient(105deg,#075f49 0%,#087b5d 100%)",
+                    boxShadow: "0 6px 14px rgba(0,107,79,.22)",
+                    transform: "translateY(-1px)",
+                  },
+                  "&:active": { transform: "translateY(0) scale(.985)", boxShadow: "0 2px 7px rgba(0,107,79,.16)" },
+                  "& .MuiButton-startIcon": {
+                    mr: { xs: .65, md: .5, xl: .6 },
+                    width: { xs: 22, md: 18, xl: 20 },
+                    height: { xs: 22, md: 18, xl: 20 },
+                    borderRadius: "50%",
+                    display: "grid",
+                    placeItems: "center",
+                    bgcolor: "rgba(255,255,255,.13)",
+                    "& svg": { fontSize: { xs: 15, md: 13, xl: 14 } },
+                  },
+                  "&.Mui-focusVisible": { outline: "3px solid #006b4f40", outlineOffset: 2 },
                 }}
               >
                 Adicionar à composição
