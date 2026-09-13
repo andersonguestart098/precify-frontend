@@ -36,6 +36,8 @@ export default function DesktopSidebar() {
 
   const renderLinks = (links: typeof workspaceLinks | typeof institutionalLinks) => links.map(({ to, label, icon: Icon }) => {
     const active = pathname === to || (to === "/produtos" && pathname.startsWith("/produtos/"));
+    const aiLink = to === "/ia";
+
     return <ListItemButton
       key={to}
       component={RouterLink}
@@ -49,11 +51,34 @@ export default function DesktopSidebar() {
         px: { md: 1.15, xl: 2 },
         py: { md: .25, xl: .7 },
         color: active ? "#13382e" : "#576a64",
+        overflow: "visible",
         "&.Mui-selected": { background: "linear-gradient(100deg,#e4f4ef,#f2f9f7)" },
+        ...(aiLink ? {
+          "&.Mui-selected": {
+            background: "linear-gradient(100deg,rgba(216,248,237,.98),rgba(238,251,247,.96))",
+            boxShadow: "inset 0 0 0 1px rgba(38,155,120,.08),0 5px 16px rgba(0,107,79,.08)",
+          },
+        } : {}),
         "@media (max-height: 720px)": { minHeight: 31, py: 0, mb: .08 },
       }}
     >
-      <ListItemIcon sx={{ minWidth: { md: 29, xl: 35 }, color: "inherit" }}><Icon sx={{ fontSize: { md: 18, xl: 21 } }} /></ListItemIcon>
+      <ListItemIcon sx={{ minWidth: { md: 29, xl: 35 }, color: "inherit", overflow: "visible" }}>
+        {aiLink ? <Box sx={{
+          width: { md: 25, xl: 30 }, height: { md: 25, xl: 30 }, borderRadius: "50%", display: "grid", placeItems: "center",
+          color: "#fff", position: "relative", flexShrink: 0,
+          background: active ? "linear-gradient(145deg,#174d3d,#08775a)" : "linear-gradient(145deg,#17684f,#0b523f)",
+          boxShadow: active ? "0 0 0 2px rgba(116,231,194,.20),0 0 15px rgba(45,201,150,.38)" : "0 0 0 1px rgba(38,155,120,.14),0 0 8px rgba(45,201,150,.18)",
+          "&::before": {
+            content: '""', position: "absolute", inset: -3, borderRadius: "50%", opacity: active ? .9 : .45,
+            background: "conic-gradient(from 0deg,transparent,#82e8c6,transparent 35%,#d7f8ed 50%,transparent 68%,#43ba91,transparent)",
+            zIndex: -1, animation: "sidebarAiOrbit 10s linear infinite",
+          },
+          "@keyframes sidebarAiOrbit": { to: { transform: "rotate(360deg)" } },
+          "@media (prefers-reduced-motion: reduce)": { "&::before": { animation: "none" } },
+        }}>
+          <Icon sx={{ fontSize: { md: 15, xl: 18 }, filter: active ? "drop-shadow(0 0 3px rgba(255,255,255,.55))" : "none" }} />
+        </Box> : <Icon sx={{ fontSize: { md: 18, xl: 21 } }} />}
+      </ListItemIcon>
       <ListItemText primary={label} primaryTypographyProps={{ fontSize: { md: 11.5, xl: 13 }, fontWeight: active ? 750 : 550, lineHeight: 1.15 }} />
     </ListItemButton>;
   });
