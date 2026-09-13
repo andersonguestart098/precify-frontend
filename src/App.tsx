@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Alert, Box, Button, CircularProgress, Stack } from "@mui/material";
 import { SessionProvider } from "./auth/SessionProvider";
@@ -27,12 +28,18 @@ function ProtectedRoute({ admin = false }: { admin?: boolean }) {
   return <Outlet />;
 }
 function SessionRoutes() {
-  const { checking, error, retry, signOut } = useSession();
+  const { checking, error, retry, signOut, user } = useSession();
+  const location = useLocation();
+  const entryRedirectDone = useRef(false);
   if (checking) return <Stack minHeight="100dvh" alignItems="center" justifyContent="center" gap={4} sx={{ bgcolor: "#006b4f" }}><Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: "min(65vw,280px)", height: "auto" }} /><CircularProgress size={24} aria-label="Validando sessão" sx={{ color: "#fff" }} /></Stack>;
   if (error) return <Stack gap={2} sx={{ maxWidth: 440, mx: "auto", mt: 10, p: 3 }}>
     <Alert severity="error">Não foi possível validar sua sessão. Verifique sua conexão.</Alert>
     <Button variant="contained" onClick={retry}>Tentar novamente</Button><Button onClick={signOut}>Voltar ao login</Button>
   </Stack>;
+  if (user && !entryRedirectDone.current) {
+    entryRedirectDone.current = true;
+    if (location.pathname !== "/inicio") return <Navigate to="/inicio" replace />;
+  }
   return <Routes>
     <Route path="/login" element={<LoginPage />} />
     <Route element={<ProtectedRoute />}>
