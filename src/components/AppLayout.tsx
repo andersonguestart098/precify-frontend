@@ -89,12 +89,22 @@ export default function AppLayout() {
                   aria-label="Abrir Assistente IA"
                   onClick={() => navigate("/ia")}
                   sx={{
-                    color: "#006b4f",
-                    bgcolor: "rgba(0,107,79,.07)",
-                    border: "1px solid rgba(0,107,79,.08)",
-                    transition: "transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease",
-                    "&:hover": { bgcolor: "rgba(0,107,79,.12)", transform: "translateY(-1px)", boxShadow: "0 4px 10px rgba(0,107,79,.10)" },
-                    "&:active": { transform: "scale(.95)" },
+                    color: "#007a59",
+                    bgcolor: "transparent",
+                    border: 0,
+                    transition: "color 160ms ease, transform 160ms ease",
+                    "& .MuiSvgIcon-root": {
+                      filter: "drop-shadow(0 0 2px rgba(38,155,120,.42)) drop-shadow(0 0 5px rgba(38,155,120,.18))",
+                      animation: "aiSparkle 2.4s ease-in-out infinite",
+                    },
+                    "&:hover": { bgcolor: "transparent", color: "#00906a", transform: "translateY(-1px)" },
+                    "&:hover .MuiSvgIcon-root": { filter: "drop-shadow(0 0 3px rgba(38,155,120,.72)) drop-shadow(0 0 8px rgba(38,155,120,.32))" },
+                    "&:active": { bgcolor: "transparent", transform: "scale(.95)" },
+                    "@keyframes aiSparkle": {
+                      "0%, 100%": { transform: "scale(1) rotate(0deg)", opacity: .92 },
+                      "50%": { transform: "scale(1.08) rotate(5deg)", opacity: 1 },
+                    },
+                    "@media (prefers-reduced-motion: reduce)": { "& .MuiSvgIcon-root": { animation: "none" } },
                   }}
                 ><AutoAwesomeIcon /></IconButton>
                 <IconButton type="button" aria-label="Abrir filtros" onClick={openFilters} sx={{ color: "primary.dark" }}><TuneOutlinedIcon /></IconButton>
