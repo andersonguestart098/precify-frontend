@@ -123,10 +123,7 @@ export default function LoginPage() {
       p: { xs: 3, sm: 4, md: 3.25, xl: 4 },
     }}>
       <Box component="img" src="/precify-logo-green.svg" alt="Precify" sx={{ display: { xs: "block", md: "none" }, width: 172, height: "auto", mb: 3 }} />
-      <Typography component="h1" sx={{ fontSize: { xs: 26, md: 25, xl: 28 }, fontWeight: 850, letterSpacing: "-.035em", color: "#13382e" }}>
-        Entrar no Precify
-      </Typography>
-      <Typography color="text.secondary" sx={{ mt: .8, mb: { xs: 3, md: 2.4, xl: 3 }, fontSize: { xs: 14, md: 13, xl: 14 }, lineHeight: 1.5 }}>
+      <Typography color="text.secondary" sx={{ mb: { xs: 3, md: 2.4, xl: 3 }, fontSize: { xs: 14, md: 13, xl: 14 }, lineHeight: 1.5 }}>
         Acesse sua conta e continue encontrando os melhores materiais para a sua obra.
       </Typography>
 
