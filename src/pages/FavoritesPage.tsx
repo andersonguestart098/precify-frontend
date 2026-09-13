@@ -20,7 +20,7 @@ export default function FavoritesPage() {
       .finally(() => { if (!c.signal.aborted) setLoading(false); });
     return () => c.abort();
   }, [page, revision]);
-  return <Container maxWidth="sm" component="main" sx={{ py: { xs: 3, md: 5 } }}>
+  return <Container maxWidth="md" component="main" sx={{ py: { xs: 3, md: 5 }, maxWidth: { md: 980 } }}>
     <Typography variant="overline" color="primary" fontWeight={800}>Favoritos</Typography>
     <Typography component="h1" variant="h5" fontWeight={800} mb={.5}>
       {loading ? "Carregando..." : `${response?.totalElements ?? 0} produto(s) salvo(s)`}
