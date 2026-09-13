@@ -133,11 +133,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
     <DialogTitle sx={{ px: { xs: 2.25, sm: 3 }, pt: { xs: 2.2, sm: 2.6 }, pb: { xs: 1.55, sm: 1.8 } }}>
       <Stack direction="row" alignItems="flex-start" justifyContent="space-between" gap={2}>
         <Box minWidth={0}>
-          <Typography variant="overline" color="primary" fontWeight={850} letterSpacing={1.15} lineHeight={1.1}>
-            Lista de compra
-          </Typography>
           <Typography component="div" sx={{
-            mt: .35,
             fontSize: { xs: 22, sm: 25 },
             lineHeight: 1.12,
             fontWeight: 900,
