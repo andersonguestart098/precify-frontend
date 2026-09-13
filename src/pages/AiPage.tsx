@@ -43,7 +43,7 @@ export default function AiPage() {
       position: "relative",
       zIndex: 1,
       width: "100%",
-      maxWidth: { xs: 520, md: 760, xl: 900 },
+      maxWidth: { xs: 520, md: 980, xl: 1100 },
       mx: "auto",
       my: "auto",
     }} alignItems="center">
@@ -97,7 +97,7 @@ export default function AiPage() {
       </Typography>
 
       <Typography textAlign="center" sx={{
-        maxWidth: 560,
+        maxWidth: 620,
         mt: { xs: .85, md: .7, xl: .85 },
         color: "rgba(245,255,252,.74)",
         fontSize: { xs: 12, md: 11.8, xl: 13.5 },
@@ -108,7 +108,7 @@ export default function AiPage() {
 
       <Paper elevation={0} sx={{
         width: "100%",
-        maxWidth: { md: 620, xl: 680 },
+        maxWidth: { md: 780, xl: 860 },
         mt: { xs: 2.4, md: 2.2, xl: 2.8 },
         p: { xs: .5, md: .5, xl: .6 },
         borderRadius: 999,
