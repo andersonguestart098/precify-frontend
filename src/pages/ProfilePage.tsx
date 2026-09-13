@@ -4,7 +4,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import {
   Alert, Avatar, Box, Button, Chip, Container, Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, InputAdornment, MenuItem, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography
+  Divider, IconButton, InputAdornment, MenuItem, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography
 } from "@mui/material";
 import { useAccount, useSession } from "../auth/session";
 import { createUser, listUsers, updateUserActive, type Account } from "../services/api";
@@ -113,13 +113,34 @@ export default function ProfilePage() {
       </Box>
 
       {user.role === "ADMIN" ? <Box minWidth={0}>
-        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={2}>
-          <Box>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={1.5}>
+          <Box minWidth={0}>
             <Typography sx={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 1.35, color: "#70867e", fontWeight: 850 }}>Administração</Typography>
             <Typography component="h2" sx={{ mt: .5, fontSize: { xs: 24, md: 30 }, fontWeight: 850, letterSpacing: "-.03em", color: "#183f33" }}>Usuários da conta</Typography>
             <Typography sx={{ mt: .5, maxWidth: 620, color: "#687b74", fontSize: 14.5, lineHeight: 1.65 }}>Crie acessos, consulte a equipe e inative usuários sem remover o histórico.</Typography>
           </Box>
-          <Button variant="contained" startIcon={<PersonAddAltOutlinedIcon />} onClick={() => setCreateOpen(true)} sx={{ borderRadius: 999, px: 2.4, alignSelf: { xs: "stretch", sm: "auto" } }}>Novo usuário</Button>
+          <Tooltip title="Adicionar usuário" arrow>
+            <IconButton
+              aria-label="Adicionar usuário"
+              onClick={() => setCreateOpen(true)}
+              sx={{
+                mt: { xs: .25, sm: .5 },
+                width: { xs: 44, md: 46 },
+                height: { xs: 44, md: 46 },
+                flexShrink: 0,
+                color: "#fff",
+                bgcolor: "#006b4f",
+                border: "1px solid rgba(255,255,255,.26)",
+                boxShadow: "0 7px 18px rgba(0,107,79,.20)",
+                transition: "transform 160ms ease,box-shadow 160ms ease,background-color 160ms ease",
+                "&:hover": { bgcolor: "#075c47", transform: "translateY(-1px)", boxShadow: "0 9px 22px rgba(0,107,79,.26)" },
+                "&:active": { transform: "scale(.96)" },
+                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+              }}
+            >
+              <PersonAddAltOutlinedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+            </IconButton>
+          </Tooltip>
         </Stack>
 
         {(userError || success) && <Stack mt={2} gap={1}>{userError && <Alert severity="error">{userError}</Alert>}{success && <Alert severity="success">{success}</Alert>}</Stack>}
