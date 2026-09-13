@@ -116,8 +116,9 @@ export default function AppLayout() {
     <Box key={location.pathname} sx={{
       pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
       "@media (min-width:900px) and (max-width:1799.95px)": {
-        width: "119.05%",
+        width: "136%",
         zoom: .84,
+        translate: "-10.6% 0",
       },
       "@keyframes pageEnter": {
         from: { opacity: .55, transform: "translateY(5px)" },
