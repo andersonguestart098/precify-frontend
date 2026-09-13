@@ -53,7 +53,7 @@ export default function AppLayout() {
       <Toolbar sx={{ minHeight: "var(--header-height) !important", px: { xs: 2.5, sm: 3, md: 2.5, xl: 3 } }}>
         <Container maxWidth="xl" disableGutters>
           <Stack direction="row" alignItems="center" gap={{ xs: .75, md: 1.25, xl: 1.5 }}>
-            {!showSearch && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{ color: "#fff", ml: -.8, p: .8, display: { xs: "inline-flex", md: "none" } }}>
+            {location.pathname !== "/inicio" && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{ color: "#fff", ml: -.8, p: .8, display: { xs: "inline-flex", md: "none" } }}>
               <ArrowBackIosNewIcon sx={{ fontSize: 19 }} />
             </IconButton>}
             <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
