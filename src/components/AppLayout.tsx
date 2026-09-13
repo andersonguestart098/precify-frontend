@@ -44,7 +44,9 @@ export default function AppLayout() {
     "--header-height": { xs: "70px", md: "60px", xl: "70px" },
     "--sidebar-width": { md: "188px", xl: "224px" },
     "--bottom-nav-height": "70px", "--ai-overhang": "22px", "--content-clearance": "12px",
-    background: "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
+    background: location.pathname === "/ia"
+      ? "#101614"
+      : "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
   }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "var(--sidebar-width)" }, minWidth: 0, overflowX: "clip" }}>
