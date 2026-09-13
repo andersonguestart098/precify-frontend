@@ -45,13 +45,15 @@ export default function DesktopSidebar() {
       selected={active}
       aria-current={active ? "page" : undefined}
       sx={{
-        mb: { md: .18, xl: .6 },
-        borderRadius: { md: 1.7, xl: 2 },
-        minHeight: { md: 34, xl: 46 },
-        px: { md: 1.15, xl: 2 },
-        py: { md: .25, xl: .7 },
+        mb: { md: .32, xl: .6 },
+        borderRadius: { md: 1.8, xl: 2 },
+        minHeight: { md: 39, xl: 46 },
+        px: { md: 1.25, xl: 2 },
+        py: { md: .36, xl: .7 },
         color: active ? "#13382e" : "#576a64",
         overflow: "visible",
+        transition: "background-color 160ms ease, color 160ms ease, transform 160ms ease",
+        "&:hover": { bgcolor: "rgba(0,107,79,.045)" },
         "&.Mui-selected": { background: "linear-gradient(100deg,#e4f4ef,#f2f9f7)" },
         ...(aiLink ? {
           "&.Mui-selected": {
@@ -62,9 +64,9 @@ export default function DesktopSidebar() {
         "@media (max-height: 720px)": { minHeight: 31, py: 0, mb: .08 },
       }}
     >
-      <ListItemIcon sx={{ minWidth: { md: 29, xl: 35 }, color: "inherit", overflow: "visible" }}>
+      <ListItemIcon sx={{ minWidth: { md: 31, xl: 35 }, color: "inherit", overflow: "visible" }}>
         {aiLink ? <Box sx={{
-          width: { md: 25, xl: 30 }, height: { md: 25, xl: 30 }, borderRadius: "50%", display: "grid", placeItems: "center",
+          width: { md: 26, xl: 30 }, height: { md: 26, xl: 30 }, borderRadius: "50%", display: "grid", placeItems: "center",
           color: "#fff", position: "relative", flexShrink: 0,
           background: active ? "linear-gradient(145deg,#174d3d,#08775a)" : "linear-gradient(145deg,#17684f,#0b523f)",
           boxShadow: active ? "0 0 0 2px rgba(116,231,194,.20),0 0 15px rgba(45,201,150,.38)" : "0 0 0 1px rgba(38,155,120,.14),0 0 8px rgba(45,201,150,.18)",
@@ -79,7 +81,7 @@ export default function DesktopSidebar() {
           <Icon sx={{ fontSize: { md: 15, xl: 18 }, filter: active ? "drop-shadow(0 0 3px rgba(255,255,255,.55))" : "none" }} />
         </Box> : <Icon sx={{ fontSize: { md: 18, xl: 21 } }} />}
       </ListItemIcon>
-      <ListItemText primary={label} primaryTypographyProps={{ fontSize: { md: 11.5, xl: 13 }, fontWeight: active ? 750 : 550, lineHeight: 1.15 }} />
+      <ListItemText primary={label} primaryTypographyProps={{ fontSize: { md: 11.7, xl: 13 }, fontWeight: active ? 750 : 550, lineHeight: 1.22 }} />
     </ListItemButton>;
   });
 
@@ -92,23 +94,23 @@ export default function DesktopSidebar() {
       <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: { md: 116, xl: 146 }, maxHeight: { md: 32, xl: 39 }, objectFit: "contain" }} />
     </Stack>
 
-    <Typography variant="overline" sx={{ px: { md: 1.75, xl: 2.5 }, pt: { md: 1.7, xl: 3 }, pb: { md: .45, xl: 1 }, color: "#819088", fontSize: { md: 8.5, xl: 10 }, letterSpacing: { md: 1.2, xl: 1.5 }, "@media (max-height: 720px)": { pt: 1, pb: .2 } }}>Área de trabalho</Typography>
-    <List component="nav" aria-label="Navegação desktop" sx={{ px: { md: .8, xl: 1.5 }, pb: { md: .55, xl: 1.25 } }}>
+    <Typography variant="overline" sx={{ px: { md: 1.75, xl: 2.5 }, pt: { md: 2, xl: 3 }, pb: { md: .65, xl: 1 }, color: "#819088", fontSize: { md: 8.5, xl: 10 }, letterSpacing: { md: 1.2, xl: 1.5 }, "@media (max-height: 720px)": { pt: 1, pb: .2 } }}>Área de trabalho</Typography>
+    <List component="nav" aria-label="Navegação desktop" sx={{ px: { md: .9, xl: 1.5 }, pt: { md: .15, xl: 0 }, pb: { md: .9, xl: 1.25 } }}>
       {renderLinks(workspaceLinks)}
     </List>
 
-    <Box sx={{ px: { md: 1.75, xl: 2.5 }, py: { md: .45, xl: 1 }, "@media (max-height: 720px)": { py: .2 } }}>
+    <Box sx={{ px: { md: 1.75, xl: 2.5 }, py: { md: .8, xl: 1 }, "@media (max-height: 720px)": { py: .2 } }}>
       <Divider sx={{ borderColor: "rgba(19,56,46,.08)" }} />
     </Box>
 
-    <Typography variant="overline" sx={{ px: { md: 1.75, xl: 2.5 }, pt: { md: .55, xl: 1.25 }, pb: { md: .3, xl: 1 }, color: "#9aa7a2", fontSize: { md: 8.2, xl: 9.5 }, letterSpacing: { md: 1.15, xl: 1.35 }, "@media (max-height: 720px)": { pt: .3, pb: .15 } }}>Sobre o Precify</Typography>
-    <List component="nav" aria-label="Institucional" sx={{ px: { md: .8, xl: 1.5 }, pb: { md: .45, xl: 1.5 } }}>
+    <Typography variant="overline" sx={{ px: { md: 1.75, xl: 2.5 }, pt: { md: .85, xl: 1.25 }, pb: { md: .5, xl: 1 }, color: "#9aa7a2", fontSize: { md: 8.2, xl: 9.5 }, letterSpacing: { md: 1.15, xl: 1.35 }, "@media (max-height: 720px)": { pt: .3, pb: .15 } }}>Sobre o Precify</Typography>
+    <List component="nav" aria-label="Institucional" sx={{ px: { md: .9, xl: 1.5 }, pt: { md: .1, xl: 0 }, pb: { md: .7, xl: 1.5 } }}>
       {renderLinks(institutionalLinks)}
     </List>
 
-    <Stack component={RouterLink} to="/perfil" direction="row" gap={{ md: .8, xl: 1.2 }} alignItems="center" sx={{ mt: "auto", p: { md: 1.15, xl: 2 }, minHeight: { md: 48, xl: 68 }, borderTop: "1px solid #eaf0ee", textDecoration: "none", color: "inherit", flexShrink: 0 }}>
-      <Avatar src={user.avatarUrl || undefined} sx={{ width: { md: 30, xl: 36 }, height: { md: 30, xl: 36 } }}>{user.name.charAt(0)}</Avatar>
-      <Box minWidth={0}><Typography noWrap fontWeight={700} fontSize={{ md: 10.5, xl: 12 }}>{user.name}</Typography><Typography noWrap fontSize={{ md: 9, xl: 10 }} color="text.secondary">Minha conta</Typography></Box>
+    <Stack component={RouterLink} to="/perfil" direction="row" gap={{ md: .9, xl: 1.2 }} alignItems="center" sx={{ mt: "auto", p: { md: 1.35, xl: 2 }, minHeight: { md: 54, xl: 68 }, borderTop: "1px solid #eaf0ee", textDecoration: "none", color: "inherit", flexShrink: 0 }}>
+      <Avatar src={user.avatarUrl || undefined} sx={{ width: { md: 31, xl: 36 }, height: { md: 31, xl: 36 } }}>{user.name.charAt(0)}</Avatar>
+      <Box minWidth={0}><Typography noWrap fontWeight={700} fontSize={{ md: 10.7, xl: 12 }}>{user.name}</Typography><Typography noWrap fontSize={{ md: 9.2, xl: 10 }} color="text.secondary">Minha conta</Typography></Box>
     </Stack>
   </Box>;
 }
