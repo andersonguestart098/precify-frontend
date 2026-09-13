@@ -113,7 +113,7 @@ export default function ProfilePage() {
       </Box>
 
       {user.role === "ADMIN" ? <Box minWidth={0}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={1.5}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1.5}>
           <Box minWidth={0}>
             <Typography sx={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 1.35, color: "#70867e", fontWeight: 850 }}>Administração</Typography>
             <Typography component="h2" sx={{ mt: .5, fontSize: { xs: 24, md: 30 }, fontWeight: 850, letterSpacing: "-.03em", color: "#183f33" }}>Usuários da conta</Typography>
@@ -124,21 +124,25 @@ export default function ProfilePage() {
               aria-label="Adicionar usuário"
               onClick={() => setCreateOpen(true)}
               sx={{
-                mt: { xs: .25, sm: .5 },
-                width: { xs: 44, md: 46 },
-                height: { xs: 44, md: 46 },
+                width: { xs: 56, md: 60 },
+                height: { xs: 56, md: 60 },
                 flexShrink: 0,
+                alignSelf: "center",
                 color: "#fff",
-                bgcolor: "#006b4f",
-                border: "1px solid rgba(255,255,255,.26)",
-                boxShadow: "0 7px 18px rgba(0,107,79,.20)",
-                transition: "transform 160ms ease,box-shadow 160ms ease,background-color 160ms ease",
-                "&:hover": { bgcolor: "#075c47", transform: "translateY(-1px)", boxShadow: "0 9px 22px rgba(0,107,79,.26)" },
-                "&:active": { transform: "scale(.96)" },
-                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+                background: "linear-gradient(145deg,#0b8c68 0%,#006b4f 72%)",
+                border: "1px solid rgba(255,255,255,.38)",
+                boxShadow: "0 11px 26px rgba(0,107,79,.25),0 0 0 5px rgba(0,107,79,.065),inset 0 1px 0 rgba(255,255,255,.16)",
+                transition: "transform 180ms ease,box-shadow 180ms ease,filter 180ms ease",
+                "&:hover": {
+                  background: "linear-gradient(145deg,#119776 0%,#075c47 76%)",
+                  transform: "translateY(-2px) scale(1.025)",
+                  boxShadow: "0 14px 30px rgba(0,107,79,.30),0 0 0 6px rgba(0,107,79,.08),inset 0 1px 0 rgba(255,255,255,.20)",
+                },
+                "&:active": { transform: "translateY(0) scale(.96)" },
+                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 4 },
               }}
             >
-              <PersonAddAltOutlinedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+              <PersonAddAltOutlinedIcon sx={{ fontSize: { xs: 27, md: 29 } }} />
             </IconButton>
           </Tooltip>
         </Stack>
