@@ -125,7 +125,7 @@ export default function AppLayout() {
       } : {
         width: "119.05%",
         zoom: .84,
-        translate: "0 0",
+        translate: "-10.6% 0",
       },
       "@keyframes pageEnter": {
         from: { opacity: .55, transform: "translateY(5px)" },
