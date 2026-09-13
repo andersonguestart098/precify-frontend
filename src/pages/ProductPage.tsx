@@ -200,7 +200,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                       sx={{
                         minHeight: 46,
                         px: 1.25,
-                        borderRadius: 2.25,
+                        borderRadius: { xs: 1.15, md: 1.25 },
                         justifyContent: "center",
                         fontSize: 12.5,
                         fontWeight: selected ? 800 : 600,
@@ -213,7 +213,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                       }}
                     >{option.name}</Button>;
                   })}
-                </Box> : <Box sx={{ py: 1.2, px: 1.4, border: "1px solid #e5ece9", borderRadius: 2.25, bgcolor: "#f8faf9" }}>
+                </Box> : <Box sx={{ py: 1.2, px: 1.4, border: "1px solid #e5ece9", borderRadius: 1.25, bgcolor: "#f8faf9" }}>
                   <Typography variant="body2" color="text.secondary">Não informado</Typography>
                 </Box>}
               </Box>)}
