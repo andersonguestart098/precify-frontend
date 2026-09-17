@@ -18,8 +18,8 @@ const workspaceLinks = [
   { to: "/composicoes", label: "Composições", icon: CalculateOutlined },
   { to: "/favoritos", label: "Favoritos", icon: StarOutline },
   { to: "/ia", label: "Assistente IA", icon: AutoAwesome },
-  { to: "/perfil", label: "Meu perfil", icon: PersonOutline },
-  { to: "/obras", label: "Obra", icon: HomeOutlined },
+  { to: "/perfil", label: "Minha área", icon: PersonOutline },
+  { to: "/obras", label: "Obras", icon: HomeOutlined },
   { to: "/comparar", label: "Comparar produtos", icon: Inventory2Outlined },
   { to: "/historico", label: "Histórico de buscas", icon: HistoryRoundedIcon },
 ] as const;
