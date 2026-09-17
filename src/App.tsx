@@ -15,7 +15,6 @@ import ProfilePage from "./pages/ProfilePage";
 import MyAreaPage from "./pages/MyAreaPage";
 import CompositionsPage from "./pages/CompositionsPage";
 import UsersPage from "./pages/UsersPage";
-import LaborPage from "./pages/LaborPage";
 import AboutPage from "./pages/AboutPage";
 import InstitutionalPage from "./pages/InstitutionalPage";
 import ContactPage from "./pages/ContactPage";
@@ -55,7 +54,6 @@ function SessionRoutes() {
         <Route path="/obras" element={<PlanningPage />} />
         <Route path="/historico" element={<HistoryPage />} />
         <Route path="/comparar" element={<ComparePage />} />
-        <Route path="/mao-de-obra" element={<LaborPage />} />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="/institucional" element={<InstitutionalPage />} />
         <Route path="/contato" element={<ContactPage />} />
