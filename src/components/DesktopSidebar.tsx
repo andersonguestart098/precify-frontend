@@ -7,6 +7,8 @@ import StarOutline from "@mui/icons-material/StarOutline";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import CalculateOutlined from "@mui/icons-material/CalculateOutlined";
 import PersonOutline from "@mui/icons-material/PersonOutline";
+import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
 import MailOutline from "@mui/icons-material/MailOutline";
@@ -19,8 +21,8 @@ const workspaceLinks = [
   { to: "/favoritos", label: "Favoritos", icon: StarOutline },
   { to: "/ia", label: "Assistente IA", icon: AutoAwesome },
   { to: "/perfil", label: "Minha área", icon: PersonOutline },
-  { to: "/obras", label: "Obras", icon: HomeOutlined },
-  { to: "/comparar", label: "Comparar produtos", icon: Inventory2Outlined },
+  { to: "/obras", label: "Obras", icon: HomeWorkOutlinedIcon },
+  { to: "/comparar", label: "Comparar produtos", icon: CompareArrowsRoundedIcon },
   { to: "/historico", label: "Histórico de buscas", icon: HistoryRoundedIcon },
 ] as const;
 
