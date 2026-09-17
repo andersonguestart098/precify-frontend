@@ -29,7 +29,6 @@ export default function MyAreaPage() {
         <Avatar src={user.avatarUrl || undefined} sx={{ width: { xs: 52, md: 60 }, height: { xs: 52, md: 60 }, bgcolor: "#e5f2ed", color: "#174a39", border: "2px solid #d3e8e0", fontWeight: 850, boxShadow: "0 7px 20px rgba(19,56,46,.10)" }}>
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
-        <Box aria-hidden="true" sx={{ position: "absolute", right: 0, bottom: 1, width: 11, height: 11, borderRadius: "50%", bgcolor: "#269b78", border: "2px solid #f7f9f8" }} />
       </Box>
       <Box minWidth={0}>
         <Typography variant="overline" sx={{ color: "#6a8279", fontWeight: 850, letterSpacing: 1.45, lineHeight: 1 }}>Minha área</Typography>
@@ -60,7 +59,6 @@ export default function MyAreaPage() {
             boxShadow: featured ? "0 8px 22px rgba(0,107,79,.07)" : "0 4px 15px rgba(24,60,48,.035)",
             transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease",
             "&::before": { content: '""', position: "absolute", width: { xs: 92, md: 105 }, height: { xs: 92, md: 105 }, right: -34, top: -42, borderRadius: index % 2 === 0 ? "45% 55% 62% 38% / 42% 39% 61% 58%" : "63% 37% 44% 56% / 56% 62% 38% 44%", background: featured ? "rgba(38,155,120,.075)" : "rgba(38,155,120,.04)", transform: `rotate(${index % 2 === 0 ? 15 : -13}deg)` },
-            "&::after": featured ? { content: '""', position: "absolute", left: 0, bottom: 0, width: "45%", height: 2, background: "linear-gradient(90deg,#006b4f,#54b698,transparent)", opacity: .68 } : undefined,
             "@media (hover:hover)": { "&:hover": { transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.22)", boxShadow: "0 10px 24px rgba(0,107,79,.07)" } },
             "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: 2 },
           }}>
@@ -85,7 +83,9 @@ export default function MyAreaPage() {
         <Button component={RouterLink} to="/conta" size="small" endIcon={<ArrowForwardRoundedIcon />} sx={{ minWidth: 0, px: .6, textTransform: "none", fontSize: 10.5, fontWeight: 750, color: "#477064" }}>Gerenciar</Button>
       </Stack>
       <Box sx={{ borderTop: "1px solid rgba(0,107,79,.09)", borderBottom: "1px solid rgba(0,107,79,.09)", bgcolor: "rgba(255,255,255,.38)" }}>
-        <AccountRow icon={PersonOutlineRoundedIcon} label="Dados pessoais" value={user.name} />
+        <Box component={RouterLink} to="/conta" sx={{ display: "block", color: "inherit", textDecoration: "none", borderRadius: 1.5, "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: 2 } }}>
+          <AccountRow icon={PersonOutlineRoundedIcon} label="Dados pessoais" value={user.name} />
+        </Box>
         <Divider sx={{ ml: 6.6, borderColor: "rgba(0,107,79,.07)" }} />
         <AccountRow icon={PaidOutlinedIcon} label="Plano" value="Gerenciado pela organização" />
         <Divider sx={{ ml: 6.6, borderColor: "rgba(0,107,79,.07)" }} />
