@@ -5,17 +5,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
-import StarIcon from "@mui/icons-material/Star";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import PersonIcon from "@mui/icons-material/Person";
+import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
+import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 
 const items = [
   { to: "/inicio", label: "Início", icon: HomeOutlinedIcon, activeIcon: HomeIcon },
   { to: "/produtos", label: "Produtos", icon: Inventory2OutlinedIcon, activeIcon: Inventory2Icon },
   { to: "/ia", label: "IA", icon: AutoAwesomeIcon, activeIcon: AutoAwesomeIcon, featured: true },
-  { to: "/favoritos", label: "Favoritos", icon: StarOutlineIcon, activeIcon: StarIcon },
-  { to: "/perfil", label: "Perfil", icon: PersonOutlineIcon, activeIcon: PersonIcon },
+  { to: "/perfil", label: "Minha área", icon: DashboardCustomizeOutlinedIcon, activeIcon: DashboardCustomizeRoundedIcon },
 ];
 
 export function BottomNav() {
