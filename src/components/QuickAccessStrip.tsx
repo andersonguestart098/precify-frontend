@@ -95,13 +95,6 @@ export default function QuickAccessStrip() {
               : "radial-gradient(circle at 38% 38%,rgba(38,155,120,.07),rgba(38,155,120,.018) 60%,transparent 73%)",
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
-          "&::after": featured ? {
-            content: '""', position: "absolute", left: 0, bottom: 0, width: "56%", height: 2,
-            background: "linear-gradient(90deg,#006b4f 0%,#49b493 54%,transparent 100%)", opacity: .72,
-          } : {
-            content: '""', position: "absolute", left: 13, right: 13, bottom: 0, height: 1,
-            background: "linear-gradient(90deg,transparent,rgba(0,107,79,.09),transparent)",
-          },
           ...(available ? {
             "@media (hover:hover)": { "&:hover": {
               transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.21)",
@@ -121,13 +114,13 @@ export default function QuickAccessStrip() {
             boxShadow: "0 2px 6px rgba(24,60,48,.035)",
             "& svg": { width: { xs: 21, md: 20, xl: 22 }, height: { xs: 21, md: 20, xl: 22 } },
           }}>{icon}</Box>
-          {available ? <Box sx={{
+          <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
             bgcolor: "rgba(255,255,255,.6)", border: "1px solid rgba(0,107,79,.065)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,.72)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
           }}>
             <ArrowOutwardRoundedIcon sx={{ fontSize: 15.5 }} />
-          </Box> : <Typography sx={{ mt: .15, px: .65, py: .3, borderRadius: 999, fontSize: 8.2, lineHeight: 1, fontWeight: 800, letterSpacing: .2, color: "#5d7b70", bgcolor: "rgba(255,255,255,.58)", border: "1px solid rgba(0,107,79,.065)" }}>Em breve</Typography>}
+          </Box>
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
