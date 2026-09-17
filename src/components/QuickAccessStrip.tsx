@@ -1,45 +1,49 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Box, ButtonBase, Stack, Typography } from "@mui/material";
-import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
+import { HardHat } from "@phosphor-icons/react";
 
 const shortcuts = [
   {
     to: "/mao-de-obra",
     label: "Mão de obra",
     description: "Profissionais e serviços",
-    icon: EngineeringOutlinedIcon,
+    icon: <HardHat size={22} weight="duotone" aria-hidden="true" />,
     featured: true,
+    art: "left",
   },
   {
     to: "/composicoes",
     label: "Composições",
     description: "Materiais e custos",
-    icon: CalculateOutlinedIcon,
+    icon: <CalculateOutlinedIcon />,
     featured: false,
+    art: "right",
   },
   {
     to: "/obras",
     label: "Obras",
     description: "Seus projetos",
-    icon: HomeWorkOutlinedIcon,
+    icon: <HomeWorkOutlinedIcon />,
     featured: false,
+    art: "left",
   },
   {
     to: "/comparar",
     label: "Comparar",
     description: "Produtos lado a lado",
-    icon: CompareArrowsRoundedIcon,
+    icon: <CompareArrowsRoundedIcon />,
     featured: false,
+    art: "right",
   },
 ] as const;
 
 export default function QuickAccessStrip() {
-  return <Box component="section" aria-labelledby="quick-access-title" sx={{ mt: { xs: 1.35, md: 1.4, xl: 1.8 }, pb: { xs: .35, md: .6 } }}>
-    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .8, md: .7 }}>
+  return <Box component="section" aria-labelledby="quick-access-title" sx={{ mt: { xs: 1.45, md: 1.5, xl: 1.9 }, pb: { xs: .45, md: .65 } }}>
+    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .8, md: .72 }}>
       <Box>
         <Typography id="quick-access-title" sx={{ fontSize: { xs: 13, md: 12.8, xl: 14.2 }, fontWeight: 850, color: "#244d40", letterSpacing: "-.015em" }}>
           Acessos rápidos
@@ -51,55 +55,78 @@ export default function QuickAccessStrip() {
     </Stack>
 
     <Box sx={{
-      display: "flex", gap: { xs: .85, md: .9, xl: 1 }, overflowX: "auto", pb: .45, px: .05,
+      display: "flex", gap: { xs: .9, md: .95, xl: 1.05 }, overflowX: "auto", pb: .55, px: .05,
       scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
-      {shortcuts.map(({ to, label, description, icon: Icon, featured }) => <ButtonBase
+      {shortcuts.map(({ to, label, description, icon, featured, art }, index) => <ButtonBase
         key={to}
         component={RouterLink}
         to={to}
         sx={{
           position: "relative", overflow: "hidden",
-          width: { xs: 150, sm: 164, md: 158, xl: 184 }, minWidth: { xs: 150, sm: 164, md: 158, xl: 184 },
-          minHeight: { xs: 94, sm: 98, md: 92, xl: 104 }, px: { xs: 1.15, md: 1.2, xl: 1.35 }, py: { xs: 1.05, md: 1.05, xl: 1.2 },
-          borderRadius: { xs: "15px", md: "14px", xl: "16px" }, scrollSnapAlign: "start", textAlign: "left",
-          display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: .9,
+          width: { xs: 154, sm: 168, md: 162, xl: 188 }, minWidth: { xs: 154, sm: 168, md: 162, xl: 188 },
+          minHeight: { xs: 98, sm: 101, md: 94, xl: 106 }, px: { xs: 1.2, md: 1.25, xl: 1.4 }, py: { xs: 1.1, md: 1.08, xl: 1.22 },
+          borderRadius: { xs: "16px", md: "15px", xl: "17px" }, scrollSnapAlign: "start", textAlign: "left",
+          display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.24)" : "rgba(0,107,79,.105)",
+          borderColor: featured ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.095)",
           background: featured
-            ? "linear-gradient(145deg,rgba(246,252,249,.98) 0%,rgba(225,242,236,.96) 100%)"
-            : "linear-gradient(145deg,rgba(255,255,255,.94) 0%,rgba(241,248,246,.84) 100%)",
-          boxShadow: featured ? "0 7px 20px rgba(0,107,79,.08)" : "0 4px 15px rgba(24,60,48,.035)",
-          transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease",
+            ? "linear-gradient(148deg,rgba(250,253,252,.99) 0%,rgba(231,245,240,.98) 58%,rgba(220,239,232,.94) 100%)"
+            : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
+          boxShadow: featured
+            ? "0 8px 22px rgba(0,107,79,.075), inset 0 1px 0 rgba(255,255,255,.9)"
+            : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
+          transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
           "&::before": {
-            content: '""', position: "absolute", width: { xs: 70, md: 64, xl: 76 }, height: { xs: 70, md: 64, xl: 76 },
-            borderRadius: "48% 52% 58% 42% / 44% 45% 55% 56%", right: -27, top: -29,
-            background: featured ? "rgba(0,107,79,.07)" : "rgba(38,155,120,.045)", transform: "rotate(18deg)", pointerEvents: "none",
+            content: '""', position: "absolute",
+            width: { xs: 88, md: 82, xl: 96 }, height: { xs: 88, md: 82, xl: 96 },
+            borderRadius: index % 2 === 0 ? "46% 54% 65% 35% / 42% 38% 62% 58%" : "63% 37% 45% 55% / 55% 61% 39% 45%",
+            right: art === "right" ? -34 : -26,
+            top: art === "right" ? -37 : -31,
+            background: featured
+              ? "radial-gradient(circle at 38% 38%,rgba(38,155,120,.115),rgba(0,107,79,.035) 58%,transparent 72%)"
+              : "radial-gradient(circle at 38% 38%,rgba(38,155,120,.07),rgba(38,155,120,.018) 60%,transparent 73%)",
+            transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
           "&::after": featured ? {
-            content: '""', position: "absolute", left: 0, top: 18, bottom: 18, width: 3, borderRadius: "0 999px 999px 0",
-            background: "linear-gradient(180deg,#269b78,#006b4f)", opacity: .9,
-          } : undefined,
-          "@media (hover:hover)": { "&:hover": { transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.23)", boxShadow: "0 10px 24px rgba(0,107,79,.08)" } },
+            content: '""', position: "absolute", left: 0, bottom: 0, width: "56%", height: 2,
+            background: "linear-gradient(90deg,#006b4f 0%,#49b493 54%,transparent 100%)", opacity: .72,
+          } : {
+            content: '""', position: "absolute", left: 13, right: 13, bottom: 0, height: 1,
+            background: "linear-gradient(90deg,transparent,rgba(0,107,79,.09),transparent)",
+          },
+          "@media (hover:hover)": { "&:hover": {
+            transform: "translateY(-2px)",
+            borderColor: "rgba(0,107,79,.21)",
+            boxShadow: featured ? "0 12px 26px rgba(0,107,79,.11)" : "0 10px 23px rgba(0,107,79,.065)",
+          } },
           "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+          "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
         }}
       >
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
-            width: { xs: 37, md: 36, xl: 40 }, height: { xs: 37, md: 36, xl: 40 }, borderRadius: { xs: "11px", md: "10px", xl: "12px" },
+            width: { xs: 39, md: 38, xl: 42 }, height: { xs: 39, md: 38, xl: 42 }, borderRadius: { xs: "12px", md: "11px", xl: "13px" },
             display: "grid", placeItems: "center", color: featured ? "#fff" : "#285e4c",
-            background: featured ? "linear-gradient(145deg,#178767,#006b4f)" : "linear-gradient(145deg,#edf7f3,#dfeee8)",
-            border: featured ? "1px solid rgba(0,107,79,.2)" : "1px solid rgba(0,107,79,.065)",
-            boxShadow: featured ? "0 4px 10px rgba(0,107,79,.13)" : "none",
-          }}><Icon sx={{ fontSize: { xs: 20, md: 19, xl: 21 } }} /></Box>
-          <Box sx={{ width: 27, height: 27, borderRadius: "9px", display: "grid", placeItems: "center", color: "#5e7d72", bgcolor: "rgba(255,255,255,.58)", border: "1px solid rgba(0,107,79,.07)" }}>
-            <ArrowOutwardRoundedIcon sx={{ fontSize: 15 }} />
+            background: featured
+              ? "linear-gradient(145deg,#178767 0%,#006b4f 72%,#075641 100%)"
+              : "linear-gradient(145deg,#eef8f4,#dfeee8)",
+            border: featured ? "1px solid rgba(255,255,255,.26)" : "1px solid rgba(0,107,79,.06)",
+            boxShadow: featured ? "0 5px 12px rgba(0,107,79,.15), inset 0 1px 0 rgba(255,255,255,.16)" : "0 2px 6px rgba(24,60,48,.035)",
+            "& svg": { width: { xs: 21, md: 20, xl: 22 }, height: { xs: 21, md: 20, xl: 22 } },
+          }}>{icon}</Box>
+          <Box sx={{
+            width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
+            bgcolor: "rgba(255,255,255,.6)", border: "1px solid rgba(0,107,79,.065)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,.72)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
+          }}>
+            <ArrowOutwardRoundedIcon sx={{ fontSize: 15.5 }} />
           </Box>
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
-          <Typography sx={{ fontSize: { xs: 12.2, md: 11.8, xl: 12.7 }, fontWeight: 850, color: "#214b3d", lineHeight: 1.15 }}>{label}</Typography>
-          <Typography sx={{ mt: .3, fontSize: { xs: 9.5, md: 9.2, xl: 10 }, lineHeight: 1.25, color: "#74877f" }}>{description}</Typography>
+          <Typography sx={{ fontSize: { xs: 12.3, md: 11.9, xl: 12.8 }, fontWeight: 850, color: "#214b3d", lineHeight: 1.15, letterSpacing: "-.012em" }}>{label}</Typography>
+          <Typography sx={{ mt: .32, fontSize: { xs: 9.55, md: 9.25, xl: 10 }, lineHeight: 1.28, color: "#74877f" }}>{description}</Typography>
         </Box>
       </ButtonBase>)}
     </Box>
