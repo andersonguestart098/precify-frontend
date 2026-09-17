@@ -6,7 +6,7 @@ import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
-import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -87,7 +87,7 @@ export default function MyAreaPage() {
       <Box sx={{ borderTop: "1px solid rgba(0,107,79,.09)", borderBottom: "1px solid rgba(0,107,79,.09)", bgcolor: "rgba(255,255,255,.38)" }}>
         <AccountRow icon={PersonOutlineRoundedIcon} label="Dados pessoais" value={user.name} />
         <Divider sx={{ ml: 6.6, borderColor: "rgba(0,107,79,.07)" }} />
-        <AccountRow icon={WorkspacePremiumOutlinedIcon} label="Plano" value="Gerenciado pela organização" />
+        <AccountRow icon={PaidOutlinedIcon} label="Plano" value="Gerenciado pela organização" />
         <Divider sx={{ ml: 6.6, borderColor: "rgba(0,107,79,.07)" }} />
         <AccountRow icon={MailOutlineRoundedIcon} label="E-mail" value={user.email} />
       </Box>
