@@ -114,7 +114,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
             border: compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
             borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.06)", md: "transparent" } : "transparent",
             background: compactMobile ? { xs: active ? "rgba(0,107,79,.04)" : "rgba(255,255,255,.20)", md: "transparent" } : "transparent",
-            boxShadow: compactMobile && active ? { xs: "inset 0 -1.5px 0 rgba(0,107,79,.42)", md: "none" } : "none",
+            boxShadow: "none",
             "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
             "&:hover .segment-icon": { bgcolor: active ? "#e7f3ee" : "#edf5f2", borderColor: "#9acdbb", transform: "translateY(-1px)" }
           }}>
