@@ -38,6 +38,27 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
   };
 
   useEffect(() => () => window.clearTimeout(scrollTimer.current), []);
+
+  useEffect(() => {
+    if (!compactMobile || !selected || !segments.length) return;
+    const element = rail.current;
+    if (!element) return;
+
+    const target = Array.from(element.querySelectorAll<HTMLElement>("[data-segment-code]"))
+      .find(item => item.dataset.segmentCode === selected);
+    if (!target) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const left = target.offsetLeft - (element.clientWidth - target.offsetWidth) / 2;
+      element.scrollTo({
+        left: Math.max(0, left),
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [compactMobile, selected, segments]);
+
   if (!segments.length) return null;
 
   const move = (direction: number) => {
@@ -101,7 +122,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
         const Icon = iconFor(code);
         const active = code === selected;
         return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
-          <ButtonBase aria-label={name} aria-pressed={active} onClick={() => onSelect(code === selected ? "" : code)} sx={{
+          <ButtonBase data-segment-code={code} aria-label={name} aria-pressed={active} onClick={() => onSelect(code === selected ? "" : code)} sx={{
             width: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
             minWidth: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
             minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
