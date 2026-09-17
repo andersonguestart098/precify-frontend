@@ -18,7 +18,7 @@ export default defineConfig({
         short_name: "Precify",
         description: "Busca de produtos por especificações técnicas.",
         theme_color: "#006b4f",
-        background_color: "#f7faf9",
+        background_color: "#006b4f",
         display: "standalone",
         start_url: "/",
         icons: [
