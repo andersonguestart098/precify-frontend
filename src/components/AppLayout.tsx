@@ -31,6 +31,19 @@ function readSavedLocation(): SavedLocation | null {
   }
 }
 
+function uniqueLocationParts(parts: Array<string | undefined>) {
+  const seen = new Set<string>();
+  return parts
+    .map(part => part?.trim() ?? "")
+    .filter(part => {
+      if (!part) return false;
+      const key = part.toLocaleLowerCase("pt-BR");
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
 async function reverseLocation(latitude: number, longitude: number) {
   try {
     const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt`);
@@ -40,11 +53,31 @@ async function reverseLocation(latitude: number, longitude: number) {
       locality?: string;
       principalSubdivision?: string;
       principalSubdivisionCode?: string;
+      localityInfo?: {
+        administrative?: Array<{ name?: string; adminLevel?: number; description?: string }>;
+      };
     };
-    const city = data.city || data.locality || "";
+
     const state = data.principalSubdivisionCode?.split("-").pop() || data.principalSubdivision || "";
-    if (city && state && city.toLocaleLowerCase() !== state.toLocaleLowerCase()) return `${city}, ${state}`;
-    return city || state;
+    const city = data.city || "";
+    const locality = data.locality || "";
+    const administrative = data.localityInfo?.administrative ?? [];
+    const nearbyRegion = administrative
+      .filter(item => item.name && (item.adminLevel ?? 0) >= 6)
+      .map(item => item.name!)
+      .find(name => {
+        const normalized = name.toLocaleLowerCase("pt-BR");
+        return normalized !== city.toLocaleLowerCase("pt-BR")
+          && normalized !== locality.toLocaleLowerCase("pt-BR")
+          && normalized !== state.toLocaleLowerCase("pt-BR");
+      }) ?? "";
+
+    const region = locality && locality.toLocaleLowerCase("pt-BR") !== city.toLocaleLowerCase("pt-BR")
+      ? locality
+      : nearbyRegion;
+    const main = uniqueLocationParts([region, city]);
+    if (main.length && state) return `${main.join(" • ")}, ${state}`;
+    return uniqueLocationParts([region, city, state]).join(" • ");
   } catch {
     return "";
   }
@@ -58,13 +91,30 @@ export default function AppLayout() {
   const keepWideCatalogLayout = location.pathname === "/inicio" || location.pathname.startsWith("/produtos");
   const savedLocation = readSavedLocation();
   const [query, setQuery] = useState("");
-  const [geoStatus, setGeoStatus] = useState<GeoStatus>(() => savedLocation ? "ready" : "idle");
+  const [geoStatus, setGeoStatus] = useState<GeoStatus>(() => savedLocation ? (savedLocation.label ? "ready" : "loading") : "idle");
   const [geoLabel, setGeoLabel] = useState(() => savedLocation?.label ?? "");
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
   useEffect(() => {
     setQuery(new URLSearchParams(location.search).get("q") ?? "");
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    const current = readSavedLocation();
+    if (!current || current.label) return;
+    setGeoStatus("loading");
+    void reverseLocation(current.latitude, current.longitude).then(label => {
+      if (!label) {
+        setGeoStatus("error");
+        return;
+      }
+      const enriched = { ...current, label };
+      localStorage.setItem(LOCATION_KEY, JSON.stringify(enriched));
+      setGeoLabel(label);
+      setGeoStatus("ready");
+      window.dispatchEvent(new CustomEvent("precify-location-changed", { detail: enriched }));
+    });
+  }, []);
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -90,6 +140,7 @@ export default function AppLayout() {
       return;
     }
     setGeoStatus("loading");
+    setGeoLabel("");
     navigator.geolocation.getCurrentPosition(position => {
       const value: SavedLocation = {
         latitude: position.coords.latitude,
@@ -98,15 +149,17 @@ export default function AppLayout() {
         updatedAt: Date.now(),
       };
       localStorage.setItem(LOCATION_KEY, JSON.stringify(value));
-      setGeoStatus("ready");
-      setGeoLabel("Localização ativada");
       window.dispatchEvent(new CustomEvent("precify-location-changed", { detail: value }));
 
       void reverseLocation(value.latitude, value.longitude).then(label => {
-        if (!label) return;
+        if (!label) {
+          setGeoStatus("error");
+          return;
+        }
         const enriched = { ...value, label };
         localStorage.setItem(LOCATION_KEY, JSON.stringify(enriched));
         setGeoLabel(label);
+        setGeoStatus("ready");
         window.dispatchEvent(new CustomEvent("precify-location-changed", { detail: enriched }));
       });
     }, () => setGeoStatus("error"), {
@@ -117,11 +170,11 @@ export default function AppLayout() {
   };
 
   const locationText = geoStatus === "loading"
-    ? "Obtendo sua localização..."
+    ? "Identificando cidade e região..."
     : geoStatus === "ready"
-      ? (geoLabel || "Localização ativada")
+      ? geoLabel
       : geoStatus === "error"
-        ? "Não foi possível obter a localização. Tentar novamente"
+        ? "Não foi possível identificar a região • tentar novamente"
         : "Usar minha localização";
 
   return <Box minHeight="100dvh" sx={{
@@ -215,14 +268,17 @@ export default function AppLayout() {
       }}>
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 } }}>
           <ButtonBase onClick={requestLocation} disabled={geoStatus === "loading"} sx={{
-            minHeight: 34, maxWidth: "100%", px: 0, gap: .65, color: geoStatus === "error" ? "#9d514b" : "#45675c",
-            justifyContent: "flex-start", borderRadius: 1.5, WebkitTapHighlightColor: "transparent"
+            minHeight: 38, width: "100%", px: 0, gap: .7, color: geoStatus === "error" ? "#9d514b" : "#45675c",
+            justifyContent: "flex-start", borderRadius: 1.5, WebkitTapHighlightColor: "transparent", textAlign: "left"
           }}>
-            {geoStatus === "ready" ? <MyLocationRoundedIcon sx={{ fontSize: 15.5, color: "#0a795b" }} /> : <LocationOnOutlinedIcon sx={{ fontSize: 16, color: geoStatus === "error" ? "#a55c56" : "#5a7b70" }} />}
-            <Typography noWrap sx={{ fontSize: 11.2, fontWeight: geoStatus === "ready" ? 700 : 600, lineHeight: 1 }}>
-              {locationText}
-            </Typography>
-            {geoStatus === "ready" && <Typography sx={{ ml: .15, fontSize: 9.5, color: "#8a9a94", lineHeight: 1 }}>• atualizar</Typography>}
+            {geoStatus === "ready" ? <MyLocationRoundedIcon sx={{ fontSize: 16.5, color: "#0a795b", flexShrink: 0 }} /> : <LocationOnOutlinedIcon sx={{ fontSize: 17, color: geoStatus === "error" ? "#a55c56" : "#5a7b70", flexShrink: 0 }} />}
+            <Box minWidth={0} flex={1}>
+              <Typography noWrap sx={{ fontSize: 11.6, fontWeight: geoStatus === "ready" ? 750 : 650, lineHeight: 1.05, color: geoStatus === "error" ? "inherit" : "#31594c" }}>
+                {locationText}
+              </Typography>
+              {geoStatus === "ready" && <Typography sx={{ mt: .2, fontSize: 8.8, color: "#8b9994", lineHeight: 1 }}>região usada para buscas próximas</Typography>}
+            </Box>
+            {geoStatus === "ready" && <Typography sx={{ fontSize: 9.3, color: "#779087", lineHeight: 1, flexShrink: 0 }}>atualizar</Typography>}
           </ButtonBase>
         </Container>
       </Box>}
