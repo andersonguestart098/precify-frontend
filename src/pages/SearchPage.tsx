@@ -9,14 +9,23 @@ import AddIcon from "@mui/icons-material/Add";
 import AccountGreeting from "../components/AccountGreeting";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
-import { getCatalog, searchFavorites, searchProducts } from "../services/api";
+import { searchFavorites, searchProducts } from "../services/api";
 import { createCatalogCriteria } from "../data/familyConfig";
 import type { CatalogMaterial, CatalogSearchPage, TechnicalCriterion } from "../domain/search";
 import { SearchFilters } from "../components/SearchFilters";
 import { CatalogResultCard } from "../components/CatalogResultCard";
+import {
+  getCachedCatalog,
+  getCachedInitialSearch,
+  loadCatalogCached,
+  saveCachedInitialSearch,
+} from "../services/appWarmCache";
 
-let catalogCache: CatalogMaterial[] | null = null;
 const searchResponseCache = new Map<string, CatalogSearchPage>();
+
+function isInitialSearch(query: string, familyCode: string, criteria: TechnicalCriterion[], page: number, onlyFavorites: boolean) {
+  return !query.trim() && !familyCode && page === 0 && !onlyFavorites && criteria.every(criterion => !criterion.value.trim());
+}
 
 function SegmentRailSkeleton({ compact = false }: { compact?: boolean }) {
   return <Box aria-label="Carregando segmentos" sx={{
@@ -48,8 +57,8 @@ export default function SearchPage() {
   const criteria = useMemo(() => createCatalogCriteria(params.get("segmentCode") ?? "")
     .map(c => ({ ...c, value: params.get(c.key) ?? c.value })), [params]);
   const [catalogError, setCatalogError] = useState("");
-  const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => catalogCache ?? []);
-  const [catalogLoading, setCatalogLoading] = useState(() => !catalogCache);
+  const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => getCachedCatalog() ?? []);
+  const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
 
@@ -62,8 +71,9 @@ export default function SearchPage() {
     revision,
   }), [query, familyCode, criteria, page, onlyFavorites, revision]);
 
-  const [response, setResponse] = useState<CatalogSearchPage | null>(() => searchResponseCache.get(searchKey) ?? null);
-  const [loading, setLoading] = useState(() => !searchResponseCache.has(searchKey));
+  const initialCachedResponse = isInitialSearch(query, familyCode, criteria, page, onlyFavorites) ? getCachedInitialSearch() : null;
+  const [response, setResponse] = useState<CatalogSearchPage | null>(() => searchResponseCache.get(searchKey) ?? initialCachedResponse);
+  const [loading, setLoading] = useState(() => !(searchResponseCache.has(searchKey) || initialCachedResponse));
   const [error, setError] = useState("");
 
   const change = (values: Record<string, string>, reset = true) => setParams(current => {
@@ -73,29 +83,22 @@ export default function SearchPage() {
   }, { replace: true });
 
   useEffect(() => {
-    if (catalogCache) {
-      setCatalog(catalogCache);
-      setCatalogLoading(false);
-      return;
-    }
-    const c = new AbortController();
-    setCatalogLoading(true);
-    getCatalog(c.signal)
-      .then(data => {
-        if (c.signal.aborted) return;
-        catalogCache = data;
-        setCatalog(data);
-      })
-      .catch(e => { if (!c.signal.aborted) setCatalogError(e.message); })
-      .finally(() => { if (!c.signal.aborted) setCatalogLoading(false); });
-    return () => c.abort();
+    let active = true;
+    setCatalogLoading(!getCachedCatalog());
+    loadCatalogCached()
+      .then(data => { if (active) setCatalog(data); })
+      .catch(e => { if (active) setCatalogError(e.message); })
+      .finally(() => { if (active) setCatalogLoading(false); });
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     const c = new AbortController();
-    const cached = searchResponseCache.get(searchKey);
+    const defaultSearch = isInitialSearch(query, familyCode, criteria, page, onlyFavorites);
+    const cached = searchResponseCache.get(searchKey) ?? (defaultSearch ? getCachedInitialSearch() : null);
     setError("");
     if (cached) {
+      searchResponseCache.set(searchKey, cached);
       setResponse(cached);
       setLoading(false);
     } else {
@@ -108,11 +111,12 @@ export default function SearchPage() {
         .then(data => {
           if (c.signal.aborted) return;
           searchResponseCache.set(searchKey, data);
+          if (defaultSearch) saveCachedInitialSearch(data);
           setResponse(data);
         })
         .catch(e => { if (!c.signal.aborted) setError(e.message); })
         .finally(() => { if (!c.signal.aborted) setLoading(false); });
-    }, 250);
+    }, cached ? 500 : 250);
     return () => { window.clearTimeout(timer); c.abort(); };
   }, [familyCode, query, criteria, page, onlyFavorites, revision, searchKey]);
 
