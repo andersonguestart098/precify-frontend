@@ -14,6 +14,7 @@ const shortcuts = [
     icon: <HardHat size={22} weight="duotone" aria-hidden="true" />,
     featured: true,
     art: "left",
+    available: false,
   },
   {
     to: "/composicoes",
@@ -22,6 +23,7 @@ const shortcuts = [
     icon: <CalculateOutlinedIcon />,
     featured: false,
     art: "right",
+    available: true,
   },
   {
     to: "/obras",
@@ -30,6 +32,7 @@ const shortcuts = [
     icon: <HomeWorkOutlinedIcon />,
     featured: false,
     art: "left",
+    available: true,
   },
   {
     to: "/comparar",
@@ -38,6 +41,7 @@ const shortcuts = [
     icon: <CompareArrowsRoundedIcon />,
     featured: false,
     art: "right",
+    available: true,
   },
 ] as const;
 
@@ -58,10 +62,12 @@ export default function QuickAccessStrip() {
       display: "flex", gap: { xs: .9, md: .95, xl: 1.05 }, overflowX: "auto", pb: .55, px: .05,
       scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
-      {shortcuts.map(({ to, label, description, icon, featured, art }, index) => <ButtonBase
+      {shortcuts.map(({ to, label, description, icon, featured, art, available }, index) => <ButtonBase
         key={to}
         component={RouterLink}
         to={to}
+        aria-disabled={!available}
+        onClick={available ? undefined : event => event.preventDefault()}
         sx={{
           position: "relative", overflow: "hidden",
           width: { xs: 154, sm: 168, md: 162, xl: 188 }, minWidth: { xs: 154, sm: 168, md: 162, xl: 188 },
@@ -76,6 +82,7 @@ export default function QuickAccessStrip() {
           boxShadow: featured
             ? "0 8px 22px rgba(0,107,79,.075), inset 0 1px 0 rgba(255,255,255,.9)"
             : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
+          cursor: available ? "pointer" : "default",
           transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
           "&::before": {
             content: '""', position: "absolute",
@@ -95,11 +102,12 @@ export default function QuickAccessStrip() {
             content: '""', position: "absolute", left: 13, right: 13, bottom: 0, height: 1,
             background: "linear-gradient(90deg,transparent,rgba(0,107,79,.09),transparent)",
           },
-          "@media (hover:hover)": { "&:hover": {
-            transform: "translateY(-2px)",
-            borderColor: "rgba(0,107,79,.21)",
-            boxShadow: featured ? "0 12px 26px rgba(0,107,79,.11)" : "0 10px 23px rgba(0,107,79,.065)",
-          } },
+          ...(available ? {
+            "@media (hover:hover)": { "&:hover": {
+              transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.21)",
+              boxShadow: featured ? "0 12px 26px rgba(0,107,79,.11)" : "0 10px 23px rgba(0,107,79,.065)",
+            } },
+          } : {}),
           "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
           "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
         }}
@@ -113,13 +121,13 @@ export default function QuickAccessStrip() {
             boxShadow: "0 2px 6px rgba(24,60,48,.035)",
             "& svg": { width: { xs: 21, md: 20, xl: 22 }, height: { xs: 21, md: 20, xl: 22 } },
           }}>{icon}</Box>
-          <Box sx={{
+          {available ? <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
             bgcolor: "rgba(255,255,255,.6)", border: "1px solid rgba(0,107,79,.065)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,.72)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
           }}>
             <ArrowOutwardRoundedIcon sx={{ fontSize: 15.5 }} />
-          </Box>
+          </Box> : <Typography sx={{ mt: .15, px: .65, py: .3, borderRadius: 999, fontSize: 8.2, lineHeight: 1, fontWeight: 800, letterSpacing: .2, color: "#5d7b70", bgcolor: "rgba(255,255,255,.58)", border: "1px solid rgba(0,107,79,.065)" }}>Em breve</Typography>}
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
