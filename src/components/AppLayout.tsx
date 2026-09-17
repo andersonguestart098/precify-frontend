@@ -6,7 +6,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
 import { rememberSearch } from "../services/api";
@@ -247,7 +246,7 @@ export default function AppLayout() {
             minHeight: 38, width: "100%", px: 0, gap: .7, color: geoStatus === "error" ? "#9d514b" : "#45675c",
             justifyContent: "flex-start", borderRadius: 1.5, WebkitTapHighlightColor: "transparent", textAlign: "left"
           }}>
-            {geoStatus === "ready" ? <MyLocationRoundedIcon sx={{ fontSize: 16.5, color: "#0a795b", flexShrink: 0 }} /> : <LocationOnOutlinedIcon sx={{ fontSize: 17, color: geoStatus === "error" ? "#a55c56" : "#5a7b70", flexShrink: 0 }} />}
+            <LocationOnOutlinedIcon sx={{ fontSize: 17, color: geoStatus === "ready" ? "#0a795b" : geoStatus === "error" ? "#a55c56" : "#5a7b70", flexShrink: 0 }} />
             <Box minWidth={0} flex={1}>
               <Typography noWrap sx={{ fontSize: 11.6, fontWeight: geoStatus === "ready" ? 750 : 650, lineHeight: 1.05, color: geoStatus === "error" ? "inherit" : "#31594c" }}>
                 {locationText}
