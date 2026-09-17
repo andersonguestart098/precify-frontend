@@ -19,18 +19,21 @@ const shortcuts = [
     label: "Nova composição",
     description: "Organize materiais e custos",
     icon: CalculateOutlinedIcon,
+    featured: false,
   },
   {
     to: "/obras",
     label: "Minhas obras",
     description: "Acesse seus projetos",
     icon: HomeWorkOutlinedIcon,
+    featured: false,
   },
   {
     to: "/comparar",
     label: "Comparar",
     description: "Compare produtos lado a lado",
     icon: CompareArrowsRoundedIcon,
+    featured: false,
   },
 ] as const;
 
