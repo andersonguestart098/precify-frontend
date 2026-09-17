@@ -91,10 +91,10 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
       onClickCapture={event => { if (drag.current.moved) { event.preventDefault(); event.stopPropagation(); drag.current.moved = false; } }}
       sx={{
         display: "flex",
-        gap: compactMobile ? { xs: .55, sm: .7, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
+        gap: compactMobile ? { xs: .35, sm: .45, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
         overflowX: "auto",
-        py: compactMobile ? { xs: .35, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
-        px: compactMobile ? { xs: .15, md: 0 } : 0,
+        py: compactMobile ? { xs: .18, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
+        px: compactMobile ? { xs: .1, md: 0 } : 0,
         cursor: "grab", "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
         scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7c8 transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: compactMobile ? 2 : 3 }, "&::-webkit-scrollbar-track": { background: "transparent" },
@@ -107,46 +107,45 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
           <ButtonBase aria-label={name} aria-pressed={active}
             onClick={() => onSelect(code === selected ? "" : code)}
             sx={{
-              width: compactMobile ? { xs: 72, sm: 78, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
-              minWidth: compactMobile ? { xs: 72, sm: 78, md: 68, xl: 78 } : undefined,
-              minHeight: compactMobile ? { xs: 58, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
+              width: compactMobile ? { xs: 58, sm: 62, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
+              minWidth: compactMobile ? { xs: 58, sm: 62, md: 68, xl: 78 } : undefined,
+              minHeight: compactMobile ? { xs: 46, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
               flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: compactMobile ? { xs: .35, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
-              borderRadius: compactMobile ? { xs: "10px", md: 2 } : 2,
-              px: compactMobile ? { xs: .35, md: 0 } : 0,
-              py: compactMobile ? { xs: .4, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
+              gap: compactMobile ? { xs: .18, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
+              borderRadius: compactMobile ? { xs: "8px", md: 2 } : 2,
+              px: compactMobile ? { xs: .18, md: 0 } : 0,
+              py: compactMobile ? { xs: .22, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
               border: compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
-              borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.32)" : "rgba(0,107,79,.10)", md: "transparent" } : "transparent",
-              background: compactMobile ? { xs: active ? "rgba(0,107,79,.065)" : "#f7f9f8", md: "transparent" } : "transparent",
-              boxShadow: compactMobile && active ? { xs: "inset 0 -2px 0 rgba(0,107,79,.5)", md: "none" } : "none",
+              borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.24)" : "rgba(0,107,79,.065)", md: "transparent" } : "transparent",
+              background: compactMobile ? { xs: active ? "rgba(0,107,79,.035)" : "transparent", md: "transparent" } : "transparent",
+              boxShadow: compactMobile && active ? { xs: "inset 0 -1.5px 0 rgba(0,107,79,.42)", md: "none" } : "none",
               "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
-              "&:hover .segment-icon": { bgcolor: active ? "#dff2ec" : "#e9f4f0", borderColor: "#8bcbb6", transform: "translateY(-1px)" }
+              "&:hover .segment-icon": { bgcolor: active ? "#e7f3ee" : "#edf5f2", borderColor: "#9acdbb", transform: "translateY(-1px)" }
             }}>
             <Box className="segment-icon" sx={{
               position: "relative",
-              width: compactMobile ? { xs: 30, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-              height: compactMobile ? { xs: 30, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-              borderRadius: compactMobile ? { xs: "8px", md: "50%" } : "50%", display: "grid", placeItems: "center",
-              color: active ? "#13382e" : "#275747",
-              background: active ? "linear-gradient(145deg,#f3fbf8,#e1f1ec)" : "linear-gradient(145deg,#edf7f3,#e3f0eb)",
-              border: "1px solid", borderColor: active ? "#60b196" : "#d9e9e4",
-              boxShadow: active ? "0 0 0 2px rgba(38,155,120,.08)" : "none",
-              transition: "background-color 180ms, border-color 180ms, box-shadow 180ms, transform 180ms",
-              "& > svg": { width: compactMobile ? { xs: 17, md: 24, xl: 28 } : { md: 24, xl: 28 }, height: compactMobile ? { xs: 17, md: 24, xl: 28 } : { md: 24, xl: 28 } },
+              width: compactMobile ? { xs: 24, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+              height: compactMobile ? { xs: 24, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+              borderRadius: compactMobile ? { xs: "6px", md: "50%" } : "50%", display: "grid", placeItems: "center",
+              color: active ? "#174a39" : "#3f6759",
+              background: active ? "linear-gradient(145deg,#f1f8f5,#e4f0ec)" : "linear-gradient(145deg,#f2f7f5,#e8f1ee)",
+              border: "1px solid", borderColor: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.08)",
+              boxShadow: "none",
+              transition: "background-color 180ms, border-color 180ms, transform 180ms",
+              "& > svg": { width: compactMobile ? { xs: 14, md: 24, xl: 28 } : { md: 24, xl: 28 }, height: compactMobile ? { xs: 14, md: 24, xl: 28 } : { md: 24, xl: 28 } },
               "@media (prefers-reduced-motion: reduce)": { transition: "none" }
-            }}><Icon size={compactMobile ? 17 : 28} weight="duotone" aria-hidden="true" />
-              {active && <Box aria-hidden="true" sx={{
-                position: "absolute", right: compactMobile ? -4 : -2, bottom: compactMobile ? -4 : -1,
-                width: compactMobile ? { xs: 12, md: 14, xl: 16 } : { xs: 16, md: 14, xl: 16 },
-                height: compactMobile ? { xs: 12, md: 14, xl: 16 } : { xs: 16, md: 14, xl: 16 },
+            }}><Icon size={compactMobile ? 14 : 28} weight="duotone" aria-hidden="true" />
+              {active && !compactMobile && <Box aria-hidden="true" sx={{
+                position: "absolute", right: -2, bottom: -1,
+                width: { xs: 16, md: 14, xl: 16 }, height: { xs: 16, md: 14, xl: 16 },
                 borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8", display: "grid", placeItems: "center"
-              }}><Check size={compactMobile ? 7 : 10} weight="bold" /></Box>}
+              }}><Check size={10} weight="bold" /></Box>}
             </Box>
             <Typography component="span" sx={{
-              fontSize: compactMobile ? { xs: 8.1, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
-              lineHeight: compactMobile ? 1.05 : 1.3,
-              fontWeight: active ? 750 : 600, color: active ? "#174a39" : "#526861", textAlign: "center",
-              px: .05, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis",
+              fontSize: compactMobile ? { xs: 7.2, sm: 7.5, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
+              lineHeight: compactMobile ? 1 : 1.3,
+              fontWeight: active ? 700 : 550, color: active ? "#174a39" : "#63776f", textAlign: "center",
+              px: .02, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis",
               whiteSpace: compactMobile ? { xs: "nowrap", md: "normal" } : "normal"
             }}>
               {code ? labels[code] || name : "Todos"}
