@@ -127,19 +127,18 @@ export default function SearchPage() {
     <Box sx={{
       display: { xs: "block", md: "none" }, position: "sticky",
       top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
-      mx: { xs: -2, sm: -3 }, px: { xs: 1.4, sm: 2.1 }, py: .4,
-      bgcolor: "rgba(248,251,250,.95)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
-      borderBottom: "1px solid rgba(0,107,79,.09)", boxShadow: "0 8px 18px rgba(23,60,48,.045)"
+      mx: { xs: -2, sm: -3 }, px: { xs: 1.2, sm: 2 }, py: .3,
+      bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)"
     }}>
       <SegmentCarousel compactMobile catalog={catalog} selected={params.get("segmentCode") ?? ""}
         onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />
     </Box>
 
-    <Box sx={{ mb: { xs: 2.2, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
+    <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 1.75, md: 0 } }}>
       <AccountGreeting />
       <Typography component="h1" sx={{
         maxWidth: { xs: 345, md: 720, xl: 940 }, fontWeight: 900, fontSize: { xs: 30, sm: 33, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: { xs: 1.02, md: 1.03 },
-        mb: { xs: 1.15, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+        mb: { xs: 1.05, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
         WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
       }}>
         <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material pelas especificações.</Box>
@@ -158,15 +157,15 @@ export default function SearchPage() {
       }}>{filters}</Paper>
 
       <Box minWidth={0}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={{ xs: 2, md: 1.25, xl: 2 }}>
-          <Box>
-            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { md: 9.5, xl: 12 } }}>Resultados classificados</Typography>
-            <Typography variant="h5" fontWeight={800} sx={{ fontSize: { md: 18, xl: 24 } }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
+          <Box minWidth={0}>
+            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 8.2, md: 9.5, xl: 12 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
+            <Typography variant="h5" fontWeight={800} sx={{ fontSize: { xs: 14.5, sm: 15.5, md: 18, xl: 24 }, lineHeight: 1.2, mt: .2 }}>
               {loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" gap={.5}>
-            <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)} sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: 1.25 }}>{hasFilters ? "Filtros ativos" : "Filtros"}</Button>
+            <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)} sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .8, fontSize: 11.5 }}>{hasFilters ? "Filtros ativos" : "Filtros"}</Button>
             {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"
               sx={{ width: { md: 34, xl: 40 }, height: { md: 34, xl: 40 } }}><AddIcon /></IconButton>}
           </Stack>
