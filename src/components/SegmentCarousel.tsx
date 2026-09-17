@@ -49,21 +49,17 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
   };
 
   return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
-    <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, md: .55, xl: 1 }}
-      sx={{ display: compactMobile ? { xs: "none", md: "flex" } : "flex" }}>
+    <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, md: .55, xl: 1 }} sx={{ display: compactMobile ? { xs: "none", md: "flex" } : "flex" }}>
       <Stack direction="row" alignItems="center" gap={.35} minWidth={0}>
         <Typography variant="subtitle2" color="#23463b" fontWeight={700} sx={{ fontSize: { md: 12.5, xl: 14 } }}>Explore por segmento</Typography>
-        <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={2800}
-          title="Escolha um segmento para ver apenas materiais daquela categoria. Você pode deslizar a lista para explorar todas as opções.">
+        <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={2800} title="Escolha um segmento para ver apenas materiais daquela categoria. Você pode deslizar a lista para explorar todas as opções.">
           <IconButton size="small" aria-label="Como funciona a navegação por segmentos" sx={{
             width: { xs: 28, md: 24, xl: 28 }, height: { xs: 28, md: 24, xl: 28 }, ml: .15,
             color: "#4f7569", bgcolor: "rgba(0,107,79,.045)", border: "1px solid rgba(0,107,79,.10)",
             transition: "transform 180ms ease, background-color 180ms ease",
             "&:hover": { bgcolor: "rgba(0,107,79,.09)", transform: "translateY(-1px) rotate(-4deg)" },
             "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: 2 },
-          }}>
-            <HelpOutlineRoundedIcon sx={{ fontSize: { xs: 17, md: 15, xl: 17 } }} />
-          </IconButton>
+          }}><HelpOutlineRoundedIcon sx={{ fontSize: { xs: 17, md: 15, xl: 17 } }} /></IconButton>
         </Tooltip>
       </Stack>
       <Stack direction="row" gap={.5} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
@@ -72,29 +68,30 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
       </Stack>
     </Stack>
 
-    <Box ref={rail} onScroll={showScrollbar} onPointerDown={event => {
-      drag.current.moved = false;
-      if (event.pointerType !== "mouse" || event.button !== 0) return;
-      drag.current = { x: event.clientX, scroll: event.currentTarget.scrollLeft, active: true, moved: false };
-    }} onPointerMove={event => {
-      if (!drag.current.active) return;
-      const delta = event.clientX - drag.current.x;
-      if (Math.abs(delta) > 6) {
-        drag.current.moved = true;
-        event.currentTarget.setPointerCapture(event.pointerId);
-        event.currentTarget.scrollLeft = drag.current.scroll - delta;
-      }
-    }} onPointerUp={() => { drag.current.active = false; }}
-      onPointerCancel={() => { drag.current.active = false; }}
-      onLostPointerCapture={() => { drag.current.active = false; }}
-      onPointerLeave={() => { drag.current.active = false; }}
+    <Box ref={rail} onScroll={showScrollbar}
+      onPointerDown={event => {
+        drag.current.moved = false;
+        if (event.pointerType !== "mouse" || event.button !== 0) return;
+        drag.current = { x: event.clientX, scroll: event.currentTarget.scrollLeft, active: true, moved: false };
+      }}
+      onPointerMove={event => {
+        if (!drag.current.active) return;
+        const delta = event.clientX - drag.current.x;
+        if (Math.abs(delta) > 6) {
+          drag.current.moved = true;
+          event.currentTarget.setPointerCapture(event.pointerId);
+          event.currentTarget.scrollLeft = drag.current.scroll - delta;
+        }
+      }}
+      onPointerUp={() => { drag.current.active = false; }} onPointerCancel={() => { drag.current.active = false; }}
+      onLostPointerCapture={() => { drag.current.active = false; }} onPointerLeave={() => { drag.current.active = false; }}
       onClickCapture={event => { if (drag.current.moved) { event.preventDefault(); event.stopPropagation(); drag.current.moved = false; } }}
       sx={{
         display: "flex",
-        gap: compactMobile ? { xs: .35, sm: .45, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
+        gap: compactMobile ? { xs: .55, sm: .65, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
         overflowX: "auto",
-        py: compactMobile ? { xs: .18, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
-        px: compactMobile ? { xs: .1, md: 0 } : 0,
+        py: compactMobile ? { xs: .12, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
+        px: compactMobile ? { xs: .08, md: 0 } : 0,
         cursor: "grab", "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
         scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7c8 transparent" : "transparent transparent",
         "&::-webkit-scrollbar": { height: compactMobile ? 2 : 3 }, "&::-webkit-scrollbar-track": { background: "transparent" },
@@ -104,52 +101,44 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
         const Icon = iconFor(code);
         const active = code === selected;
         return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
-          <ButtonBase aria-label={name} aria-pressed={active}
-            onClick={() => onSelect(code === selected ? "" : code)}
-            sx={{
-              width: compactMobile ? { xs: 58, sm: 62, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
-              minWidth: compactMobile ? { xs: 58, sm: 62, md: 68, xl: 78 } : undefined,
-              minHeight: compactMobile ? { xs: 46, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
-              flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: compactMobile ? { xs: .18, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
-              borderRadius: compactMobile ? { xs: "8px", md: 2 } : 2,
-              px: compactMobile ? { xs: .18, md: 0 } : 0,
-              py: compactMobile ? { xs: .22, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
-              border: compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
-              borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.24)" : "rgba(0,107,79,.065)", md: "transparent" } : "transparent",
-              background: compactMobile ? { xs: active ? "rgba(0,107,79,.035)" : "transparent", md: "transparent" } : "transparent",
-              boxShadow: compactMobile && active ? { xs: "inset 0 -1.5px 0 rgba(0,107,79,.42)", md: "none" } : "none",
-              "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
-              "&:hover .segment-icon": { bgcolor: active ? "#e7f3ee" : "#edf5f2", borderColor: "#9acdbb", transform: "translateY(-1px)" }
-            }}>
+          <ButtonBase aria-label={name} aria-pressed={active} onClick={() => onSelect(code === selected ? "" : code)} sx={{
+            width: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
+            minWidth: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
+            minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
+            flexShrink: 0, display: "flex", flexDirection: compactMobile ? { xs: "row", md: "column" } : "column",
+            alignItems: "center", justifyContent: compactMobile ? { xs: "flex-start", md: "center" } : "center",
+            gap: compactMobile ? { xs: .45, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
+            borderRadius: compactMobile ? { xs: "8px", md: 2 } : 2,
+            px: compactMobile ? { xs: .5, md: 0 } : 0,
+            py: compactMobile ? { xs: .18, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
+            border: compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
+            borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.06)", md: "transparent" } : "transparent",
+            background: compactMobile ? { xs: active ? "rgba(0,107,79,.04)" : "rgba(255,255,255,.20)", md: "transparent" } : "transparent",
+            boxShadow: compactMobile && active ? { xs: "inset 0 -1.5px 0 rgba(0,107,79,.42)", md: "none" } : "none",
+            "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
+            "&:hover .segment-icon": { bgcolor: active ? "#e7f3ee" : "#edf5f2", borderColor: "#9acdbb", transform: "translateY(-1px)" }
+          }}>
             <Box className="segment-icon" sx={{
-              position: "relative",
-              width: compactMobile ? { xs: 24, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-              height: compactMobile ? { xs: 24, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+              position: "relative", flexShrink: 0,
+              width: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+              height: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
               borderRadius: compactMobile ? { xs: "6px", md: "50%" } : "50%", display: "grid", placeItems: "center",
               color: active ? "#174a39" : "#3f6759",
               background: active ? "linear-gradient(145deg,#f1f8f5,#e4f0ec)" : "linear-gradient(145deg,#f2f7f5,#e8f1ee)",
-              border: "1px solid", borderColor: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.08)",
-              boxShadow: "none",
-              transition: "background-color 180ms, border-color 180ms, transform 180ms",
-              "& > svg": { width: compactMobile ? { xs: 14, md: 24, xl: 28 } : { md: 24, xl: 28 }, height: compactMobile ? { xs: 14, md: 24, xl: 28 } : { md: 24, xl: 28 } },
+              border: "1px solid", borderColor: active ? "rgba(0,107,79,.20)" : "rgba(0,107,79,.075)",
+              boxShadow: "none", transition: "background-color 180ms,border-color 180ms,transform 180ms",
+              "& > svg": { width: compactMobile ? { xs: 13, md: 24, xl: 28 } : { md: 24, xl: 28 }, height: compactMobile ? { xs: 13, md: 24, xl: 28 } : { md: 24, xl: 28 } },
               "@media (prefers-reduced-motion: reduce)": { transition: "none" }
-            }}><Icon size={compactMobile ? 14 : 28} weight="duotone" aria-hidden="true" />
-              {active && !compactMobile && <Box aria-hidden="true" sx={{
-                position: "absolute", right: -2, bottom: -1,
-                width: { xs: 16, md: 14, xl: 16 }, height: { xs: 16, md: 14, xl: 16 },
-                borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8", display: "grid", placeItems: "center"
-              }}><Check size={10} weight="bold" /></Box>}
+            }}><Icon size={compactMobile ? 13 : 28} weight="duotone" aria-hidden="true" />
+              {active && !compactMobile && <Box aria-hidden="true" sx={{ position: "absolute", right: -2, bottom: -1, width: { xs: 16, md: 14, xl: 16 }, height: { xs: 16, md: 14, xl: 16 }, borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8", display: "grid", placeItems: "center" }}><Check size={10} weight="bold" /></Box>}
             </Box>
             <Typography component="span" sx={{
-              fontSize: compactMobile ? { xs: 7.2, sm: 7.5, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
-              lineHeight: compactMobile ? 1 : 1.3,
-              fontWeight: active ? 700 : 550, color: active ? "#174a39" : "#63776f", textAlign: "center",
-              px: .02, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis",
+              fontSize: compactMobile ? { xs: 7.8, sm: 8, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
+              lineHeight: compactMobile ? 1 : 1.3, fontWeight: active ? 700 : 550,
+              color: active ? "#174a39" : "#63776f", textAlign: compactMobile ? { xs: "left", md: "center" } : "center",
+              minWidth: 0, flex: compactMobile ? { xs: 1, md: "initial" } : "initial", overflow: "hidden", textOverflow: "ellipsis",
               whiteSpace: compactMobile ? { xs: "nowrap", md: "normal" } : "normal"
-            }}>
-              {code ? labels[code] || name : "Todos"}
-            </Typography>
+            }}>{code ? labels[code] || name : "Todos"}</Typography>
           </ButtonBase>
         </Tooltip>;
       })}

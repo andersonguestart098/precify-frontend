@@ -181,9 +181,7 @@ export default function AppLayout() {
     "--header-height": { xs: "70px", md: "60px", xl: "70px" },
     "--sidebar-width": { md: "188px", xl: "224px" },
     "--bottom-nav-height": "70px", "--ai-overhang": "22px", "--content-clearance": "12px",
-    background: location.pathname === "/ia"
-      ? "#101614"
-      : "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
+    background: location.pathname === "/ia" ? "#101614" : "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
   }}>
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "var(--sidebar-width)" }, minWidth: 0, overflowX: "clip" }}>
@@ -191,67 +189,40 @@ export default function AppLayout() {
         <Toolbar sx={{ minHeight: "var(--header-height) !important", px: { xs: 2, sm: 3, md: 2.5, xl: 3 } }}>
           <Container maxWidth="xl" disableGutters>
             <Stack direction="row" alignItems="center" gap={{ xs: .45, md: 1.25, xl: 1.5 }}>
-              {location.pathname !== "/inicio" && <IconButton
-                aria-label="Voltar"
-                onClick={() => navigate(-1)}
-                sx={{
-                  width: 28,
-                  height: 28,
-                  p: 0,
-                  ml: -.35,
-                  mr: .1,
-                  color: "rgba(255,255,255,.86)",
-                  display: { xs: "inline-flex", md: "none" },
-                  transition: "background-color 160ms ease, color 160ms ease, transform 120ms ease",
-                  "&:hover": { bgcolor: "rgba(255,255,255,.08)", color: "#fff" },
-                  "&:active": { bgcolor: "rgba(255,255,255,.12)", transform: "scale(.94)" },
-                  "&.Mui-focusVisible": { outline: "2px solid rgba(255,255,255,.45)", outlineOffset: 1 }
-                }}>
-                <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
-              </IconButton>}
+              {location.pathname !== "/inicio" && <IconButton aria-label="Voltar" onClick={() => navigate(-1)} sx={{
+                width: 28, height: 28, p: 0, ml: -.35, mr: .1, color: "rgba(255,255,255,.86)", display: { xs: "inline-flex", md: "none" },
+                transition: "background-color 160ms ease, color 160ms ease, transform 120ms ease",
+                "&:hover": { bgcolor: "rgba(255,255,255,.08)", color: "#fff" },
+                "&:active": { bgcolor: "rgba(255,255,255,.12)", transform: "scale(.94)" },
+                "&.Mui-focusVisible": { outline: "2px solid rgba(255,255,255,.45)", outlineOffset: 1 }
+              }}><ArrowBackIosNewIcon sx={{ fontSize: 16 }} /></IconButton>}
+
               <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
                 <Box component="img" src={showSearch ? "/precify-mark.svg" : "/precify-logo-white.svg"} alt="Precify" sx={{
-                  width: showSearch ? 35 : { xs: 103, sm: 112 },
-                  height: showSearch ? 35 : 29,
-                  maxWidth: showSearch ? 35 : 112,
-                  objectFit: "contain",
+                  width: showSearch ? 35 : { xs: 103, sm: 112 }, height: showSearch ? 35 : 29, maxWidth: showSearch ? 35 : 112, objectFit: "contain",
                 }} />
               </Box>
 
               {showSearch && <Box sx={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "center" }}>
                 <Stack component="form" onSubmit={submitSearch} direction="row" alignItems="center" sx={{
-                  width: { xs: "100%", md: "82%", xl: "92%" }, maxWidth: { md: 600, xl: 680 }, minHeight: { xs: 40, md: 38, xl: 42 }, bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.25, md: 1.75, xl: 2 },
-                  pr: .2, boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
+                  width: { xs: "100%", md: "82%", xl: "92%" }, maxWidth: { md: 600, xl: 680 }, minHeight: { xs: 40, md: 38, xl: 42 },
+                  bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.25, md: 1.75, xl: 2 }, pr: .2,
+                  boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
                   "& .MuiInputBase-input": { fontSize: { xs: "16px", md: 13, xl: 14 }, py: .65, WebkitTextSizeAdjust: "100%" },
                   "& .MuiIconButton-root": { p: { xs: .58, md: .7, xl: .9 } },
-                  "& .MuiSvgIcon-root": { fontSize: { xs: 18, md: 19, xl: 21 } },
-                  touchAction: "manipulation",
+                  "& .MuiSvgIcon-root": { fontSize: { xs: 18, md: 19, xl: 21 } }, touchAction: "manipulation",
                 }}>
                   <TextField fullWidth variant="standard" placeholder="Buscar materiais ou produtos" value={query} onChange={event => setQuery(event.target.value)}
                     slotProps={{ input: { disableUnderline: true }, htmlInput: { "aria-label": "Buscar materiais ou produtos", inputMode: "search" } }} />
-                  <IconButton
-                    type="button"
-                    aria-label="Abrir Assistente IA"
-                    onClick={() => navigate("/ia")}
-                    sx={{
-                      color: "#007a59",
-                      bgcolor: "transparent",
-                      border: 0,
-                      transition: "color 160ms ease, transform 160ms ease",
-                      "& .MuiSvgIcon-root": {
-                        filter: "drop-shadow(0 0 2px rgba(38,155,120,.42)) drop-shadow(0 0 5px rgba(38,155,120,.18))",
-                        animation: "aiSparkle 2.4s ease-in-out infinite",
-                      },
-                      "&:hover": { bgcolor: "transparent", color: "#00906a", transform: "translateY(-1px)" },
-                      "&:hover .MuiSvgIcon-root": { filter: "drop-shadow(0 0 3px rgba(38,155,120,.72)) drop-shadow(0 0 8px rgba(38,155,120,.32))" },
-                      "&:active": { bgcolor: "transparent", transform: "scale(.95)" },
-                      "@keyframes aiSparkle": {
-                        "0%, 100%": { transform: "scale(1) rotate(0deg)", opacity: .92 },
-                        "50%": { transform: "scale(1.08) rotate(5deg)", opacity: 1 },
-                      },
-                      "@media (prefers-reduced-motion: reduce)": { "& .MuiSvgIcon-root": { animation: "none" } },
-                    }}
-                  ><AutoAwesomeIcon /></IconButton>
+                  <IconButton type="button" aria-label="Abrir Assistente IA" onClick={() => navigate("/ia")} sx={{
+                    color: "#007a59", bgcolor: "transparent", border: 0, transition: "color 160ms ease, transform 160ms ease",
+                    "& .MuiSvgIcon-root": { filter: "drop-shadow(0 0 2px rgba(38,155,120,.42)) drop-shadow(0 0 5px rgba(38,155,120,.18))", animation: "aiSparkle 2.4s ease-in-out infinite" },
+                    "&:hover": { bgcolor: "transparent", color: "#00906a", transform: "translateY(-1px)" },
+                    "&:hover .MuiSvgIcon-root": { filter: "drop-shadow(0 0 3px rgba(38,155,120,.72)) drop-shadow(0 0 8px rgba(38,155,120,.32))" },
+                    "&:active": { bgcolor: "transparent", transform: "scale(.95)" },
+                    "@keyframes aiSparkle": { "0%, 100%": { transform: "scale(1) rotate(0deg)", opacity: .92 }, "50%": { transform: "scale(1.08) rotate(5deg)", opacity: 1 } },
+                    "@media (prefers-reduced-motion: reduce)": { "& .MuiSvgIcon-root": { animation: "none" } },
+                  }}><AutoAwesomeIcon /></IconButton>
                   <IconButton type="button" aria-label="Abrir filtros" onClick={openFilters} sx={{ color: "primary.dark" }}><TuneOutlinedIcon /></IconButton>
                   <IconButton type="submit" aria-label="Buscar" sx={{ color: "primary.dark" }}><SearchIcon /></IconButton>
                 </Stack>
@@ -276,7 +247,7 @@ export default function AppLayout() {
               <Typography noWrap sx={{ fontSize: 11.6, fontWeight: geoStatus === "ready" ? 750 : 650, lineHeight: 1.05, color: geoStatus === "error" ? "inherit" : "#31594c" }}>
                 {locationText}
               </Typography>
-              {geoStatus === "ready" && <Typography sx={{ mt: .2, fontSize: 8.8, color: "#8b9994", lineHeight: 1 }}>região usada para buscas próximas</Typography>}
+              {geoStatus === "ready" && <Typography sx={{ mt: .2, fontSize: 8.8, color: "#8b9994", lineHeight: 1 }}>Localidade de referência para preços</Typography>}
             </Box>
             {geoStatus === "ready" && <Typography sx={{ fontSize: 9.3, color: "#779087", lineHeight: 1, flexShrink: 0 }}>atualizar</Typography>}
           </ButtonBase>
@@ -284,20 +255,14 @@ export default function AppLayout() {
       </Box>}
 
       <Box key={location.pathname} sx={{
-        pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 }, animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
+        pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 },
+        animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
         "@media (min-width:900px) and (max-width:1799.95px)": keepWideCatalogLayout ? {
-          width: "119.05%",
-          zoom: .84,
-          translate: "0 0",
+          width: "119.05%", zoom: .84, translate: "0 0",
         } : {
-          width: "119.05%",
-          zoom: .84,
-          translate: "-10.6% 0",
+          width: "119.05%", zoom: .84, translate: "-10.6% 0",
         },
-        "@keyframes pageEnter": {
-          from: { opacity: .55, transform: "translateY(5px)" },
-          to: { opacity: 1, transform: "translateY(0)" }
-        },
+        "@keyframes pageEnter": { from: { opacity: .55, transform: "translateY(5px)" }, to: { opacity: 1, transform: "translateY(0)" } },
         "@media (prefers-reduced-motion: reduce)": { animation: "none" }
       }}><Outlet /></Box>
     </Box>
