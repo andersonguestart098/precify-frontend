@@ -12,6 +12,7 @@ import ProductPage from "./pages/ProductPage";
 import ProductRegistrationPage from "./pages/ProductRegistrationPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import ProfilePage from "./pages/ProfilePage";
+import MyAreaPage from "./pages/MyAreaPage";
 import CompositionsPage from "./pages/CompositionsPage";
 import UsersPage from "./pages/UsersPage";
 import LaborPage from "./pages/LaborPage";
@@ -48,7 +49,8 @@ function SessionRoutes() {
         <Route path="/produtos" element={<SearchPage />} />
         <Route path="/ia" element={<AiPage />} />
         <Route path="/favoritos" element={<FavoritesPage />} />
-        <Route path="/perfil" element={<ProfilePage />} />
+        <Route path="/perfil" element={<MyAreaPage />} />
+        <Route path="/conta" element={<ProfilePage />} />
         <Route path="/composicoes" element={<CompositionsPage />} />
         <Route path="/obras" element={<PlanningPage />} />
         <Route path="/historico" element={<HistoryPage />} />
