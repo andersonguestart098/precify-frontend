@@ -8,8 +8,8 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import QuickAccessStrip from "../components/QuickAccessStrip";
-import { getCatalog } from "../services/api";
 import type { CatalogMaterial } from "../domain/search";
+import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
 
 const projectTypeGroups = [
   {
@@ -70,27 +70,11 @@ const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value,
   value, label, segment: group.segment, icon: projectIcons[value] ?? group.icon,
 })));
 
-let catalogCache: CatalogMaterial[] | null = null;
-let catalogRequest: Promise<CatalogMaterial[]> | null = null;
-
-function loadCatalogOnce() {
-  if (catalogCache) return Promise.resolve(catalogCache);
-  if (!catalogRequest) {
-    catalogRequest = getCatalog()
-      .then(data => {
-        catalogCache = data;
-        return data;
-      })
-      .finally(() => { catalogRequest = null; });
-  }
-  return catalogRequest;
-}
-
 export default function HomePage() {
   const navigate = useNavigate();
   const [projectType, setProjectType] = useState("");
-  const [catalog, setCatalog] = useState<CatalogMaterial[]>(catalogCache ?? []);
-  const [catalogLoading, setCatalogLoading] = useState(!catalogCache);
+  const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => getCachedCatalog() ?? []);
+  const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [projectScrolling, setProjectScrolling] = useState(false);
   const projectRail = useRef<HTMLDivElement>(null);
   const projectScrollTimer = useRef<number | undefined>(undefined);
@@ -110,14 +94,9 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    if (catalogCache) {
-      setCatalog(catalogCache);
-      setCatalogLoading(false);
-      return;
-    }
     let mounted = true;
-    setCatalogLoading(true);
-    loadCatalogOnce()
+    setCatalogLoading(!getCachedCatalog());
+    loadCatalogCached()
       .then(data => { if (mounted) setCatalog(data); })
       .catch(() => undefined)
       .finally(() => { if (mounted) setCatalogLoading(false); });
