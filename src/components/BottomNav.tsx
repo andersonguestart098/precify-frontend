@@ -5,6 +5,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import HomeWorkRoundedIcon from "@mui/icons-material/HomeWorkRounded";
 import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
 import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 
@@ -12,6 +14,7 @@ const items = [
   { to: "/inicio", label: "Início", icon: HomeOutlinedIcon, activeIcon: HomeIcon },
   { to: "/produtos", label: "Produtos", icon: Inventory2OutlinedIcon, activeIcon: Inventory2Icon },
   { to: "/ia", label: "IA", icon: AutoAwesomeIcon, activeIcon: AutoAwesomeIcon, featured: true },
+  { to: "/obras", label: "Obras", icon: HomeWorkOutlinedIcon, activeIcon: HomeWorkRoundedIcon },
   { to: "/perfil", label: "Minha área", icon: DashboardCustomizeOutlinedIcon, activeIcon: DashboardCustomizeRoundedIcon },
 ];
 
@@ -94,7 +97,7 @@ export function BottomNav() {
             fontSize: 20, transform: active ? "scale(1.07)" : "scale(1)",
             transition: "transform 280ms cubic-bezier(.2,.8,.2,1)"
           }} />}
-          <Typography noWrap sx={{ maxWidth: "100%", fontSize: 10, fontWeight: active ? 700 : 500 }}>{label}</Typography>
+          <Typography noWrap sx={{ maxWidth: "100%", fontSize: 9.5, fontWeight: active ? 700 : 500 }}>{label}</Typography>
         </Stack>;
       })}
     </Stack>
