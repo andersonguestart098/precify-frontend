@@ -197,9 +197,14 @@ export default function AppLayout() {
                 "&.Mui-focusVisible": { outline: "2px solid rgba(255,255,255,.45)", outlineOffset: 1 }
               }}><ArrowBackIosNewIcon sx={{ fontSize: 16 }} /></IconButton>}
 
-              <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
-                <Box component="img" src={showSearch ? "/precify-mark.svg" : "/precify-logo-white.svg"} alt="Precify" sx={{
-                  width: showSearch ? 35 : { xs: 103, sm: 112 }, height: showSearch ? 35 : 29, maxWidth: showSearch ? 35 : 112, objectFit: "contain",
+              <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{
+                display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center",
+                width: showSearch ? 31 : 94, height: 35, overflow: "hidden", WebkitTapHighlightColor: "transparent",
+                transition: "width 220ms cubic-bezier(.2,.8,.2,1)",
+                "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+              }}>
+                <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{
+                  width: 94, height: 32, maxWidth: "none", flexShrink: 0, objectFit: "contain", objectPosition: "left center",
                 }} />
               </Box>
 
