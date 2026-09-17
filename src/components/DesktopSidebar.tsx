@@ -66,7 +66,15 @@ export default function DesktopSidebar() {
         "@media (max-height: 720px)": { minHeight: 31, py: 0, mb: .08 },
       }}
     >
-      <ListItemIcon sx={{ minWidth: { md: 31, xl: 35 }, color: "inherit", overflow: "visible" }}>
+      <ListItemIcon sx={{
+        width: { md: 28, xl: 32 },
+        minWidth: { md: 28, xl: 32 },
+        mr: { md: 1, xl: 1 },
+        ml: { md: -.85, xl: -.85 },
+        justifyContent: "center",
+        color: "inherit",
+        overflow: "visible",
+      }}>
         {aiLink ? <Box sx={{
           width: { md: 26, xl: 30 }, height: { md: 26, xl: 30 }, borderRadius: "50%", display: "grid", placeItems: "center",
           color: "#fff", position: "relative", flexShrink: 0,
