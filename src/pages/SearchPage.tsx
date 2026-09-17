@@ -118,23 +118,37 @@ export default function SearchPage() {
     onFamilyChange={(family, segment) => change({ family, segmentCode: segment, materialCode: "", optionCode: "" })}
     onClearFilters={clearFilters} />;
 
+  const segmentRail = <SegmentCarousel catalog={catalog} selected={params.get("segmentCode") ?? ""}
+    onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />;
+
   return <Container maxWidth="xl" sx={{
-    pt: { xs: 2, md: 2.25, xl: 3.5 }, pb: { xs: 4, md: 3, xl: 5 }, px: { xs: 2, sm: 3, md: 2.75, xl: 3 }
+    pt: { xs: 0, md: 2.25, xl: 3.5 }, pb: { xs: 4, md: 3, xl: 5 }, px: { xs: 2, sm: 3, md: 2.75, xl: 3 }
   }}>
-    <Box sx={{ display: "contents" }}>
-      <Box sx={{ mb: { xs: 3, md: 2, xl: 3 } }}>
-        <AccountGreeting />
-        <Typography component="h1" sx={{
-          maxWidth: { md: 720, xl: 940 }, fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
-          mb: { xs: 1.5, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
-          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
-        }}>Encontre o material certo pelas especificações.</Typography>
-        <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 } }}>Pesquise e compare as opções para o seu projeto.</Typography>
-      </Box>
+    <Box sx={{
+      display: { xs: "block", md: "none" }, position: "sticky",
+      top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
+      mx: { xs: -2, sm: -3 }, px: { xs: 1.4, sm: 2.1 }, py: .4,
+      bgcolor: "rgba(248,251,250,.95)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+      borderBottom: "1px solid rgba(0,107,79,.09)", boxShadow: "0 8px 18px rgba(23,60,48,.045)"
+    }}>
+      <SegmentCarousel compactMobile catalog={catalog} selected={params.get("segmentCode") ?? ""}
+        onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />
     </Box>
 
-    <SegmentCarousel catalog={catalog} selected={params.get("segmentCode") ?? ""}
-      onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />
+    <Box sx={{ mb: { xs: 2.2, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
+      <AccountGreeting />
+      <Typography component="h1" sx={{
+        maxWidth: { xs: 345, md: 720, xl: 940 }, fontWeight: 900, fontSize: { xs: 30, sm: 33, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: { xs: 1.02, md: 1.03 },
+        mb: { xs: 1.15, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
+      }}>
+        <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material pelas especificações.</Box>
+        <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>Encontre o material certo pelas especificações.</Box>
+      </Typography>
+      <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 13, xl: 16 } }}>Pesquise e compare as opções para o seu projeto.</Typography>
+    </Box>
+
+    <Box sx={{ display: { xs: "none", md: "block" } }}>{segmentRail}</Box>
 
     <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "250px minmax(0,1fr)", xl: "300px minmax(0,1fr)" }}
       gap={{ xs: 3, md: 2, xl: 3 }} alignItems="start">
