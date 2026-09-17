@@ -5,9 +5,15 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
+import QuickAccessStrip from "./QuickAccessStrip";
 import { rememberSearch } from "../services/api";
+
+type GeoStatus = "idle" | "loading" | "ready" | "error";
+const LOCATION_KEY = "precify-user-location";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -16,6 +22,7 @@ export default function AppLayout() {
   const isProducts = location.pathname === "/produtos";
   const keepWideCatalogLayout = location.pathname === "/inicio" || location.pathname.startsWith("/produtos");
   const [query, setQuery] = useState("");
+  const [geoStatus, setGeoStatus] = useState<GeoStatus>(() => localStorage.getItem(LOCATION_KEY) ? "ready" : "idle");
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
   useEffect(() => {
@@ -40,6 +47,29 @@ export default function AppLayout() {
     navigate("/produtos?filters=open");
   };
 
+  const requestLocation = () => {
+    if (!navigator.geolocation || geoStatus === "loading") {
+      if (!navigator.geolocation) setGeoStatus("error");
+      return;
+    }
+    setGeoStatus("loading");
+    navigator.geolocation.getCurrentPosition(position => {
+      const value = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        updatedAt: Date.now(),
+      };
+      localStorage.setItem(LOCATION_KEY, JSON.stringify(value));
+      setGeoStatus("ready");
+      window.dispatchEvent(new CustomEvent("precify-location-changed", { detail: value }));
+    }, () => setGeoStatus("error"), {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 300000,
+    });
+  };
+
   return <Box minHeight="100dvh" sx={{
     "--header-height": { xs: "70px", md: "60px", xl: "70px" },
     "--sidebar-width": { md: "188px", xl: "224px" },
@@ -51,9 +81,9 @@ export default function AppLayout() {
     <DesktopSidebar />
     <Box sx={{ ml: { xs: 0, md: "var(--sidebar-width)" }, minWidth: 0, overflowX: "clip" }}>
     <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#006b4f", pt: "env(safe-area-inset-top, 0px)", borderBottom: 0 }}>
-      <Toolbar sx={{ minHeight: "var(--header-height) !important", px: { xs: 2.5, sm: 3, md: 2.5, xl: 3 } }}>
+      <Toolbar sx={{ minHeight: "var(--header-height) !important", px: { xs: 2, sm: 3, md: 2.5, xl: 3 } }}>
         <Container maxWidth="xl" disableGutters>
-          <Stack direction="row" alignItems="center" gap={{ xs: .5, md: 1.25, xl: 1.5 }}>
+          <Stack direction="row" alignItems="center" gap={{ xs: .45, md: 1.25, xl: 1.5 }}>
             {location.pathname !== "/inicio" && <IconButton
               aria-label="Voltar"
               onClick={() => navigate(-1)}
@@ -73,17 +103,43 @@ export default function AppLayout() {
               <ArrowBackIosNewIcon sx={{ fontSize: 16 }} />
             </IconButton>}
             <Box component={RouterLink} to="/inicio" aria-label="Precify — início" sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0, alignItems: "center", WebkitTapHighlightColor: "transparent" }}>
-              <Box component="img" src="/precify-mark.svg" alt="Precify" sx={{ width: 35, height: 35 }} />
+              <Box component="img" src={showSearch ? "/precify-mark.svg" : "/precify-logo-white.svg"} alt="Precify" sx={{
+                width: showSearch ? 35 : { xs: 103, sm: 112 },
+                height: showSearch ? 35 : 29,
+                maxWidth: showSearch ? 35 : 112,
+                objectFit: "contain",
+              }} />
             </Box>
+
+            <IconButton
+              type="button"
+              aria-label={geoStatus === "ready" ? "Localização atual ativada" : geoStatus === "loading" ? "Obtendo localização" : "Usar minha localização"}
+              onClick={requestLocation}
+              disabled={geoStatus === "loading"}
+              sx={{
+                display: { xs: "inline-flex", md: "none" }, width: 32, height: 32, p: .55, flexShrink: 0,
+                color: geoStatus === "ready" ? "#d8fff1" : geoStatus === "error" ? "#ffd7d7" : "rgba(255,255,255,.82)",
+                bgcolor: geoStatus === "ready" ? "rgba(255,255,255,.12)" : "transparent",
+                border: geoStatus === "ready" ? "1px solid rgba(216,255,241,.24)" : "1px solid transparent",
+                transition: "background-color 160ms ease,color 160ms ease,transform 160ms ease",
+                "&:active": { transform: "scale(.94)" },
+                "&.Mui-disabled": { color: "rgba(255,255,255,.48)" },
+              }}
+            >
+              {geoStatus === "ready" ? <MyLocationRoundedIcon sx={{ fontSize: 18 }} /> : <LocationOnOutlinedIcon sx={{ fontSize: 19 }} />}
+            </IconButton>
 
             {showSearch && <Box sx={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "center" }}>
               <Stack component="form" onSubmit={submitSearch} direction="row" alignItems="center" sx={{
-                width: { xs: "94%", md: "82%", xl: "92%" }, maxWidth: { md: 600, xl: 680 }, minHeight: { xs: 38, md: 38, xl: 42 }, bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.5, md: 1.75, xl: 2 },
-                pr: .25, boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
-                "& .MuiInputBase-input": { fontSize: { xs: 13, md: 13, xl: 14 }, py: .65 }, "& .MuiIconButton-root": { p: { xs: .65, md: .7, xl: .9 } }, "& .MuiSvgIcon-root": { fontSize: { xs: 19, md: 19, xl: 21 } }
+                width: { xs: "100%", md: "82%", xl: "92%" }, maxWidth: { md: 600, xl: 680 }, minHeight: { xs: 40, md: 38, xl: 42 }, bgcolor: "rgba(255,255,255,.95)", borderRadius: 999, py: 0, pl: { xs: 1.25, md: 1.75, xl: 2 },
+                pr: .2, boxShadow: "0 3px 12px rgba(19,56,46,.12)", border: "1px solid rgba(255,255,255,.42)",
+                "& .MuiInputBase-input": { fontSize: { xs: "16px", md: 13, xl: 14 }, py: .65, WebkitTextSizeAdjust: "100%" },
+                "& .MuiIconButton-root": { p: { xs: .58, md: .7, xl: .9 } },
+                "& .MuiSvgIcon-root": { fontSize: { xs: 18, md: 19, xl: 21 } },
+                touchAction: "manipulation",
               }}>
                 <TextField fullWidth variant="standard" placeholder="Buscar materiais ou produtos" value={query} onChange={event => setQuery(event.target.value)}
-                  slotProps={{ input: { disableUnderline: true }, htmlInput: { "aria-label": "Buscar materiais ou produtos" } }} />
+                  slotProps={{ input: { disableUnderline: true }, htmlInput: { "aria-label": "Buscar materiais ou produtos", inputMode: "search" } }} />
                 <IconButton
                   type="button"
                   aria-label="Abrir Assistente IA"
@@ -132,7 +188,10 @@ export default function AppLayout() {
         to: { opacity: 1, transform: "translateY(0)" }
       },
       "@media (prefers-reduced-motion: reduce)": { animation: "none" }
-    }}><Outlet /></Box>
+    }}>
+      {location.pathname === "/inicio" && <QuickAccessStrip />}
+      <Outlet />
+    </Box>
     </Box>
     <BottomNav />
   </Box>;
