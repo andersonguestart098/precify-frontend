@@ -92,7 +92,7 @@ export default function HistoryPage() {
 
           <Box sx={{ mt: { xs: 4, md: 5 } }}>
             <Stack direction="row" alignItems="center" gap={.7} mb={1.2}>
-              <HistoryRoundedIcon sx={{ color: "#4f7769", fontSize: 19 }} />
+              <LocalFireDepartmentRoundedIcon sx={{ color: "#d96c32", fontSize: 19 }} />
               <Typography sx={{ fontSize: 12, textTransform: "uppercase", letterSpacing: 1.2, fontWeight: 850, color: "#6c7f78" }}>Pesquisas recentes</Typography>
             </Stack>
             <Box sx={{ borderTop: "1px solid #e3ebe8", borderBottom: "1px solid #e3ebe8" }}>
