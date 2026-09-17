@@ -107,12 +107,10 @@ export default function QuickAccessStrip() {
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
             width: { xs: 39, md: 38, xl: 42 }, height: { xs: 39, md: 38, xl: 42 }, borderRadius: { xs: "12px", md: "11px", xl: "13px" },
-            display: "grid", placeItems: "center", color: featured ? "#fff" : "#285e4c",
-            background: featured
-              ? "linear-gradient(145deg,#178767 0%,#006b4f 72%,#075641 100%)"
-              : "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: featured ? "1px solid rgba(255,255,255,.26)" : "1px solid rgba(0,107,79,.06)",
-            boxShadow: featured ? "0 5px 12px rgba(0,107,79,.15), inset 0 1px 0 rgba(255,255,255,.16)" : "0 2px 6px rgba(24,60,48,.035)",
+            display: "grid", placeItems: "center", color: "#285e4c",
+            background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
+            border: "1px solid rgba(0,107,79,.06)",
+            boxShadow: "0 2px 6px rgba(24,60,48,.035)",
             "& svg": { width: { xs: 21, md: 20, xl: 22 }, height: { xs: 21, md: 20, xl: 22 } },
           }}>{icon}</Box>
           <Box sx={{
