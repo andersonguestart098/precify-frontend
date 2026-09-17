@@ -127,7 +127,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
             minWidth: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
             minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
             flexShrink: 0, display: "flex", flexDirection: compactMobile ? { xs: "row", md: "column" } : "column",
-            alignItems: "center", justifyContent: compactMobile ? { xs: "flex-start", md: "center" } : "center",
+            alignItems: "center", justifyContent: { xs: "flex-start", md: "center" },
             gap: compactMobile ? { xs: .45, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
             borderRadius: compactMobile ? { xs: "8px", md: 2 } : 2,
             px: compactMobile ? { xs: .5, md: 0 } : 0,
