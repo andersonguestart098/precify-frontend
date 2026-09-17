@@ -2,7 +2,7 @@ import { ResultSkeletons } from "../components/SearchSkeleton";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import { Alert, Box, Button, Container, Drawer, IconButton, Paper, Pagination, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Drawer, IconButton, Paper, Pagination, Skeleton, Stack, Typography } from "@mui/material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,6 +18,26 @@ import { CatalogResultCard } from "../components/CatalogResultCard";
 let catalogCache: CatalogMaterial[] | null = null;
 const searchResponseCache = new Map<string, CatalogSearchPage>();
 
+function SegmentRailSkeleton({ compact = false }: { compact?: boolean }) {
+  return <Box aria-label="Carregando segmentos" sx={{
+    display: "flex", overflow: "hidden", gap: compact ? { xs: .55, sm: .65 } : { md: 1.15, xl: 1.6 },
+    py: compact ? .12 : { md: .45, xl: .8 }, px: compact ? .08 : 0,
+  }}>
+    {Array.from({ length: compact ? 6 : 8 }).map((_, index) => <Box key={index} sx={{
+      width: compact ? { xs: 82, sm: 88 } : { md: 68, xl: 78 },
+      minWidth: compact ? { xs: 82, sm: 88 } : { md: 68, xl: 78 },
+      minHeight: compact ? 36 : { md: 78, xl: 94 },
+      display: "flex", flexDirection: compact ? "row" : "column", alignItems: "center", justifyContent: compact ? "flex-start" : "center",
+      gap: compact ? .45 : { md: .65, xl: 1 }, px: compact ? .5 : 0,
+      borderRadius: compact ? "8px" : 2, border: compact ? "1px solid rgba(0,107,79,.055)" : 0,
+      bgcolor: compact ? "rgba(255,255,255,.18)" : "transparent", flexShrink: 0,
+    }}>
+      <Skeleton variant="rounded" animation="wave" width={compact ? 22 : 44} height={compact ? 22 : 44} sx={{ borderRadius: compact ? "6px" : "50%", bgcolor: "rgba(0,107,79,.07)" }} />
+      <Skeleton variant="rounded" animation="wave" width={compact ? 42 : 48} height={compact ? 7 : 9} sx={{ borderRadius: 999, bgcolor: "rgba(0,107,79,.055)" }} />
+    </Box>)}
+  </Box>;
+}
+
 export default function SearchPage() {
   const user = useAccount();
   const favorites = useFavorites();
@@ -29,6 +49,7 @@ export default function SearchPage() {
     .map(c => ({ ...c, value: params.get(c.key) ?? c.value })), [params]);
   const [catalogError, setCatalogError] = useState("");
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => catalogCache ?? []);
+  const [catalogLoading, setCatalogLoading] = useState(() => !catalogCache);
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
 
@@ -54,16 +75,19 @@ export default function SearchPage() {
   useEffect(() => {
     if (catalogCache) {
       setCatalog(catalogCache);
+      setCatalogLoading(false);
       return;
     }
     const c = new AbortController();
+    setCatalogLoading(true);
     getCatalog(c.signal)
       .then(data => {
         if (c.signal.aborted) return;
         catalogCache = data;
         setCatalog(data);
       })
-      .catch(e => { if (!c.signal.aborted) setCatalogError(e.message); });
+      .catch(e => { if (!c.signal.aborted) setCatalogError(e.message); })
+      .finally(() => { if (!c.signal.aborted) setCatalogLoading(false); });
     return () => c.abort();
   }, []);
 
@@ -118,8 +142,10 @@ export default function SearchPage() {
     onFamilyChange={(family, segment) => change({ family, segmentCode: segment, materialCode: "", optionCode: "" })}
     onClearFilters={clearFilters} />;
 
-  const segmentRail = <SegmentCarousel catalog={catalog} selected={params.get("segmentCode") ?? ""}
-    onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />;
+  const segmentRail = catalogLoading
+    ? <SegmentRailSkeleton />
+    : <SegmentCarousel catalog={catalog} selected={params.get("segmentCode") ?? ""}
+      onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />;
 
   return <Container maxWidth="xl" sx={{
     pt: { xs: 0, md: 2.25, xl: 3.5 }, pb: { xs: 4, md: 3, xl: 5 }, px: { xs: 2, sm: 3, md: 2.75, xl: 3 }
@@ -130,8 +156,8 @@ export default function SearchPage() {
       mx: { xs: -2, sm: -3 }, px: { xs: 1.2, sm: 2 }, py: .3,
       bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)"
     }}>
-      <SegmentCarousel compactMobile catalog={catalog} selected={params.get("segmentCode") ?? ""}
-        onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />
+      {catalogLoading ? <SegmentRailSkeleton compact /> : <SegmentCarousel compactMobile catalog={catalog} selected={params.get("segmentCode") ?? ""}
+        onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />}
     </Box>
 
     <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 1.75, md: 0 } }}>
