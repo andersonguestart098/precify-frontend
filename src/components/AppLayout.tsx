@@ -5,7 +5,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
 import { rememberSearch } from "../services/api";
@@ -246,7 +246,20 @@ export default function AppLayout() {
             minHeight: 38, width: "100%", px: 0, gap: .7, color: geoStatus === "error" ? "#9d514b" : "#45675c",
             justifyContent: "flex-start", borderRadius: 1.5, WebkitTapHighlightColor: "transparent", textAlign: "left"
           }}>
-            <LocationOnOutlinedIcon sx={{ fontSize: 17, color: geoStatus === "ready" ? "#0a795b" : geoStatus === "error" ? "#a55c56" : "#5a7b70", flexShrink: 0 }} />
+            <Box component="svg" aria-hidden="true" sx={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
+              <defs>
+                <linearGradient id="precify-location-pin-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#174a39" />
+                  <stop offset="55%" stopColor="#006b4f" />
+                  <stop offset="100%" stopColor="#269b78" />
+                </linearGradient>
+              </defs>
+            </Box>
+            <LocationOnRoundedIcon sx={{
+              fontSize: 18, flexShrink: 0,
+              filter: geoStatus === "error" ? "none" : "drop-shadow(0 1px 2px rgba(0,107,79,.18))",
+              "& path": { fill: geoStatus === "error" ? "#a55c56" : "url(#precify-location-pin-gradient)" },
+            }} />
             <Box minWidth={0} flex={1}>
               <Typography noWrap sx={{ fontSize: 11.6, fontWeight: geoStatus === "ready" ? 750 : 650, lineHeight: 1.05, color: geoStatus === "error" ? "inherit" : "#31594c" }}>
                 {locationText}
