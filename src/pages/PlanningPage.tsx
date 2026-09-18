@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import { HardHat } from "@phosphor-icons/react";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField, Tooltip, Typography
@@ -161,6 +163,8 @@ export default function PlanningPage() {
                 <Divider sx={{ mt: 1.25 }} />
                 <Stack direction="row" alignItems="center" gap={.5} pt={1.25}>
                   <Button size="small" startIcon={<EditOutlinedIcon />} onClick={() => openEdit(project)} sx={{ textTransform: "none", fontWeight: 750 }}>Editar</Button>
+                  <Button size="small" component={RouterLink} to={`/obras/${encodeURIComponent(project.id)}/mao-de-obra`}
+                    startIcon={<HardHat size={17} weight="duotone" />} sx={{ textTransform: "none", fontWeight: 750 }}>Mão de obra</Button>
                   <Button size="small" startIcon={<FileDownloadOutlinedIcon />} disabled={!lists.length} onClick={() => downloadCompositions(lists)}
                     sx={{ textTransform: "none", fontWeight: 750 }}>Exportar CSV</Button>
                   <Tooltip title="Excluir obra"><span><IconButton size="small" disabled={busy} onClick={() => void remove(project)} sx={{ ml: "auto", color: "#a54b4b" }}>
