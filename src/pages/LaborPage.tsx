@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, ButtonBase, Checkbox, Chip,
-  CircularProgress, Container, Divider, Paper, Stack, TextField, Typography
+  CircularProgress, Container, Divider, MenuItem, Paper, Stack, TextField, Typography
 } from "@mui/material";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
@@ -81,11 +81,10 @@ function LaborGroupCard({
               </Box>
               {mode === "BOTH" && selected && <TextField select size="small" value={selected.origin}
                 onChange={event => onOriginChange(item.code, event.target.value as LaborPlanItem["origin"])}
-                slotProps={{ select: { native: true } }}
-                sx={{ width: 104, flexShrink: 0, "& .MuiInputBase-root": { height: 32, borderRadius: 2, fontSize: 10.5 }, "& select": { py: .5 } }}>
-                <option value="TEAM">Equipe</option>
-                <option value="THIRD_PARTY">Terceiro</option>
-                <option value="BOTH">Ambos</option>
+                sx={{ width: 108, flexShrink: 0, "& .MuiInputBase-root": { height: 32, borderRadius: 2, fontSize: 10.5 } }}>
+                <MenuItem value="TEAM">Equipe</MenuItem>
+                <MenuItem value="THIRD_PARTY">Terceiro</MenuItem>
+                <MenuItem value="BOTH">Ambos</MenuItem>
               </TextField>}
             </Stack>
           </Box>;
@@ -298,15 +297,30 @@ export default function LaborPage() {
           <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} />)}</Stack>
         </Box>}
 
-        <Paper variant="outlined" sx={{ mt: 2.6, p: 1.5, borderRadius: 3.5, borderColor: "#dce9e5", bgcolor: "#f8fbfa" }}>
-          <Stack direction="row" gap={1} alignItems="center">
-            <Box sx={{ width: 36, height: 36, borderRadius: 2.5, display: "grid", placeItems: "center", bgcolor: "#e8f4ef", color: "#2b6651", flexShrink: 0 }}><HardHat size={20} weight="duotone" /></Box>
-            <Box minWidth={0}>
-              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.5 }}>Resumo único da obra</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 10.3, lineHeight: 1.35 }}>As seleções ficam vinculadas a {project.name} e preservam a origem de cada necessidade.</Typography>
-            </Box>
-          </Stack>
-        </Paper>
+        <Accordion disableGutters elevation={0} sx={{ mt: 2.6, border: "1px solid #dce9e5", borderRadius: "16px !important", overflow: "hidden", bgcolor: "#f8fbfa", "&::before": { display: "none" } }}>
+          <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: 1.5, minHeight: 62 }}>
+            <Stack direction="row" gap={1} alignItems="center" width="100%">
+              <Box sx={{ width: 36, height: 36, borderRadius: 2.5, display: "grid", placeItems: "center", bgcolor: "#e8f4ef", color: "#2b6651", flexShrink: 0 }}><HardHat size={20} weight="duotone" /></Box>
+              <Box minWidth={0} flex={1}>
+                <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.5 }}>Resumo único da obra</Typography>
+                <Typography color="text.secondary" sx={{ fontSize: 10.3, lineHeight: 1.35 }}>{selectedItems.length ? `${selectedItems.length} necessidades vinculadas a ${project.name}` : "Nenhuma necessidade selecionada ainda."}</Typography>
+              </Box>
+            </Stack>
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0, px: 1.5, pb: 1.3 }}>
+            <Divider sx={{ mb: .5 }} />
+            {selectedItems.length ? <Stack divider={<Divider flexItem />}>
+              {selectedItems.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={1} py={.7}>
+                <Box minWidth={0} flex={1}>
+                  <Typography fontWeight={760} color="#294d41" sx={{ fontSize: 11.5 }}>{item.title}</Typography>
+                  <Typography sx={{ fontSize: 8.8, color: "#91a09a" }}>{item.code}</Typography>
+                </Box>
+                <Chip size="small" label={item.origin === "TEAM" ? "Equipe" : item.origin === "THIRD_PARTY" ? "Terceiro" : "Ambos"}
+                  sx={{ height: 22, fontSize: 9.2, fontWeight: 750, bgcolor: "#e7f3ee", color: "#245843" }} />
+              </Stack>)}
+            </Stack> : <Typography color="text.secondary" sx={{ fontSize: 11, py: 1 }}>Selecione funções ou especialidades acima para compor o resumo.</Typography>}
+          </AccordionDetails>
+        </Accordion>
       </>}
     </Box>
   </Container>;
