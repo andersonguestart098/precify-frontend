@@ -14,7 +14,7 @@ const shortcuts = [
     icon: <HardHat size={22} weight="duotone" aria-hidden="true" />,
     featured: true,
     art: "left",
-    available: false,
+    available: true,
   },
   {
     to: "/composicoes",
