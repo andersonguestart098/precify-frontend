@@ -161,7 +161,7 @@ export default function PlanningPage() {
                   <Typography color="text.secondary" fontSize={13.5}>Nenhuma composição vinculada a esta obra.</Typography>
                 </Box>}
                 <Divider sx={{ mt: 1.25 }} />
-                <Stack direction="row" alignItems="center" gap={.5} pt={1.25}>
+                <Stack direction="row" alignItems="center" gap={.5} pt={1.25} flexWrap="wrap">
                   <Button size="small" startIcon={<EditOutlinedIcon />} onClick={() => openEdit(project)} sx={{ textTransform: "none", fontWeight: 750 }}>Editar</Button>
                   <Button size="small" component={RouterLink} to={`/obras/${encodeURIComponent(project.id)}/mao-de-obra`}
                     startIcon={<HardHat size={17} weight="duotone" />} sx={{ textTransform: "none", fontWeight: 750 }}>Mão de obra</Button>
