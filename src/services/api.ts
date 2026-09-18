@@ -4,10 +4,21 @@ import type { Composition, CompositionItemInput } from "../domain/composition";
 const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8080/api").replace(/\/$/, "");
 
 export interface Project { id: string; name: string; compositionIds: string[]; }
+
+export type LaborMode = "" | "TEAM" | "THIRD_PARTY" | "BOTH";
+export type LaborSource = "TEAM" | "THIRD_PARTY";
+export type LaborOrigin = LaborSource | "BOTH";
+export interface LaborPlanItem { code: string; title: string; source: LaborSource; origin: LaborOrigin; }
+export interface LaborPlan { projectId: string; mode: LaborMode; items: LaborPlanItem[]; updatedAt?: string | null; }
+export interface LaborPlanInput { mode: Exclude<LaborMode, "">; items: LaborPlanItem[]; }
 export interface SearchHistory { id: string; query: string; createdAt: string; }
 export const listProjects = () => apiRequest<Project[]>("/planning/projects");
 export const saveProject = (project: Omit<Project, "id">, id?: string) => apiRequest<Project>(`/planning/projects${id ? `/${id}` : ""}`, { method: id ? "PUT" : "POST", body: JSON.stringify(project) });
 export const deleteProject = async (id: string) => { await apiResponse(`/planning/projects/${id}`, { method: "DELETE" }); };
+export const getLaborPlan = (projectId: string) =>
+  apiRequest<LaborPlan>(`/planning/projects/${encodeURIComponent(projectId)}/labor`);
+export const saveLaborPlan = (projectId: string, plan: LaborPlanInput) =>
+  apiRequest<LaborPlan>(`/planning/projects/${encodeURIComponent(projectId)}/labor`, { method: "PUT", body: JSON.stringify(plan) });
 export const listHistory = () => apiRequest<SearchHistory[]>("/planning/history");
 export const rememberSearch = (query: string) => apiRequest<SearchHistory>("/planning/history", { method: "POST", body: JSON.stringify({ query }) });
 export const clearHistory = async () => { await apiResponse("/planning/history", { method: "DELETE" }); };
