@@ -19,6 +19,7 @@ import AboutPage from "./pages/AboutPage";
 import InstitutionalPage from "./pages/InstitutionalPage";
 import ContactPage from "./pages/ContactPage";
 import PlanningPage from "./pages/PlanningPage";
+import LaborPage from "./pages/LaborPage";
 import HistoryPage from "./pages/HistoryPage";
 import ComparePage from "./pages/ComparePage";
 import { warmAppCache } from "./services/appWarmCache";
@@ -97,6 +98,8 @@ function SessionRoutes() {
         <Route path="/conta" element={<ProfilePage />} />
         <Route path="/composicoes" element={<CompositionsPage />} />
         <Route path="/obras" element={<PlanningPage />} />
+        <Route path="/mao-de-obra" element={<LaborPage />} />
+        <Route path="/obras/:projectId/mao-de-obra" element={<LaborPage />} />
         <Route path="/historico" element={<HistoryPage />} />
         <Route path="/comparar" element={<ComparePage />} />
         <Route path="/sobre" element={<AboutPage />} />
