@@ -55,23 +55,37 @@ function LaborGroupCard({
   const selectedCount = group.items.filter(item => Boolean(selections[item.code])).length;
 
   return <Accordion disableGutters elevation={0} defaultExpanded={Boolean(search) && visible.length <= 8}
-    sx={{ border: "1px solid #dce9e5", borderRadius: "16px !important", overflow: "hidden", bgcolor: "rgba(255,255,255,.78)", "&::before": { display: "none" } }}>
-    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.45, sm: 2 }, minHeight: 62, "& .MuiAccordionSummary-content": { my: 1 } }}>
+    sx={{
+      border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff",
+      boxShadow: selectedCount ? "0 7px 22px rgba(21,72,56,.055)" : "0 2px 10px rgba(21,72,56,.025)",
+      transition: "border-color 160ms ease, box-shadow 160ms ease",
+      "&::before": { display: "none" },
+      "&:hover": { borderColor: "#bfd8cf" },
+    }}>
+    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ fontSize: 20, color: "#6f877e" }} />} sx={{
+      px: { xs: 1.35, sm: 1.7 }, minHeight: 58,
+      bgcolor: selectedCount ? "#f8fcfa" : "#fff",
+      "& .MuiAccordionSummary-content": { my: .9 },
+    }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1} gap={1}>
         <Box minWidth={0}>
           <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 14, sm: 15 } }}>{group.title}</Typography>
           {group.subtitle && <Typography color="text.secondary" sx={{ fontSize: 11.5, mt: .15 }}>{group.subtitle}</Typography>}
         </Box>
         <Chip size="small" label={selectedCount ? `${selectedCount} selecionado${selectedCount > 1 ? "s" : ""}` : `${group.items.length} opções`}
-          sx={{ flexShrink: 0, height: 24, bgcolor: selectedCount ? "#e6f3ee" : "#f1f5f3", color: selectedCount ? "#176047" : "#72827c", fontWeight: 750, fontSize: 9.5 }} />
+          sx={{ flexShrink: 0, height: 23, borderRadius: "7px", bgcolor: selectedCount ? "#e6f3ee" : "#f3f6f5", color: selectedCount ? "#176047" : "#72827c", fontWeight: 780, fontSize: 9.2 }} />
       </Stack>
     </AccordionSummary>
-    <AccordionDetails sx={{ px: { xs: 1.1, sm: 1.5 }, pt: 0, pb: 1.2 }}>
+    <AccordionDetails sx={{ px: { xs: 1.05, sm: 1.35 }, pt: 0, pb: 1 }}>
       <Divider sx={{ mb: .55 }} />
       <Stack divider={<Divider flexItem />}>
         {visible.map(item => {
           const selected = selections[item.code];
-          return <Box key={item.code} sx={{ py: .55 }}>
+          return <Box key={item.code} sx={{
+            py: .45, px: .35, borderRadius: 2,
+            bgcolor: selected ? "#f7fbf9" : "transparent",
+            transition: "background 140ms ease",
+          }}>
             <Stack direction="row" alignItems="center" gap={.75}>
               <Checkbox checked={Boolean(selected)} onChange={() => onToggle(item, source)} size="small"
                 inputProps={{ "aria-label": `Selecionar ${item.title}` }} sx={{ p: .55, color: "#9ab0a8", "&.Mui-checked": { color: "#08785b" } }} />
@@ -81,7 +95,7 @@ function LaborGroupCard({
               </Box>
               {mode === "BOTH" && selected && <TextField select size="small" value={selected.origin}
                 onChange={event => onOriginChange(item.code, event.target.value as LaborPlanItem["origin"])}
-                sx={{ width: 108, flexShrink: 0, "& .MuiInputBase-root": { height: 32, borderRadius: 2, fontSize: 10.5 } }}>
+                sx={{ width: 108, flexShrink: 0, "& .MuiInputBase-root": { height: 32, borderRadius: "8px", fontSize: 10.5, bgcolor: "#fff" } }}>
                 <MenuItem value="TEAM">Equipe</MenuItem>
                 <MenuItem value="THIRD_PARTY">Terceiro</MenuItem>
                 <MenuItem value="BOTH">Ambos</MenuItem>
@@ -182,7 +196,11 @@ export default function LaborPage() {
           <HardHat size={27} weight="duotone" />
         </Box>
         <Box>
-          <Typography component="h1" sx={{ fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em", color: "#174b3b" }}>Mão de obra</Typography>
+          <Typography component="h1" sx={{
+            fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em",
+            background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>Mão de obra</Typography>
           <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>Escolha a obra para montar o planejamento.</Typography>
         </Box>
       </Stack>
@@ -193,11 +211,17 @@ export default function LaborPage() {
         <Typography fontWeight={850} color="#284d40" mt={1}>Nenhuma obra cadastrada.</Typography>
         <Typography color="text.secondary" fontSize={13} mt={.45}>A mão de obra nasce dentro de uma obra.</Typography>
         <Button component={RouterLink} to="/obras" variant="contained" sx={{ mt: 2, borderRadius: 999, textTransform: "none" }}>Cadastrar obra</Button>
-      </Paper> : <Stack gap={1} mt={3}>
+      </Paper> : <Box sx={{ mt: 3, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: 1 }}>
         {projects.map(work => <ButtonBase key={work.id} component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`}
-          sx={{ p: { xs: 1.4, sm: 1.7 }, borderRadius: 3.5, border: "1px solid #dce9e5", bgcolor: "rgba(255,255,255,.78)", textAlign: "left", justifyContent: "stretch", transition: "160ms ease", "&:hover": { borderColor: "#9acdbb", bgcolor: "#f5fbf8" } }}>
+          sx={{
+            p: { xs: 1.35, sm: 1.5 }, minHeight: 76, borderRadius: "11px",
+            border: "1px solid #d9e6e1", bgcolor: "#fff", textAlign: "left", justifyContent: "stretch",
+            boxShadow: "0 3px 14px rgba(21,72,56,.03)",
+            transition: "transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease,background 160ms ease",
+            "&:hover": { transform: "translateY(-1px)", borderColor: "#9fcdbd", bgcolor: "#f9fcfb", boxShadow: "0 8px 24px rgba(21,72,56,.065)" },
+          }}>
           <Stack direction="row" alignItems="center" width="100%" gap={1.25}>
-            <Box sx={{ width: 40, height: 40, borderRadius: 2.5, display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f" }}><HomeWorkOutlinedIcon /></Box>
+            <Box sx={{ width: 40, height: 40, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6" }}><HomeWorkOutlinedIcon /></Box>
             <Box flex={1} minWidth={0}>
               <Typography fontWeight={850} color="#21483b" noWrap>{work.name}</Typography>
               <Typography color="text.secondary" sx={{ fontSize: 11.5 }}>{work.compositionIds.length} {work.compositionIds.length === 1 ? "composição vinculada" : "composições vinculadas"}</Typography>
@@ -205,7 +229,7 @@ export default function LaborPage() {
             <ArrowForwardRoundedIcon sx={{ color: "#6f8b81" }} />
           </Stack>
         </ButtonBase>)}
-      </Stack>}
+      </Box>}
     </Box>
   </Container>;
 
@@ -216,10 +240,18 @@ export default function LaborPage() {
       <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ md: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.3 }}>Mão de obra da obra</Typography>
-          <Typography component="h1" sx={{ fontSize: { xs: 30, md: 42 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.04em", color: "#174b3b" }}>{project.name}</Typography>
+          <Typography component="h1" sx={{
+            fontSize: { xs: 30, md: 42 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.04em",
+            background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>{project.name}</Typography>
           <Typography color="text.secondary" sx={{ mt: .55, fontSize: { xs: 12.5, md: 14 } }}>Defina como a obra será atendida e selecione somente o que ela precisa.</Typography>
         </Box>
-        <Button component={RouterLink} to="/mao-de-obra" variant="text" sx={{ alignSelf: { xs: "flex-start", md: "auto" }, textTransform: "none", fontWeight: 750 }}>Trocar obra</Button>
+        <Button component={RouterLink} to="/mao-de-obra" variant="outlined" sx={{
+          alignSelf: { xs: "flex-start", md: "auto" }, minHeight: 38, px: 1.6,
+          borderRadius: "9px", textTransform: "none", fontWeight: 780, borderColor: "#cfdfd9", color: "#315e4e",
+          bgcolor: "rgba(255,255,255,.74)", "&:hover": { borderColor: "#94c5b3", bgcolor: "#f7fbf9" },
+        }}>Trocar obra</Button>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
@@ -228,25 +260,35 @@ export default function LaborPage() {
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
         <Typography id="labor-mode-title" fontWeight={850} color="#244d40" sx={{ fontSize: 15 }}>Como esta obra será atendida?</Typography>
         <Typography color="text.secondary" sx={{ fontSize: 11.5, mt: .25 }}>Uma decisão simples na entrada. Você pode mudar depois.</Typography>
-        <Box sx={{ mt: 1.25, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3,1fr)" }, gap: 1 }}>
+        <Box sx={{ mt: 1.15, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3,1fr)" }, gap: .9 }}>
           {modeOptions.map(option => {
             const Icon = option.icon;
             const active = mode === option.value;
             return <ButtonBase key={option.value} onClick={() => chooseMode(option.value)} aria-pressed={active} sx={{
-              p: 1.35, minHeight: 96, borderRadius: 3.5, textAlign: "left", alignItems: "stretch", justifyContent: "flex-start",
-              border: "1px solid", borderColor: active ? "#70b59d" : "#dce9e5",
-              bgcolor: active ? "#edf8f4" : "rgba(255,255,255,.72)", boxShadow: active ? "0 8px 24px rgba(0,107,79,.07)" : "none",
-              transition: "160ms ease", "&:hover": { borderColor: "#9acdbb", bgcolor: active ? "#e9f6f1" : "#f8fbfa" }
+              p: 1.15, minHeight: 78, borderRadius: "11px", textAlign: "left", alignItems: "stretch", justifyContent: "flex-start",
+              border: "1px solid", borderColor: active ? "#73b69f" : "#d9e6e1",
+              bgcolor: active ? "#f0f8f5" : "#fff",
+              boxShadow: active ? "0 8px 22px rgba(0,107,79,.065)" : "0 3px 12px rgba(21,72,56,.025)",
+              transition: "transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease,background 160ms ease",
+              "&:hover": { transform: "translateY(-1px)", borderColor: "#9acdbb", bgcolor: active ? "#edf7f3" : "#fafcfb" }
             }}>
-              <Stack gap={1} width="100%">
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Box sx={{ width: 34, height: 34, borderRadius: 2.3, display: "grid", placeItems: "center", bgcolor: active ? "#d9eee7" : "#eef5f2", color: "#28634f" }}><Icon sx={{ fontSize: 20 }} /></Box>
-                  <Box sx={{ width: 14, height: 14, borderRadius: "50%", border: "1px solid", borderColor: active ? "#3d9b79" : "#cfded8", bgcolor: active ? "#0b8060" : "transparent", boxShadow: active ? "inset 0 0 0 3px #edf8f4" : "none" }} />
-                </Stack>
-                <Box>
-                  <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 13.2 }}>{option.title}</Typography>
-                  <Typography color="text.secondary" sx={{ mt: .2, fontSize: 10.2, lineHeight: 1.3 }}>{option.description}</Typography>
+              <Stack direction="row" alignItems="center" gap={1.05} width="100%">
+                <Box sx={{
+                  width: 38, height: 38, borderRadius: "9px", flexShrink: 0,
+                  display: "grid", placeItems: "center",
+                  bgcolor: active ? "#dcefe8" : "#eef5f2", color: active ? "#0d6d52" : "#3c6c5b",
+                  border: "1px solid", borderColor: active ? "#c3e2d7" : "#e2ebe7",
+                }}><Icon sx={{ fontSize: 20 }} /></Box>
+                <Box minWidth={0} flex={1}>
+                  <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.8, lineHeight: 1.18 }}>{option.title}</Typography>
+                  <Typography color="text.secondary" sx={{ mt: .25, fontSize: 9.9, lineHeight: 1.28 }}>{option.description}</Typography>
                 </Box>
+                <Box sx={{
+                  width: 11, height: 11, borderRadius: "3px", flexShrink: 0,
+                  border: "1px solid", borderColor: active ? "#21805f" : "#cadad4",
+                  bgcolor: active ? "#0b8060" : "transparent",
+                  boxShadow: active ? "inset 0 0 0 2px #f0f8f5" : "none",
+                }} />
               </Stack>
             </ButtonBase>;
           })}
@@ -254,7 +296,10 @@ export default function LaborPage() {
       </Box>
 
       {mode && <>
-        <Paper variant="outlined" sx={{ mt: 2, px: { xs: 1.35, sm: 1.7 }, py: 1.25, borderRadius: 3.5, borderColor: "#dce9e5", bgcolor: "rgba(250,253,252,.9)" }}>
+        <Paper variant="outlined" sx={{
+          mt: 1.8, px: { xs: 1.25, sm: 1.55 }, py: 1.1, borderRadius: "11px",
+          borderColor: "#d9e6e1", bgcolor: "#fbfdfc", boxShadow: "0 3px 14px rgba(21,72,56,.025)",
+        }}>
           <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={1.15}>
             <Box flex={1}>
               <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 13 }}>{selectedItems.length} {selectedItems.length === 1 ? "necessidade selecionada" : "necessidades selecionadas"}</Typography>
@@ -267,13 +312,17 @@ export default function LaborPage() {
               </Stack>
             </Box>
             <Button variant="contained" disableElevation startIcon={saving ? <CircularProgress color="inherit" size={15} /> : <SaveRoundedIcon />} onClick={() => void save()} disabled={saving}
-              sx={{ borderRadius: 999, px: 2.2, textTransform: "none", fontWeight: 800, alignSelf: { xs: "stretch", sm: "center" } }}>Salvar planejamento</Button>
+              sx={{ borderRadius: "9px", px: 2, minHeight: 38, textTransform: "none", fontWeight: 800, alignSelf: { xs: "stretch", sm: "center" }, boxShadow: "none" }}>Salvar planejamento</Button>
           </Stack>
         </Paper>
 
         <TextField fullWidth size="small" value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar função ou especialidade"
           slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: .8, fontSize: 18, color: "#789087" }} /> } }}
-          sx={{ mt: 2, "& .MuiInputBase-root": { borderRadius: 3, bgcolor: "rgba(255,255,255,.78)" } }} />
+          sx={{
+            mt: 1.6,
+            "& .MuiInputBase-root": { borderRadius: "10px", bgcolor: "#fff", minHeight: 42, boxShadow: "0 2px 10px rgba(21,72,56,.02)" },
+            "& fieldset": { borderColor: "#d9e6e1" },
+          }} />
 
         {(mode === "TEAM" || mode === "BOTH") && <Box component="section" mt={2.3}>
           <Stack direction="row" alignItems="center" gap={.8} mb={1}>
@@ -297,10 +346,13 @@ export default function LaborPage() {
           <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} />)}</Stack>
         </Box>}
 
-        <Accordion disableGutters elevation={0} sx={{ mt: 2.6, border: "1px solid #dce9e5", borderRadius: "16px !important", overflow: "hidden", bgcolor: "#f8fbfa", "&::before": { display: "none" } }}>
+        <Accordion disableGutters elevation={0} sx={{
+          mt: 2.3, border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fbfdfc",
+          boxShadow: "0 3px 14px rgba(21,72,56,.025)", "&::before": { display: "none" },
+        }}>
           <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: 1.5, minHeight: 62 }}>
             <Stack direction="row" gap={1} alignItems="center" width="100%">
-              <Box sx={{ width: 36, height: 36, borderRadius: 2.5, display: "grid", placeItems: "center", bgcolor: "#e8f4ef", color: "#2b6651", flexShrink: 0 }}><HardHat size={20} weight="duotone" /></Box>
+              <Box sx={{ width: 36, height: 36, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e8f4ef", color: "#2b6651", border: "1px solid #dcebe6", flexShrink: 0 }}><HardHat size={20} weight="duotone" /></Box>
               <Box minWidth={0} flex={1}>
                 <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.5 }}>Resumo único da obra</Typography>
                 <Typography color="text.secondary" sx={{ fontSize: 10.3, lineHeight: 1.35 }}>{selectedItems.length ? `${selectedItems.length} necessidades vinculadas a ${project.name}` : "Nenhuma necessidade selecionada ainda."}</Typography>
@@ -316,7 +368,7 @@ export default function LaborPage() {
                   <Typography sx={{ fontSize: 8.8, color: "#91a09a" }}>{item.code}</Typography>
                 </Box>
                 <Chip size="small" label={item.origin === "TEAM" ? "Equipe" : item.origin === "THIRD_PARTY" ? "Terceiro" : "Ambos"}
-                  sx={{ height: 22, fontSize: 9.2, fontWeight: 750, bgcolor: "#e7f3ee", color: "#245843" }} />
+                  sx={{ height: 22, borderRadius: "7px", fontSize: 9.2, fontWeight: 750, bgcolor: "#e7f3ee", color: "#245843" }} />
               </Stack>)}
             </Stack> : <Typography color="text.secondary" sx={{ fontSize: 11, py: 1 }}>Selecione funções ou especialidades acima para compor o resumo.</Typography>}
           </AccordionDetails>
