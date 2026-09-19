@@ -122,95 +122,101 @@ export default function HomePage() {
 
     <Box sx={{
       flex: { xs: 1, md: "initial" }, minHeight: 0, display: "flex", flexDirection: "column",
-      justifyContent: { xs: "flex-end", md: "flex-start" }, position: { md: "relative" },
+      justifyContent: { xs: "flex-end", md: "flex-start" },
     }}>
-      <Typography component="h1" sx={{
-        maxWidth: { md: "calc(100% - 285px)", lg: "calc(100% - 330px)", xl: 820 },
-        fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
-        mb: { xs: 1, md: .65, xl: 1 },
-        background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
-        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+      <Box sx={{
+        display: { xs: "block", md: "grid" },
+        gridTemplateColumns: {
+          md: "minmax(0,1fr) minmax(214px,244px)",
+          lg: "minmax(0,1fr) minmax(238px,286px)",
+          xl: "minmax(0,820px) minmax(275px,314px)",
+        },
+        alignItems: "start",
+        columnGap: { md: 2.5, lg: 4, xl: 7 },
       }}>
-        Encontre o material certo para a sua obra.
-      </Typography>
-      <Typography color="text.secondary" sx={{
-        fontSize: { md: 13, xl: 16 },
-        maxWidth: { md: "calc(100% - 285px)", lg: "calc(100% - 330px)", xl: 820 },
-      }} mb={{ xs: 2.25, md: 1.75, xl: 3 }}>Pesquise e compare as opções para o seu projeto.</Typography>
+        <Box minWidth={0}>
+          <Typography component="h1" sx={{
+            maxWidth: { md: 690, xl: 820 },
+            fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
+            mb: { xs: 1, md: .65, xl: 1 },
+            background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>
+            Encontre o material certo para a sua obra.
+          </Typography>
+          <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 }, maxWidth: { md: 690, xl: 820 } }}
+            mb={{ xs: 2.25, md: 1.75, xl: 3 }}>
+            Pesquise e compare as opções para o seu projeto.
+          </Typography>
+        </Box>
 
-      <ButtonBase
-        onClick={requestLocation}
-        disabled={geoStatus === "loading"}
-        aria-label={geoStatus === "ready" ? `Localização atual: ${geoLabel}. Clique para atualizar.` : locationText}
-        sx={{
-          display: { xs: "none", md: "flex" },
-          position: "absolute", top: { md: -2, xl: 1 }, right: 0,
-          width: { md: 250, lg: 292, xl: 316 }, minHeight: { md: 82, xl: 92 },
-          px: { md: 1.2, xl: 1.4 }, py: { md: 1.05, xl: 1.2 }, gap: { md: 1.05, xl: 1.2 },
-          alignItems: "center", justifyContent: "flex-start", textAlign: "left",
-          borderRadius: { md: "12px", xl: "13px" },
-          border: "1px solid",
-          borderColor: geoStatus === "error" ? "rgba(165,92,86,.24)" : "rgba(0,107,79,.13)",
-          background: geoStatus === "error"
-            ? "linear-gradient(145deg,rgba(255,250,249,.98),rgba(249,238,236,.94))"
-            : "linear-gradient(145deg,rgba(255,255,255,.97),rgba(239,248,245,.92))",
-          boxShadow: "0 8px 24px rgba(24,60,48,.055), inset 0 1px 0 rgba(255,255,255,.88)",
-          overflow: "hidden",
-          transition: "transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease,background 160ms ease",
-          "&::before": {
-            content: '""', position: "absolute", width: 112, height: 112, right: -42, top: -48,
-            borderRadius: "48% 52% 58% 42% / 42% 46% 54% 58%",
-            background: geoStatus === "error"
-              ? "radial-gradient(circle,rgba(165,92,86,.09),transparent 70%)"
-              : "radial-gradient(circle,rgba(38,155,120,.10),transparent 70%)",
-            pointerEvents: "none",
-          },
-          "@media (hover:hover)": {
-            "&:hover": {
-              transform: "translateY(-2px)", borderColor: geoStatus === "error" ? "rgba(165,92,86,.34)" : "rgba(0,107,79,.24)",
-              boxShadow: "0 12px 28px rgba(24,60,48,.085), inset 0 1px 0 rgba(255,255,255,.92)",
+        <ButtonBase
+          onClick={requestLocation}
+          disabled={geoStatus === "loading"}
+          aria-label={geoStatus === "ready" ? `Localização atual: ${geoLabel}. Clique para atualizar.` : locationText}
+          sx={{
+            display: { xs: "none", md: "flex" },
+            width: "100%", minWidth: 0, maxWidth: { md: 244, lg: 286, xl: 314 },
+            justifySelf: "end", alignSelf: "start",
+            mt: { md: .4, lg: .8, xl: 1.1 }, p: .35, gap: { md: .8, xl: 1 },
+            alignItems: "center", justifyContent: "flex-start", textAlign: "left",
+            color: "inherit", bgcolor: "transparent", borderRadius: "8px",
+            transition: "transform 160ms ease,opacity 160ms ease",
+            "@media (hover:hover)": {
+              "&:hover": { transform: "translateY(-1px)" },
+              "&:hover .location-pin": { transform: "translateY(-1px) scale(1.07)", filter: "drop-shadow(0 5px 8px rgba(0,107,79,.22))" },
+              "&:hover .location-refresh": { transform: "rotate(26deg)", color: "#087458" },
+              "&:hover .location-city": { color: "#006b4f" },
             },
-          },
-          "&.Mui-disabled": { opacity: .74 },
-          "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-          "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-        }}
-      >
-        <Box sx={{
-          width: { md: 42, xl: 46 }, height: { md: 42, xl: 46 }, flexShrink: 0,
-          borderRadius: { md: "10px", xl: "11px" }, display: "grid", placeItems: "center",
-          bgcolor: geoStatus === "error" ? "#f7e9e7" : "#e7f4ef",
-          border: "1px solid", borderColor: geoStatus === "error" ? "#edd2ce" : "#d3e9e1",
-          color: geoStatus === "error" ? "#a55c56" : "#0b7659",
-          boxShadow: "0 3px 10px rgba(24,60,48,.04)",
-          position: "relative", zIndex: 1,
-        }}>
-          <LocationOnRoundedIcon sx={{ fontSize: { md: 23, xl: 26 } }} />
-        </Box>
+            "&.Mui-disabled": { opacity: .68 },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.42)", outlineOffset: 3 },
+            "@media (prefers-reduced-motion: reduce)": {
+              transition: "none",
+              "&:hover": { transform: "none" },
+              "&:hover .location-pin, &:hover .location-refresh": { transform: "none" },
+            },
+          }}
+        >
+          <LocationOnRoundedIcon className="location-pin" sx={{
+            fontSize: { md: 27, lg: 29, xl: 31 }, flexShrink: 0,
+            color: geoStatus === "error" ? "#a55c56" : "#087458",
+            filter: geoStatus === "error" ? "none" : "drop-shadow(0 3px 6px rgba(0,107,79,.17))",
+            transition: "transform 160ms ease,filter 160ms ease",
+          }} />
 
-        <Box minWidth={0} flex={1} position="relative" zIndex={1}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
-            <Typography sx={{
-              fontSize: { md: 8.5, xl: 9.2 }, fontWeight: 850, letterSpacing: ".075em",
-              textTransform: "uppercase", color: geoStatus === "error" ? "#8d5a54" : "#5a786e", lineHeight: 1,
+          <Box minWidth={0} flex={1}>
+            <Stack direction="row" alignItems="center" gap={.45} minWidth={0}>
+              <Typography sx={{
+                fontSize: { md: 8.2, lg: 8.6, xl: 9.2 }, fontWeight: 850,
+                letterSpacing: ".07em", textTransform: "uppercase", lineHeight: 1,
+                color: geoStatus === "error" ? "#8d5a54" : "#638078",
+              }}>
+                Localização de referência
+              </Typography>
+              <RefreshRoundedIcon className="location-refresh" sx={{
+                ml: "auto", fontSize: { md: 13, xl: 15 }, flexShrink: 0,
+                color: geoStatus === "error" ? "#9c655f" : "#7c948c",
+                transition: "transform 180ms ease,color 180ms ease",
+              }} />
+            </Stack>
+
+            <Typography className="location-city" noWrap sx={{
+              mt: .42, fontSize: { md: 11.6, lg: 12.3, xl: 13.2 }, fontWeight: 850,
+              letterSpacing: "-.012em", lineHeight: 1.14,
+              color: geoStatus === "error" ? "#8f504a" : "#214b3d",
+              transition: "color 160ms ease",
             }}>
-              Localização de referência
+              {geoStatus === "loading" ? "Identificando sua região..." : geoStatus === "ready" ? geoLabel : geoStatus === "error" ? "Tentar identificar novamente" : "Definir minha localização"}
             </Typography>
-            <RefreshRoundedIcon sx={{ fontSize: { md: 14, xl: 15 }, color: geoStatus === "error" ? "#9c655f" : "#6d8b80", flexShrink: 0 }} />
-          </Stack>
-          <Typography noWrap sx={{
-            mt: .55, fontSize: { md: 12.2, xl: 13.2 }, fontWeight: 850, letterSpacing: "-.012em",
-            color: geoStatus === "error" ? "#8f504a" : "#204b3d", lineHeight: 1.15,
-          }}>
-            {geoStatus === "loading" ? "Identificando sua região..." : geoStatus === "ready" ? geoLabel : geoStatus === "error" ? "Tentar identificar novamente" : "Definir minha localização"}
-          </Typography>
-          <Typography noWrap sx={{
-            mt: .45, fontSize: { md: 9, xl: 9.7 }, color: "#82938d", lineHeight: 1.1,
-          }}>
-            {geoStatus === "ready" ? "Base local para preços e resultados" : "Melhora preços e resultados por região"}
-          </Typography>
-        </Box>
-      </ButtonBase>
+
+            <Typography noWrap sx={{
+              mt: .3, fontSize: { md: 8.3, lg: 8.8, xl: 9.6 }, lineHeight: 1.1, color: "#8a9994",
+            }}>
+              {geoStatus === "ready" ? "Base local para preços e resultados" : "Melhora preços e resultados por região"}
+            </Typography>
+          </Box>
+        </ButtonBase>
+      </Box>
 
       <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { md: .5, xl: 2 } }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
