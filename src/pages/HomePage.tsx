@@ -269,7 +269,7 @@ export default function HomePage() {
         <Box sx={{ mt: { xs: 1.5, md: 1.15, xl: 1.75 }, pb: { xs: 0, md: 1, xl: 2.5 } }}>
           {catalogLoading ? <>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-              <Typography variant="subtitle2" color="#23463b" fontWeight={700}>Explore por segmento</Typography>
+              <Typography sx={{ fontSize: { xs: 13, md: 12.8, xl: 14.2 }, fontWeight: 850, color: "#244d40", letterSpacing: "-.015em" }}>Explore por segmento</Typography>
               <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
             </Stack>
             <Stack direction="row" gap={{ xs: 2.5, sm: 4, md: 2.75, xl: 4 }} sx={{ minHeight: { xs: 92, md: 78, xl: 92 }, overflow: "hidden", px: .5 }}>
