@@ -232,67 +232,6 @@ export default function AppLayout() {
                 </Stack>
               </Box>}
 
-              {location.pathname === "/inicio" && <ButtonBase
-                onClick={requestLocation}
-                disabled={geoStatus === "loading"}
-                aria-label={geoStatus === "ready" ? `Localização atual: ${geoLabel}. Clique para atualizar.` : locationText}
-                title={geoStatus === "ready" ? geoLabel : locationText}
-                sx={{
-                  display: { xs: "none", md: "flex" }, flexShrink: 0,
-                  width: { md: 188, lg: 214, xl: 252 }, minHeight: { md: 38, xl: 42 },
-                  px: { md: .7, xl: .85 }, py: .45, gap: { md: .7, xl: .85 },
-                  justifyContent: "flex-start", textAlign: "left",
-                  borderRadius: { md: "10px", xl: "11px" },
-                  color: "#fff",
-                  bgcolor: geoStatus === "error" ? "rgba(125,42,36,.18)" : "rgba(255,255,255,.08)",
-                  border: "1px solid",
-                  borderColor: geoStatus === "error" ? "rgba(255,207,202,.24)" : "rgba(255,255,255,.15)",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,.06),0 4px 14px rgba(16,70,54,.08)",
-                  backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
-                  transition: "background-color 160ms ease,border-color 160ms ease,transform 160ms ease",
-                  "&:hover": {
-                    bgcolor: geoStatus === "error" ? "rgba(125,42,36,.25)" : "rgba(255,255,255,.13)",
-                    borderColor: geoStatus === "error" ? "rgba(255,207,202,.34)" : "rgba(255,255,255,.24)",
-                    transform: "translateY(-1px)",
-                  },
-                  "&.Mui-disabled": { opacity: .78, color: "#fff" },
-                  "&.Mui-focusVisible": { outline: "2px solid rgba(255,255,255,.5)", outlineOffset: 2 },
-                  "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-                }}
-              >
-                <Box sx={{
-                  width: { md: 29, xl: 32 }, height: { md: 29, xl: 32 }, flexShrink: 0,
-                  borderRadius: { md: "8px", xl: "9px" }, display: "grid", placeItems: "center",
-                  bgcolor: "rgba(255,255,255,.94)", border: "1px solid rgba(255,255,255,.72)",
-                  boxShadow: "0 2px 8px rgba(9,63,48,.14)",
-                }}>
-                  <LocationOnRoundedIcon sx={{
-                    fontSize: { md: 17, xl: 19 },
-                    color: geoStatus === "error" ? "#a55c56" : "#087458",
-                  }} />
-                </Box>
-                <Box minWidth={0} flex={1}>
-                  <Typography sx={{
-                    fontSize: { md: 8.1, xl: 8.8 }, fontWeight: 800, lineHeight: 1,
-                    letterSpacing: ".08em", textTransform: "uppercase",
-                    color: "rgba(255,255,255,.62)",
-                  }}>
-                    Localização
-                  </Typography>
-                  <Typography noWrap sx={{
-                    mt: .3, fontSize: { md: 10.5, xl: 11.3 }, fontWeight: 760, lineHeight: 1.08,
-                    color: "#fff",
-                  }}>
-                    {geoStatus === "loading" ? "Identificando..." : geoStatus === "ready" ? geoLabel : geoStatus === "error" ? "Tentar novamente" : "Definir localização"}
-                  </Typography>
-                  {geoStatus === "ready" && <Typography noWrap sx={{
-                    mt: .22, fontSize: { md: 7.5, xl: 8.1 }, lineHeight: 1,
-                    color: "rgba(255,255,255,.56)",
-                  }}>
-                    referência para preços
-                  </Typography>}
-                </Box>
-              </ButtonBase>}
             </Stack>
           </Container>
         </Toolbar>
@@ -343,7 +282,7 @@ export default function AppLayout() {
         },
         "@keyframes pageEnter": { from: { opacity: .55, transform: "translateY(5px)" }, to: { opacity: 1, transform: "translateY(0)" } },
         "@media (prefers-reduced-motion: reduce)": { animation: "none" }
-      }}><Outlet /></Box>
+      }}><Outlet context={{ geoStatus, geoLabel, locationText, requestLocation }} /></Box>
     </Box>
     <BottomNav />
   </Box>;
