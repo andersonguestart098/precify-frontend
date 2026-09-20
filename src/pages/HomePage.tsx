@@ -135,13 +135,15 @@ export default function HomePage() {
     }}>
       <Box sx={{
         display: { xs: "block", md: "grid" },
+        width: "100%",
+        maxWidth: { md: 980, lg: 1100, xl: "none" },
         gridTemplateColumns: {
-          md: "minmax(0,1fr) minmax(214px,244px)",
-          lg: "minmax(0,1fr) minmax(238px,286px)",
+          md: "minmax(0,1fr) minmax(190px,214px)",
+          lg: "minmax(0,1fr) minmax(210px,250px)",
           xl: "minmax(0,820px) minmax(275px,314px)",
         },
         alignItems: "start",
-        columnGap: { md: 2.5, lg: 4, xl: 7 },
+        columnGap: { md: 2, lg: 3, xl: 7 },
       }}>
         <Box minWidth={0}>
           <Typography component="h1" sx={{
@@ -165,7 +167,7 @@ export default function HomePage() {
           aria-label={geoStatus === "ready" ? `Localização atual: ${geoLabel}. Clique para atualizar.` : locationText}
           sx={{
             display: { xs: "none", md: "flex" },
-            width: "100%", minWidth: 0, maxWidth: { md: 244, lg: 286, xl: 314 },
+            width: "100%", minWidth: 0, maxWidth: { md: 214, lg: 250, xl: 314 },
             justifySelf: "end", alignSelf: "start",
             mt: { md: .4, lg: .8, xl: 1.1 }, p: .35, gap: { md: .8, xl: 1 },
             alignItems: "center", justifyContent: "flex-start", textAlign: "left",
@@ -187,7 +189,7 @@ export default function HomePage() {
           }}
         >
           <LocationOnRoundedIcon className="location-pin" sx={{
-            fontSize: { md: 27, lg: 29, xl: 31 }, flexShrink: 0,
+            fontSize: { md: 23, lg: 26, xl: 31 }, flexShrink: 0,
             color: geoStatus === "error" ? "#a55c56" : "#087458",
             filter: geoStatus === "error" ? "none" : "drop-shadow(0 3px 6px rgba(0,107,79,.17))",
             transition: "transform 160ms ease,filter 160ms ease",
@@ -196,7 +198,7 @@ export default function HomePage() {
           <Box minWidth={0} flex={1}>
             <Stack direction="row" alignItems="center" gap={.45} minWidth={0}>
               <Typography sx={{
-                fontSize: { md: 8.2, lg: 8.6, xl: 9.2 }, fontWeight: 850,
+                fontSize: { md: 7.7, lg: 8.2, xl: 9.2 }, fontWeight: 850,
                 letterSpacing: ".07em", textTransform: "uppercase", lineHeight: 1,
                 color: geoStatus === "error" ? "#8d5a54" : "#638078",
               }}>
@@ -210,7 +212,7 @@ export default function HomePage() {
             </Stack>
 
             <Typography className="location-city" noWrap sx={{
-              mt: .42, fontSize: { md: 11.6, lg: 12.3, xl: 13.2 }, fontWeight: 850,
+              mt: .42, fontSize: { md: 10.6, lg: 11.5, xl: 13.2 }, fontWeight: 850,
               letterSpacing: "-.012em", lineHeight: 1.14,
               color: geoStatus === "error" ? "#8f504a" : "#214b3d",
               transition: "color 160ms ease",
@@ -219,7 +221,7 @@ export default function HomePage() {
             </Typography>
 
             <Typography noWrap sx={{
-              mt: .3, fontSize: { md: 8.3, lg: 8.8, xl: 9.6 }, lineHeight: 1.1, color: "#8a9994",
+              mt: .3, fontSize: { md: 7.8, lg: 8.4, xl: 9.6 }, lineHeight: 1.1, color: "#8a9994",
             }}>
               {geoStatus === "ready" ? "Base local para preços e resultados" : "Melhora preços e resultados por região"}
             </Typography>
