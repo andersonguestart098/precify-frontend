@@ -334,20 +334,29 @@ export default function LaborPage() {
                 </> : <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>{mode === "TEAM" ? "Equipe própria" : "Empresas e autônomos especializados"}</Typography>}
               </Stack>
             </Box>
-            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={.85}
-              sx={{ display: { xs: "flex", sm: "none" } }}>
-              <Typography sx={{ fontSize: 12.2, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}>
+              <Typography sx={{
+                fontSize: { xs: 12.2, md: 12.9 },
+                fontWeight: 820,
+                color: saving ? "#8aa098" : "#2f5c4c",
+                letterSpacing: "-.01em",
+              }}>
                 Salvar planejamento
               </Typography>
               <ButtonBase onClick={() => void save()} disabled={saving} aria-label="Salvar planejamento" sx={{
-                width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
+                width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
                 color: "#17664f",
                 background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
                 border: "1px solid rgba(0,107,79,.14)",
                 boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
                 transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
                 "&:active": { transform: "scale(.96)" },
-                "&.Mui-disabled": { opacity: .62 },
+                "&.Mui-disabled": {
+                  opacity: .55,
+                  color: "#7f958d",
+                  background: "#f3f6f5",
+                  boxShadow: "none",
+                },
                 "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
                 "@media (hover:hover)": {
                   "&:hover": {
@@ -358,15 +367,9 @@ export default function LaborPage() {
                 },
                 "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
               }}>
-                {saving ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
+                {saving ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <SaveRoundedIcon sx={{ fontSize: { xs: 20, md: 21 } }} />}
               </ButtonBase>
             </Stack>
-
-            <Button variant="contained" disableElevation startIcon={saving ? <CircularProgress color="inherit" size={15} /> : <SaveRoundedIcon />}
-              onClick={() => void save()} disabled={saving}
-              sx={{ display: { xs: "none", sm: "inline-flex" }, borderRadius: "9px", px: 2, minHeight: 38, textTransform: "none", fontWeight: 800, alignSelf: "center", boxShadow: "none" }}>
-              Salvar planejamento
-            </Button>
           </Stack>
         </Paper>
 
