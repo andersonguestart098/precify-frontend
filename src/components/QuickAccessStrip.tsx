@@ -37,7 +37,7 @@ const shortcuts = [
   {
     to: "/comparar",
     label: "Comparar",
-    description: "Produtos lado a lado",
+    description: "Obras, custos e M.O.",
     icon: <CompareArrowsRoundedIcon />,
     featured: false,
     art: "right",
