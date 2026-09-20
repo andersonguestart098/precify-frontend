@@ -1,6 +1,10 @@
 import { createCatalogCriteria } from "../data/familyConfig";
+import type { Composition } from "../domain/composition";
 import type { CatalogMaterial, CatalogSearchPage } from "../domain/search";
-import { getCatalog, searchProducts } from "./api";
+import {
+  favoriteCodes, getCatalog, listCompositions, listProjects, searchProducts,
+  type Project,
+} from "./api";
 
 type CacheEnvelope<T> = {
   savedAt: number;
@@ -15,6 +19,17 @@ let catalogMemory: CatalogMaterial[] | null = null;
 let initialSearchMemory: CatalogSearchPage | null = null;
 let catalogRequest: Promise<CatalogMaterial[]> | null = null;
 let initialSearchRequest: Promise<CatalogSearchPage> | null = null;
+
+const projectsMemory = new Map<string, Project[]>();
+const compositionsMemory = new Map<string, Composition[]>();
+const favoritesMemory = new Map<string, string[]>();
+const projectsRequests = new Map<string, Promise<Project[]>>();
+const compositionsRequests = new Map<string, Promise<Composition[]>>();
+const favoritesRequests = new Map<string, Promise<string[]>>();
+
+function userKey(userId: string, bucket: string) {
+  return `precify-cache:user:${userId}:${bucket}:v1`;
+}
 
 function readCache<T>(key: string): T | null {
   try {
@@ -39,6 +54,10 @@ function writeCache<T>(key: string, data: T) {
   }
 }
 
+function removeCache(key: string) {
+  try { localStorage.removeItem(key); } catch { /* ignore */ }
+}
+
 export function getCachedCatalog() {
   if (!catalogMemory) catalogMemory = readCache<CatalogMaterial[]>(CATALOG_CACHE_KEY);
   return catalogMemory;
@@ -50,9 +69,11 @@ export function saveCachedCatalog(data: CatalogMaterial[]) {
   return data;
 }
 
-export function loadCatalogCached() {
-  const cached = getCachedCatalog();
-  if (cached) return Promise.resolve(cached);
+export function loadCatalogCached(force = false) {
+  if (!force) {
+    const cached = getCachedCatalog();
+    if (cached) return Promise.resolve(cached);
+  }
   if (!catalogRequest) {
     catalogRequest = getCatalog()
       .then(saveCachedCatalog)
@@ -72,9 +93,11 @@ export function saveCachedInitialSearch(data: CatalogSearchPage) {
   return data;
 }
 
-export function loadInitialSearchCached() {
-  const cached = getCachedInitialSearch();
-  if (cached) return Promise.resolve(cached);
+export function loadInitialSearchCached(force = false) {
+  if (!force) {
+    const cached = getCachedInitialSearch();
+    if (cached) return Promise.resolve(cached);
+  }
   if (!initialSearchRequest) {
     initialSearchRequest = searchProducts({
       familyCode: "",
@@ -88,9 +111,116 @@ export function loadInitialSearchCached() {
   return initialSearchRequest;
 }
 
-export async function warmAppCache() {
+export function getCachedProjects(userId: string) {
+  if (!projectsMemory.has(userId)) {
+    const cached = readCache<Project[]>(userKey(userId, "projects"));
+    if (cached) projectsMemory.set(userId, cached);
+  }
+  return projectsMemory.get(userId) ?? null;
+}
+
+export function saveCachedProjects(userId: string, data: Project[]) {
+  projectsMemory.set(userId, data);
+  writeCache(userKey(userId, "projects"), data);
+  return data;
+}
+
+export function loadProjectsCached(userId: string, force = false) {
+  if (!force) {
+    const cached = getCachedProjects(userId);
+    if (cached) return Promise.resolve(cached);
+  }
+  const pending = projectsRequests.get(userId);
+  if (pending) return pending;
+  const request = listProjects()
+    .then(data => saveCachedProjects(userId, data))
+    .finally(() => { projectsRequests.delete(userId); });
+  projectsRequests.set(userId, request);
+  return request;
+}
+
+export function getCachedCompositions(userId: string) {
+  if (!compositionsMemory.has(userId)) {
+    const cached = readCache<Composition[]>(userKey(userId, "compositions"));
+    if (cached) compositionsMemory.set(userId, cached);
+  }
+  return compositionsMemory.get(userId) ?? null;
+}
+
+export function saveCachedCompositions(userId: string, data: Composition[]) {
+  compositionsMemory.set(userId, data);
+  writeCache(userKey(userId, "compositions"), data);
+  return data;
+}
+
+export function loadCompositionsCached(userId: string, force = false) {
+  if (!force) {
+    const cached = getCachedCompositions(userId);
+    if (cached) return Promise.resolve(cached);
+  }
+  const pending = compositionsRequests.get(userId);
+  if (pending) return pending;
+  const request = listCompositions()
+    .then(data => saveCachedCompositions(userId, data))
+    .finally(() => { compositionsRequests.delete(userId); });
+  compositionsRequests.set(userId, request);
+  return request;
+}
+
+export function getCachedFavoriteCodes(userId: string) {
+  if (!favoritesMemory.has(userId)) {
+    const cached = readCache<string[]>(userKey(userId, "favorites"));
+    if (cached) favoritesMemory.set(userId, cached);
+  }
+  return favoritesMemory.get(userId) ?? null;
+}
+
+export function saveCachedFavoriteCodes(userId: string, data: string[]) {
+  favoritesMemory.set(userId, data);
+  writeCache(userKey(userId, "favorites"), data);
+  return data;
+}
+
+export function loadFavoriteCodesCached(userId: string, force = false) {
+  if (!force) {
+    const cached = getCachedFavoriteCodes(userId);
+    if (cached) return Promise.resolve(cached);
+  }
+  const pending = favoritesRequests.get(userId);
+  if (pending) return pending;
+  const request = favoriteCodes()
+    .then(data => saveCachedFavoriteCodes(userId, data))
+    .finally(() => { favoritesRequests.delete(userId); });
+  favoritesRequests.set(userId, request);
+  return request;
+}
+
+export async function warmAppCache(userId: string) {
   await Promise.allSettled([
     loadCatalogCached(),
     loadInitialSearchCached(),
+    loadProjectsCached(userId),
+    loadCompositionsCached(userId),
+    loadFavoriteCodesCached(userId),
   ]);
+}
+
+export async function refreshAppCache(userId: string) {
+  await Promise.allSettled([
+    loadCatalogCached(true),
+    loadInitialSearchCached(true),
+    loadProjectsCached(userId, true),
+    loadCompositionsCached(userId, true),
+    loadFavoriteCodesCached(userId, true),
+  ]);
+  window.dispatchEvent(new CustomEvent("precify-app-data-refreshed", { detail: { userId, refreshedAt: Date.now() } }));
+}
+
+export function clearUserWarmCache(userId: string) {
+  projectsMemory.delete(userId);
+  compositionsMemory.delete(userId);
+  favoritesMemory.delete(userId);
+  removeCache(userKey(userId, "projects"));
+  removeCache(userKey(userId, "compositions"));
+  removeCache(userKey(userId, "favorites"));
 }
