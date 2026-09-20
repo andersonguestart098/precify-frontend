@@ -10,7 +10,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
-  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, Chip, CircularProgress, Container,
+  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField, Tooltip, Typography
 } from "@mui/material";
 import {
@@ -280,14 +280,43 @@ export default function PlanningPage() {
             Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.
           </Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew}
-          sx={{
-            borderRadius: "9px", px: 2.4, minHeight: { xs: 40, sm: 40 },
-            alignSelf: { xs: "stretch", sm: "auto" }, textTransform: "none", fontWeight: 800, boxShadow: "none",
-            mt: { xs: .15, sm: 0 },
-          }}>
-          Nova obra
-        </Button>
+        <>
+          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={.85}
+            sx={{ display: { xs: "flex", sm: "none" }, mt: .15 }}>
+            <Typography sx={{ fontSize: 12.4, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+              Nova obra
+            </Typography>
+            <ButtonBase onClick={openNew} aria-label="Criar nova obra" sx={{
+              width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
+              color: "#fff",
+              background: "linear-gradient(145deg,#0a7a5c 0%,#006b4f 58%,#155b47 100%)",
+              border: "1px solid rgba(0,86,64,.22)",
+              boxShadow: "0 8px 18px rgba(0,107,79,.20), inset 0 1px 0 rgba(255,255,255,.18)",
+              transition: "transform 160ms ease, box-shadow 160ms ease, filter 160ms ease",
+              "&:active": { transform: "scale(.94)" },
+              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.45)", outlineOffset: 3 },
+              "@media (hover:hover)": {
+                "&:hover": {
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 11px 22px rgba(0,107,79,.24), inset 0 1px 0 rgba(255,255,255,.22)",
+                  filter: "saturate(1.05)",
+                },
+              },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+            }}>
+              <AddRoundedIcon sx={{ fontSize: 24 }} />
+            </ButtonBase>
+          </Stack>
+
+          <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew}
+            sx={{
+              display: { xs: "none", sm: "inline-flex" },
+              borderRadius: "9px", px: 2.4, minHeight: 40,
+              alignSelf: "auto", textTransform: "none", fontWeight: 800, boxShadow: "none",
+            }}>
+            Nova obra
+          </Button>
+        </>
       </Stack>
 
       <Box sx={{
