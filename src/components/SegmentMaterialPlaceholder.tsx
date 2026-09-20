@@ -4,9 +4,11 @@ import { segmentIconFor } from "./SegmentCarousel";
 export function SegmentMaterialPlaceholder({
   segmentCode,
   label,
+  variant = "card",
 }: {
   segmentCode?: string | null;
   label: string;
+  variant?: "card" | "detail";
 }) {
   const Icon = segmentIconFor(segmentCode?.trim() ?? "");
 
@@ -33,8 +35,8 @@ export function SegmentMaterialPlaceholder({
     }}
   >
     <Box sx={{
-      width: { xs: 72, md: 64, xl: 78 },
-      height: { xs: 72, md: 64, xl: 78 },
+      width: variant === "detail" ? { xs: 96, sm: 112, md: 104, xl: 124 } : { xs: 72, md: 64, xl: 78 },
+      height: variant === "detail" ? { xs: 96, sm: 112, md: 104, xl: 124 } : { xs: 72, md: 64, xl: 78 },
       borderRadius: "50%",
       display: "grid",
       placeItems: "center",
@@ -44,7 +46,7 @@ export function SegmentMaterialPlaceholder({
       border: "1px solid rgba(0,107,79,.055)",
       boxShadow: "inset 0 1px 0 rgba(255,255,255,.82)",
     }}>
-      <Icon size={38} weight="duotone" aria-hidden="true" style={{ opacity: .82 }} />
+      <Icon size={variant === "detail" ? 58 : 38} weight="duotone" aria-hidden="true" style={{ opacity: .82 }} />
     </Box>
   </Box>;
 }
