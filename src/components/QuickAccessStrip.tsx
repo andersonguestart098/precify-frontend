@@ -54,11 +54,6 @@ export default function QuickAccessStrip() {
     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .9, md: 1 }}>
       <Box>
         <Stack direction="row" alignItems="center" gap={.45}>
-          <LocalFireDepartmentRoundedIcon aria-hidden="true" sx={{
-            fontSize: { xs: 16, md: 17, xl: 18.5 },
-            color: "#d96c32",
-            filter: "drop-shadow(0 2px 4px rgba(217,108,50,.12))",
-          }} />
           <Typography id="quick-access-title" sx={{
             fontSize: { xs: 14.8, md: 16, xl: 17.4 },
             fontWeight: 900,
@@ -68,6 +63,11 @@ export default function QuickAccessStrip() {
           }}>
             Acessos rápidos
           </Typography>
+          <LocalFireDepartmentRoundedIcon aria-hidden="true" sx={{
+            fontSize: { xs: 16, md: 17, xl: 18.5 },
+            color: "#d96c32",
+            filter: "drop-shadow(0 2px 4px rgba(217,108,50,.12))",
+          }} />
         </Stack>
         <Typography sx={{
           display: { xs: "none", sm: "block" }, mt: .15,
