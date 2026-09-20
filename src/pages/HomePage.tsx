@@ -229,9 +229,34 @@ export default function HomePage() {
 
       <QuickAccessStrip />
 
-      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { xs: 1.5, md: 2.1, xl: 2.7 } }}>
+      <Box sx={{ mt: { xs: .7, md: .95, xl: 1.15 }, pb: { xs: .15, md: .45, xl: .7 } }}>
+        {catalogLoading ? <>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
+            <Typography sx={{
+              fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+              fontWeight: 900,
+              color: "#1f4c3d",
+              letterSpacing: "-.02em",
+            }}>Explore por segmento</Typography>
+            <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
+          </Stack>
+          <Stack direction="row" gap={{ xs: 2.5, sm: 4, md: 2.75, xl: 4 }} sx={{ minHeight: { xs: 92, md: 78, xl: 92 }, overflow: "hidden", px: .5 }}>
+            {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
+              <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(0,107,79,.09)" }} />
+              <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(0,107,79,.07)" }} />
+            </Stack>)}
+          </Stack>
+        </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
+      </Box>
+
+      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { xs: 1.1, md: 1.55, xl: 1.9 } }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
-          <Typography id="project-type-title" variant="h6" fontWeight={800} sx={{ fontSize: { md: 17, xl: 20 } }}>O que você vai construir?</Typography>
+          <Typography id="project-type-title" sx={{
+            fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+            fontWeight: 900,
+            color: "#1f4c3d",
+            letterSpacing: "-.02em",
+          }}>O que você vai construir?</Typography>
           <Stack direction="row" gap={.25} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
             <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
               <ChevronLeftRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
@@ -283,20 +308,6 @@ export default function HomePage() {
           })}
         </Box>
 
-        <Box sx={{ mt: { xs: 1.5, md: 1.15, xl: 1.75 }, pb: { xs: 0, md: 1, xl: 2.5 } }}>
-          {catalogLoading ? <>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-              <Typography sx={{ fontSize: { xs: 13, md: 12.8, xl: 14.2 }, fontWeight: 850, color: "#244d40", letterSpacing: "-.015em" }}>Explore por segmento</Typography>
-              <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
-            </Stack>
-            <Stack direction="row" gap={{ xs: 2.5, sm: 4, md: 2.75, xl: 4 }} sx={{ minHeight: { xs: 92, md: 78, xl: 92 }, overflow: "hidden", px: .5 }}>
-              {[0, 1, 2, 3].map(item => <Stack key={item} alignItems="center" gap={.8} flexShrink={0}>
-                <Skeleton variant="circular" width={52} height={52} sx={{ bgcolor: "rgba(0,107,79,.09)" }} />
-                <Skeleton variant="rounded" width={58} height={10} sx={{ bgcolor: "rgba(0,107,79,.07)" }} />
-              </Stack>)}
-            </Stack>
-          </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
-        </Box>
 
       </Box>
     </Box>
