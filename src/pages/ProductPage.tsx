@@ -80,7 +80,13 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     });
   };
 
-  return <Container component="main" maxWidth="lg" sx={{ py: { xs: 1.5, md: 4 }, px: { xs: 2, sm: 3 } }}>
+  return <Container component="main" maxWidth={false} sx={{
+    width: "100%",
+    maxWidth: { xs: "100%", md: 980, lg: 1060, xl: 1200 },
+    mx: "auto",
+    py: { xs: 1.5, md: 3, xl: 4 },
+    px: { xs: 2, sm: 3, md: 2.5, xl: 3 },
+  }}>
     <Button component={RouterLink} to={back} startIcon={<ArrowBackIcon />} sx={{
       display: { xs: "none", md: "inline-flex" }, mb: 1.25, px: .5, textTransform: "none", fontWeight: 750,
     }}>Voltar à busca</Button>
@@ -95,17 +101,21 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
 
     <Paper variant="outlined" sx={{
       borderRadius: { xs: 0, sm: 4 },
-      p: { xs: 0, sm: 2.5, md: 4 },
+      p: { xs: 0, sm: 2.5, md: 3, xl: 4 },
       borderColor: { xs: "transparent", sm: "#e1e7e5" },
       bgcolor: { xs: "transparent", sm: "#fff" },
       boxShadow: { xs: "none", sm: "0 10px 34px rgba(19,56,46,.045)" },
     }}>
-      <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "minmax(0,1.04fr) minmax(0,.96fr)" }} gap={{ xs: 2.25, md: 5 }}>
+      <Box
+        display="grid"
+        gridTemplateColumns={{ xs: "1fr", md: "minmax(0,.98fr) minmax(0,1.02fr)" }}
+        gap={{ xs: 2.25, md: 3, lg: 3.5, xl: 5 }}
+      >
         <Box minWidth={0}>
           <Box sx={{
             bgcolor: "#f4f6f5",
             borderRadius: { xs: 3, sm: 3.5 },
-            minHeight: { xs: 285, sm: 390, md: 440 },
+            minHeight: { xs: 285, sm: 360, md: 330, lg: 350, xl: 440 },
             display: "grid",
             placeItems: "center",
             p: { xs: 2.25, sm: 3 },
@@ -114,7 +124,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <ProtectedImage
               src={product?.imageUrl || material.imageUrl}
               alt={product?.name ?? material.materialName}
-              sx={{ width: "100%", height: { xs: 240, sm: 330, md: 380 }, borderRadius: 2.5, bgcolor: "transparent", border: 0 }}
+              sx={{ width: "100%", height: { xs: 240, sm: 300, md: 275, lg: 295, xl: 380 }, borderRadius: 2.5, bgcolor: "transparent", border: 0 }}
             />
           </Box>
 
@@ -133,14 +143,14 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <Box minWidth={0}>
               <Typography component="h1" sx={{
                 fontWeight: 900,
-                fontSize: { xs: 28, sm: 32, md: 36 },
+                fontSize: { xs: 28, sm: 32, md: 29, lg: 31, xl: 36 },
                 letterSpacing: "-.04em",
                 lineHeight: 1.08,
                 background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}>{product?.name ?? material.materialName}</Typography>
-              <Typography color="text.secondary" sx={{ mt: .85, fontSize: { xs: 14.5, md: 15.5 } }}>
+              <Typography color="text.secondary" sx={{ mt: .85, fontSize: { xs: 14.5, md: 13.5, lg: 14, xl: 15.5 } }}>
                 {[product?.brand, product?.model].filter(Boolean).join(" · ") || material.familyName}
               </Typography>
             </Box>
@@ -170,7 +180,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <Chip label={material.familyName} size="small" sx={{ bgcolor: "#eef6f3", color: "#315c4d" }} />
           </Stack>
 
-          <Box sx={{ py: { xs: 2.5, md: 3 } }} role="status" aria-label="Cotação atual" aria-live="polite">
+          <Box sx={{ py: { xs: 2.5, md: 2.25, xl: 3 } }} role="status" aria-label="Cotação atual" aria-live="polite">
             {quote ? <>
               <Typography variant="caption" color="text.secondary">{offers.length > 1 && !offerKey ? "A partir de" : "Cotação selecionada"}</Typography>
               <Typography color="primary.dark" sx={{ fontSize: { xs: 31, md: 36 }, lineHeight: 1.12, fontWeight: 900, letterSpacing: "-.035em" }}>
@@ -198,7 +208,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                       endIcon={selected ? <CheckRoundedIcon /> : undefined}
                       onClick={() => select({ variationCode: variation.variationCode, optionCode: option.optionCode })}
                       sx={{
-                        minHeight: 46,
+                        minHeight: { xs: 46, md: 40, xl: 46 },
                         px: 1.25,
                         borderRadius: { xs: 1.15, md: 1.25 },
                         justifyContent: "center",
