@@ -287,24 +287,25 @@ export default function PlanningPage() {
               Nova obra
             </Typography>
             <ButtonBase onClick={openNew} aria-label="Criar nova obra" sx={{
-              width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
-              color: "#fff",
-              background: "linear-gradient(145deg,#0a7a5c 0%,#006b4f 58%,#155b47 100%)",
-              border: "1px solid rgba(0,86,64,.22)",
-              boxShadow: "0 8px 18px rgba(0,107,79,.20), inset 0 1px 0 rgba(255,255,255,.18)",
-              transition: "transform 160ms ease, box-shadow 160ms ease, filter 160ms ease",
-              "&:active": { transform: "scale(.94)" },
-              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.45)", outlineOffset: 3 },
+              width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
+              color: "#17664f",
+              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+              border: "1px solid rgba(0,107,79,.14)",
+              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+              transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+              "&:active": { transform: "scale(.96)" },
+              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
               "@media (hover:hover)": {
                 "&:hover": {
                   transform: "translateY(-1px)",
-                  boxShadow: "0 11px 22px rgba(0,107,79,.24), inset 0 1px 0 rgba(255,255,255,.22)",
-                  filter: "saturate(1.05)",
+                  borderColor: "rgba(0,107,79,.24)",
+                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
                 },
               },
               "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
             }}>
-              <AddRoundedIcon sx={{ fontSize: 24 }} />
+              <AddRoundedIcon sx={{ fontSize: 22 }} />
             </ButtonBase>
           </Stack>
 
