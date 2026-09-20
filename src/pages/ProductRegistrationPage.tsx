@@ -1,7 +1,6 @@
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Alert, Box, Breadcrumbs, Button, CircularProgress, Container, Divider, FormControl, IconButton, InputLabel, Link, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
@@ -66,8 +65,7 @@ export default function ProductRegistrationPage() {
   if (catalogLoading) return <Box py={10} textAlign="center"><CircularProgress aria-label="Carregando catálogo" /></Box>;
 
   return <Container component="main" maxWidth="lg" sx={{ py: { xs: 2.5, md: 4 } }}>
-    <Button component={RouterLink} to="/busca" startIcon={<ArrowBackIcon />} sx={{ mb: 1 }}>Voltar à busca</Button>
-    <Breadcrumbs sx={{ mb: 3, fontSize: 13 }}><Link component={RouterLink} to="/busca" underline="hover">Produtos</Link><Typography variant="caption">Cadastrar produto</Typography></Breadcrumbs>
+    <Breadcrumbs sx={{ mb: { xs: 2.25, md: 3 }, fontSize: 13 }}><Link component={RouterLink} to="/busca" underline="hover">Produtos</Link><Typography variant="caption">Cadastrar produto</Typography></Breadcrumbs>
     {(error || catalogError) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError}</Alert>}
     <Paper component="form" onSubmit={submit} variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e5" }}>
       <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "1.1fr 1fr" }} gap={{ xs: 3, md: 5 }}>
