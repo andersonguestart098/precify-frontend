@@ -22,7 +22,7 @@ const workspaceLinks = [
   { to: "/ia", label: "Assistente IA", icon: AutoAwesome },
   { to: "/perfil", label: "Minha área", icon: PersonOutline },
   { to: "/obras", label: "Obras", icon: HomeWorkOutlinedIcon },
-  { to: "/comparar", label: "Comparar produtos", icon: CompareArrowsRoundedIcon },
+  { to: "/comparar", label: "Comparar obras", icon: CompareArrowsRoundedIcon },
   { to: "/historico", label: "Histórico de buscas", icon: HistoryRoundedIcon },
 ] as const;
 
