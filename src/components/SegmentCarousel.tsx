@@ -73,7 +73,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, md: .55, xl: 1 }} sx={{ display: compactMobile ? { xs: "none", md: "flex" } : "flex" }}>
       <Stack direction="row" alignItems="center" gap={.35} minWidth={0}>
         <Typography sx={{
-          fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+          fontSize: { xs: 14.8, md: 16, xl: 17.4 },
           fontWeight: 900,
           color: "#1f4c3d",
           letterSpacing: "-.02em",
