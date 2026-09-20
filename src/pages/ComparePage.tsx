@@ -167,20 +167,24 @@ export default function ComparePage() {
 
   if (loading) return <Box minHeight={420} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box>;
 
-  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.25, md: 4.5 }, px: { xs: 1.5, sm: 2.5, md: 3 } }}>
-    <Box sx={{ maxWidth: 1400, mx: "auto" }}>
+  return <Container maxWidth={false} component="main" sx={{ py: { xs: 2.25, md: 3.75, xl: 4.5 }, px: { xs: 1.5, sm: 2.5, md: 3 } }}>
+    <Box sx={{
+      width: "100%",
+      maxWidth: { xs: "100%", md: 980, lg: 1080, xl: 1320 },
+      mx: "auto",
+    }}>
       <Box sx={{ mb: { xs: 1.9, md: 2.8 } }}>
         <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>
           Análise de obras
         </Typography>
         <Typography component="h1" sx={{
-          mt: .3, fontSize: { xs: 36, sm: 40, md: 46, xl: 50 }, lineHeight: 1.03, fontWeight: 900, letterSpacing: "-.045em",
+          mt: .3, fontSize: { xs: 36, sm: 40, md: 40, lg: 42, xl: 50 }, lineHeight: 1.03, fontWeight: 900, letterSpacing: "-.045em",
           background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
           Comparar obras
         </Typography>
-        <Typography color="text.secondary" sx={{ mt: .7, maxWidth: 860, fontSize: { xs: 13.4, sm: 14, md: 15 }, lineHeight: 1.5 }}>
+        <Typography color="text.secondary" sx={{ mt: .7, maxWidth: 860, fontSize: { xs: 13.4, sm: 14, md: 13.5, lg: 14, xl: 15 }, lineHeight: 1.5 }}>
           Composições, custos e mão de obra lado a lado. Toque nas obras para incluir ou remover da comparação.
         </Typography>
       </Box>
