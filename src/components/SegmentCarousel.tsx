@@ -19,7 +19,7 @@ const labels: Record<string, string> = {
   "44": "Aquecimento", "45": "Acessibilidade", "46": "Piscinas", "47": "Fachadas"
 };
 const segmentIcons = [Mountains, Package, PaintBucket, Cube, Flask, Wall, SquaresFour, Mountains, Tree, Columns, Cube, Hammer, StackIcon, Circle, SquaresFour, Umbrella, Waves, PaintBrush, Clipboard, HouseLine, Wall, SquaresFour, Door, Pipe, Bathtub, Gear, Plugs, ShieldCheck, Lightbulb, WifiHigh, Snowflake, Fire, FireExtinguisher, SolarPanel, Drop, RoadHorizon, Plant, Flower, CraneTower, Wrench, HardHat, Fire, Factory, Thermometer, Elevator, SwimmingPool, Buildings];
-function iconFor(code: string) { return segmentIcons[Number(code) - 1] ?? Shapes; }
+export function segmentIconFor(code: string) { return segmentIcons[Number(code) - 1] ?? Shapes; }
 
 export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = false }: {
   catalog: CatalogMaterial[]; selected: string; onSelect: (code: string) => void; compactMobile?: boolean;
@@ -124,7 +124,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
         "&::-webkit-scrollbar-thumb": { backgroundColor: scrolling ? "#a9d7c8" : "transparent", borderRadius: 999 }
       }}>
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
-        const Icon = iconFor(code);
+        const Icon = segmentIconFor(code);
         const active = code === selected;
         return <Tooltip key={code} title={code ? labels[code] || name : "Todos os segmentos"} arrow enterDelay={500}>
           <ButtonBase data-segment-code={code} aria-label={name} aria-pressed={active} onClick={() => onSelect(code === selected ? "" : code)} sx={{
