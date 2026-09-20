@@ -1,9 +1,10 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Avatar, Box, Button, Container, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, ButtonBase, Container, Divider, Stack, Typography } from "@mui/material";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import MailOutlineRoundedIcon from "@mui/icons-material/MailOutlineRounded";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
@@ -16,7 +17,7 @@ const tools = [
   { to: "/obras", label: "Obras", description: "Acompanhe seus projetos", icon: HomeWorkOutlinedIcon },
   { to: "/composicoes", label: "Composições", description: "Materiais e custos", icon: CalculateOutlinedIcon },
   { to: "/favoritos", label: "Favoritos", description: "Materiais salvos", icon: StarOutlineRoundedIcon },
-  { to: "/historico", label: "Histórico", description: "Buscas recentes", icon: HistoryRoundedIcon },
+  { to: "/historico", label: "Histórico", description: "Recentes e mais buscados", icon: HistoryRoundedIcon, hot: true },
 ] as const;
 
 export default function MyAreaPage() {
@@ -46,7 +47,7 @@ export default function MyAreaPage() {
       </Box>
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", md: "repeat(4,minmax(0,1fr))" }, gap: { xs: .8, md: 1.15 } }}>
-        {tools.map(({ to, label, description, icon: Icon }, index) => {
+        {tools.map(({ to, label, description, icon: Icon, ...tool }, index) => {
           const wide = index === 0 || index === 3;
           const featured = index === 0;
           return <Box key={to} component={RouterLink} to={to} sx={{
@@ -64,6 +65,13 @@ export default function MyAreaPage() {
           }}>
             <Box sx={{ width: { xs: 40, md: 44 }, height: { xs: 40, md: 44 }, borderRadius: "12px", flexShrink: 0, display: "grid", placeItems: "center", color: "#285e4c", background: "linear-gradient(145deg,#eef8f4,#dfeee8)", border: "1px solid rgba(0,107,79,.065)", position: "relative", zIndex: 1 }}>
               <Icon sx={{ fontSize: { xs: 21, md: 23 } }} />
+              {"hot" in tool && tool.hot ? <Box sx={{
+                position: "absolute", right: -5, top: -5, width: 18, height: 18, borderRadius: "50%",
+                display: "grid", placeItems: "center", bgcolor: "#fff7f1", border: "1px solid rgba(217,108,50,.18)",
+                boxShadow: "0 2px 6px rgba(122,62,28,.08)",
+              }}>
+                <LocalFireDepartmentRoundedIcon sx={{ fontSize: 12, color: "#d96c32" }} />
+              </Box> : null}
             </Box>
             <Box minWidth={0} flex={1} position="relative" zIndex={1} sx={{ mt: wide ? 0 : .15 }}>
               <Typography sx={{ fontWeight: 850, fontSize: { xs: 13.2, md: 14.5 }, color: "#234b3e", lineHeight: 1.15 }}>{label}</Typography>
@@ -93,8 +101,36 @@ export default function MyAreaPage() {
       </Box>
     </Box>
 
-    <Stack direction="row" justifyContent="flex-end" sx={{ display: { xs: "none", md: "flex" }, mt: 2.2 }}>
-      <Button component={RouterLink} to="/conta" startIcon={<ManageAccountsOutlinedIcon />} endIcon={<ArrowForwardRoundedIcon />} sx={{ textTransform: "none", fontWeight: 750, color: "#235b48", borderRadius: 999, px: 2 }}>Conta e equipe</Button>
+    <Stack direction="row" justifyContent="flex-end" sx={{ display: { xs: "none", md: "flex" }, mt: 2.35 }}>
+      <ButtonBase component={RouterLink} to="/conta" sx={{
+        minWidth: 188, minHeight: 48, px: 1.15, py: .65, gap: 1,
+        borderRadius: "14px", justifyContent: "flex-start", textAlign: "left",
+        bgcolor: "rgba(255,255,255,.74)", border: "1px solid rgba(0,107,79,.10)",
+        boxShadow: "0 6px 18px rgba(24,60,48,.04)",
+        transition: "transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease",
+        "&:hover": {
+          transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.20)",
+          boxShadow: "0 9px 22px rgba(24,60,48,.065)",
+        },
+        "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 2 },
+      }}>
+        <Box sx={{
+          width: 34, height: 34, borderRadius: "10px", display: "grid", placeItems: "center", flexShrink: 0,
+          bgcolor: "#eaf5f1", color: "#2d6552", border: "1px solid rgba(0,107,79,.07)",
+        }}>
+          <ManageAccountsOutlinedIcon sx={{ fontSize: 18 }} />
+        </Box>
+        <Box minWidth={0} flex={1}>
+          <Typography sx={{ fontSize: 11.8, fontWeight: 820, color: "#244d40", lineHeight: 1.15 }}>Conta e equipe</Typography>
+          <Typography sx={{ mt: .18, fontSize: 9.5, color: "#87968f", lineHeight: 1.15 }}>Dados e acessos</Typography>
+        </Box>
+        <Box sx={{
+          width: 28, height: 28, borderRadius: "9px", display: "grid", placeItems: "center",
+          color: "#5f7b71", bgcolor: "#f7faf9", border: "1px solid rgba(0,107,79,.07)",
+        }}>
+          <ArrowForwardRoundedIcon sx={{ fontSize: 16 }} />
+        </Box>
+      </ButtonBase>
     </Stack>
   </Container>;
 }
