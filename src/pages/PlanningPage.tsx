@@ -6,6 +6,8 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import { HardHat } from "@phosphor-icons/react";
@@ -324,44 +326,33 @@ export default function PlanningPage() {
             Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.
           </Typography>
         </Box>
-        <>
-          <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={.85}
-            sx={{ display: { xs: "flex", sm: "none" }, mt: .15 }}>
-            <Typography sx={{ fontSize: 12.4, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
-              Nova obra
-            </Typography>
-            <ButtonBase onClick={openNew} aria-label="Criar nova obra" sx={{
-              width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
-              color: "#17664f",
-              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-              border: "1px solid rgba(0,107,79,.14)",
-              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
-              transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
-              "&:active": { transform: "scale(.96)" },
-              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-              "@media (hover:hover)": {
-                "&:hover": {
-                  transform: "translateY(-1px)",
-                  borderColor: "rgba(0,107,79,.24)",
-                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
-                },
-              },
-              "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-            }}>
-              <AddRoundedIcon sx={{ fontSize: 22 }} />
-            </ButtonBase>
-          </Stack>
-
-          <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew}
-            sx={{
-              display: { xs: "none", sm: "inline-flex" },
-              borderRadius: "9px", px: 2.4, minHeight: 40,
-              alignSelf: "auto", textTransform: "none", fontWeight: 800, boxShadow: "none",
-            }}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}
+          sx={{ mt: { xs: .15, sm: 0 } }}>
+          <Typography sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
             Nova obra
-          </Button>
-        </>
+          </Typography>
+          <ButtonBase onClick={openNew} aria-label="Criar nova obra" sx={{
+            width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
+            color: "#17664f",
+            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            "&:active": { transform: "scale(.96)" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-1px)",
+                borderColor: "rgba(0,107,79,.24)",
+                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+              },
+            },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+          }}>
+            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+          </ButtonBase>
+        </Stack>
       </Stack>
 
       <Box sx={{
@@ -479,11 +470,16 @@ export default function PlanningPage() {
           })}
         </Stack>}
 
-      <Dialog open={formOpen} onClose={saving ? undefined : resetForm} fullWidth maxWidth="sm"
+      <Dialog open={formOpen} onClose={saving ? undefined : resetForm} fullWidth maxWidth={false}
         slotProps={{ paper: { sx: {
-          borderRadius: { xs: "24px 24px 0 0", sm: "20px" }, m: { xs: 0, sm: 2 },
+          width: { xs: "100%", sm: "calc(100% - 48px)", md: 680 },
+          maxWidth: { xs: "100%", sm: 620, md: 680 },
+          maxHeight: { xs: "85dvh", sm: "min(760px, calc(100dvh - 48px))" },
+          borderRadius: { xs: "24px 24px 0 0", sm: "22px" },
+          m: { xs: 0, sm: 2 },
           position: { xs: "fixed", sm: "relative" }, bottom: { xs: 0, sm: "auto" },
           overflow: "hidden", bgcolor: "#fff",
+          boxShadow: { xs: "0 -12px 38px rgba(14,47,37,.16)", sm: "0 22px 60px rgba(14,47,37,.16)" },
         } } }}>
         <DialogTitle sx={{ px: { xs: 2.5, sm: 3 }, pt: { xs: 2.35, sm: 2.7 }, pb: 1.7, borderBottom: "1px solid #e7eeeb" }}>
           <Stack direction="row" alignItems="center" gap={.7}>
@@ -536,23 +532,59 @@ export default function PlanningPage() {
         </DialogContent>
 
         <DialogActions sx={{
-          px: { xs: 2.5, sm: 3 }, pt: 1.25, pb: { xs: 2.2, sm: 2.5 }, gap: 1,
+          px: { xs: 2.5, sm: 3 }, pt: 1.25, pb: { xs: 2.1, sm: 2.35 },
+          gap: { xs: 1.25, sm: 2 }, justifyContent: "space-between",
           borderTop: "1px solid #eef3f1", bgcolor: "#fff",
         }}>
-          <Button onClick={resetForm} disabled={saving} sx={{ minHeight: 48, borderRadius: 999, px: 2, textTransform: "none", fontWeight: 760, color: "#4f7065" }}>
-            Cancelar
-          </Button>
-          <Button variant="contained" disableElevation onClick={() => void save()} disabled={saving || !name.trim()}
-            startIcon={saving ? <CircularProgress color="inherit" size={16} /> : <HomeWorkOutlinedIcon />}
-            sx={{
-              flex: { xs: 1, sm: "initial" }, minHeight: 48, borderRadius: 999, px: 2.7,
-              textTransform: "none", fontWeight: 820,
-              background: "linear-gradient(110deg,#176046,#007252)",
-              boxShadow: "0 5px 14px rgba(0,107,79,.12)",
-              "&:hover": { background: "#175641" },
+          <Stack direction="row" alignItems="center" gap={.7}>
+            <Typography sx={{ fontSize: { xs: 11.8, sm: 12.4 }, fontWeight: 780, color: "#63776f" }}>
+              Cancelar
+            </Typography>
+            <ButtonBase onClick={resetForm} disabled={saving} aria-label="Cancelar" sx={{
+              width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+              color: "#63776f", bgcolor: "#f5f8f7", border: "1px solid #e3ebe8",
+              boxShadow: "0 3px 9px rgba(24,60,48,.045)",
+              "&:hover": { bgcolor: "#edf3f1", borderColor: "#cfded9" },
+              "&.Mui-disabled": { opacity: .55 },
+              "&.Mui-focusVisible": { outline: "2px solid rgba(99,119,111,.25)", outlineOffset: 2 },
             }}>
-            {editing ? "Salvar alterações" : "Criar obra"}
-          </Button>
+              <CloseRoundedIcon sx={{ fontSize: 20 }} />
+            </ButtonBase>
+          </Stack>
+
+          <Stack direction="row" alignItems="center" gap={.75}>
+            <Typography sx={{
+              fontSize: { xs: 12.2, sm: 12.8 }, fontWeight: 830,
+              color: saving || !name.trim() ? "#8ca099" : "#2f5c4c", letterSpacing: "-.01em",
+            }}>
+              {editing ? "Salvar alterações" : "Criar obra"}
+            </Typography>
+            <ButtonBase onClick={() => void save()} disabled={saving || !name.trim()}
+              aria-label={editing ? "Salvar alterações" : "Criar obra"} sx={{
+                width: { xs: 42, sm: 44 }, height: { xs: 42, sm: 44 }, borderRadius: "50%", flexShrink: 0,
+                color: "#17664f",
+                background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+                border: "1px solid rgba(0,107,79,.14)",
+                boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+                transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+                "&:active": { transform: "scale(.96)" },
+                "&.Mui-disabled": {
+                  opacity: .48, color: "#7d928a", background: "#f3f6f5", boxShadow: "none",
+                },
+                "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+                "@media (hover:hover)": {
+                  "&:hover": {
+                    transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                    background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                    boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                  },
+                },
+                "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+              }}>
+              {saving ? <CircularProgress size={18} sx={{ color: "inherit" }} /> :
+                editing ? <SaveRoundedIcon sx={{ fontSize: 20 }} /> : <AddRoundedIcon sx={{ fontSize: 22 }} />}
+            </ButtonBase>
+          </Stack>
         </DialogActions>
       </Dialog>
     </Box>
