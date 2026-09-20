@@ -350,7 +350,7 @@ export default function CompositionsPage() {
         <DialogTitle fontWeight={800}>Nova composição</DialogTitle>
         <DialogContent>
           <Typography color="text.secondary" variant="body2" mb={2}>Crie uma lista para uma obra, cômodo ou etapa do projeto.</Typography>
-          <TextField autoFocus fullWidth label="Nome" placeholder="Ex.: Banheiro social" value={newName}
+          <TextField autoFocus fullWidth label="Nome" placeholder="Ex.: Parede 1º pavimento" value={newName}
             onChange={event => setNewName(event.target.value)}
             onKeyDown={event => { if (event.key === "Enter") void create(); }} />
         </DialogContent>
