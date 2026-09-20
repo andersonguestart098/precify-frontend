@@ -18,7 +18,7 @@ import {
   type LaborPlan, type LaborPlanItem, type Project,
 } from "../services/api";
 import type { Composition } from "../domain/composition";
-import { downloadCompositions } from "../domain/export";
+import { downloadProjectSnapshot } from "../domain/export";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -178,6 +178,7 @@ export default function PlanningPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [busy, setBusy] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState<Record<string, boolean>>({});
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -246,6 +247,20 @@ export default function PlanningPage() {
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Não foi possível salvar a obra.");
     } finally { setSaving(false); }
+  };
+
+  const exportProject = async (project: Project, lists: Composition[]) => {
+    setExporting(current => ({ ...current, [project.id]: true }));
+    setError("");
+    try {
+      const plan = laborPlans[project.id] ?? await getLaborPlan(project.id);
+      if (!laborPlans[project.id]) setLaborPlans(current => ({ ...current, [project.id]: plan }));
+      downloadProjectSnapshot(project, lists, plan);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Não foi possível exportar todos os dados desta obra.");
+    } finally {
+      setExporting(current => ({ ...current, [project.id]: false }));
+    }
   };
 
   const remove = async (project: Project) => {
@@ -422,8 +437,9 @@ export default function PlanningPage() {
                   <Stack direction="row" alignItems="center" gap={.55} flexWrap="wrap">
                     <Button size="small" startIcon={<EditOutlinedIcon />} onClick={() => openEdit(project)}
                       sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 750 }}>Editar obra</Button>
-                    <Button size="small" startIcon={<FileDownloadOutlinedIcon />} disabled={!lists.length} onClick={() => downloadCompositions(lists)}
-                      sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 750 }}>Exportar composições</Button>
+                    <Button size="small" startIcon={<FileDownloadOutlinedIcon />} loading={Boolean(exporting[project.id])}
+                      onClick={() => void exportProject(project, lists)}
+                      sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 750 }}>Exportar obra</Button>
                     <Tooltip title="Excluir obra"><span><IconButton size="small" disabled={busy} onClick={() => void remove(project)} sx={{ ml: { xs: 0, sm: "auto" }, color: "#a54b4b" }}>
                       <DeleteOutlineRoundedIcon fontSize="small" />
                     </IconButton></span></Tooltip>
@@ -435,14 +451,39 @@ export default function PlanningPage() {
         </Stack>}
 
       <Dialog open={formOpen} onClose={saving ? undefined : resetForm} fullWidth maxWidth="sm"
-        slotProps={{ paper: { sx: { borderRadius: { xs: "18px 18px 0 0", sm: "12px" }, m: { xs: 0, sm: 2 }, position: { xs: "fixed", sm: "relative" }, bottom: { xs: 0, sm: "auto" } } } }}>
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="overline" color="primary" fontWeight={850}>{editing ? "Editar planejamento" : "Novo planejamento"}</Typography>
-          <Typography component="div" variant="h5" fontWeight={900}>{editing ? "Editar obra" : "Criar nova obra"}</Typography>
+        slotProps={{ paper: { sx: {
+          borderRadius: { xs: "24px 24px 0 0", sm: "20px" }, m: { xs: 0, sm: 2 },
+          position: { xs: "fixed", sm: "relative" }, bottom: { xs: 0, sm: "auto" },
+          overflow: "hidden", bgcolor: "#fff",
+        } } }}>
+        <DialogTitle sx={{ px: { xs: 2.5, sm: 3 }, pt: { xs: 2.35, sm: 2.7 }, pb: 1.7, borderBottom: "1px solid #e7eeeb" }}>
+          <Stack direction="row" alignItems="center" gap={.7}>
+            <HomeWorkOutlinedIcon sx={{ fontSize: 19, color: "#087458" }} />
+            <Typography variant="overline" sx={{ color: "#087458", fontWeight: 850, letterSpacing: 1.15, lineHeight: 1 }}>
+              {editing ? "Editar planejamento" : "Nova obra"}
+            </Typography>
+          </Stack>
+          <Typography component="div" sx={{ mt: 1.25, fontSize: { xs: 23, sm: 26 }, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-.035em", color: "#173f34" }}>
+            {editing ? "Editar obra" : "Criar nova obra"}
+          </Typography>
         </DialogTitle>
-        <DialogContent>
-          <Typography color="text.secondary" variant="body2" mb={2.25}>Dê um nome à obra e escolha as composições que fazem parte dela. A mesma composição pode pertencer a várias obras.</Typography>
-          <Stack gap={2}>
+
+        <DialogContent sx={{
+          px: { xs: 2.5, sm: 3 }, pt: "18px !important", pb: 1.5,
+          "& .MuiOutlinedInput-root": {
+            minHeight: 52, borderRadius: "26px", bgcolor: "#f8faf9", fontSize: 14,
+            transition: "background-color 180ms, box-shadow 180ms",
+            "& fieldset": { borderColor: "#dfe7e4" },
+            "&:hover": { bgcolor: "#f1f7f5", "& fieldset": { borderColor: "#a6c8bd" } },
+            "&.Mui-focused": { bgcolor: "#fff", boxShadow: "0 0 0 3px #006b4f12", "& fieldset": { borderColor: "#006b4f", borderWidth: 1 } },
+          },
+          "& .MuiInputLabel-root": { color: "#62766f", fontSize: 14 },
+          "& .MuiAutocomplete-popupIndicator": { color: "#628177" },
+        }}>
+          <Typography color="text.secondary" sx={{ fontSize: 13, lineHeight: 1.5, mb: 2 }}>
+            Dê um nome à obra e escolha as composições que fazem parte dela. A mesma composição pode pertencer a várias obras.
+          </Typography>
+          <Stack gap={1.45}>
             <TextField autoFocus label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
               onChange={event => setName(event.target.value)} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <Autocomplete
@@ -456,15 +497,31 @@ export default function PlanningPage() {
               limitTags={3}
               slotProps={{ listbox: { sx: { maxHeight: 260, overflowY: "auto" } } }}
               renderInput={params => <TextField {...params} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
-              sx={{ "& .MuiChip-root": { bgcolor: "#eaf5f1", color: "#245342", borderRadius: "7px", fontWeight: 700 } }}
+              sx={{
+                "& .MuiChip-root": { height: 25, bgcolor: "#eaf5f1", color: "#245342", borderRadius: "8px", fontWeight: 720, fontSize: 10.5 },
+                "& .MuiAutocomplete-inputRoot": { py: .45 },
+              }}
             />
-            {!compositions.length && <Typography color="text.secondary" fontSize={13}>Você ainda não possui composições. Crie uma composição primeiro.</Typography>}
+            {!compositions.length && <Typography color="text.secondary" fontSize={12}>Você ainda não possui composições. Crie uma composição primeiro.</Typography>}
           </Stack>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5 }}>
-          <Button onClick={resetForm} disabled={saving}>Cancelar</Button>
-          <Button variant="contained" onClick={() => void save()} disabled={saving || !name.trim()}
-            startIcon={saving ? <CircularProgress color="inherit" size={16} /> : undefined} sx={{ borderRadius: "9px", px: 2.5 }}>
+
+        <DialogActions sx={{
+          px: { xs: 2.5, sm: 3 }, pt: 1.25, pb: { xs: 2.2, sm: 2.5 }, gap: 1,
+          borderTop: "1px solid #eef3f1", bgcolor: "#fff",
+        }}>
+          <Button onClick={resetForm} disabled={saving} sx={{ minHeight: 48, borderRadius: 999, px: 2, textTransform: "none", fontWeight: 760, color: "#4f7065" }}>
+            Cancelar
+          </Button>
+          <Button variant="contained" disableElevation onClick={() => void save()} disabled={saving || !name.trim()}
+            startIcon={saving ? <CircularProgress color="inherit" size={16} /> : <HomeWorkOutlinedIcon />}
+            sx={{
+              flex: { xs: 1, sm: "initial" }, minHeight: 48, borderRadius: 999, px: 2.7,
+              textTransform: "none", fontWeight: 820,
+              background: "linear-gradient(110deg,#176046,#007252)",
+              boxShadow: "0 5px 14px rgba(0,107,79,.12)",
+              "&:hover": { background: "#175641" },
+            }}>
             {editing ? "Salvar alterações" : "Criar obra"}
           </Button>
         </DialogActions>
