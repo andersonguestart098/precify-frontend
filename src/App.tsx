@@ -50,7 +50,6 @@ function SplashScreen() {
       zIndex: 1,
       width: { xs: "min(78vw,330px)", sm: 380, md: 430 },
       height: "auto",
-      filter: "drop-shadow(0 10px 26px rgba(0,31,23,.14))",
       animation: "splashLogoIn .46s cubic-bezier(.2,.8,.2,1) both",
       "@keyframes splashLogoIn": {
         from: { opacity: 0, transform: "translateY(5px) scale(.98)" },
