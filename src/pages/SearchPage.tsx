@@ -89,8 +89,24 @@ export default function SearchPage() {
       .then(data => { if (active) setCatalog(data); })
       .catch(e => { if (active) setCatalogError(e.message); })
       .finally(() => { if (active) setCatalogLoading(false); });
-    return () => { active = false; };
-  }, []);
+
+    const syncFromCache = () => {
+      const cachedCatalog = getCachedCatalog();
+      if (cachedCatalog) setCatalog(cachedCatalog);
+      if (isInitialSearch(query, familyCode, criteria, page, onlyFavorites)) {
+        const cachedInitial = getCachedInitialSearch();
+        if (cachedInitial) {
+          setResponse(cachedInitial);
+          setLoading(false);
+        }
+      }
+    };
+    window.addEventListener("precify-app-data-refreshed", syncFromCache);
+    return () => {
+      active = false;
+      window.removeEventListener("precify-app-data-refreshed", syncFromCache);
+    };
+  }, [query, familyCode, criteria, page, onlyFavorites]);
 
   useEffect(() => {
     const c = new AbortController();
