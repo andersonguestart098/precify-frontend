@@ -11,7 +11,7 @@ import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Container,
-  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField, Tooltip, Typography
+  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, TextField, Tooltip, Typography
 } from "@mui/material";
 import {
   deleteProject, saveProject,
