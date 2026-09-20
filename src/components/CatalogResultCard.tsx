@@ -8,6 +8,7 @@ import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import { Box, Button, Chip, IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { ProtectedImage } from "./ProtectedImage";
 import { AddToCompositionDialog } from "./AddToCompositionDialog";
+import { SegmentMaterialPlaceholder } from "./SegmentMaterialPlaceholder";
 import type { CatalogResult } from "../domain/search";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -57,6 +58,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <ProtectedImage
             src={photo}
             alt={featured?.name ?? material.materialName}
+            fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
             sx={{
               width: "100%",
               height: "100%",
