@@ -46,20 +46,31 @@ const shortcuts = [
 ] as const;
 
 export default function QuickAccessStrip() {
-  return <Box component="section" aria-labelledby="quick-access-title" sx={{ mt: { xs: 1.45, md: 1.5, xl: 1.9 }, pb: { xs: .45, md: .65 } }}>
-    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .8, md: .72 }}>
+  return <Box component="section" aria-labelledby="quick-access-title" sx={{
+    mt: { xs: .9, md: 1.15, xl: 1.5 },
+    pb: { xs: .5, md: .8 },
+  }}>
+    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .9, md: 1 }}>
       <Box>
-        <Typography id="quick-access-title" sx={{ fontSize: { xs: 13, md: 12.8, xl: 14.2 }, fontWeight: 850, color: "#244d40", letterSpacing: "-.015em" }}>
+        <Typography id="quick-access-title" sx={{
+          fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+          fontWeight: 900,
+          color: "#1f4c3d",
+          letterSpacing: "-.02em",
+        }}>
           Acessos rápidos
         </Typography>
-        <Typography sx={{ display: { xs: "none", sm: "block" }, mt: .1, fontSize: { sm: 9.6, md: 10.2, xl: 11 }, color: "#899892" }}>
-          caminhos que você usa com mais frequência
+        <Typography sx={{
+          display: { xs: "none", sm: "block" }, mt: .15,
+          fontSize: { sm: 9.8, md: 10.5, xl: 11.3 }, color: "#82948d",
+        }}>
+          atalhos principais para trabalhar mais rápido
         </Typography>
       </Box>
     </Stack>
 
     <Box sx={{
-      display: "flex", gap: { xs: .9, md: .95, xl: 1.05 }, overflowX: "auto", pb: .55, px: .05,
+      display: "flex", gap: { xs: .95, md: 1.1, xl: 1.25 }, overflowX: "auto", pb: .65, px: .05,
       scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
       {shortcuts.map(({ to, label, description, icon, featured, art, available }, index) => <ButtonBase
@@ -70,9 +81,9 @@ export default function QuickAccessStrip() {
         onClick={available ? undefined : event => event.preventDefault()}
         sx={{
           position: "relative", overflow: "hidden",
-          width: { xs: 154, sm: 168, md: 162, xl: 188 }, minWidth: { xs: 154, sm: 168, md: 162, xl: 188 },
-          minHeight: { xs: 98, sm: 101, md: 94, xl: 106 }, px: { xs: 1.2, md: 1.25, xl: 1.4 }, py: { xs: 1.1, md: 1.08, xl: 1.22 },
-          borderRadius: { xs: "16px", md: "15px", xl: "17px" }, scrollSnapAlign: "start", textAlign: "left",
+          width: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 }, minWidth: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+          minHeight: { xs: 104, sm: 108, md: 110, xl: 120 }, px: { xs: 1.3, md: 1.4, xl: 1.55 }, py: { xs: 1.2, md: 1.25, xl: 1.4 },
+          borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
           borderColor: featured ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.095)",
@@ -107,12 +118,12 @@ export default function QuickAccessStrip() {
       >
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
-            width: { xs: 39, md: 38, xl: 42 }, height: { xs: 39, md: 38, xl: 42 }, borderRadius: { xs: "12px", md: "11px", xl: "13px" },
+            width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 }, borderRadius: { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", color: "#285e4c",
             background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
             border: "1px solid rgba(0,107,79,.06)",
             boxShadow: "0 2px 6px rgba(24,60,48,.035)",
-            "& svg": { width: { xs: 21, md: 20, xl: 22 }, height: { xs: 21, md: 20, xl: 22 } },
+            "& svg": { width: { xs: 22, md: 22, xl: 24 }, height: { xs: 22, md: 22, xl: 24 } },
           }}>{icon}</Box>
           <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
@@ -124,8 +135,8 @@ export default function QuickAccessStrip() {
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
-          <Typography sx={{ fontSize: { xs: 12.3, md: 11.9, xl: 12.8 }, fontWeight: 850, color: "#214b3d", lineHeight: 1.15, letterSpacing: "-.012em" }}>{label}</Typography>
-          <Typography sx={{ mt: .32, fontSize: { xs: 9.55, md: 9.25, xl: 10 }, lineHeight: 1.28, color: "#74877f" }}>{description}</Typography>
+          <Typography sx={{ fontSize: { xs: 12.8, md: 12.8, xl: 13.8 }, fontWeight: 900, color: "#1f493b", lineHeight: 1.15, letterSpacing: "-.015em" }}>{label}</Typography>
+          <Typography sx={{ mt: .34, fontSize: { xs: 9.7, md: 9.8, xl: 10.5 }, lineHeight: 1.3, color: "#74877f" }}>{description}</Typography>
         </Box>
       </ButtonBase>)}
     </Box>
