@@ -168,7 +168,7 @@ export default function ComparePage() {
   if (loading) return <Box minHeight={420} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box>;
 
   return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.25, md: 4.5 }, px: { xs: 1.5, sm: 2.5, md: 3 } }}>
-    <Box sx={{ maxWidth: 1320, mx: "auto" }}>
+    <Box sx={{ maxWidth: 1400, mx: "auto" }}>
       <Box sx={{ mb: { xs: 1.9, md: 2.8 } }}>
         <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>
           Análise de obras
@@ -278,8 +278,8 @@ export default function ComparePage() {
         <Box sx={{ overflowX: "auto", pb: .6, scrollbarWidth: "thin", mx: { xs: -2, sm: 0 }, px: { xs: 2, sm: 0 } }}>
           <Box sx={{
             display: "grid",
-            gridTemplateColumns: `minmax(118px,150px) repeat(${snapshots.length},minmax(190px,1fr))`,
-            minWidth: { xs: 118 + snapshots.length * 190, sm: 700 },
+            gridTemplateColumns: `minmax(126px,162px) repeat(${snapshots.length},minmax(205px,1fr))`,
+            minWidth: { xs: 126 + snapshots.length * 205, sm: 760 },
             border: "1px solid #dce7e3", borderRadius: "12px", overflow: "hidden", bgcolor: "#fff",
           }}>
             <Box sx={{ p: { xs: 1.05, md: 1.25 }, bgcolor: "#f5faf8", borderRight: "1px solid #e3ebe8" }} />
@@ -306,16 +306,16 @@ export default function ComparePage() {
               const valueFn = getValue as (snapshot: typeof snapshots[number]) => string;
               return [
                 <Box key={`label-${rowIndex}`} sx={{
-                  px: { xs: 1, md: 1.2 }, py: { xs: .85, md: 1 }, bgcolor: "#fbfdfc", borderTop: "1px solid #e8efec", borderRight: "1px solid #e3ebe8",
+                  px: { xs: 1.05, md: 1.3 }, py: { xs: .95, md: 1.12 }, bgcolor: "#fbfdfc", borderTop: "1px solid #e8efec", borderRight: "1px solid #e3ebe8",
                 }}>
-                  <Typography sx={{ fontSize: { xs: 9.4, md: 10.2, xl: 10.6 }, fontWeight: 800, color: "#668078", lineHeight: 1.15 }}>{label as string}</Typography>
+                  <Typography sx={{ fontSize: { xs: 9.9, md: 10.8, xl: 11.2 }, fontWeight: 800, color: "#668078", lineHeight: 1.2 }}>{label as string}</Typography>
                 </Box>,
                 ...snapshots.map(snapshot => <Box key={`${snapshot.project.id}-${rowIndex}`} sx={{
-                  px: { xs: 1.05, md: 1.25 }, py: { xs: .85, md: 1 }, borderTop: "1px solid #e8efec", borderRight: "1px solid #e8efec",
+                  px: { xs: 1.1, md: 1.35 }, py: { xs: .95, md: 1.12 }, borderTop: "1px solid #e8efec", borderRight: "1px solid #e8efec",
                   "&:last-child": { borderRight: 0 },
                 }}>
                   <Typography sx={{
-                    fontSize: { xs: 11.1, md: 12, xl: 12.4 }, fontWeight: label === "Custo" ? 850 : 720,
+                    fontSize: { xs: 11.8, md: 12.8, xl: 13.2 }, fontWeight: label === "Custo" ? 850 : 720,
                     color: label === "Custo" ? "#176047" : "#36564b", lineHeight: 1.2,
                   }}>
                     {valueFn(snapshot)}
@@ -336,35 +336,35 @@ export default function ComparePage() {
         }}>
           {snapshots.map(snapshot => <Paper key={snapshot.project.id} variant="outlined" sx={{
             borderRadius: "11px", borderColor: "#dfe9e6", overflow: "hidden",
-            minWidth: { xs: "82vw", sm: 320, md: 0 }, maxWidth: { xs: 350, md: "none" },
+            minWidth: { xs: "86vw", sm: 340, md: 0 }, maxWidth: { xs: 370, md: "none" },
             flex: { xs: "0 0 auto", md: "initial" }, scrollSnapAlign: { xs: "start", md: "none" },
           }}>
             <Box sx={{ px: { xs: 1.25, md: 1.45 }, py: { xs: 1, md: 1.15 }, bgcolor: "#fbfdfc" }}>
-              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 12.2, md: 13.2 } }}>{snapshot.project.name}</Typography>
+              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 12.9, md: 14 } }}>{snapshot.project.name}</Typography>
             </Box>
             <Divider />
-            <Box sx={{ p: { xs: 1.15, md: 1.35 } }}>
+            <Box sx={{ p: { xs: 1.3, md: 1.55 } }}>
               <Stack direction="row" alignItems="center" gap={.55} mb={.65}>
                 <Inventory2OutlinedIcon sx={{ fontSize: { xs: 17, md: 19 }, color: "#39725f" }} />
-                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 10.8, md: 11.6 } }}>Composições</Typography>
+                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 11.4, md: 12.4 } }}>Composições</Typography>
               </Stack>
-              {snapshot.compositions.length ? <Stack gap={.42}>
+              {snapshot.compositions.length ? <Stack gap={.58}>
                 {snapshot.compositions.map(composition => <Stack key={composition.id} direction="row" justifyContent="space-between" gap={1}>
-                  <Typography sx={{ fontSize: { xs: 9.8, md: 10.5 }, color: "#536d64", lineHeight: 1.25 }}>{composition.name}</Typography>
-                  <Typography sx={{ fontSize: { xs: 9.8, md: 10.5 }, fontWeight: 760, color: "#31594b", whiteSpace: "nowrap" }}>{currency.format(composition.total)}</Typography>
+                  <Typography sx={{ fontSize: { xs: 10.5, md: 11.3 }, color: "#536d64", lineHeight: 1.3 }}>{composition.name}</Typography>
+                  <Typography sx={{ fontSize: { xs: 10.5, md: 11.3 }, fontWeight: 760, color: "#31594b", whiteSpace: "nowrap" }}>{currency.format(composition.total)}</Typography>
                 </Stack>)}
               </Stack> : <Typography color="text.secondary" sx={{ fontSize: 9.2 }}>Sem composições vinculadas.</Typography>}
 
               <Divider sx={{ my: .9 }} />
               <Stack direction="row" alignItems="center" gap={.55} mb={.65}>
                 <Groups2OutlinedIcon sx={{ fontSize: { xs: 17, md: 19 }, color: "#39725f" }} />
-                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 10.8, md: 11.6 } }}>Mão de obra</Typography>
+                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 11.4, md: 12.4 } }}>Mão de obra</Typography>
               </Stack>
-              {snapshot.plan?.items.length ? <Stack gap={.4}>
+              {snapshot.plan?.items.length ? <Stack gap={.56}>
                 {snapshot.plan.items.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={.5}>
-                  <Typography flex={1} sx={{ fontSize: { xs: 9.6, md: 10.3 }, color: "#536d64", lineHeight: 1.25 }}>{item.title}</Typography>
+                  <Typography flex={1} sx={{ fontSize: { xs: 10.4, md: 11.2 }, color: "#536d64", lineHeight: 1.3 }}>{item.title}</Typography>
                   <Chip size="small" label={originLabel(item.origin)} sx={{
-                    height: { xs: 20, md: 22 }, borderRadius: "6px", fontSize: { xs: 8.2, md: 8.8 }, fontWeight: 760, bgcolor: "#eaf4f0", color: "#31594b",
+                    height: { xs: 21, md: 23 }, borderRadius: "6px", fontSize: { xs: 8.6, md: 9.2 }, fontWeight: 760, bgcolor: "#eaf4f0", color: "#31594b",
                   }} />
                 </Stack>)}
               </Stack> : <Typography color="text.secondary" sx={{ fontSize: 9.2 }}>Sem planejamento salvo.</Typography>}
