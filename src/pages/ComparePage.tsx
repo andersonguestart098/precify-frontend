@@ -7,10 +7,12 @@ import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
 import {
   Alert, Autocomplete, Box, Button, Chip, CircularProgress, Container, Divider, Paper, Stack, TextField, Typography,
 } from "@mui/material";
+import { type LaborPlan, type Project } from "../services/api";
+import { useAccount } from "../auth/session";
 import {
-  getLaborPlan, listCompositions, listProjects,
-  type LaborPlan, type Project,
-} from "../services/api";
+  getCachedCompositions, getCachedLaborPlan, getCachedProjects,
+  loadCompositionsCached, loadLaborPlanCached, loadProjectsCached,
+} from "../services/appWarmCache";
 import type { Composition } from "../domain/composition";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -29,21 +31,22 @@ function originLabel(origin: "TEAM" | "THIRD_PARTY" | "BOTH") {
 }
 
 export default function ComparePage() {
+  const user = useAccount();
   const [params, setParams] = useSearchParams();
   const selectedIds = useMemo(() => [...new Set((params.get("projects") ?? "").split(",").map(value => value.trim()).filter(Boolean))].slice(0, 3), [params]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [compositions, setCompositions] = useState<Composition[]>([]);
+  const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
+  const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [draftIds, setDraftIds] = useState<string[]>(selectedIds);
   const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !(getCachedProjects(user.id) && getCachedCompositions(user.id)));
   const [laborLoading, setLaborLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    if (!(getCachedProjects(user.id) && getCachedCompositions(user.id))) setLoading(true);
     setError("");
-    Promise.all([listProjects(), listCompositions()])
+    Promise.all([loadProjectsCached(user.id), loadCompositionsCached(user.id)])
       .then(([works, lists]) => {
         if (!active) return;
         setProjects(works);
@@ -54,7 +57,20 @@ export default function ComparePage() {
       })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, []);
+  }, [user.id]);
+
+  useEffect(() => {
+    const syncFromCache = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (detail?.userId && detail.userId !== user.id) return;
+      const cachedProjects = getCachedProjects(user.id);
+      const cachedCompositions = getCachedCompositions(user.id);
+      if (cachedProjects) setProjects(cachedProjects);
+      if (cachedCompositions) setCompositions(cachedCompositions);
+    };
+    window.addEventListener("precify-app-data-refreshed", syncFromCache);
+    return () => window.removeEventListener("precify-app-data-refreshed", syncFromCache);
+  }, [user.id]);
 
   useEffect(() => {
     setDraftIds(selectedIds);
@@ -66,14 +82,17 @@ export default function ComparePage() {
     let active = true;
     setLaborLoading(true);
     setError("");
-    Promise.all(selectedIds.map(async projectId => [projectId, await getLaborPlan(projectId)] as const))
+    Promise.all(selectedIds.map(async projectId => [
+      projectId,
+      getCachedLaborPlan(user.id, projectId) ?? await loadLaborPlanCached(user.id, projectId),
+    ] as const))
       .then(entries => { if (active) setLaborPlans(Object.fromEntries(entries)); })
       .catch(reason => {
         if (active) setError(reason instanceof Error ? reason.message : "Não foi possível carregar a mão de obra das obras selecionadas.");
       })
       .finally(() => { if (active) setLaborLoading(false); });
     return () => { active = false; };
-  }, [selectedIds.join("|")]);
+  }, [selectedIds.join("|"), user.id]);
 
   const selectedProjects = selectedIds.map(id => projects.find(project => project.id === id)).filter((project): project is Project => Boolean(project));
   const draftProjects = draftIds.map(id => projects.find(project => project.id === id)).filter((project): project is Project => Boolean(project));
