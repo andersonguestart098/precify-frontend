@@ -233,7 +233,7 @@ export default function HomePage() {
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography sx={{
-              fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+              fontSize: { xs: 14.8, md: 16, xl: 17.4 },
               fontWeight: 900,
               color: "#1f4c3d",
               letterSpacing: "-.02em",
@@ -252,7 +252,7 @@ export default function HomePage() {
       <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { xs: 1.1, md: 1.55, xl: 1.9 } }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
           <Typography id="project-type-title" sx={{
-            fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
+            fontSize: { xs: 14.8, md: 16, xl: 17.4 },
             fontWeight: 900,
             color: "#1f4c3d",
             letterSpacing: "-.02em",
