@@ -108,7 +108,16 @@ export default function HomePage() {
       .then(data => { if (mounted) setCatalog(data); })
       .catch(() => undefined)
       .finally(() => { if (mounted) setCatalogLoading(false); });
-    return () => { mounted = false; };
+
+    const syncFromCache = () => {
+      const cached = getCachedCatalog();
+      if (cached) setCatalog(cached);
+    };
+    window.addEventListener("precify-app-data-refreshed", syncFromCache);
+    return () => {
+      mounted = false;
+      window.removeEventListener("precify-app-data-refreshed", syncFromCache);
+    };
   }, []);
 
   useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
