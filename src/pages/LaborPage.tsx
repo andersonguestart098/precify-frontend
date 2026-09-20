@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, ButtonBase, Checkbox, Chip,
@@ -12,6 +12,7 @@ import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import { HardHat } from "@phosphor-icons/react";
 import {
   saveLaborPlan,
@@ -127,6 +128,8 @@ export default function LaborPage() {
   const [mode, setMode] = useState<LaborMode>("");
   const [selections, setSelections] = useState<Record<string, LaborPlanItem>>({});
   const [search, setSearch] = useState("");
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const summaryRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -183,6 +186,13 @@ export default function LaborPage() {
   const changeOrigin = (code: string, origin: LaborPlanItem["origin"]) => {
     setSuccess("");
     setSelections(current => current[code] ? { ...current, [code]: { ...current[code], origin } } : current);
+  };
+
+  const openSummary = () => {
+    setSummaryExpanded(true);
+    window.requestAnimationFrame(() => {
+      summaryRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   };
 
   const save = async () => {
@@ -390,10 +400,19 @@ export default function LaborPage() {
           <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} />)}</Stack>
         </Box>}
 
-        <Accordion disableGutters elevation={0} sx={{
-          mt: 2.3, border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fbfdfc",
-          boxShadow: "0 3px 14px rgba(21,72,56,.025)", "&::before": { display: "none" },
-        }}>
+        <Accordion
+          ref={summaryRef}
+          disableGutters
+          elevation={0}
+          expanded={summaryExpanded}
+          onChange={(_, expanded) => setSummaryExpanded(expanded)}
+          sx={{
+            mt: 2.3, scrollMarginTop: { xs: 88, md: 84 },
+            border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fbfdfc",
+            boxShadow: summaryExpanded ? "0 10px 28px rgba(21,72,56,.07)" : "0 3px 14px rgba(21,72,56,.025)",
+            transition: "box-shadow 180ms ease,border-color 180ms ease",
+            "&::before": { display: "none" },
+          }}>
           <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: 1.5, minHeight: 62 }}>
             <Stack direction="row" gap={1} alignItems="center" width="100%">
               <Box sx={{ width: 36, height: 36, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e8f4ef", color: "#2b6651", border: "1px solid #dcebe6", flexShrink: 0 }}><HardHat size={20} weight="duotone" /></Box>
@@ -417,6 +436,57 @@ export default function LaborPage() {
             </Stack> : <Typography color="text.secondary" sx={{ fontSize: 11, py: 1 }}>Selecione funções ou especialidades acima para compor o resumo.</Typography>}
           </AccordionDetails>
         </Accordion>
+
+        {selectedItems.length > 0 ? <Box sx={{
+          position: "fixed",
+          right: { xs: 12, sm: 18, md: 24, xl: 32 },
+          bottom: {
+            xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 14px)",
+            md: 24,
+          },
+          zIndex: theme => theme.zIndex.appBar - 1,
+          pointerEvents: "none",
+        }}>
+          <ButtonBase onClick={openSummary} aria-label="Abrir resumo da obra" sx={{
+            minHeight: 46, px: 1.05, pr: 1.25, gap: .8,
+            borderRadius: 999, pointerEvents: "auto",
+            bgcolor: "rgba(255,255,255,.96)",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 10px 26px rgba(24,60,48,.13), inset 0 1px 0 rgba(255,255,255,.92)",
+            backdropFilter: "blur(12px)",
+            transition: "transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease",
+            "&:active": { transform: "scale(.97)" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-2px)",
+                borderColor: "rgba(0,107,79,.24)",
+                boxShadow: "0 14px 30px rgba(24,60,48,.16), inset 0 1px 0 rgba(255,255,255,.95)",
+              },
+            },
+            "@media (prefers-reduced-motion: reduce)": {
+              transition: "none",
+              "&:hover": { transform: "none" },
+            },
+          }}>
+            <Box sx={{
+              width: 32, height: 32, borderRadius: "50%", display: "grid", placeItems: "center", flexShrink: 0,
+              color: "#17664f",
+              background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
+              border: "1px solid rgba(0,107,79,.09)",
+            }}>
+              <SummarizeOutlinedIcon sx={{ fontSize: 18 }} />
+            </Box>
+            <Box textAlign="left">
+              <Typography sx={{ fontSize: 10.8, lineHeight: 1.05, fontWeight: 850, color: "#244d40" }}>
+                Resumo da obra
+              </Typography>
+              <Typography sx={{ mt: .2, fontSize: 8.6, lineHeight: 1, color: "#81928b" }}>
+                {selectedItems.length} {selectedItems.length === 1 ? "necessidade" : "necessidades"}
+              </Typography>
+            </Box>
+          </ButtonBase>
+        </Box> : null}
       </>}
     </Box>
   </Container>;
