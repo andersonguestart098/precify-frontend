@@ -91,6 +91,16 @@ export async function uploadImage(file: File) {
 }
 export const updateProductImages = (id: string, images: { imageUrl?: string; supplierLogoUrl?: string }) =>
   apiRequest<Product>(`/products/${encodeURIComponent(id)}/images`, { method: "PATCH", body: JSON.stringify(images) });
+
+export interface ProductBasicUpdate {
+  description: string;
+  quoteValue: number;
+  supplier: string;
+  variationCode?: string | null;
+  optionCode?: string | null;
+}
+export const updateProductBasic = (id: string, update: ProductBasicUpdate) =>
+  apiRequest<Product>(`/products/${encodeURIComponent(id)}/basic`, { method: "PATCH", body: JSON.stringify(update) });
 export function imageAddress(src?: string | null) {
   if (!src) return undefined;
   if (src.startsWith("/api/media/")) return new URL(src, new URL(API_URL, window.location.origin)).href;
