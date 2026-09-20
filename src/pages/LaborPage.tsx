@@ -270,11 +270,42 @@ export default function LaborPage() {
           }}>{project.name}</Typography>
           <Typography color="text.secondary" sx={{ mt: .55, fontSize: { xs: 12.5, md: 14 } }}>Defina como a obra será atendida e selecione somente o que ela precisa.</Typography>
         </Box>
-        <Button component={RouterLink} to="/mao-de-obra" variant="outlined" sx={{
-          alignSelf: { xs: "flex-start", md: "auto" }, minHeight: 38, px: 1.6,
-          borderRadius: "9px", textTransform: "none", fontWeight: 780, borderColor: "#cfdfd9", color: "#315e4e",
-          bgcolor: "rgba(255,255,255,.74)", "&:hover": { borderColor: "#94c5b3", bgcolor: "#f7fbf9" },
-        }}>Trocar obra</Button>
+        <Stack direction="row" alignItems="center" gap={{ xs: .8, md: 1 }} flexWrap="wrap"
+          sx={{ alignSelf: { xs: "flex-start", md: "auto" } }}>
+          {selectedItems.length > 0 ? <Stack direction="row" alignItems="center" gap={.7}>
+            <Typography sx={{ fontSize: { xs: 11.8, md: 12.5 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+              Resumo da obra
+            </Typography>
+            <ButtonBase onClick={openSummary} aria-label="Abrir resumo da obra" sx={{
+              width: { xs: 40, md: 42 }, height: { xs: 40, md: 42 }, borderRadius: "50%", flexShrink: 0,
+              color: "#17664f",
+              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+              border: "1px solid rgba(0,107,79,.14)",
+              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+              transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+              "&:active": { transform: "scale(.96)" },
+              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+              "@media (hover:hover)": {
+                "&:hover": {
+                  transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                },
+              },
+              "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+            }}>
+              <SummarizeOutlinedIcon sx={{ fontSize: { xs: 19, md: 20 } }} />
+            </ButtonBase>
+          </Stack> : null}
+
+          <Button component={RouterLink} to="/mao-de-obra" variant="outlined" sx={{
+            minHeight: 40, px: 1.55,
+            borderRadius: "10px", textTransform: "none", fontWeight: 780, borderColor: "#cfdfd9", color: "#315e4e",
+            bgcolor: "rgba(255,255,255,.78)", "&:hover": { borderColor: "#94c5b3", bgcolor: "#f7fbf9" },
+          }}>
+            Trocar obra
+          </Button>
+        </Stack>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
@@ -440,56 +471,7 @@ export default function LaborPage() {
           </AccordionDetails>
         </Accordion>
 
-        {selectedItems.length > 0 ? <Box sx={{
-          position: "fixed",
-          right: { xs: 12, sm: 18, md: 24, xl: 32 },
-          bottom: {
-            xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 14px)",
-            md: 24,
-          },
-          zIndex: theme => theme.zIndex.appBar - 1,
-          pointerEvents: "none",
-        }}>
-          <ButtonBase onClick={openSummary} aria-label="Abrir resumo da obra" sx={{
-            minHeight: 46, px: 1.05, pr: 1.25, gap: .8,
-            borderRadius: 999, pointerEvents: "auto",
-            bgcolor: "rgba(255,255,255,.96)",
-            border: "1px solid rgba(0,107,79,.14)",
-            boxShadow: "0 10px 26px rgba(24,60,48,.13), inset 0 1px 0 rgba(255,255,255,.92)",
-            backdropFilter: "blur(12px)",
-            transition: "transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease",
-            "&:active": { transform: "scale(.97)" },
-            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-            "@media (hover:hover)": {
-              "&:hover": {
-                transform: "translateY(-2px)",
-                borderColor: "rgba(0,107,79,.24)",
-                boxShadow: "0 14px 30px rgba(24,60,48,.16), inset 0 1px 0 rgba(255,255,255,.95)",
-              },
-            },
-            "@media (prefers-reduced-motion: reduce)": {
-              transition: "none",
-              "&:hover": { transform: "none" },
-            },
-          }}>
-            <Box sx={{
-              width: 32, height: 32, borderRadius: "50%", display: "grid", placeItems: "center", flexShrink: 0,
-              color: "#17664f",
-              background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
-              border: "1px solid rgba(0,107,79,.09)",
-            }}>
-              <SummarizeOutlinedIcon sx={{ fontSize: 18 }} />
-            </Box>
-            <Box textAlign="left">
-              <Typography sx={{ fontSize: 10.8, lineHeight: 1.05, fontWeight: 850, color: "#244d40" }}>
-                Resumo da obra
-              </Typography>
-              <Typography sx={{ mt: .2, fontSize: 8.6, lineHeight: 1, color: "#81928b" }}>
-                {selectedItems.length} {selectedItems.length === 1 ? "necessidade" : "necessidades"}
-              </Typography>
-            </Box>
-          </ButtonBase>
-        </Box> : null}
+
       </>}
     </Box>
   </Container>;
