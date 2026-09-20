@@ -15,11 +15,12 @@ import {
 } from "@mui/material";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
-import { createProduct, productDetail, updateProductBasic, type CatalogDetail } from "../services/api";
+import { productDetail, updateProductBasic, type CatalogDetail } from "../services/api";
 import { detailOffers, formatDate, matchesSelection, type VariationSelection } from "../domain/productDetails";
 import type { CatalogOffer } from "../domain/search";
 import { ProtectedImage } from "../components/ProtectedImage";
 import { ProductImagesDialog } from "../components/ProductImagesDialog";
+import { SegmentMaterialPlaceholder } from "../components/SegmentMaterialPlaceholder";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -80,9 +81,10 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   };
 
   const startEditing = () => {
+    if (!product || !editableVariation) return;
     setEditError("");
     setEditSuccess("");
-    setDescriptionDraft(product?.description || material.observation || material.materialName);
+    setDescriptionDraft(product.description || material.observation || material.materialName);
     setQuoteDraft(editableQuote && editableQuote.value > 0 ? String(editableQuote.value) : "");
     setSupplierDraft(editableQuote?.supplier?.toLocaleLowerCase("pt-BR").includes("a definir") ? "" : (editableQuote?.supplier ?? ""));
     setEditing(true);
@@ -94,6 +96,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   };
 
   const saveBasicDetails = async () => {
+    if (!product || !editableVariation) return;
     const quoteValue = Number(quoteDraft.trim().replace(",", "."));
     if (!descriptionDraft.trim()) {
       setEditError("Informe a descrição do produto.");
@@ -112,57 +115,15 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     setEditError("");
     setEditSuccess("");
     try {
-      if (product && editableVariation) {
-        await updateProductBasic(product.id, {
-          description: descriptionDraft.trim(),
-          quoteValue,
-          supplier: supplierDraft.trim(),
-          variationCode: editableVariation.variationCode ?? null,
-          optionCode: editableVariation.optionCode ?? null,
-        });
-      } else {
-        const selectedDefinition = selection
-          ? material.variations.find(variation => variation.variationCode === selection.variationCode)
-          : material.variations.length === 1 && material.variations[0].options.length <= 1
-            ? material.variations[0]
-            : undefined;
-        const selectedOption = selectedDefinition?.options.find(option => option.optionCode === selection?.optionCode)
-          ?? (selectedDefinition?.options.length === 1 ? selectedDefinition.options[0] : undefined);
-
-        if (!selectedDefinition || (selectedDefinition.options.length > 0 && !selectedOption)) {
-          setEditError("Selecione uma opção do produto antes de salvar a cotação e o fornecedor.");
-          return;
-        }
-
-        await createProduct({
-          name: material.materialName,
-          brand: "Sem marca",
-          model: "Padrão",
-          segmentCode: material.segmentCode,
-          segment: material.segmentName,
-          familyCode: material.familyCode,
-          category: material.familyName,
-          materialCode: material.materialCode,
-          material: material.materialName,
-          description: descriptionDraft.trim(),
-          imageUrl: material.imageUrl,
-          supplierLogoUrl: material.supplierLogoUrl,
-          attributes: { Origem: "Cadastro manual" },
-          variations: [{
-            variationCode: selectedDefinition.variationCode,
-            optionCode: selectedOption?.optionCode ?? null,
-            label: selectedOption?.name || selectedDefinition.name,
-            quote: {
-              value: quoteValue,
-              supplier: supplierDraft.trim(),
-              date: new Date().toISOString().slice(0, 10),
-              region: "Não informada",
-            },
-          }],
-        });
-      }
+      await updateProductBasic(product.id, {
+        description: descriptionDraft.trim(),
+        quoteValue,
+        supplier: supplierDraft.trim(),
+        variationCode: editableVariation.variationCode ?? null,
+        optionCode: editableVariation.optionCode ?? null,
+      });
       setEditing(false);
-      setEditSuccess(product ? "Dados do produto atualizados." : "Produto criado e dados salvos.");
+      setEditSuccess("Dados do produto atualizados.");
       setRevision(value => value + 1);
     } catch (reason) {
       setEditError(reason instanceof Error ? reason.message : "Não foi possível atualizar os dados do produto.");
@@ -232,6 +193,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <ProtectedImage
               src={product?.imageUrl || material.imageUrl}
               alt={product?.name ?? material.materialName}
+              fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} variant="detail" />}
               sx={{ width: "100%", height: { xs: 240, sm: 300, md: 275, lg: 295, xl: 380 }, borderRadius: 2.5, bgcolor: "transparent", border: 0 }}
             />
           </Box>
@@ -264,7 +226,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             </Box>
 
             <Stack direction="row" alignItems="center" gap={.65} flexShrink={0}>
-              {user.role === "ADMIN" && (editing ? <>
+              {user.role === "ADMIN" && product && editableVariation && (editing ? <>
                 <IconButton
                   aria-label="Cancelar edição"
                   onClick={cancelEditing}
@@ -326,12 +288,6 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
           <Box sx={{ py: { xs: 2.5, md: 2.25, xl: 3 } }} aria-label="Cotação atual">
             {editing ? <Stack gap={1.1}>
               <Typography sx={{ fontSize: 11.5, fontWeight: 850, color: "#315e4e" }}>Editando dados básicos</Typography>
-              {!product && <Alert severity="info" icon={false} sx={{
-                py: .55, px: 1, borderRadius: 2, bgcolor: "#f3f8f6",
-                color: "#41665a", "& .MuiAlert-message": { p: 0, fontSize: 11.2, lineHeight: 1.35 },
-              }}>
-                Este item ainda é só um material do catálogo. Escolha a opção que receberá a cotação; ao salvar, o produto será criado automaticamente.
-              </Alert>}
               <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
                 <TextField
                   label="Cotação (R$)"
@@ -384,7 +340,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                       aria-pressed={selected}
                       endIcon={selected ? <CheckRoundedIcon /> : undefined}
                       onClick={() => select({ variationCode: variation.variationCode, optionCode: option.optionCode })}
-                      disabled={editing && Boolean(product)}
+                      disabled={editing}
                       sx={{
                         minHeight: { xs: 46, md: 40, xl: 46 },
                         px: 1.25,
@@ -411,7 +367,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
               size="small"
               startIcon={<RestartAltRoundedIcon />}
               sx={{ mt: 1.2, px: .4, color: "#587068", textTransform: "none" }}
-              disabled={editing && Boolean(product)}
+              disabled={editing}
               onClick={() => { setSelection(null); setOfferKey(""); }}
             >Limpar seleção</Button>}
           </Box>}
