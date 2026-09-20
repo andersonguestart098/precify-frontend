@@ -33,16 +33,49 @@ function ProtectedRoute({ admin = false }: { admin?: boolean }) {
 
 function SplashScreen() {
   return <Stack minHeight="100dvh" alignItems="center" justifyContent="center" sx={{
-    bgcolor: "#006b4f", px: 3, overflow: "hidden", position: "relative",
-    "&::before": { content: '""', position: "absolute", width: 320, height: 320, borderRadius: "50%", top: "18%", right: "-38%", background: "radial-gradient(circle,rgba(255,255,255,.07),transparent 68%)" },
-    "&::after": { content: '""', position: "absolute", width: 260, height: 260, borderRadius: "50%", bottom: "12%", left: "-34%", background: "radial-gradient(circle,rgba(38,155,120,.24),transparent 70%)" },
+    px: 3,
+    overflow: "hidden",
+    position: "relative",
+    background: "linear-gradient(145deg,#004f3d 0%,#006b4f 52%,#087458 100%)",
+    "&::before": {
+      content: '""', position: "absolute", inset: 0,
+      background: "radial-gradient(circle at 50% 42%,rgba(255,255,255,.075),transparent 34%)",
+      pointerEvents: "none",
+    },
+    "&::after": {
+      content: '""', position: "absolute", width: "70vw", height: "70vw", maxWidth: 720, maxHeight: 720,
+      borderRadius: "50%", left: "50%", top: "50%", transform: "translate(-50%,-50%)",
+      background: "radial-gradient(circle,rgba(39,166,126,.10),transparent 68%)",
+      filter: "blur(18px)", pointerEvents: "none",
+    },
   }}>
-    <Stack alignItems="center" gap={2.3} position="relative" zIndex={1}>
-      <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{ width: "min(58vw,205px)", height: "auto" }} />
-      <Box aria-label="Preparando o Precify" sx={{ width: 88, height: 3, borderRadius: 999, overflow: "hidden", bgcolor: "rgba(255,255,255,.16)" }}>
-        <Box sx={{ width: "42%", height: "100%", borderRadius: 999, bgcolor: "rgba(255,255,255,.88)", animation: "splashLoad 1.05s ease-in-out infinite",
-          "@keyframes splashLoad": { "0%": { transform: "translateX(-120%)" }, "50%": { transform: "translateX(120%)" }, "100%": { transform: "translateX(270%)" } },
-          "@media (prefers-reduced-motion: reduce)": { animation: "none", width: "100%", opacity: .72 }
+    <Stack alignItems="center" gap={{ xs: 2.6, sm: 3 }} position="relative" zIndex={1}>
+      <Box component="img" src="/precify-logo-white.svg" alt="Precify" sx={{
+        width: { xs: "min(72vw,285px)", sm: 330, md: 360 },
+        height: "auto",
+        filter: "drop-shadow(0 10px 28px rgba(0,31,23,.16))",
+        animation: "splashLogoIn .48s cubic-bezier(.2,.8,.2,1) both",
+        "@keyframes splashLogoIn": {
+          from: { opacity: 0, transform: "translateY(5px) scale(.975)" },
+          to: { opacity: 1, transform: "translateY(0) scale(1)" },
+        },
+        "@media (prefers-reduced-motion: reduce)": { animation: "none" },
+      }} />
+      <Box aria-label="Preparando o Precify" sx={{
+        width: { xs: 96, sm: 112 }, height: 3, borderRadius: 999, overflow: "hidden",
+        bgcolor: "rgba(255,255,255,.16)", boxShadow: "inset 0 1px 1px rgba(0,0,0,.05)",
+      }}>
+        <Box sx={{
+          width: "42%", height: "100%", borderRadius: 999,
+          background: "linear-gradient(90deg,rgba(255,255,255,.55),#fff,rgba(255,255,255,.72))",
+          boxShadow: "0 0 9px rgba(255,255,255,.26)",
+          animation: "splashLoad 1.05s ease-in-out infinite",
+          "@keyframes splashLoad": {
+            "0%": { transform: "translateX(-120%)" },
+            "50%": { transform: "translateX(120%)" },
+            "100%": { transform: "translateX(270%)" },
+          },
+          "@media (prefers-reduced-motion: reduce)": { animation: "none", width: "100%", opacity: .72 },
         }} />
       </Box>
     </Stack>
