@@ -261,8 +261,21 @@ export default function ComparePage() {
           </Box>
         </Box>
 
-        <Box sx={{ mt: 1.25, display: "grid", gridTemplateColumns: { xs: "1fr", md: `repeat(${Math.max(1, snapshots.length)},minmax(0,1fr))` }, gap: 1 }}>
-          {snapshots.map(snapshot => <Paper key={snapshot.project.id} variant="outlined" sx={{ borderRadius: "12px", borderColor: "#dfe9e6", overflow: "hidden" }}>
+        <Box sx={{
+          mt: 1.25,
+          display: { xs: "flex", md: "grid" },
+          gridTemplateColumns: { md: `repeat(${Math.max(1, snapshots.length)},minmax(0,1fr))` },
+          gap: 1,
+          overflowX: { xs: "auto", md: "visible" },
+          mx: { xs: -2, md: 0 }, px: { xs: 2, md: 0 }, pb: { xs: .7, md: 0 },
+          scrollSnapType: { xs: "x proximity", md: "none" },
+          scrollbarWidth: "thin",
+        }}>
+          {snapshots.map(snapshot => <Paper key={snapshot.project.id} variant="outlined" sx={{
+            borderRadius: "12px", borderColor: "#dfe9e6", overflow: "hidden",
+            minWidth: { xs: "76vw", sm: 280, md: 0 }, maxWidth: { xs: 310, md: "none" },
+            flex: { xs: "0 0 auto", md: "initial" }, scrollSnapAlign: { xs: "start", md: "none" },
+          }}>
             <Box sx={{ px: 1.35, py: 1.1, bgcolor: "#fbfdfc" }}>
               <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.3 }}>{snapshot.project.name}</Typography>
             </Box>
