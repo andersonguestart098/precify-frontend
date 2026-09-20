@@ -12,10 +12,15 @@ import {
 } from "@mui/material";
 import type { Composition } from "../domain/composition";
 import {
-  createComposition, deleteComposition, listCompositions, listProjects, removeCompositionItem, saveProject,
+  createComposition, deleteComposition, removeCompositionItem, saveProject,
   updateCompositionItemQuantity, type Project
 } from "../services/api";
 import { ProtectedImage } from "../components/ProtectedImage";
+import { useAccount } from "../auth/session";
+import {
+  getCachedCompositions, getCachedProjects, loadCompositionsCached, loadProjectsCached,
+  saveCachedCompositions, saveCachedProjects,
+} from "../services/appWarmCache";
 import { downloadCompositions } from "../domain/export";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -25,30 +30,46 @@ const UNASSIGNED = "__unassigned__";
 type ProjectOption = { id: string; label: string };
 
 export default function CompositionsPage() {
-  const [compositions, setCompositions] = useState<Composition[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const user = useAccount();
+  const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
+  const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [projectFilter, setProjectFilter] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !(getCachedCompositions(user.id) && getCachedProjects(user.id)));
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [newName, setNewName] = useState("");
 
   useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true); setError("");
-    Promise.all([listCompositions(controller.signal), listProjects()])
-      .then(([lists, works]) => { if (!controller.signal.aborted) { setCompositions(lists); setProjects(works); } })
-      .catch(err => { if (!controller.signal.aborted && err.name !== "AbortError") setError(err.message); })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
-    return () => controller.abort();
-  }, []);
+    let active = true;
+    if (!(getCachedCompositions(user.id) && getCachedProjects(user.id))) setLoading(true);
+    setError("");
+    Promise.all([loadCompositionsCached(user.id), loadProjectsCached(user.id)])
+      .then(([lists, works]) => { if (active) { setCompositions(lists); setProjects(works); } })
+      .catch(err => { if (active) setError(err instanceof Error ? err.message : "Não foi possível carregar as composições."); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [user.id]);
 
   useEffect(() => {
-    const refresh = () => { void listCompositions().then(setCompositions).catch(() => undefined); };
+    const refresh = () => {
+      void loadCompositionsCached(user.id, true).then(setCompositions).catch(() => undefined);
+    };
+    const syncFromCache = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (detail?.userId && detail.userId !== user.id) return;
+      const cachedCompositions = getCachedCompositions(user.id);
+      const cachedProjects = getCachedProjects(user.id);
+      if (cachedCompositions) setCompositions(cachedCompositions);
+      if (cachedProjects) setProjects(cachedProjects);
+    };
     window.addEventListener("precify-compositions-updated", refresh);
-    return () => window.removeEventListener("precify-compositions-updated", refresh);
-  }, []);
+    window.addEventListener("precify-app-data-refreshed", syncFromCache);
+    return () => {
+      window.removeEventListener("precify-compositions-updated", refresh);
+      window.removeEventListener("precify-app-data-refreshed", syncFromCache);
+    };
+  }, [user.id]);
 
   const assignedIds = useMemo(() => new Set(projects.flatMap(project => project.compositionIds)), [projects]);
   const projectOptions = useMemo<ProjectOption[]>(() => [
@@ -67,7 +88,11 @@ export default function CompositionsPage() {
   const itemCount = useMemo(() => visibleCompositions.reduce((sum, composition) => sum + composition.items.length, 0), [visibleCompositions]);
 
   const replace = (updated: Composition) =>
-    setCompositions(current => current.map(composition => composition.id === updated.id ? updated : composition));
+    setCompositions(current => {
+      const next = current.map(composition => composition.id === updated.id ? updated : composition);
+      saveCachedCompositions(user.id, next);
+      return next;
+    });
 
   const changeQuantity = async (compositionId: string, itemId: string, value: number) => {
     const quantity = Math.max(.01, value || 1);
@@ -98,7 +123,11 @@ export default function CompositionsPage() {
           ? [...new Set([...project.compositionIds, compositionId])]
           : project.compositionIds.filter(id => id !== compositionId),
       }, project.id)));
-      setProjects(current => current.map(project => saved.find(item => item.id === project.id) ?? project));
+      setProjects(current => {
+        const next = current.map(project => saved.find(item => item.id === project.id) ?? project);
+        saveCachedProjects(user.id, next);
+        return next;
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Não foi possível atualizar as obras vinculadas.");
     } finally { setBusy(""); }
@@ -109,7 +138,11 @@ export default function CompositionsPage() {
     setBusy(composition.id); setError("");
     try {
       await deleteComposition(composition.id);
-      setCompositions(current => current.filter(entry => entry.id !== composition.id));
+      setCompositions(current => {
+        const next = current.filter(entry => entry.id !== composition.id);
+        saveCachedCompositions(user.id, next);
+        return next;
+      });
     } catch (err) { setError(err instanceof Error ? err.message : "Não foi possível excluir a composição."); }
     finally { setBusy(""); }
   };
@@ -120,7 +153,11 @@ export default function CompositionsPage() {
     setBusy("new"); setError("");
     try {
       const created = await createComposition(name);
-      setCompositions(current => [created, ...current]);
+      setCompositions(current => {
+        const next = [created, ...current];
+        saveCachedCompositions(user.id, next);
+        return next;
+      });
       setNewName(""); setCreateOpen(false);
     } catch (err) { setError(err instanceof Error ? err.message : "Não foi possível criar a composição."); }
     finally { setBusy(""); }
