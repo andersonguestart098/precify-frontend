@@ -14,9 +14,15 @@ import {
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField, Tooltip, Typography
 } from "@mui/material";
 import {
-  deleteProject, getLaborPlan, listCompositions, listProjects, saveProject,
+  deleteProject, saveProject,
   type LaborPlan, type LaborPlanItem, type Project,
 } from "../services/api";
+import { useAccount } from "../auth/session";
+import {
+  clearCachedLaborPlan, getCachedCompositions, getCachedLaborPlan, getCachedProjects,
+  loadCompositionsCached, loadLaborPlanCached, loadProjectsCached,
+  saveCachedProjects,
+} from "../services/appWarmCache";
 import type { Composition } from "../domain/composition";
 import { downloadProjectSnapshot } from "../domain/export";
 
@@ -167,8 +173,9 @@ function LaborOverview({
 }
 
 export default function PlanningPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [compositions, setCompositions] = useState<Composition[]>([]);
+  const user = useAccount();
+  const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
+  const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>({});
   const [laborLoading, setLaborLoading] = useState<Record<string, boolean>>({});
   const [laborErrors, setLaborErrors] = useState<Record<string, string>>({});
@@ -176,19 +183,32 @@ export default function PlanningPage() {
   const [ids, setIds] = useState<string[]>([]);
   const [editing, setEditing] = useState<string>();
   const [formOpen, setFormOpen] = useState(false);
-  const [busy, setBusy] = useState(true);
+  const [busy, setBusy] = useState(() => !(getCachedProjects(user.id) && getCachedCompositions(user.id)));
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState<Record<string, boolean>>({});
   const [error, setError] = useState("");
 
   useEffect(() => {
     let active = true;
-    Promise.all([listProjects(), listCompositions()])
+    Promise.all([loadProjectsCached(user.id), loadCompositionsCached(user.id)])
       .then(([works, lists]) => { if (active) { setProjects(works); setCompositions(lists); } })
       .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : "Não foi possível carregar as obras."); })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
-  }, []);
+  }, [user.id]);
+
+  useEffect(() => {
+    const syncFromCache = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (detail?.userId && detail.userId !== user.id) return;
+      const cachedProjects = getCachedProjects(user.id);
+      const cachedCompositions = getCachedCompositions(user.id);
+      if (cachedProjects) setProjects(cachedProjects);
+      if (cachedCompositions) setCompositions(cachedCompositions);
+    };
+    window.addEventListener("precify-app-data-refreshed", syncFromCache);
+    return () => window.removeEventListener("precify-app-data-refreshed", syncFromCache);
+  }, [user.id]);
 
   const selectedCompositions = useMemo(() => compositions.filter(composition => ids.includes(composition.id)), [compositions, ids]);
   const totalCompositionLinks = useMemo(() => projects.reduce((sum, project) => sum + project.compositionIds.length, 0), [projects]);
@@ -201,7 +221,7 @@ export default function PlanningPage() {
     setLaborLoading(current => ({ ...current, [projectId]: true }));
     setLaborErrors(current => ({ ...current, [projectId]: "" }));
     try {
-      const plan = await getLaborPlan(projectId);
+      const plan = getCachedLaborPlan(user.id, projectId) ?? await loadLaborPlanCached(user.id, projectId);
       setLaborPlans(current => ({ ...current, [projectId]: plan }));
     } catch (reason) {
       setLaborErrors(current => ({
@@ -242,7 +262,11 @@ export default function PlanningPage() {
     setSaving(true); setError("");
     try {
       const result = await saveProject({ name: cleanName, compositionIds: ids }, editing);
-      setProjects(current => [...current.filter(project => project.id !== result.id), result]);
+      setProjects(current => {
+        const next = [...current.filter(project => project.id !== result.id), result];
+        saveCachedProjects(user.id, next);
+        return next;
+      });
       resetForm();
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Não foi possível salvar a obra.");
@@ -253,7 +277,7 @@ export default function PlanningPage() {
     setExporting(current => ({ ...current, [project.id]: true }));
     setError("");
     try {
-      const plan = laborPlans[project.id] ?? await getLaborPlan(project.id);
+      const plan = laborPlans[project.id] ?? getCachedLaborPlan(user.id, project.id) ?? await loadLaborPlanCached(user.id, project.id);
       if (!laborPlans[project.id]) setLaborPlans(current => ({ ...current, [project.id]: plan }));
       downloadProjectSnapshot(project, lists, plan);
     } catch (reason) {
@@ -268,7 +292,12 @@ export default function PlanningPage() {
     setBusy(true); setError("");
     try {
       await deleteProject(project.id);
-      setProjects(current => current.filter(item => item.id !== project.id));
+      setProjects(current => {
+        const next = current.filter(item => item.id !== project.id);
+        saveCachedProjects(user.id, next);
+        return next;
+      });
+      clearCachedLaborPlan(user.id, project.id);
       setLaborPlans(current => {
         const next = { ...current };
         delete next[project.id];
