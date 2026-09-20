@@ -2,17 +2,20 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import {
   Alert, Box, Breadcrumbs, Button, Chip, CircularProgress, Container, Divider, IconButton, Link,
-  Paper, Stack, Typography
+  Paper, Stack, TextField, Typography
 } from "@mui/material";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
-import { productDetail, type CatalogDetail } from "../services/api";
+import { productDetail, updateProductBasic, type CatalogDetail } from "../services/api";
 import { detailOffers, formatDate, matchesSelection, type VariationSelection } from "../domain/productDetails";
 import type { CatalogOffer } from "../domain/search";
 import { ProtectedImage } from "../components/ProtectedImage";
@@ -36,6 +39,13 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   const [revision, setRevision] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [savingDetails, setSavingDetails] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [editSuccess, setEditSuccess] = useState("");
+  const [descriptionDraft, setDescriptionDraft] = useState("");
+  const [quoteDraft, setQuoteDraft] = useState("");
+  const [supplierDraft, setSupplierDraft] = useState("");
 
   const back = fromSearch?.startsWith("/produtos") || fromSearch?.startsWith("/busca") ? fromSearch : "/produtos";
 
@@ -58,11 +68,67 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   const active = offers.find(offer => offer.key === offerKey) ?? offers[0];
   const product = active?.product ?? products.find(item => (item.variations ?? []).some(variation => matchesSelection(variation, selection)));
   const quote = active?.variation.quote;
+  const editableVariation = active?.variation
+    ?? product?.variations.find(variation => matchesSelection(variation, selection))
+    ?? product?.variations[0];
+  const editableQuote = editableVariation?.quote;
   const favorite = favorites.codes.has(code);
 
   const select = (value: VariationSelection) => {
     setSelection(current => current?.variationCode === value.variationCode && current.optionCode === value.optionCode ? null : value);
     setOfferKey("");
+  };
+
+  const startEditing = () => {
+    if (!product || !editableVariation) return;
+    setEditError("");
+    setEditSuccess("");
+    setDescriptionDraft(product.description || material.observation || material.materialName);
+    setQuoteDraft(editableQuote && editableQuote.value > 0 ? String(editableQuote.value) : "");
+    setSupplierDraft(editableQuote?.supplier?.toLocaleLowerCase("pt-BR").includes("a definir") ? "" : (editableQuote?.supplier ?? ""));
+    setEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setEditing(false);
+    setEditError("");
+  };
+
+  const saveBasicDetails = async () => {
+    if (!product || !editableVariation) return;
+    const quoteValue = Number(quoteDraft.trim().replace(",", "."));
+    if (!descriptionDraft.trim()) {
+      setEditError("Informe a descrição do produto.");
+      return;
+    }
+    if (!Number.isFinite(quoteValue) || quoteValue < 0) {
+      setEditError("Informe uma cotação válida.");
+      return;
+    }
+    if (!supplierDraft.trim()) {
+      setEditError("Informe o fornecedor.");
+      return;
+    }
+
+    setSavingDetails(true);
+    setEditError("");
+    setEditSuccess("");
+    try {
+      await updateProductBasic(product.id, {
+        description: descriptionDraft.trim(),
+        quoteValue,
+        supplier: supplierDraft.trim(),
+        variationCode: editableVariation.variationCode ?? null,
+        optionCode: editableVariation.optionCode ?? null,
+      });
+      setEditing(false);
+      setEditSuccess("Dados do produto atualizados.");
+      setRevision(value => value + 1);
+    } catch (reason) {
+      setEditError(reason instanceof Error ? reason.message : "Não foi possível atualizar os dados do produto.");
+    } finally {
+      setSavingDetails(false);
+    }
   };
 
   const editImages = () => {
@@ -98,6 +164,8 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     </Breadcrumbs>
 
     {favorites.error && <Alert severity="error" sx={{ mb: 2 }}>{favorites.error}</Alert>}
+    {editError && <Alert severity="error" sx={{ mb: 2 }}>{editError}</Alert>}
+    {editSuccess && <Alert severity="success" sx={{ mb: 2 }}>{editSuccess}</Alert>}
 
     <Paper variant="outlined" sx={{
       borderRadius: { xs: 0, sm: 4 },
@@ -155,24 +223,59 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
               </Typography>
             </Box>
 
-            <IconButton
-              aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-              aria-pressed={favorite}
-              loading={favorites.loading || favorites.busy.has(code)}
-              disabled={favorites.loading || favorites.busy.has(code)}
-              onClick={() => void favorites.toggle(code)}
-              sx={{
-                mt: -.5,
-                width: 42,
-                height: 42,
-                flexShrink: 0,
-                color: favorite ? "#b77b00" : "#60756d",
-                bgcolor: favorite ? "#fff6d7" : "#f3f7f5",
-                border: "1px solid",
-                borderColor: favorite ? "#ead07d" : "#dfe9e5",
-                "&:hover": { bgcolor: favorite ? "#ffefb3" : "#eaf3f0" },
-              }}
-            >{favorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}</IconButton>
+            <Stack direction="row" alignItems="center" gap={.65} flexShrink={0}>
+              {user.role === "ADMIN" && product && editableVariation && (editing ? <>
+                <IconButton
+                  aria-label="Cancelar edição"
+                  onClick={cancelEditing}
+                  disabled={savingDetails}
+                  sx={{
+                    mt: -.5, width: 40, height: 40,
+                    color: "#6d7f79", bgcolor: "#f4f7f6", border: "1px solid #dfe8e5",
+                    "&:hover": { bgcolor: "#edf3f1" },
+                  }}
+                ><CloseRoundedIcon sx={{ fontSize: 20 }} /></IconButton>
+                <IconButton
+                  aria-label="Salvar dados do produto"
+                  onClick={() => void saveBasicDetails()}
+                  disabled={savingDetails}
+                  sx={{
+                    mt: -.5, width: 40, height: 40,
+                    color: "#fff", bgcolor: "#087458", border: "1px solid #087458",
+                    boxShadow: "0 5px 14px rgba(0,107,79,.16)",
+                    "&:hover": { bgcolor: "#006b4f" },
+                    "&.Mui-disabled": { bgcolor: "#b8cbc4", color: "#fff", borderColor: "#b8cbc4" },
+                  }}
+                >{savingDetails ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <SaveRoundedIcon sx={{ fontSize: 19 }} />}</IconButton>
+              </> : <IconButton
+                aria-label="Editar dados do produto"
+                onClick={startEditing}
+                sx={{
+                  mt: -.5, width: 40, height: 40,
+                  color: "#315e4e", bgcolor: "#eef6f3", border: "1px solid #d7e7e1",
+                  "&:hover": { bgcolor: "#e4f1ec", borderColor: "#b9d7cc" },
+                }}
+              ><EditRoundedIcon sx={{ fontSize: 19 }} /></IconButton>)}
+
+              <IconButton
+                aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                aria-pressed={favorite}
+                loading={favorites.loading || favorites.busy.has(code)}
+                disabled={favorites.loading || favorites.busy.has(code)}
+                onClick={() => void favorites.toggle(code)}
+                sx={{
+                  mt: -.5,
+                  width: 42,
+                  height: 42,
+                  flexShrink: 0,
+                  color: favorite ? "#b77b00" : "#60756d",
+                  bgcolor: favorite ? "#fff6d7" : "#f3f7f5",
+                  border: "1px solid",
+                  borderColor: favorite ? "#ead07d" : "#dfe9e5",
+                  "&:hover": { bgcolor: favorite ? "#ffefb3" : "#eaf3f0" },
+                }}
+              >{favorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}</IconButton>
+            </Stack>
           </Stack>
 
           <Stack direction="row" gap={.75} flexWrap="wrap" mt={1.5}>
@@ -180,8 +283,36 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             <Chip label={material.familyName} size="small" sx={{ bgcolor: "#eef6f3", color: "#315c4d" }} />
           </Stack>
 
-          <Box sx={{ py: { xs: 2.5, md: 2.25, xl: 3 } }} role="status" aria-label="Cotação atual" aria-live="polite">
-            {quote ? <>
+          <Box sx={{ py: { xs: 2.5, md: 2.25, xl: 3 } }} aria-label="Cotação atual">
+            {editing ? <Stack gap={1.1}>
+              <Typography sx={{ fontSize: 11.5, fontWeight: 850, color: "#315e4e" }}>Editando dados básicos</Typography>
+              <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
+                <TextField
+                  label="Cotação (R$)"
+                  value={quoteDraft}
+                  onChange={event => setQuoteDraft(event.target.value)}
+                  slotProps={{ htmlInput: { inputMode: "decimal" } }}
+                  size="small"
+                  fullWidth
+                  placeholder="0,00"
+                  sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
+                />
+                <TextField
+                  label="Fornecedor"
+                  value={supplierDraft}
+                  onChange={event => setSupplierDraft(event.target.value)}
+                  size="small"
+                  fullWidth
+                  placeholder="Nome do fornecedor"
+                  sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
+                />
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                {editableVariation?.label || "Opção selecionada"}
+                {editableQuote?.region ? " · " + editableQuote.region : ""}
+                {editableQuote?.date ? " · " + formatDate(editableQuote.date) : ""}
+              </Typography>
+            </Stack> : quote ? <>
               <Typography variant="caption" color="text.secondary">{offers.length > 1 && !offerKey ? "A partir de" : "Cotação selecionada"}</Typography>
               <Typography color="primary.dark" sx={{ fontSize: { xs: 31, md: 36 }, lineHeight: 1.12, fontWeight: 900, letterSpacing: "-.035em" }}>
                 {currency.format(quote.value)}
@@ -207,6 +338,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                       aria-pressed={selected}
                       endIcon={selected ? <CheckRoundedIcon /> : undefined}
                       onClick={() => select({ variationCode: variation.variationCode, optionCode: option.optionCode })}
+                      disabled={editing}
                       sx={{
                         minHeight: { xs: 46, md: 40, xl: 46 },
                         px: 1.25,
@@ -233,16 +365,17 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
               size="small"
               startIcon={<RestartAltRoundedIcon />}
               sx={{ mt: 1.2, px: .4, color: "#587068", textTransform: "none" }}
+              disabled={editing}
               onClick={() => { setSelection(null); setOfferKey(""); }}
             >Limpar seleção</Button>}
           </Box>}
 
-          {!quote && material.supplierLogoUrl && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 1.5, bgcolor: "#f2f7f5", borderRadius: 2.5 }}>
+          {!editing && !quote && material.supplierLogoUrl && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 1.5, bgcolor: "#f2f7f5", borderRadius: 2.5 }}>
             <ProtectedImage src={material.supplierLogoUrl} alt="Logo cadastrada no material" sx={{ width: 58, height: 46, borderRadius: 1.5 }} />
             <Box><Typography variant="caption" color="text.secondary">Fornecedor</Typography><Typography variant="body2" fontWeight={750}>Cotação pendente</Typography></Box>
           </Stack>}
 
-          {quote && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 1.5, bgcolor: "#f2f7f5", borderRadius: 2.5 }}>
+          {!editing && quote && <Stack direction="row" alignItems="center" gap={1.5} sx={{ p: 1.5, bgcolor: "#f2f7f5", borderRadius: 2.5 }}>
             <ProtectedImage src={product?.supplierLogoUrl} alt={`Logo de ${quote.supplier}`} sx={{ width: 58, height: 46, borderRadius: 1.5, flexShrink: 0 }} />
             <Box><Typography variant="caption" color="text.secondary">Fornecedor</Typography><Typography fontWeight={800}>{quote.supplier}</Typography><Typography variant="caption">{quote.region}</Typography></Box>
           </Stack>}
@@ -257,6 +390,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             variant={active?.key === offer.key ? "contained" : "outlined"}
             aria-pressed={active?.key === offer.key}
             onClick={() => setOfferKey(offer.key)}
+            disabled={editing}
             sx={{ justifyContent: "space-between", textAlign: "left", gap: 2, p: 1.5, borderRadius: 2.25, textTransform: "none" }}
           >
             <Box minWidth={0}>{offer.product.name}<Typography variant="caption" display="block">{offer.variation.quote.supplier} · {offer.variation.label} · {offer.variation.quote.region}</Typography></Box>
@@ -270,7 +404,17 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "minmax(0,.9fr) minmax(0,1.1fr)" }, gap: { xs: 3, md: 6 } }}>
         <Box>
           <Typography variant="h6" fontWeight={850} mb={1} color="#173f33">Descrição</Typography>
-          <Typography color="text.secondary" sx={{ whiteSpace: "pre-line", lineHeight: 1.7 }}>{product?.description || material.observation || material.materialName}</Typography>
+          {editing ? <TextField
+            value={descriptionDraft}
+            onChange={event => setDescriptionDraft(event.target.value)}
+            multiline
+            minRows={4}
+            fullWidth
+            placeholder="Descrição do produto"
+            sx={{ "& .MuiInputBase-root": { borderRadius: 2.25, bgcolor: "#fff" } }}
+          /> : <Typography color="text.secondary" sx={{ whiteSpace: "pre-line", lineHeight: 1.7 }}>
+            {product?.description || material.observation || material.materialName}
+          </Typography>}
         </Box>
         <Box>
           <Typography variant="h6" fontWeight={850} mb={1.25} color="#173f33">Informações do produto</Typography>
