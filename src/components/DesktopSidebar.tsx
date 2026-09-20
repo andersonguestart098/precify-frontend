@@ -1,5 +1,5 @@
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { Avatar, Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
+import { Avatar, Box, ButtonBase, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import Inventory2Outlined from "@mui/icons-material/Inventory2Outlined";
 import AutoAwesome from "@mui/icons-material/AutoAwesome";
@@ -12,7 +12,8 @@ import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
 import MailOutline from "@mui/icons-material/MailOutline";
-import { useAccount } from "../auth/session";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import { useAccount, useSession } from "../auth/session";
 
 const workspaceLinks = [
   { to: "/inicio", label: "Início", icon: HomeOutlined },
@@ -35,6 +36,7 @@ const institutionalLinks = [
 export default function DesktopSidebar() {
   const { pathname } = useLocation();
   const user = useAccount();
+  const { signOut } = useSession();
 
   const renderLinks = (links: typeof workspaceLinks | typeof institutionalLinks) => links.map(({ to, label, icon: Icon }) => {
     const active = pathname === to || (to === "/produtos" && pathname.startsWith("/produtos/"));
@@ -118,9 +120,33 @@ export default function DesktopSidebar() {
       {renderLinks(institutionalLinks)}
     </List>
 
-    <Stack component={RouterLink} to="/perfil" direction="row" gap={{ md: .9, xl: 1.2 }} alignItems="center" sx={{ mt: "auto", p: { md: 1.35, xl: 2 }, minHeight: { md: 54, xl: 68 }, borderTop: "1px solid #eaf0ee", textDecoration: "none", color: "inherit", flexShrink: 0 }}>
-      <Avatar src={user.avatarUrl || undefined} sx={{ width: { md: 31, xl: 36 }, height: { md: 31, xl: 36 } }}>{user.name.charAt(0)}</Avatar>
-      <Box minWidth={0}><Typography noWrap fontWeight={700} fontSize={{ md: 10.7, xl: 12 }}>{user.name}</Typography><Typography noWrap fontSize={{ md: 9.2, xl: 10 }} color="text.secondary">Minha conta</Typography></Box>
+    <Stack direction="row" alignItems="center" gap={{ md: .5, xl: .75 }} sx={{
+      mt: "auto", p: { md: 1.05, xl: 1.45 }, minHeight: { md: 54, xl: 68 },
+      borderTop: "1px solid #eaf0ee", flexShrink: 0, bgcolor: "#fff",
+    }}>
+      <ButtonBase component={RouterLink} to="/perfil" sx={{
+        flex: 1, minWidth: 0, justifyContent: "flex-start", gap: { md: .9, xl: 1.1 },
+        px: { md: .25, xl: .35 }, py: .25, borderRadius: 2, textAlign: "left",
+        "&:hover": { bgcolor: "rgba(0,107,79,.035)" },
+        "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 2 },
+      }}>
+        <Avatar src={user.avatarUrl || undefined} sx={{ width: { md: 31, xl: 36 }, height: { md: 31, xl: 36 } }}>{user.name.charAt(0)}</Avatar>
+        <Box minWidth={0}>
+          <Typography noWrap fontWeight={700} fontSize={{ md: 10.7, xl: 12 }}>{user.name}</Typography>
+          <Typography noWrap fontSize={{ md: 9.2, xl: 10 }} color="text.secondary">Minha conta</Typography>
+        </Box>
+      </ButtonBase>
+
+      <Tooltip title="Sair da conta" placement="top">
+        <IconButton aria-label="Sair da conta" onClick={signOut} size="small" sx={{
+          width: { md: 32, xl: 36 }, height: { md: 32, xl: 36 }, flexShrink: 0,
+          color: "#61756d", border: "1px solid transparent",
+          "&:hover": { color: "#9b4f4b", bgcolor: "#fff4f3", borderColor: "#f0d8d5" },
+          "&.Mui-focusVisible": { outline: "2px solid rgba(155,79,75,.25)", outlineOffset: 2 },
+        }}>
+          <LogoutRoundedIcon sx={{ fontSize: { md: 18, xl: 20 } }} />
+        </IconButton>
+      </Tooltip>
     </Stack>
   </Box>;
 }
