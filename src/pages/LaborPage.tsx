@@ -14,9 +14,13 @@ import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
-  getLaborPlan, listProjects, saveLaborPlan,
+  saveLaborPlan,
   type LaborMode, type LaborPlanItem, type Project,
 } from "../services/api";
+import { useAccount } from "../auth/session";
+import {
+  getCachedLaborPlan, getCachedProjects, loadLaborPlanCached, loadProjectsCached, saveCachedLaborPlan,
+} from "../services/appWarmCache";
 import {
   laborTeamGroups, laborThirdPartyPhases,
   type LaborCatalogGroup, type LaborCatalogItem, type LaborSource,
@@ -110,8 +114,13 @@ function LaborGroupCard({
 
 export default function LaborPage() {
   const { projectId } = useParams<{ projectId?: string }>();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const user = useAccount();
+  const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
+  const [loading, setLoading] = useState(() => {
+    const projectsCached = Boolean(getCachedProjects(user.id));
+    const laborCached = !projectId || Boolean(getCachedLaborPlan(user.id, projectId));
+    return !(projectsCached && laborCached);
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -121,9 +130,12 @@ export default function LaborPage() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true); setError(""); setSuccess("");
-    const projectsRequest = listProjects();
-    const planRequest = projectId ? getLaborPlan(projectId) : Promise.resolve(null);
+    const cachedPlan = projectId ? getCachedLaborPlan(user.id, projectId) : null;
+    if (!getCachedProjects(user.id) || (projectId && !cachedPlan)) setLoading(true);
+    setError(""); setSuccess("");
+
+    const projectsRequest = loadProjectsCached(user.id);
+    const planRequest = projectId ? loadLaborPlanCached(user.id, projectId) : Promise.resolve(null);
     Promise.all([projectsRequest, planRequest])
       .then(([works, plan]) => {
         if (!active) return;
@@ -139,7 +151,7 @@ export default function LaborPage() {
       .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : "Não foi possível carregar a mão de obra."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [projectId]);
+  }, [projectId, user.id]);
 
   const project = projects.find(item => item.id === projectId);
   const selectedItems = useMemo(() => Object.values(selections), [selections]);
@@ -178,6 +190,7 @@ export default function LaborPage() {
     setSaving(true); setError(""); setSuccess("");
     try {
       const saved = await saveLaborPlan(projectId, { mode, items: selectedItems });
+      saveCachedLaborPlan(user.id, projectId, saved);
       setMode(saved.mode);
       setSelections(Object.fromEntries(saved.items.map(item => [item.code, item])));
       setSuccess("Planejamento de mão de obra salvo nesta obra.");
@@ -311,8 +324,39 @@ export default function LaborPage() {
                 </> : <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>{mode === "TEAM" ? "Equipe própria" : "Empresas e autônomos especializados"}</Typography>}
               </Stack>
             </Box>
-            <Button variant="contained" disableElevation startIcon={saving ? <CircularProgress color="inherit" size={15} /> : <SaveRoundedIcon />} onClick={() => void save()} disabled={saving}
-              sx={{ borderRadius: "9px", px: 2, minHeight: 38, textTransform: "none", fontWeight: 800, alignSelf: { xs: "stretch", sm: "center" }, boxShadow: "none" }}>Salvar planejamento</Button>
+            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={.85}
+              sx={{ display: { xs: "flex", sm: "none" } }}>
+              <Typography sx={{ fontSize: 12.2, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+                Salvar planejamento
+              </Typography>
+              <ButtonBase onClick={() => void save()} disabled={saving} aria-label="Salvar planejamento" sx={{
+                width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
+                color: "#17664f",
+                background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+                border: "1px solid rgba(0,107,79,.14)",
+                boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+                transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+                "&:active": { transform: "scale(.96)" },
+                "&.Mui-disabled": { opacity: .62 },
+                "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+                "@media (hover:hover)": {
+                  "&:hover": {
+                    transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                    background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                    boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                  },
+                },
+                "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+              }}>
+                {saving ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
+              </ButtonBase>
+            </Stack>
+
+            <Button variant="contained" disableElevation startIcon={saving ? <CircularProgress color="inherit" size={15} /> : <SaveRoundedIcon />}
+              onClick={() => void save()} disabled={saving}
+              sx={{ display: { xs: "none", sm: "inline-flex" }, borderRadius: "9px", px: 2, minHeight: 38, textTransform: "none", fontWeight: 800, alignSelf: "center", boxShadow: "none" }}>
+              Salvar planejamento
+            </Button>
           </Stack>
         </Paper>
 
