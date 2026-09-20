@@ -265,9 +265,9 @@ export default function PlanningPage() {
     } finally { setBusy(false); }
   };
 
-  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 3, md: 5 } }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.35, sm: 3, md: 5 } }}>
     <Box sx={{ maxWidth: 1160, mx: "auto" }}>
-      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={2}>
+      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={{ xs: 1.05, sm: 2 }}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.4 }}>Planejamento</Typography>
           <Typography component="h1" sx={{
@@ -276,16 +276,22 @@ export default function PlanningPage() {
           }}>
             Obras
           </Typography>
-          <Typography color="text.secondary" mt={.7}>Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.</Typography>
+          <Typography color="text.secondary" sx={{ mt: .45, fontSize: { xs: 13.2, sm: 14 }, lineHeight: 1.45 }}>
+            Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.
+          </Typography>
         </Box>
         <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew}
-          sx={{ borderRadius: "9px", px: 2.4, minHeight: 40, alignSelf: { xs: "stretch", sm: "auto" }, textTransform: "none", fontWeight: 800, boxShadow: "none" }}>
+          sx={{
+            borderRadius: "9px", px: 2.4, minHeight: { xs: 40, sm: 40 },
+            alignSelf: { xs: "stretch", sm: "auto" }, textTransform: "none", fontWeight: 800, boxShadow: "none",
+            mt: { xs: .15, sm: 0 },
+          }}>
           Nova obra
         </Button>
       </Stack>
 
       <Box sx={{
-        mt: 3, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3,minmax(0,1fr))" },
+        mt: { xs: 1.45, sm: 2.4, md: 3 }, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3,minmax(0,1fr))" },
         border: "1px solid #dce9e5", borderRadius: "12px", overflow: "hidden", bgcolor: "#fbfdfc",
       }}>
         {[
