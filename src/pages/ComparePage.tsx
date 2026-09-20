@@ -167,43 +167,43 @@ export default function ComparePage() {
 
   if (loading) return <Box minHeight={420} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box>;
 
-  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.5, md: 5 }, px: { xs: 2, sm: 3, md: 4 } }}>
-    <Box sx={{ maxWidth: 1180, mx: "auto" }}>
-      <Box sx={{ mb: { xs: 1.8, md: 2.5 } }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.25, md: 4.5 }, px: { xs: 1.5, sm: 2.5, md: 3 } }}>
+    <Box sx={{ maxWidth: 1320, mx: "auto" }}>
+      <Box sx={{ mb: { xs: 1.9, md: 2.8 } }}>
         <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>
           Análise de obras
         </Typography>
         <Typography component="h1" sx={{
-          mt: .3, fontSize: { xs: 34, md: 44 }, lineHeight: 1.04, fontWeight: 900, letterSpacing: "-.045em",
+          mt: .3, fontSize: { xs: 36, sm: 40, md: 46, xl: 50 }, lineHeight: 1.03, fontWeight: 900, letterSpacing: "-.045em",
           background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
           Comparar obras
         </Typography>
-        <Typography color="text.secondary" sx={{ mt: .65, maxWidth: 760, fontSize: { xs: 13, md: 14 }, lineHeight: 1.5 }}>
+        <Typography color="text.secondary" sx={{ mt: .7, maxWidth: 860, fontSize: { xs: 13.4, sm: 14, md: 15 }, lineHeight: 1.5 }}>
           Composições, custos e mão de obra lado a lado. Toque nas obras para incluir ou remover da comparação.
         </Typography>
       </Box>
 
       <Paper variant="outlined" sx={{
-        p: { xs: 1.25, sm: 1.55 }, borderRadius: { xs: "15px", md: "14px" },
+        p: { xs: 1.35, sm: 1.7, md: 1.9 }, borderRadius: { xs: "15px", md: "14px" },
         borderColor: "#dce9e5", bgcolor: "#fbfdfc", boxShadow: "0 5px 20px rgba(23,67,53,.03)",
       }}>
-        <Stack direction="row" alignItems="center" gap={.85} mb={1}>
+        <Stack direction="row" alignItems="center" gap={1} mb={1.15}>
           <Box sx={{
-            width: 34, height: 34, borderRadius: "8px", display: "grid", placeItems: "center",
+            width: { xs: 36, md: 40 }, height: { xs: 36, md: 40 }, borderRadius: "9px", display: "grid", placeItems: "center",
             bgcolor: "#e8f4ef", color: "#28634f", border: "1px solid #dcebe6",
           }}>
-            <CompareArrowsRoundedIcon sx={{ fontSize: 18 }} />
+            <CompareArrowsRoundedIcon sx={{ fontSize: { xs: 19, md: 21 } }} />
           </Box>
           <Box minWidth={0} flex={1}>
-            <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 12.8 }}>Obras na comparação</Typography>
-            <Typography color="text.secondary" sx={{ fontSize: 9.8 }}>Até 3 obras. A comparação atualiza automaticamente.</Typography>
+            <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 13.3, md: 14 } }}>Obras na comparação</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: 10.2, md: 10.8 } }}>Até 3 obras. A comparação atualiza automaticamente.</Typography>
           </Box>
           <Chip
             size="small"
             label={`${selectedIds.length}/3`}
-            sx={{ height: 22, borderRadius: "7px", fontSize: 9, fontWeight: 800, bgcolor: "#edf5f2", color: "#45685c" }}
+            sx={{ height: { xs: 23, md: 25 }, borderRadius: "7px", fontSize: { xs: 9.4, md: 10 }, fontWeight: 800, bgcolor: "#edf5f2", color: "#45685c" }}
           />
         </Stack>
 
@@ -212,7 +212,7 @@ export default function ComparePage() {
         </Alert> : <Box sx={{
           display: "grid",
           gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))", md: "repeat(3,minmax(0,1fr))" },
-          gap: .7,
+          gap: { xs: .8, md: 1 },
         }}>
           {projects.map(project => {
             const selected = selectedIds.includes(project.id);
@@ -223,7 +223,7 @@ export default function ComparePage() {
               disabled={disabled}
               aria-pressed={selected}
               sx={{
-                minHeight: 58, px: 1, py: .8, borderRadius: "10px",
+                minHeight: { xs: 64, md: 70 }, px: { xs: 1.05, md: 1.2 }, py: { xs: .9, md: 1 }, borderRadius: "10px",
                 justifyContent: "flex-start", textAlign: "left", gap: .8,
                 border: "1px solid",
                 borderColor: selected ? "#8bc4b0" : "#e0e9e6",
@@ -236,23 +236,23 @@ export default function ComparePage() {
               }}
             >
               <Box sx={{
-                width: 32, height: 32, flexShrink: 0, borderRadius: "8px", display: "grid", placeItems: "center",
+                width: { xs: 34, md: 38 }, height: { xs: 34, md: 38 }, flexShrink: 0, borderRadius: "8px", display: "grid", placeItems: "center",
                 bgcolor: selected ? "#dfeee8" : "#f0f5f3", color: "#366858",
               }}>
-                <HomeWorkOutlinedIcon sx={{ fontSize: 18 }} />
+                <HomeWorkOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
               </Box>
               <Box minWidth={0} flex={1}>
-                <Typography noWrap fontWeight={820} color="#254b3e" sx={{ fontSize: 11.3 }}>{project.name}</Typography>
-                <Typography color="text.secondary" sx={{ mt: .1, fontSize: 8.8 }}>
+                <Typography noWrap fontWeight={820} color="#254b3e" sx={{ fontSize: { xs: 11.8, md: 12.8 } }}>{project.name}</Typography>
+                <Typography color="text.secondary" sx={{ mt: .15, fontSize: { xs: 9.2, md: 9.8 } }}>
                   {project.compositionIds.length} {project.compositionIds.length === 1 ? "composição" : "composições"}
                 </Typography>
               </Box>
               <Box sx={{
-                width: 18, height: 18, flexShrink: 0, borderRadius: "6px", display: "grid", placeItems: "center",
+                width: { xs: 19, md: 21 }, height: { xs: 19, md: 21 }, flexShrink: 0, borderRadius: "6px", display: "grid", placeItems: "center",
                 border: "1px solid", borderColor: selected ? "#5ca78d" : "#d7e2de",
                 bgcolor: selected ? "#0d7a5b" : "transparent", color: "#fff",
               }}>
-                {selected ? <CheckRoundedIcon sx={{ fontSize: 13 }} /> : null}
+                {selected ? <CheckRoundedIcon sx={{ fontSize: { xs: 13, md: 15 } }} /> : null}
               </Box>
             </ButtonBase>;
           })}
@@ -262,14 +262,14 @@ export default function ComparePage() {
       {error ? <Alert severity="error" sx={{ mt: 1.5, borderRadius: 3 }}>{error}</Alert> : null}
 
       {selectedProjects.length < 2 ? <Box sx={{
-        mt: 2, py: 4.5, textAlign: "center", borderTop: "1px solid #e4ece9", borderBottom: "1px solid #e4ece9",
+        mt: 2.1, py: { xs: 4.5, md: 5.5 }, textAlign: "center", borderTop: "1px solid #e4ece9", borderBottom: "1px solid #e4ece9",
       }}>
         <Box sx={{ width: 44, height: 44, borderRadius: "50%", display: "grid", placeItems: "center", mx: "auto", bgcolor: "#edf6f2", color: "#356554" }}>
           <CompareArrowsRoundedIcon />
         </Box>
         <Typography mt={1} fontWeight={850} color="#284d40">Escolha pelo menos duas obras.</Typography>
         <Typography mt={.35} color="text.secondary" sx={{ fontSize: 11.5 }}>A comparação aparece automaticamente aqui embaixo.</Typography>
-      </Box> : <Box sx={{ mt: 1.6 }}>
+      </Box> : <Box sx={{ mt: { xs: 1.7, md: 2 } }}>
         {laborLoading ? <Stack direction="row" alignItems="center" gap={.8} mb={1}>
           <CircularProgress size={14} />
           <Typography color="text.secondary" sx={{ fontSize: 10 }}>Atualizando mão de obra...</Typography>
@@ -278,18 +278,18 @@ export default function ComparePage() {
         <Box sx={{ overflowX: "auto", pb: .6, scrollbarWidth: "thin", mx: { xs: -2, sm: 0 }, px: { xs: 2, sm: 0 } }}>
           <Box sx={{
             display: "grid",
-            gridTemplateColumns: `minmax(108px,132px) repeat(${snapshots.length},minmax(170px,1fr))`,
-            minWidth: { xs: 108 + snapshots.length * 170, sm: 620 },
+            gridTemplateColumns: `minmax(118px,150px) repeat(${snapshots.length},minmax(190px,1fr))`,
+            minWidth: { xs: 118 + snapshots.length * 190, sm: 700 },
             border: "1px solid #dce7e3", borderRadius: "12px", overflow: "hidden", bgcolor: "#fff",
           }}>
-            <Box sx={{ p: 1, bgcolor: "#f5faf8", borderRight: "1px solid #e3ebe8" }} />
+            <Box sx={{ p: { xs: 1.05, md: 1.25 }, bgcolor: "#f5faf8", borderRight: "1px solid #e3ebe8" }} />
             {snapshots.map(snapshot => <Box key={snapshot.project.id} sx={{
-              p: 1.05, minWidth: 0, bgcolor: "#f5faf8",
+              p: { xs: 1.1, md: 1.3 }, minWidth: 0, bgcolor: "#f5faf8",
               borderRight: "1px solid #e3ebe8", "&:last-child": { borderRight: 0 },
             }}>
               <Stack direction="row" alignItems="center" gap={.6}>
-                <HomeWorkOutlinedIcon sx={{ fontSize: 17, color: "#39725f", flexShrink: 0 }} />
-                <Typography fontWeight={860} color="#21483b" sx={{ fontSize: 11.4, lineHeight: 1.15 }}>{snapshot.project.name}</Typography>
+                <HomeWorkOutlinedIcon sx={{ fontSize: { xs: 17, md: 19 }, color: "#39725f", flexShrink: 0 }} />
+                <Typography fontWeight={860} color="#21483b" sx={{ fontSize: { xs: 11.8, md: 12.8 }, lineHeight: 1.15 }}>{snapshot.project.name}</Typography>
               </Stack>
             </Box>)}
 
@@ -306,16 +306,16 @@ export default function ComparePage() {
               const valueFn = getValue as (snapshot: typeof snapshots[number]) => string;
               return [
                 <Box key={`label-${rowIndex}`} sx={{
-                  px: 1, py: .75, bgcolor: "#fbfdfc", borderTop: "1px solid #e8efec", borderRight: "1px solid #e3ebe8",
+                  px: { xs: 1, md: 1.2 }, py: { xs: .85, md: 1 }, bgcolor: "#fbfdfc", borderTop: "1px solid #e8efec", borderRight: "1px solid #e3ebe8",
                 }}>
-                  <Typography sx={{ fontSize: 8.8, fontWeight: 800, color: "#668078", lineHeight: 1.15 }}>{label as string}</Typography>
+                  <Typography sx={{ fontSize: { xs: 9.4, md: 10.2, xl: 10.6 }, fontWeight: 800, color: "#668078", lineHeight: 1.15 }}>{label as string}</Typography>
                 </Box>,
                 ...snapshots.map(snapshot => <Box key={`${snapshot.project.id}-${rowIndex}`} sx={{
-                  px: 1.05, py: .75, borderTop: "1px solid #e8efec", borderRight: "1px solid #e8efec",
+                  px: { xs: 1.05, md: 1.25 }, py: { xs: .85, md: 1 }, borderTop: "1px solid #e8efec", borderRight: "1px solid #e8efec",
                   "&:last-child": { borderRight: 0 },
                 }}>
                   <Typography sx={{
-                    fontSize: 10.5, fontWeight: label === "Custo" ? 850 : 720,
+                    fontSize: { xs: 11.1, md: 12, xl: 12.4 }, fontWeight: label === "Custo" ? 850 : 720,
                     color: label === "Custo" ? "#176047" : "#36564b", lineHeight: 1.2,
                   }}>
                     {valueFn(snapshot)}
@@ -327,44 +327,44 @@ export default function ComparePage() {
         </Box>
 
         <Box sx={{
-          mt: 1,
+          mt: { xs: 1.1, md: 1.25 },
           display: { xs: "flex", md: "grid" },
           gridTemplateColumns: { md: `repeat(${snapshots.length},minmax(0,1fr))` },
-          gap: .8, overflowX: { xs: "auto", md: "visible" },
+          gap: { xs: .85, md: 1 }, overflowX: { xs: "auto", md: "visible" },
           mx: { xs: -2, md: 0 }, px: { xs: 2, md: 0 }, pb: { xs: .6, md: 0 },
           scrollSnapType: { xs: "x proximity", md: "none" }, scrollbarWidth: "thin",
         }}>
           {snapshots.map(snapshot => <Paper key={snapshot.project.id} variant="outlined" sx={{
             borderRadius: "11px", borderColor: "#dfe9e6", overflow: "hidden",
-            minWidth: { xs: "76vw", sm: 280, md: 0 }, maxWidth: { xs: 310, md: "none" },
+            minWidth: { xs: "82vw", sm: 320, md: 0 }, maxWidth: { xs: 350, md: "none" },
             flex: { xs: "0 0 auto", md: "initial" }, scrollSnapAlign: { xs: "start", md: "none" },
           }}>
-            <Box sx={{ px: 1.2, py: .9, bgcolor: "#fbfdfc" }}>
-              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 11.6 }}>{snapshot.project.name}</Typography>
+            <Box sx={{ px: { xs: 1.25, md: 1.45 }, py: { xs: 1, md: 1.15 }, bgcolor: "#fbfdfc" }}>
+              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 12.2, md: 13.2 } }}>{snapshot.project.name}</Typography>
             </Box>
             <Divider />
-            <Box sx={{ p: 1.1 }}>
+            <Box sx={{ p: { xs: 1.15, md: 1.35 } }}>
               <Stack direction="row" alignItems="center" gap={.55} mb={.65}>
-                <Inventory2OutlinedIcon sx={{ fontSize: 16, color: "#39725f" }} />
-                <Typography fontWeight={820} color="#315247" sx={{ fontSize: 10.2 }}>Composições</Typography>
+                <Inventory2OutlinedIcon sx={{ fontSize: { xs: 17, md: 19 }, color: "#39725f" }} />
+                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 10.8, md: 11.6 } }}>Composições</Typography>
               </Stack>
               {snapshot.compositions.length ? <Stack gap={.42}>
                 {snapshot.compositions.map(composition => <Stack key={composition.id} direction="row" justifyContent="space-between" gap={1}>
-                  <Typography sx={{ fontSize: 9.2, color: "#536d64", lineHeight: 1.22 }}>{composition.name}</Typography>
-                  <Typography sx={{ fontSize: 9.2, fontWeight: 760, color: "#31594b", whiteSpace: "nowrap" }}>{currency.format(composition.total)}</Typography>
+                  <Typography sx={{ fontSize: { xs: 9.8, md: 10.5 }, color: "#536d64", lineHeight: 1.25 }}>{composition.name}</Typography>
+                  <Typography sx={{ fontSize: { xs: 9.8, md: 10.5 }, fontWeight: 760, color: "#31594b", whiteSpace: "nowrap" }}>{currency.format(composition.total)}</Typography>
                 </Stack>)}
               </Stack> : <Typography color="text.secondary" sx={{ fontSize: 9.2 }}>Sem composições vinculadas.</Typography>}
 
               <Divider sx={{ my: .9 }} />
               <Stack direction="row" alignItems="center" gap={.55} mb={.65}>
-                <Groups2OutlinedIcon sx={{ fontSize: 16, color: "#39725f" }} />
-                <Typography fontWeight={820} color="#315247" sx={{ fontSize: 10.2 }}>Mão de obra</Typography>
+                <Groups2OutlinedIcon sx={{ fontSize: { xs: 17, md: 19 }, color: "#39725f" }} />
+                <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 10.8, md: 11.6 } }}>Mão de obra</Typography>
               </Stack>
               {snapshot.plan?.items.length ? <Stack gap={.4}>
                 {snapshot.plan.items.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={.5}>
-                  <Typography flex={1} sx={{ fontSize: 9, color: "#536d64", lineHeight: 1.22 }}>{item.title}</Typography>
+                  <Typography flex={1} sx={{ fontSize: { xs: 9.6, md: 10.3 }, color: "#536d64", lineHeight: 1.25 }}>{item.title}</Typography>
                   <Chip size="small" label={originLabel(item.origin)} sx={{
-                    height: 19, borderRadius: "6px", fontSize: 7.9, fontWeight: 760, bgcolor: "#eaf4f0", color: "#31594b",
+                    height: { xs: 20, md: 22 }, borderRadius: "6px", fontSize: { xs: 8.2, md: 8.8 }, fontWeight: 760, bgcolor: "#eaf4f0", color: "#31594b",
                   }} />
                 </Stack>)}
               </Stack> : <Typography color="text.secondary" sx={{ fontSize: 9.2 }}>Sem planejamento salvo.</Typography>}
@@ -373,13 +373,13 @@ export default function ComparePage() {
         </Box>
 
         <Paper variant="outlined" sx={{
-          mt: 1.1, p: { xs: 1.25, sm: 1.5 }, borderRadius: "11px", borderColor: "#dce9e5", bgcolor: "#f8fbfa",
+          mt: { xs: 1.2, md: 1.4 }, p: { xs: 1.35, sm: 1.65, md: 1.8 }, borderRadius: "11px", borderColor: "#dce9e5", bgcolor: "#f8fbfa",
         }}>
-          <Typography fontWeight={880} color="#21483b" sx={{ fontSize: 12 }}>Resumo da comparação</Typography>
+          <Typography fontWeight={880} color="#21483b" sx={{ fontSize: { xs: 12.8, md: 14 } }}>Resumo da comparação</Typography>
           <Stack gap={.48} mt={.75}>
             {summaryLines.map(line => <Stack key={line} direction="row" gap={.65} alignItems="flex-start">
               <Box sx={{ width: 5, height: 5, borderRadius: "50%", bgcolor: "#269b78", mt: .58, flexShrink: 0 }} />
-              <Typography color="#536d64" sx={{ fontSize: 10.3, lineHeight: 1.42 }}>{line}</Typography>
+              <Typography color="#536d64" sx={{ fontSize: { xs: 10.9, md: 11.6 }, lineHeight: 1.46 }}>{line}</Typography>
             </Stack>)}
           </Stack>
         </Paper>
