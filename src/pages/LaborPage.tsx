@@ -4,6 +4,7 @@ import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, ButtonBase, Checkbox, Chip,
   CircularProgress, Container, Divider, MenuItem, Paper, Stack, TextField, Typography
 } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
@@ -214,26 +215,71 @@ export default function LaborPage() {
   if (!projectId) return <Container maxWidth="lg" component="main" sx={{ py: { xs: 3, md: 5 }, pb: { xs: 5, md: 5 } }}>
     <Box sx={{ maxWidth: 920, mx: "auto" }}>
       <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>Planejamento da obra</Typography>
-      <Stack direction="row" alignItems="center" gap={1.1} mt={.3}>
-        <Box sx={{ width: 46, height: 46, borderRadius: 3, display: "grid", placeItems: "center", color: "#195b45", bgcolor: "#e9f4f0", border: "1px solid #d3e8e0" }}>
-          <HardHat size={27} weight="duotone" />
-        </Box>
-        <Box>
-          <Typography component="h1" sx={{
-            fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em",
-            background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          }}>Mão de obra</Typography>
-          <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>Escolha a obra para montar o planejamento.</Typography>
-        </Box>
+      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.4} mt={.3}>
+        <Stack direction="row" alignItems="center" gap={1.1}>
+          <Box sx={{ width: 46, height: 46, borderRadius: 3, display: "grid", placeItems: "center", color: "#195b45", bgcolor: "#e9f4f0", border: "1px solid #d3e8e0" }}>
+            <HardHat size={27} weight="duotone" />
+          </Box>
+          <Box>
+            <Typography component="h1" sx={{
+              fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em",
+              background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            }}>Mão de obra</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>Escolha a obra para montar o planejamento.</Typography>
+          </Box>
+        </Stack>
+
+        <Stack direction="row" alignItems="center" gap={.8} sx={{ alignSelf: { xs: "flex-end", sm: "auto" } }}>
+          <Typography sx={{ fontSize: { xs: 12.2, md: 12.9 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+            Cadastrar obra
+          </Typography>
+          <ButtonBase component={RouterLink} to="/obras" aria-label="Cadastrar obra" sx={{
+            width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
+            color: "#17664f",
+            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            "&:active": { transform: "scale(.96)" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+              },
+            },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+          }}>
+            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+          </ButtonBase>
+        </Stack>
       </Stack>
 
       {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-      {!projects.length ? <Paper variant="outlined" sx={{ mt: 3, p: 4, borderRadius: 4, textAlign: "center", borderColor: "#dce9e5" }}>
+      {!projects.length ? <Paper variant="outlined" sx={{
+        mt: 3, p: { xs: 3, sm: 4 }, borderRadius: 4, textAlign: "center",
+        borderColor: "#dce9e5", bgcolor: "#fbfdfc",
+      }}>
         <HomeWorkOutlinedIcon sx={{ fontSize: 40, color: "#7e988f" }} />
-        <Typography fontWeight={850} color="#284d40" mt={1}>Nenhuma obra cadastrada.</Typography>
-        <Typography color="text.secondary" fontSize={13} mt={.45}>A mão de obra nasce dentro de uma obra.</Typography>
-        <Button component={RouterLink} to="/obras" variant="contained" sx={{ mt: 2, borderRadius: 999, textTransform: "none" }}>Cadastrar obra</Button>
+        <Typography fontWeight={850} color="#284d40" mt={1}>Nenhuma obra cadastrada ainda.</Typography>
+        <Typography color="text.secondary" fontSize={13} mt={.45}>
+          Cadastre uma obra para começar o planejamento de mão de obra e manter tudo vinculado desde o início.
+        </Typography>
+        <Stack direction="row" justifyContent="center" alignItems="center" gap={.8} mt={2}>
+          <Typography sx={{ fontSize: 12.2, fontWeight: 820, color: "#2f5c4c" }}>Cadastrar obra</Typography>
+          <ButtonBase component={RouterLink} to="/obras" aria-label="Cadastrar primeira obra" sx={{
+            width: 42, height: 42, borderRadius: "50%", color: "#17664f",
+            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            "&:hover": { borderColor: "rgba(0,107,79,.24)", background: "linear-gradient(145deg,#ffffff,#e3f1ec)" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+          }}>
+            <AddRoundedIcon sx={{ fontSize: 22 }} />
+          </ButtonBase>
+        </Stack>
       </Paper> : <Box sx={{ mt: 3, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: 1 }}>
         {projects.map(work => <ButtonBase key={work.id} component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`}
           sx={{
