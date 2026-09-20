@@ -12,7 +12,8 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       devOptions: { enabled: false },
-      includeAssets: ["logo.svg", "precify-mark.svg", "precify-logo-white.svg", "precify-logo-green.svg", "precify-signature.png", "favicon.svg", "precify-icon-full.svg", "apple-touch-icon.png"],
+      includeAssets: ["logo.svg", "precify-mark.svg", "precify-logo-white.svg", "precify-logo-green.svg", "precify-logo-horizontal-white-exact.svg", "precify-pwa-launch.svg", "precify-signature.png", "favicon.svg", "apple-touch-icon.png"],
+      workbox: { cleanupOutdatedCaches: true },
       manifest: {
         name: "Precify",
         short_name: "Precify",
@@ -22,7 +23,8 @@ export default defineConfig({
         display: "standalone",
         start_url: "/",
         icons: [
-          { src: "/precify-icon-full.svg?v=4", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }
+          { src: "/precify-pwa-launch.svg?v=6", sizes: "any", type: "image/svg+xml", purpose: "any" },
+          { src: "/precify-pwa-launch.svg?v=6", sizes: "any", type: "image/svg+xml", purpose: "maskable" }
         ]
       }
     })
