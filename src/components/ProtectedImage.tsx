@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import { Box, type SxProps, type Theme } from "@mui/material";
 import { imageAddress, imageBlob, internalImagePath } from "../services/api";
-export function ProtectedImage({ src, alt, sx }: { src?: string | null; alt: string; sx?: SxProps<Theme> }) {
+export function ProtectedImage({ src, alt, sx, fallback }: { src?: string | null; alt: string; sx?: SxProps<Theme>; fallback?: ReactNode }) {
   const address = imageAddress(src);
   const path = address ? internalImagePath(address) : null;
   const [loaded, setLoaded] = useState<{ source: string; url: string } | null>(null);
@@ -20,6 +20,6 @@ export function ProtectedImage({ src, alt, sx }: { src?: string | null; alt: str
   return <Box sx={[{ position: "relative", bgcolor: "grey.50", display: "grid", placeItems: "center", overflow: "hidden", boxSizing: "border-box" }, ...(Array.isArray(sx) ? sx : [sx ?? {}])]}>
     {resolved && failed !== address ? <Box component="img" src={resolved} alt={alt} loading="lazy"
       onError={() => setFailed(address ?? null)} sx={{ position: "absolute", inset: "12px", width: "calc(100% - 24px)", height: "calc(100% - 24px)", objectFit: "contain" }} /> :
-      <ImageOutlinedIcon role="img" aria-label={alt + " não disponível"} sx={{ color: "#b9c1c6", fontSize: 44 }} />}
+      {fallback ?? <ImageOutlinedIcon role="img" aria-label={alt + " não disponível"} sx={{ color: "#b9c1c6", fontSize: 44 }} />}}
   </Box>;
 }
