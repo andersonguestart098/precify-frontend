@@ -2,8 +2,8 @@ import { createCatalogCriteria } from "../data/familyConfig";
 import type { Composition } from "../domain/composition";
 import type { CatalogMaterial, CatalogSearchPage } from "../domain/search";
 import {
-  favoriteCodes, getCatalog, listCompositions, listProjects, searchProducts,
-  type Project,
+  favoriteCodes, getCatalog, getLaborPlan, listCompositions, listProjects, searchProducts,
+  type LaborPlan, type Project,
 } from "./api";
 
 type CacheEnvelope<T> = {
@@ -26,6 +26,8 @@ const favoritesMemory = new Map<string, string[]>();
 const projectsRequests = new Map<string, Promise<Project[]>>();
 const compositionsRequests = new Map<string, Promise<Composition[]>>();
 const favoritesRequests = new Map<string, Promise<string[]>>();
+const laborMemory = new Map<string, LaborPlan>();
+const laborRequests = new Map<string, Promise<LaborPlan>>();
 
 function userKey(userId: string, bucket: string) {
   return `precify-cache:user:${userId}:${bucket}:v1`;
@@ -167,6 +169,50 @@ export function loadCompositionsCached(userId: string, force = false) {
   return request;
 }
 
+function laborKey(userId: string, projectId: string) {
+  return userKey(userId, `labor:${projectId}`);
+}
+
+function laborMemoryKey(userId: string, projectId: string) {
+  return `${userId}:${projectId}`;
+}
+
+export function getCachedLaborPlan(userId: string, projectId: string) {
+  const memoryKey = laborMemoryKey(userId, projectId);
+  if (!laborMemory.has(memoryKey)) {
+    const cached = readCache<LaborPlan>(laborKey(userId, projectId));
+    if (cached) laborMemory.set(memoryKey, cached);
+  }
+  return laborMemory.get(memoryKey) ?? null;
+}
+
+export function saveCachedLaborPlan(userId: string, projectId: string, data: LaborPlan) {
+  const memoryKey = laborMemoryKey(userId, projectId);
+  laborMemory.set(memoryKey, data);
+  writeCache(laborKey(userId, projectId), data);
+  return data;
+}
+
+export function loadLaborPlanCached(userId: string, projectId: string, force = false) {
+  if (!force) {
+    const cached = getCachedLaborPlan(userId, projectId);
+    if (cached) return Promise.resolve(cached);
+  }
+  const memoryKey = laborMemoryKey(userId, projectId);
+  const pending = laborRequests.get(memoryKey);
+  if (pending) return pending;
+  const request = getLaborPlan(projectId)
+    .then(data => saveCachedLaborPlan(userId, projectId, data))
+    .finally(() => { laborRequests.delete(memoryKey); });
+  laborRequests.set(memoryKey, request);
+  return request;
+}
+
+export function clearCachedLaborPlan(userId: string, projectId: string) {
+  laborMemory.delete(laborMemoryKey(userId, projectId));
+  removeCache(laborKey(userId, projectId));
+}
+
 export function getCachedFavoriteCodes(userId: string) {
   if (!favoritesMemory.has(userId)) {
     const cached = readCache<string[]>(userKey(userId, "favorites"));
@@ -220,6 +266,9 @@ export function clearUserWarmCache(userId: string) {
   projectsMemory.delete(userId);
   compositionsMemory.delete(userId);
   favoritesMemory.delete(userId);
+  for (const key of [...laborMemory.keys()]) {
+    if (key.startsWith(`${userId}:`)) laborMemory.delete(key);
+  }
   removeCache(userKey(userId, "projects"));
   removeCache(userKey(userId, "compositions"));
   removeCache(userKey(userId, "favorites"));
