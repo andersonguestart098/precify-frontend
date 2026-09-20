@@ -22,7 +22,7 @@ import PlanningPage from "./pages/PlanningPage";
 import LaborPage from "./pages/LaborPage";
 import HistoryPage from "./pages/HistoryPage";
 import ComparePage from "./pages/ComparePage";
-import { warmAppCache } from "./services/appWarmCache";
+import { refreshAppCache, warmAppCache } from "./services/appWarmCache";
 
 function ProtectedRoute({ admin = false }: { admin?: boolean }) {
   const { user } = useSession(); const location = useLocation();
@@ -53,6 +53,7 @@ function SessionRoutes() {
   const { checking, error, retry, signOut, user } = useSession();
   const location = useLocation();
   const entryRedirectDone = useRef(false);
+  const lastBackgroundRefresh = useRef(0);
   const [cacheReady, setCacheReady] = useState(false);
 
   useEffect(() => {
@@ -65,17 +66,36 @@ function SessionRoutes() {
     let active = true;
     setCacheReady(false);
     const minimumSplash = new Promise<void>(resolve => window.setTimeout(resolve, 420));
-    const cacheTimeout = new Promise<void>(resolve => window.setTimeout(resolve, 3500));
+    const cacheTimeout = new Promise<void>(resolve => window.setTimeout(resolve, 6500));
 
     void Promise.all([
-      Promise.race([warmAppCache(), cacheTimeout]),
+      Promise.race([warmAppCache(user.id), cacheTimeout]),
       minimumSplash,
     ]).finally(() => {
-      if (active) setCacheReady(true);
+      if (active) {
+        lastBackgroundRefresh.current = Date.now();
+        setCacheReady(true);
+      }
     });
 
     return () => { active = false; };
   }, [user?.id]);
+
+  useEffect(() => {
+    if (!user || !cacheReady) return;
+    const refreshIfNeeded = () => {
+      if (document.visibilityState === "hidden") return;
+      if (Date.now() - lastBackgroundRefresh.current < 5 * 60 * 1000) return;
+      lastBackgroundRefresh.current = Date.now();
+      void refreshAppCache(user.id);
+    };
+    window.addEventListener("focus", refreshIfNeeded);
+    document.addEventListener("visibilitychange", refreshIfNeeded);
+    return () => {
+      window.removeEventListener("focus", refreshIfNeeded);
+      document.removeEventListener("visibilitychange", refreshIfNeeded);
+    };
+  }, [user?.id, cacheReady]);
 
   if (checking || (user && !cacheReady)) return <SplashScreen />;
   if (error) return <Stack gap={2} sx={{ maxWidth: 440, mx: "auto", mt: 10, p: 3 }}>
