@@ -196,10 +196,10 @@ export default function LaborPage() {
     setSummaryPulse(false);
     window.clearTimeout(summaryPulseTimer.current);
     window.requestAnimationFrame(() => {
-      summaryRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      summaryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       window.requestAnimationFrame(() => setSummaryPulse(true));
     });
-    summaryPulseTimer.current = window.setTimeout(() => setSummaryPulse(false), 1100);
+    summaryPulseTimer.current = window.setTimeout(() => setSummaryPulse(false), 1800);
   };
 
   useEffect(() => () => window.clearTimeout(summaryPulseTimer.current), []);
@@ -495,15 +495,22 @@ export default function LaborPage() {
           expanded={summaryExpanded}
           onChange={(_, expanded) => setSummaryExpanded(expanded)}
           sx={{
-            mt: 2.3, scrollMarginTop: { xs: 88, md: 84 },
-            border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fbfdfc",
-            borderColor: summaryPulse ? "#6db69d" : "#d9e6e1",
+            mt: 2.3, scrollMarginTop: { xs: 96, md: 84 },
+            border: "1px solid", borderRadius: "11px !important", overflow: "hidden",
+            borderColor: summaryPulse ? "#198a67" : "#d9e6e1",
+            bgcolor: summaryPulse ? "#f1faf6" : "#fbfdfc",
             boxShadow: summaryPulse
-              ? "0 0 0 4px rgba(38,155,120,.10), 0 12px 30px rgba(21,72,56,.10)"
+              ? "0 0 0 5px rgba(38,155,120,.16), 0 16px 34px rgba(21,72,56,.14)"
               : summaryExpanded ? "0 10px 28px rgba(21,72,56,.07)" : "0 3px 14px rgba(21,72,56,.025)",
-            transition: "box-shadow 220ms ease,border-color 220ms ease",
+            animation: summaryPulse ? "summaryAttention 1.5s ease-out both" : "none",
+            transition: "box-shadow 220ms ease,border-color 220ms ease,background-color 220ms ease",
+            "@keyframes summaryAttention": {
+              "0%": { transform: "scale(.992)", boxShadow: "0 0 0 0 rgba(38,155,120,0), 0 8px 20px rgba(21,72,56,.06)" },
+              "35%": { transform: "scale(1)", boxShadow: "0 0 0 7px rgba(38,155,120,.17), 0 18px 38px rgba(21,72,56,.14)" },
+              "100%": { transform: "scale(1)", boxShadow: "0 0 0 3px rgba(38,155,120,.08), 0 12px 30px rgba(21,72,56,.09)" },
+            },
             "&::before": { display: "none" },
-            "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none", animation: "none" },
           }}>
           <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: 1.5, minHeight: 62 }}>
             <Stack direction="row" gap={1} alignItems="center" width="100%">
