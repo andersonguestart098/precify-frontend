@@ -67,15 +67,30 @@ export default function ProductRegistrationPage() {
   return <Container component="main" maxWidth="lg" sx={{ py: { xs: 2.5, md: 4 } }}>
     <Breadcrumbs sx={{ mb: { xs: 2.25, md: 3 }, fontSize: 13 }}><Link component={RouterLink} to="/busca" underline="hover">Produtos</Link><Typography variant="caption">Cadastrar produto</Typography></Breadcrumbs>
     {(error || catalogError) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError}</Alert>}
-    <Paper component="form" onSubmit={submit} variant="outlined" sx={{ borderRadius: 4, p: { xs: 2, md: 4 }, borderColor: "#e1e7e5" }}>
-      <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "1.1fr 1fr" }} gap={{ xs: 3, md: 5 }}>
-        <Box minWidth={0}>
-          <ImageUpload label="Foto do produto" value={form.imageUrl} onChange={url => setForm(current => ({ ...current, imageUrl: url }))} onBusy={busy => setUploads(n => n + (busy ? 1 : -1))} />
-          <Box mt={2.5}><ImageUpload label="Logo do fornecedor" value={form.supplierLogoUrl} onChange={url => setForm(current => ({ ...current, supplierLogoUrl: url }))} onBusy={busy => setUploads(n => n + (busy ? 1 : -1))} /></Box>
-        </Box>
-        <Box minWidth={0}>
-          <Typography component="h1" variant="h4" sx={{ fontWeight: 800, fontSize: { xs: 26, md: 32 }, letterSpacing: "-.035em", mb: 2.5 }}>Cadastrar produto</Typography>
-          <Stack gap={2}>
+    <Paper component="form" onSubmit={submit} variant="outlined" sx={{
+      borderRadius: { xs: "24px", md: "20px" }, p: { xs: 2, sm: 2.5, md: 3.5 }, borderColor: "#e1e7e5", bgcolor: "#fff",
+      "& .MuiOutlinedInput-root": {
+        minHeight: 52, borderRadius: "26px", bgcolor: "#f8faf9", fontSize: 14,
+        transition: "background-color 180ms, box-shadow 180ms",
+        "& fieldset": { borderColor: "#dfe7e4" },
+        "&:hover": { bgcolor: "#f1f7f5", "& fieldset": { borderColor: "#a6c8bd" } },
+        "&.Mui-focused": { bgcolor: "#fff", boxShadow: "0 0 0 3px #006b4f12", "& fieldset": { borderColor: "#006b4f", borderWidth: 1 } },
+      },
+      "& .MuiInputLabel-root": { color: "#62766f", fontSize: 14 },
+      "& .MuiSelect-icon": { color: "#628177" },
+      "& .MuiInputBase-input, & .MuiSelect-select": { py: 1.45 },
+    }}>
+      <Box sx={{
+        display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", sm: "repeat(2,minmax(0,220px))" },
+        gap: { xs: 1, sm: 1.35 }, alignItems: "start", mb: { xs: 2.2, md: 2.8 },
+      }}>
+        <ImageUpload label="Foto do produto" value={form.imageUrl} onChange={url => setForm(current => ({ ...current, imageUrl: url }))} onBusy={busy => setUploads(n => n + (busy ? 1 : -1))} />
+        <ImageUpload label="Logo do fornecedor" value={form.supplierLogoUrl} onChange={url => setForm(current => ({ ...current, supplierLogoUrl: url }))} onBusy={busy => setUploads(n => n + (busy ? 1 : -1))} />
+      </Box>
+
+      <Box minWidth={0}>
+        <Typography component="h1" variant="h4" sx={{ fontWeight: 850, fontSize: { xs: 25, md: 32 }, letterSpacing: "-.035em", mb: 2.2, color: "#173f34" }}>Cadastrar produto</Typography>
+        <Stack gap={1.55}>
             <TextField required fullWidth label="Nome do produto" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <Box display="grid" gridTemplateColumns={{ xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }} gap={2}>
               <FormControl required><InputLabel>Segmento</InputLabel><Select value={form.segmentCode} label="Segmento" onChange={(e) => setForm({ ...form, segmentCode: e.target.value, familyCode: "", materialCode: "" })}>{segments.map((item) => <MenuItem key={item.segmentCode} value={item.segmentCode}>{item.segmentName}</MenuItem>)}</Select></FormControl>
@@ -85,8 +100,8 @@ export default function ProductRegistrationPage() {
               <TextField required label="Modelo" value={form.model} onChange={(e) => setForm({ ...form, model: e.target.value })} />
             </Box>
             <TextField required multiline minRows={2} label="Descrição" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-          </Stack>
-          <Divider sx={{ my: 3 }} />
+        </Stack>
+        <Divider sx={{ my: { xs: 2.4, md: 3 } }} />
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="subtitle2" fontWeight={700} color="primary.dark">Especificações e cotações</Typography>
             <Button size="small" startIcon={<AddIcon />} onClick={() => setForm({ ...form, quotes: [...form.quotes, emptyQuote()] })}>Adicionar</Button>
@@ -105,9 +120,8 @@ export default function ProductRegistrationPage() {
               </Box>
             </Box>;
           })}</Stack>
-        </Box>
       </Box>
-      <Divider sx={{ my: 4 }} />
+      <Divider sx={{ my: { xs: 3, md: 4 } }} />
       <Stack direction="row" justifyContent="flex-end" gap={2}>
         <Button component={RouterLink} to="/busca" disabled={saving || uploads > 0}>Cancelar</Button>
         <Button type="submit" variant="contained" loading={saving} loadingPosition="start" startIcon={<Inventory2OutlinedIcon />} disabled={saving || uploads > 0 || !catalog.length}>Cadastrar produto</Button>
