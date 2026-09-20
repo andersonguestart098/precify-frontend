@@ -1,10 +1,10 @@
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import {
   Box, Chip, Divider, LinearProgress, Paper, Stack, Typography,
 } from "@mui/material";
 import type { RankedProduct } from "../domain/search";
+import { SegmentMaterialPlaceholder } from "./SegmentMaterialPlaceholder";
 
 interface ProductResultCardProps {
   result: RankedProduct;
@@ -80,7 +80,7 @@ export function ProductResultCard({ result, index }: ProductResultCardProps) {
           {result.product.imageUrl ? (
             <Box component="img" src={result.product.imageUrl} alt={result.product.name} loading="lazy" sx={{ width: "100%", height: "100%", objectFit: "contain", p: 1.5 }} />
           ) : (
-            <ImageOutlinedIcon color="disabled" sx={{ fontSize: 40 }} />
+            <SegmentMaterialPlaceholder segmentCode={result.product.segmentCode} label={result.product.name} />
           )}
         </Box>
 
