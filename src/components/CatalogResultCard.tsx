@@ -4,7 +4,6 @@ import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import { Box, Button, Chip, IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { ProtectedImage } from "./ProtectedImage";
 import { AddToCompositionDialog } from "./AddToCompositionDialog";
@@ -222,25 +221,6 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               </Button>
             </Stack>
 
-            <Button
-              size="small"
-              component={RouterLink}
-              to={`/comparar?codes=${encodeURIComponent(material.materialCode)}`}
-              startIcon={<CompareArrowsRoundedIcon />}
-              sx={{
-                mt: { xs: .45, md: .25, xl: .45 },
-                minHeight: 0,
-                p: 0,
-                color: "#63766f",
-                textTransform: "none",
-                fontSize: { xs: 10.5, md: 9.2, xl: 11 },
-                fontWeight: 650,
-                "& .MuiButton-startIcon": { mr: .35, "& svg": { fontSize: { md: 14, xl: 16 } } },
-                "&:hover": { bgcolor: "transparent", color: "#006b4f", textDecoration: "underline" },
-              }}
-            >
-              Comparar produto
-            </Button>
           </Box>
         </Stack>
       </Box>
