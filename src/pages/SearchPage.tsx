@@ -136,7 +136,10 @@ export default function SearchPage() {
     }, { replace: true });
   }, [params, setParams]);
 
-  const clearFilters = () => change(Object.fromEntries([["q", ""], ...criteria.map(c => [c.key, ""]), ["family", ""], ["scope", ""]]));
+  const clearFilters = () => {
+    change(Object.fromEntries([["q", ""], ...criteria.map(c => [c.key, ""]), ["family", ""], ["scope", ""]]));
+    setFilterOpen(false);
+  };
   const hasFilters = Boolean(query) || onlyFavorites || Boolean(familyCode) || criteria.some(c => c.value);
   const filters = <SearchFilters catalog={catalog} criteria={criteria} familyCode={familyCode} onlyFavorites={onlyFavorites}
     onOnlyFavoritesChange={value => change({ scope: value ? "favorites" : "" })}
