@@ -6,7 +6,7 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PlaylistAddCheckRoundedIcon from "@mui/icons-material/PlaylistAddCheckRounded";
 import {
-  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, CircularProgress, Container,
+  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
   Tooltip, Typography
 } from "@mui/material";
@@ -172,8 +172,32 @@ export default function CompositionsPage() {
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Minhas composições</Typography>
           <Typography color="text.secondary" mt={.5}>Organize materiais como listas de compra e acompanhe o valor estimado.</Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)}
-          sx={{ borderRadius: 999, px: 2.5, alignSelf: { xs: "stretch", sm: "auto" } }}>Nova composição</Button>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}
+          sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
+          <Typography sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+            Nova composição
+          </Typography>
+          <ButtonBase onClick={() => setCreateOpen(true)} aria-label="Criar nova composição" sx={{
+            width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
+            color: "#17664f",
+            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            "&:active": { transform: "scale(.96)" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+              },
+            },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+          }}>
+            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+          </ButtonBase>
+        </Stack>
       </Stack>
 
       <Paper variant="outlined" sx={{ mt: 3, p: { xs: 1.75, sm: 2 }, borderRadius: 4, borderColor: "#d9eae4",
