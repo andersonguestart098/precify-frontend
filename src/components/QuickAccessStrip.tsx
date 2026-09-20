@@ -4,6 +4,7 @@ import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
+import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import { HardHat } from "@phosphor-icons/react";
 
 const shortcuts = [
@@ -52,14 +53,22 @@ export default function QuickAccessStrip() {
   }}>
     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .9, md: 1 }}>
       <Box>
-        <Typography id="quick-access-title" sx={{
-          fontSize: { xs: 14.2, md: 15.2, xl: 16.5 },
-          fontWeight: 900,
-          color: "#1f4c3d",
-          letterSpacing: "-.02em",
-        }}>
-          Acessos rápidos
-        </Typography>
+        <Stack direction="row" alignItems="center" gap={.45}>
+          <LocalFireDepartmentRoundedIcon aria-hidden="true" sx={{
+            fontSize: { xs: 16, md: 17, xl: 18.5 },
+            color: "#d96c32",
+            filter: "drop-shadow(0 2px 4px rgba(217,108,50,.12))",
+          }} />
+          <Typography id="quick-access-title" sx={{
+            fontSize: { xs: 14.8, md: 16, xl: 17.4 },
+            fontWeight: 900,
+            color: "#1f4c3d",
+            letterSpacing: "-.02em",
+            lineHeight: 1.1,
+          }}>
+            Acessos rápidos
+          </Typography>
+        </Stack>
         <Typography sx={{
           display: { xs: "none", sm: "block" }, mt: .15,
           fontSize: { sm: 9.8, md: 10.5, xl: 11.3 }, color: "#82948d",
