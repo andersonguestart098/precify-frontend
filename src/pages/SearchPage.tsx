@@ -2,7 +2,7 @@ import { ResultSkeletons } from "../components/SearchSkeleton";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import { Alert, Box, Button, Container, Drawer, IconButton, Paper, Pagination, Skeleton, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonBase, CircularProgress, Container, Drawer, IconButton, Paper, Pagination, Skeleton, Stack, Typography } from "@mui/material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddIcon from "@mui/icons-material/Add";
@@ -232,8 +232,38 @@ export default function SearchPage() {
     </Box>
 
     <Drawer anchor="bottom" open={filterOpen} onClose={() => setFilterOpen(false)} slotProps={{ paper: { sx: { borderRadius: "24px 24px 0 0", maxHeight: "85dvh" } } }}>
-      {filters}<Box sx={{ p: 2, position: "sticky", bottom: 0, bgcolor: "background.paper" }}>
-        <Button variant="contained" disableElevation fullWidth loading={loading} loadingPosition="start" startIcon={<VisibilityOutlinedIcon />} sx={{ minHeight: 52, borderRadius: "999px", textTransform: "none", fontWeight: 700, background: "linear-gradient(110deg,#1b5e47,#006b4f)", boxShadow: "0 5px 14px #006b4f20", "&:hover": { background: "#175641" } }} onClick={() => setFilterOpen(false)}>Ver resultados</Button>
+      {filters}<Box sx={{
+        px: 2.5, py: 1.35, position: "sticky", bottom: 0, bgcolor: "rgba(255,255,255,.98)",
+        borderTop: "1px solid #eef3f1", backdropFilter: "blur(10px)",
+      }}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={.8}>
+          <Typography sx={{
+            fontSize: 12.5, fontWeight: 830, color: "#2f5c4c", letterSpacing: "-.01em",
+          }}>
+            Ver resultados
+          </Typography>
+          <ButtonBase onClick={() => setFilterOpen(false)} disabled={loading} aria-label="Ver resultados" sx={{
+            width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
+            color: "#17664f",
+            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)",
+            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            "&:active": { transform: "scale(.96)" },
+            "&.Mui-disabled": { opacity: .5, boxShadow: "none" },
+            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
+                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+              },
+            },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+          }}>
+            {loading ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 21 }} />}
+          </ButtonBase>
+        </Stack>
       </Box>
     </Drawer>
   </Container>;
