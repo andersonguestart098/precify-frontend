@@ -20,6 +20,6 @@ export function ProtectedImage({ src, alt, sx, fallback }: { src?: string | null
   return <Box sx={[{ position: "relative", bgcolor: "grey.50", display: "grid", placeItems: "center", overflow: "hidden", boxSizing: "border-box" }, ...(Array.isArray(sx) ? sx : [sx ?? {}])]}>
     {resolved && failed !== address ? <Box component="img" src={resolved} alt={alt} loading="lazy"
       onError={() => setFailed(address ?? null)} sx={{ position: "absolute", inset: "12px", width: "calc(100% - 24px)", height: "calc(100% - 24px)", objectFit: "contain" }} /> :
-      {fallback ?? <ImageOutlinedIcon role="img" aria-label={alt + " não disponível"} sx={{ color: "#b9c1c6", fontSize: 44 }} />}}
+      (fallback ?? <ImageOutlinedIcon role="img" aria-label={alt + " não disponível"} sx={{ color: "#b9c1c6", fontSize: 44 }} />)}
   </Box>;
 }
