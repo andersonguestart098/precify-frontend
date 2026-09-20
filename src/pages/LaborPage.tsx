@@ -129,8 +129,10 @@ export default function LaborPage() {
   const [mode, setMode] = useState<LaborMode>("");
   const [selections, setSelections] = useState<Record<string, LaborPlanItem>>({});
   const [search, setSearch] = useState("");
-  const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const [summaryExpanded, setSummaryExpanded] = useState(true);
+  const [summaryPulse, setSummaryPulse] = useState(false);
   const summaryRef = useRef<HTMLDivElement | null>(null);
+  const summaryPulseTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     let active = true;
@@ -191,10 +193,16 @@ export default function LaborPage() {
 
   const openSummary = () => {
     setSummaryExpanded(true);
+    setSummaryPulse(false);
+    window.clearTimeout(summaryPulseTimer.current);
     window.requestAnimationFrame(() => {
       summaryRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.requestAnimationFrame(() => setSummaryPulse(true));
     });
+    summaryPulseTimer.current = window.setTimeout(() => setSummaryPulse(false), 1100);
   };
+
+  useEffect(() => () => window.clearTimeout(summaryPulseTimer.current), []);
 
   const save = async () => {
     if (!projectId || !mode) return;
@@ -489,9 +497,13 @@ export default function LaborPage() {
           sx={{
             mt: 2.3, scrollMarginTop: { xs: 88, md: 84 },
             border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fbfdfc",
-            boxShadow: summaryExpanded ? "0 10px 28px rgba(21,72,56,.07)" : "0 3px 14px rgba(21,72,56,.025)",
-            transition: "box-shadow 180ms ease,border-color 180ms ease",
+            borderColor: summaryPulse ? "#6db69d" : "#d9e6e1",
+            boxShadow: summaryPulse
+              ? "0 0 0 4px rgba(38,155,120,.10), 0 12px 30px rgba(21,72,56,.10)"
+              : summaryExpanded ? "0 10px 28px rgba(21,72,56,.07)" : "0 3px 14px rgba(21,72,56,.025)",
+            transition: "box-shadow 220ms ease,border-color 220ms ease",
             "&::before": { display: "none" },
+            "@media (prefers-reduced-motion: reduce)": { transition: "none" },
           }}>
           <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: 1.5, minHeight: 62 }}>
             <Stack direction="row" gap={1} alignItems="center" width="100%">
