@@ -78,6 +78,15 @@ export const currentUser = (signal?: AbortSignal) => apiRequest<Account>("/auth/
 export const favoriteCodes = () => apiRequest<string[]>("/favorites");
 export const saveFavorite = (code: string, favorite: boolean) =>
   apiRequest<{ favorite: boolean }>(`/favorites/${encodeURIComponent(code)}`, { method: "PUT", body: JSON.stringify({ favorite }) });
+
+export type WorkspaceFavoriteType = "WORK" | "LABOR" | "COMPOSITION";
+export type WorkspaceFavorites = Record<WorkspaceFavoriteType, string[]>;
+export const workspaceFavorites = () => apiRequest<WorkspaceFavorites>("/favorites/workspace");
+export const saveWorkspaceFavorite = (type: WorkspaceFavoriteType, id: string, favorite: boolean) =>
+  apiRequest<{ favorite: boolean }>(`/favorites/workspace/${type}/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    body: JSON.stringify({ favorite }),
+  });
 export function searchFavorites(request: SearchRequest, page: number, size: number, signal?: AbortSignal) {
   return apiRequest<CatalogSearchPage>(`/favorites/search?page=${page}&size=${size}`, {
     method: "POST", body: JSON.stringify({ ...request, criteria: request.criteria.filter(c => c.value.trim() !== "") }), signal,
