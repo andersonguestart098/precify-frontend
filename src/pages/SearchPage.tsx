@@ -185,17 +185,17 @@ export default function SearchPage() {
         onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />}
     </Box>
 
-    <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 1.75, md: 0 } }}>
+    <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
       <AccountGreeting />
       <Typography component="h1" sx={{
-        maxWidth: { xs: 345, md: 720, xl: 940 }, fontWeight: 900, fontSize: { xs: 30, sm: 33, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: { xs: 1.02, md: 1.03 },
-        mb: { xs: 1.05, md: .7, xl: 1.5 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
+        maxWidth: { md: 690, xl: 820 }, fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
+        mb: { xs: 1, md: .65, xl: 1 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
         WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
       }}>
-        <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material pelas especificações.</Box>
+        <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material certo.</Box>
         <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>Encontre o material certo pelas especificações.</Box>
       </Typography>
-      <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 13, xl: 16 } }}>Pesquise e compare as opções para o seu projeto.</Typography>
+      <Typography color="text.secondary" sx={{ fontSize: { xs: 16, md: 13, xl: 16 } }}>Filtre e compare produtos por especificação.</Typography>
     </Box>
 
     <Box sx={{ display: { xs: "none", md: "block" } }}>{segmentRail}</Box>

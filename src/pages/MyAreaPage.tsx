@@ -46,52 +46,53 @@ export default function MyAreaPage() {
         <Typography sx={{ mt: .2, color: "#8a9994", fontSize: { xs: 10.8, md: 12.5 } }}>Atalhos para o que é seu.</Typography>
       </Box>
 
-      <Stack gap={{ xs: .75, md: .85 }}>
+      <Stack gap={{ xs: 1.05, md: 1.25 }}>
         {tools.map(({ to, label, description, icon: Icon, ...tool }) => <ButtonBase
           key={to}
           component={RouterLink}
           to={to}
           sx={{
             width: "100%",
-            minHeight: { xs: 68, md: 72 },
-            px: { xs: 1.15, md: 1.4 },
-            py: { xs: .9, md: 1 },
-            borderRadius: { xs: "12px", md: "13px" },
+            minHeight: { xs: 98, md: 104 },
+            px: { xs: 1.55, md: 2 },
+            py: { xs: 1.2, md: 1.4 },
+            borderRadius: "999px",
             justifyContent: "flex-start",
             textAlign: "left",
-            border: "1px solid rgba(0,107,79,.095)",
-            background: "linear-gradient(145deg,rgba(255,255,255,.96),rgba(241,248,245,.88))",
-            boxShadow: "0 3px 12px rgba(24,60,48,.03)",
+            overflow: "hidden",
+            border: "1px solid rgba(0,107,79,.16)",
+            background: "radial-gradient(circle at 96% 3%,rgba(209,241,232,.58) 0 48px,transparent 49px),linear-gradient(115deg,#ffffff,#f2fbf8 70%,#eafbf5)",
+            boxShadow: "0 7px 24px rgba(24,60,48,.045)",
             transition: "transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease",
             "@media (hover:hover)": {
               "&:hover": {
                 transform: "translateY(-1px)",
                 borderColor: "rgba(0,107,79,.22)",
-                boxShadow: "0 7px 18px rgba(0,107,79,.06)",
+                boxShadow: "0 10px 26px rgba(0,107,79,.09)",
               },
             },
             "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
           }}
         >
-          <Stack direction="row" alignItems="center" width="100%" minWidth={0} gap={{ xs: 1, md: 1.2 }}>
+          <Stack direction="row" alignItems="center" width="100%" minWidth={0} gap={{ xs: 1.2, md: 1.5 }}>
             <Box sx={{
-              width: { xs: 40, md: 42 }, height: { xs: 40, md: 42 }, borderRadius: "11px", flexShrink: 0,
+              width: { xs: 48, md: 52 }, height: { xs: 48, md: 52 }, borderRadius: "16px", flexShrink: 0,
               display: "grid", placeItems: "center", color: "#285e4c",
               background: "linear-gradient(145deg,#eef8f4,#dfeee8)", border: "1px solid rgba(0,107,79,.065)",
               position: "relative",
             }}>
-              <Icon sx={{ fontSize: { xs: 21, md: 22 } }} />
+              <Icon sx={{ fontSize: { xs: 24, md: 26 } }} />
               {"hot" in tool && tool.hot ? <Box sx={{
                 position: "absolute", right: -5, top: -5, width: 18, height: 18, borderRadius: "50%",
                 display: "grid", placeItems: "center", bgcolor: "#fff7f1", border: "1px solid rgba(217,108,50,.18)",
               }}><LocalFireDepartmentRoundedIcon sx={{ fontSize: 12, color: "#d96c32" }} /></Box> : null}
             </Box>
             <Box minWidth={0} flex={1}>
-              <Typography sx={{ fontWeight: 850, fontSize: { xs: 13.2, md: 14 }, color: "#234b3e", lineHeight: 1.15 }}>{label}</Typography>
-              <Typography sx={{ mt: .22, fontSize: { xs: 10, md: 10.8 }, color: "#788981", lineHeight: 1.25 }}>{description}</Typography>
+              <Typography sx={{ fontWeight: 850, fontSize: { xs: 15, md: 17 }, color: "#234b3e", lineHeight: 1.2 }}>{label}</Typography>
+              <Typography sx={{ mt: .3, fontSize: { xs: 11, md: 12 }, color: "#788981", lineHeight: 1.3 }}>{description}</Typography>
             </Box>
             <Box sx={{
-              width: 30, height: 30, borderRadius: "9px", display: "grid", placeItems: "center", flexShrink: 0,
+              width: 34, height: 34, borderRadius: "12px", display: "grid", placeItems: "center", flexShrink: 0,
               color: "#658078", bgcolor: "rgba(255,255,255,.66)", border: "1px solid rgba(0,107,79,.065)",
             }}>
               <ArrowOutwardRoundedIcon sx={{ fontSize: 16 }} />

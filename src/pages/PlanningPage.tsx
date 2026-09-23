@@ -403,15 +403,15 @@ export default function PlanningPage() {
             const total = lists.reduce((sum, composition) => sum + composition.total, 0);
             const laborPlan = laborPlans[project.id];
 
-            return <Accordion key={project.id} disableGutters elevation={0}
+            return <Box key={project.id} sx={{ position: "relative" }}><Accordion disableGutters elevation={0}
               onChange={(_, expanded) => { if (expanded) void ensureLaborPlan(project.id); }}
               sx={{
-                border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff",
+                border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff", position: "relative",
                 boxShadow: "0 3px 14px rgba(21,72,56,.025)", "&::before": { display: "none" },
               }}>
-              <AccordionSummary component="div" expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
+              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
                 px: { xs: 1.25, sm: 1.7 }, minHeight: 70, bgcolor: "#fbfdfc",
-                "& .MuiAccordionSummary-content": { my: 1 },
+                "& .MuiAccordionSummary-content": { my: 1, mr: 5.5 },
               }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%" minWidth={0} pr={.8} gap={1.4}>
                   <Stack direction="row" alignItems="center" gap={1} minWidth={0}>
@@ -432,31 +432,10 @@ export default function PlanningPage() {
                     </Box>
                   </Stack>
                   <Stack direction="row" alignItems="center" gap={.55} flexShrink={0}>
-                    <IconButton
-                      size="small"
-                      aria-label={workspaceFavorites.favorites.WORK.has(project.id) ? "Remover obra dos favoritos" : "Favoritar obra"}
-                      aria-pressed={workspaceFavorites.favorites.WORK.has(project.id)}
-                      disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
-                      onClick={event => {
-                        event.stopPropagation();
-                        void workspaceFavorites.toggle("WORK", project.id);
-                      }}
-                      onFocus={event => event.stopPropagation()}
-                      sx={{
-                        width: 31, height: 31,
-                        color: workspaceFavorites.favorites.WORK.has(project.id) ? "#b77b00" : "#6d837b",
-                        bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff6d7" : "#f4f8f6",
-                        border: "1px solid",
-                        borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#ead07d" : "#dce7e3",
-                      }}
-                    >
-                      {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 17 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 17 }} />}
-                    </IconButton>
                     <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>{currency.format(total)}</Typography>
                   </Stack>
                 </Stack>
               </AccordionSummary>
-
               <AccordionDetails sx={{ p: { xs: 1.15, sm: 1.5 }, pt: 0 }}>
                 <Divider sx={{ mb: 1.15 }} />
 
@@ -503,7 +482,23 @@ export default function PlanningPage() {
                   </Stack>
                 </Stack>
               </AccordionDetails>
-            </Accordion>;
+            </Accordion><IconButton
+              size="small"
+              aria-label={workspaceFavorites.favorites.WORK.has(project.id) ? "Remover obra dos favoritos" : "Favoritar obra"}
+              aria-pressed={workspaceFavorites.favorites.WORK.has(project.id)}
+              disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
+              onClick={() => void workspaceFavorites.toggle("WORK", project.id)}
+              sx={{
+                position: "absolute", top: 17, right: 45, zIndex: 1,
+                width: 36, height: 36,
+                color: workspaceFavorites.favorites.WORK.has(project.id) ? "#b77b00" : "#6d837b",
+                bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff6d7" : "#f4f8f6",
+                border: "1px solid",
+                borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#ead07d" : "#dce7e3",
+              }}
+            >
+              {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
+            </IconButton></Box>;
           })}
         </Stack>}
 

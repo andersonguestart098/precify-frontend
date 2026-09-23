@@ -255,10 +255,10 @@ export default function CompositionsPage() {
               : linkedProjects.length === 1
                 ? linkedProjects[0].name
                 : `${linkedProjects[0].name} +${linkedProjects.length - 1} ${linkedProjects.length === 2 ? "obra" : "obras"}`;
-            return <Accordion key={composition.id}
-              disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden",
+            return <Box key={composition.id} sx={{ position: "relative" }}><Accordion
+              disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden", position: "relative",
                 "&::before": { display: "none" } }}>
-              <AccordionSummary component="div" expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1 } }}>
+              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1, mr: 5.5 } }}>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
                   <Box minWidth={0}>
                     <Typography fontWeight={800} noWrap>{composition.name}</Typography>
@@ -267,26 +267,6 @@ export default function CompositionsPage() {
                     </Typography>
                   </Box>
                   <Stack direction="row" alignItems="center" gap={.55} flexShrink={0} ml={1}>
-                    <IconButton
-                      size="small"
-                      aria-label={workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "Remover composição dos favoritos" : "Favoritar composição"}
-                      aria-pressed={workspaceFavorites.favorites.COMPOSITION.has(composition.id)}
-                      disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
-                      onClick={event => {
-                        event.stopPropagation();
-                        void workspaceFavorites.toggle("COMPOSITION", composition.id);
-                      }}
-                      onFocus={event => event.stopPropagation()}
-                      sx={{
-                        width: 31, height: 31,
-                        color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#b77b00" : "#6d837b",
-                        bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff6d7" : "#f4f8f6",
-                        border: "1px solid",
-                        borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#ead07d" : "#dce7e3",
-                      }}
-                    >
-                      {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 17 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 17 }} />}
-                    </IconButton>
                     <Typography color="primary.dark" fontWeight={850}>{currency.format(composition.total)}</Typography>
                   </Stack>
                 </Stack>
@@ -367,7 +347,23 @@ export default function CompositionsPage() {
                   </IconButton></span></Tooltip>
                 </Stack>
               </AccordionDetails>
-            </Accordion>;
+            </Accordion><IconButton
+              size="small"
+              aria-label={workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "Remover composição dos favoritos" : "Favoritar composição"}
+              aria-pressed={workspaceFavorites.favorites.COMPOSITION.has(composition.id)}
+              disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
+              onClick={() => void workspaceFavorites.toggle("COMPOSITION", composition.id)}
+              sx={{
+                position: "absolute", top: 13, right: 45, zIndex: 1,
+                width: 36, height: 36,
+                color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#b77b00" : "#6d837b",
+                bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff6d7" : "#f4f8f6",
+                border: "1px solid",
+                borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#ead07d" : "#dce7e3",
+              }}
+            >
+              {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
+            </IconButton></Box>;
           })}
         </Stack>}
 
