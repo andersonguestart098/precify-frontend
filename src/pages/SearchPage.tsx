@@ -174,10 +174,10 @@ export default function SearchPage() {
     pt: { xs: 0, md: 2.25, xl: 3.5 }, pb: { xs: 4, md: 3, xl: 5 }, px: { xs: 2, sm: 3, md: 2.75, xl: 3 }
   }}>
     <Box sx={{
-      display: { xs: "block", md: "none" }, position: "sticky",
+      display: { xs: "flex", md: "none" }, position: "sticky",
       top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
       mx: { xs: -2, sm: -3 }, px: { xs: 1.2, sm: 2 }, py: 0,
-      minHeight: "var(--mobile-context-height)", display: "flex", alignItems: "center",
+      minHeight: "var(--mobile-context-height)", alignItems: "center",
       bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)",
       "& > section": { width: "100%" }
     }}>
