@@ -240,9 +240,9 @@ export default function AppLayout() {
       </AppBar>
 
       {location.pathname === "/inicio" && <Box sx={{
-        display: { xs: "block", md: "none" }, position: "sticky",
+        display: { xs: "flex", md: "none" }, position: "sticky",
         top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
-        minHeight: "var(--mobile-context-height)", display: "flex", alignItems: "center",
+        minHeight: "var(--mobile-context-height)", alignItems: "center",
         bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)"
       }}>
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 } }}>
