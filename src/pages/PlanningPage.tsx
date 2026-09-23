@@ -409,7 +409,7 @@ export default function PlanningPage() {
                 border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff",
                 boxShadow: "0 3px 14px rgba(21,72,56,.025)", "&::before": { display: "none" },
               }}>
-              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
+              <AccordionSummary component="div" expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
                 px: { xs: 1.25, sm: 1.7 }, minHeight: 70, bgcolor: "#fbfdfc",
                 "& .MuiAccordionSummary-content": { my: 1 },
               }}>
