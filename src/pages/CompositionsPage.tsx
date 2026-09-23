@@ -258,7 +258,7 @@ export default function CompositionsPage() {
             return <Accordion key={composition.id}
               disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden",
                 "&::before": { display: "none" } }}>
-              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1 } }}>
+              <AccordionSummary component="div" expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1 } }}>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
                   <Box minWidth={0}>
                     <Typography fontWeight={800} noWrap>{composition.name}</Typography>
