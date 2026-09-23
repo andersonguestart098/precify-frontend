@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import {
   Alert, Box, ButtonBase, CircularProgress, Container, Pagination, Stack, Tab, Tabs, Typography,
@@ -201,7 +201,7 @@ function FavoriteRows({ items, empty }: {
     title: string;
     subtitle: string;
     to: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     onRemove: () => void;
     busy: boolean;
   }>;
