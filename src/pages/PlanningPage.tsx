@@ -411,7 +411,7 @@ export default function PlanningPage() {
               }}>
               <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
                 px: { xs: 1.25, sm: 1.7 }, minHeight: 70, bgcolor: "#fbfdfc",
-                "& .MuiAccordionSummary-content": { my: 1, mr: 5.5 },
+                "& .MuiAccordionSummary-content": { my: 1, mr: 6.5 },
               }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%" minWidth={0} pr={.8} gap={1.4}>
                   <Stack direction="row" alignItems="center" gap={1} minWidth={0}>
@@ -489,12 +489,14 @@ export default function PlanningPage() {
               disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
               onClick={() => void workspaceFavorites.toggle("WORK", project.id)}
               sx={{
-                position: "absolute", top: 17, right: 45, zIndex: 1,
-                width: 36, height: 36,
-                color: workspaceFavorites.favorites.WORK.has(project.id) ? "#b77b00" : "#6d837b",
-                bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff6d7" : "#f4f8f6",
+                position: "absolute", top: 18, right: 46, zIndex: 1,
+                width: 34, height: 34, borderRadius: "50%",
+                color: workspaceFavorites.favorites.WORK.has(project.id) ? "#a56d00" : "#71867c",
+                bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff9eb" : "#f8fbfa",
                 border: "1px solid",
-                borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#ead07d" : "#dce7e3",
+                borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#e7d8b0" : "#dce8e4",
+                "&:hover": { bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff1cc" : "#eaf3ef" },
+                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
               }}
             >
               {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}

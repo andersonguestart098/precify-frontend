@@ -230,9 +230,10 @@ function FavoriteRows({ items, empty }: {
           disabled={item.busy}
           onClick={item.onRemove}
           sx={{
-            width: 34, height: 34, flexShrink: 0, borderRadius: "10px",
-            color: "#b77b00", bgcolor: "#fff6d7", border: "1px solid #ead07d",
-            "&:hover": { bgcolor: "#ffefb3" },
+            width: 34, height: 34, flexShrink: 0, borderRadius: "50%",
+            color: "#a56d00", bgcolor: "#fff9eb", border: "1px solid #e7d8b0",
+            "&:hover": { bgcolor: "#fff1cc" },
+            "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
           }}
         ><StarRoundedIcon sx={{ fontSize: 18 }} /></ButtonBase>
         <ButtonBase

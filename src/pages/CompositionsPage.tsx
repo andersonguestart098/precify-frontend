@@ -258,7 +258,7 @@ export default function CompositionsPage() {
             return <Box key={composition.id} sx={{ position: "relative" }}><Accordion
               disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden", position: "relative",
                 "&::before": { display: "none" } }}>
-              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1, mr: 5.5 } }}>
+              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1, mr: 6.5 } }}>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" minWidth={0} pr={1}>
                   <Box minWidth={0}>
                     <Typography fontWeight={800} noWrap>{composition.name}</Typography>
@@ -354,12 +354,14 @@ export default function CompositionsPage() {
               disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
               onClick={() => void workspaceFavorites.toggle("COMPOSITION", composition.id)}
               sx={{
-                position: "absolute", top: 13, right: 45, zIndex: 1,
-                width: 36, height: 36,
-                color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#b77b00" : "#6d837b",
-                bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff6d7" : "#f4f8f6",
+                position: "absolute", top: 14, right: 46, zIndex: 1,
+                width: 34, height: 34, borderRadius: "50%",
+                color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#a56d00" : "#71867c",
+                bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff9eb" : "#f8fbfa",
                 border: "1px solid",
-                borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#ead07d" : "#dce7e3",
+                borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#e7d8b0" : "#dce8e4",
+                "&:hover": { bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff1cc" : "#eaf3ef" },
+                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
               }}
             >
               {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
