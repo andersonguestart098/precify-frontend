@@ -46,43 +46,59 @@ export default function MyAreaPage() {
         <Typography sx={{ mt: .2, color: "#8a9994", fontSize: { xs: 10.8, md: 12.5 } }}>Atalhos para o que é seu.</Typography>
       </Box>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", md: "repeat(4,minmax(0,1fr))" }, gap: { xs: .8, md: 1.15 } }}>
-        {tools.map(({ to, label, description, icon: Icon, ...tool }, index) => {
-          const wide = index === 0 || index === 3;
-          const featured = index === 0;
-          return <Box key={to} component={RouterLink} to={to} sx={{
-            position: "relative", overflow: "hidden", gridColumn: { xs: wide ? "1 / -1" : "auto", md: "auto" },
-            minHeight: { xs: wide ? (featured ? 92 : 72) : 118, md: 150 }, p: { xs: wide ? 1.35 : 1.2, md: 1.6 },
-            borderRadius: { xs: 3, md: 3.2 }, textDecoration: "none", color: "inherit", display: "flex",
-            flexDirection: wide ? { xs: "row", md: "column" } : "column", alignItems: wide ? { xs: "center", md: "flex-start" } : "flex-start", gap: { xs: .9, md: 1.15 },
-            border: "1px solid", borderColor: featured ? "rgba(0,107,79,.20)" : "rgba(0,107,79,.095)",
-            background: featured ? "linear-gradient(135deg,rgba(249,253,251,.98),rgba(226,242,236,.96))" : index === 1 ? "linear-gradient(145deg,#fff,#eef7f4)" : index === 2 ? "linear-gradient(145deg,#fdfefe,#f1f7f5)" : "linear-gradient(145deg,rgba(255,255,255,.96),rgba(238,247,244,.88))",
-            boxShadow: featured ? "0 8px 22px rgba(0,107,79,.07)" : "0 4px 15px rgba(24,60,48,.035)",
-            transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease",
-            "&::before": { content: '""', position: "absolute", width: { xs: 92, md: 105 }, height: { xs: 92, md: 105 }, right: -34, top: -42, borderRadius: index % 2 === 0 ? "45% 55% 62% 38% / 42% 39% 61% 58%" : "63% 37% 44% 56% / 56% 62% 38% 44%", background: featured ? "rgba(38,155,120,.075)" : "rgba(38,155,120,.04)", transform: `rotate(${index % 2 === 0 ? 15 : -13}deg)` },
-            "@media (hover:hover)": { "&:hover": { transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.22)", boxShadow: "0 10px 24px rgba(0,107,79,.07)" } },
-            "&:focus-visible": { outline: "2px solid #269b78", outlineOffset: 2 },
-          }}>
-            <Box sx={{ width: { xs: 40, md: 44 }, height: { xs: 40, md: 44 }, borderRadius: "12px", flexShrink: 0, display: "grid", placeItems: "center", color: "#285e4c", background: "linear-gradient(145deg,#eef8f4,#dfeee8)", border: "1px solid rgba(0,107,79,.065)", position: "relative", zIndex: 1 }}>
-              <Icon sx={{ fontSize: { xs: 21, md: 23 } }} />
+      <Stack gap={{ xs: .75, md: .85 }}>
+        {tools.map(({ to, label, description, icon: Icon, ...tool }) => <ButtonBase
+          key={to}
+          component={RouterLink}
+          to={to}
+          sx={{
+            width: "100%",
+            minHeight: { xs: 68, md: 72 },
+            px: { xs: 1.15, md: 1.4 },
+            py: { xs: .9, md: 1 },
+            borderRadius: { xs: "12px", md: "13px" },
+            justifyContent: "flex-start",
+            textAlign: "left",
+            border: "1px solid rgba(0,107,79,.095)",
+            background: "linear-gradient(145deg,rgba(255,255,255,.96),rgba(241,248,245,.88))",
+            boxShadow: "0 3px 12px rgba(24,60,48,.03)",
+            transition: "transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease",
+            "@media (hover:hover)": {
+              "&:hover": {
+                transform: "translateY(-1px)",
+                borderColor: "rgba(0,107,79,.22)",
+                boxShadow: "0 7px 18px rgba(0,107,79,.06)",
+              },
+            },
+            "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+          }}
+        >
+          <Stack direction="row" alignItems="center" width="100%" minWidth={0} gap={{ xs: 1, md: 1.2 }}>
+            <Box sx={{
+              width: { xs: 40, md: 42 }, height: { xs: 40, md: 42 }, borderRadius: "11px", flexShrink: 0,
+              display: "grid", placeItems: "center", color: "#285e4c",
+              background: "linear-gradient(145deg,#eef8f4,#dfeee8)", border: "1px solid rgba(0,107,79,.065)",
+              position: "relative",
+            }}>
+              <Icon sx={{ fontSize: { xs: 21, md: 22 } }} />
               {"hot" in tool && tool.hot ? <Box sx={{
                 position: "absolute", right: -5, top: -5, width: 18, height: 18, borderRadius: "50%",
                 display: "grid", placeItems: "center", bgcolor: "#fff7f1", border: "1px solid rgba(217,108,50,.18)",
-                boxShadow: "0 2px 6px rgba(122,62,28,.08)",
-              }}>
-                <LocalFireDepartmentRoundedIcon sx={{ fontSize: 12, color: "#d96c32" }} />
-              </Box> : null}
+              }}><LocalFireDepartmentRoundedIcon sx={{ fontSize: 12, color: "#d96c32" }} /></Box> : null}
             </Box>
-            <Box minWidth={0} flex={1} position="relative" zIndex={1} sx={{ mt: wide ? 0 : .15 }}>
-              <Typography sx={{ fontWeight: 850, fontSize: { xs: 13.2, md: 14.5 }, color: "#234b3e", lineHeight: 1.15 }}>{label}</Typography>
-              <Typography sx={{ mt: .28, fontSize: { xs: 9.8, md: 11.5 }, lineHeight: 1.3, color: "#788981" }}>{description}</Typography>
+            <Box minWidth={0} flex={1}>
+              <Typography sx={{ fontWeight: 850, fontSize: { xs: 13.2, md: 14 }, color: "#234b3e", lineHeight: 1.15 }}>{label}</Typography>
+              <Typography sx={{ mt: .22, fontSize: { xs: 10, md: 10.8 }, color: "#788981", lineHeight: 1.25 }}>{description}</Typography>
             </Box>
-            <Box sx={{ width: 27, height: 27, borderRadius: "9px", display: "grid", placeItems: "center", flexShrink: 0, color: "#658078", bgcolor: "rgba(255,255,255,.60)", border: "1px solid rgba(0,107,79,.065)", position: "relative", zIndex: 1, alignSelf: wide ? { xs: "center", md: "flex-end" } : "flex-end", mt: wide ? { md: "auto" } : "auto" }}>
-              <ArrowOutwardRoundedIcon sx={{ fontSize: 15 }} />
+            <Box sx={{
+              width: 30, height: 30, borderRadius: "9px", display: "grid", placeItems: "center", flexShrink: 0,
+              color: "#658078", bgcolor: "rgba(255,255,255,.66)", border: "1px solid rgba(0,107,79,.065)",
+            }}>
+              <ArrowOutwardRoundedIcon sx={{ fontSize: 16 }} />
             </Box>
-          </Box>;
-        })}
-      </Box>
+          </Stack>
+        </ButtonBase>)}
+      </Stack>
     </Box>
 
     <Box component="section" aria-labelledby="account-data-title" sx={{ display: { xs: "block", md: "none" }, mt: 2.7 }}>
