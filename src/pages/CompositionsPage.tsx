@@ -5,6 +5,8 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PlaylistAddCheckRoundedIcon from "@mui/icons-material/PlaylistAddCheckRounded";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
@@ -22,6 +24,7 @@ import {
   saveCachedCompositions, saveCachedProjects,
 } from "../services/appWarmCache";
 import { downloadCompositions } from "../domain/export";
+import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
@@ -31,6 +34,7 @@ type ProjectOption = { id: string; label: string };
 
 export default function CompositionsPage() {
   const user = useAccount();
+  const workspaceFavorites = useWorkspaceFavorites();
   const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [projectFilter, setProjectFilter] = useState("");
@@ -213,7 +217,7 @@ export default function CompositionsPage() {
         </Stack>
       </Paper>
 
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
 
       <Stack direction={{ xs: "column", sm: "row" }} gap={1.25} my={2.25} alignItems={{ sm: "center" }}>
         <Autocomplete
@@ -262,7 +266,29 @@ export default function CompositionsPage() {
                       {linkedLabel} · {composition.items.length} {composition.items.length === 1 ? "item" : "itens"}
                     </Typography>
                   </Box>
-                  <Typography color="primary.dark" fontWeight={850} ml={2}>{currency.format(composition.total)}</Typography>
+                  <Stack direction="row" alignItems="center" gap={.55} flexShrink={0} ml={1}>
+                    <IconButton
+                      size="small"
+                      aria-label={workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "Remover composição dos favoritos" : "Favoritar composição"}
+                      aria-pressed={workspaceFavorites.favorites.COMPOSITION.has(composition.id)}
+                      disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
+                      onClick={event => {
+                        event.stopPropagation();
+                        void workspaceFavorites.toggle("COMPOSITION", composition.id);
+                      }}
+                      onFocus={event => event.stopPropagation()}
+                      sx={{
+                        width: 31, height: 31,
+                        color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#b77b00" : "#6d837b",
+                        bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff6d7" : "#f4f8f6",
+                        border: "1px solid",
+                        borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#ead07d" : "#dce7e3",
+                      }}
+                    >
+                      {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 17 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 17 }} />}
+                    </IconButton>
+                    <Typography color="primary.dark" fontWeight={850}>{currency.format(composition.total)}</Typography>
+                  </Stack>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails sx={{ p: { xs: 1.25, sm: 2 }, pt: 0 }}>
