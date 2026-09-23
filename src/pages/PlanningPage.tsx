@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -176,6 +176,7 @@ function LaborOverview({
 
 export default function PlanningPage() {
   const user = useAccount();
+  const [params, setParams] = useSearchParams();
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>({});
@@ -249,6 +250,16 @@ export default function PlanningPage() {
     setError("");
     setFormOpen(true);
   };
+
+  useEffect(() => {
+    if (params.get("new") !== "1") return;
+    openNew();
+    setParams(current => {
+      const next = new URLSearchParams(current);
+      next.delete("new");
+      return next;
+    }, { replace: true });
+  }, [params, setParams]);
 
   const openEdit = (project: Project) => {
     setEditing(project.id);
