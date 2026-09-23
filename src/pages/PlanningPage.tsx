@@ -10,6 +10,8 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Container,
@@ -27,6 +29,7 @@ import {
 } from "../services/appWarmCache";
 import type { Composition } from "../domain/composition";
 import { downloadProjectSnapshot } from "../domain/export";
+import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -177,6 +180,7 @@ function LaborOverview({
 export default function PlanningPage() {
   const user = useAccount();
   const [params, setParams] = useSearchParams();
+  const workspaceFavorites = useWorkspaceFavorites();
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>({});
@@ -384,7 +388,7 @@ export default function PlanningPage() {
         </Box>)}
       </Box>
 
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
 
       {busy ? <Box minHeight={260} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box> : !projects.length ?
         <Box sx={{ mt: 4, py: 7, textAlign: "center", borderTop: "1px solid #e3ebe8", borderBottom: "1px solid #e3ebe8" }}>
@@ -427,7 +431,29 @@ export default function PlanningPage() {
                       </Stack>
                     </Box>
                   </Stack>
-                  <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>{currency.format(total)}</Typography>
+                  <Stack direction="row" alignItems="center" gap={.55} flexShrink={0}>
+                    <IconButton
+                      size="small"
+                      aria-label={workspaceFavorites.favorites.WORK.has(project.id) ? "Remover obra dos favoritos" : "Favoritar obra"}
+                      aria-pressed={workspaceFavorites.favorites.WORK.has(project.id)}
+                      disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
+                      onClick={event => {
+                        event.stopPropagation();
+                        void workspaceFavorites.toggle("WORK", project.id);
+                      }}
+                      onFocus={event => event.stopPropagation()}
+                      sx={{
+                        width: 31, height: 31,
+                        color: workspaceFavorites.favorites.WORK.has(project.id) ? "#b77b00" : "#6d837b",
+                        bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff6d7" : "#f4f8f6",
+                        border: "1px solid",
+                        borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#ead07d" : "#dce7e3",
+                      }}
+                    >
+                      {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 17 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 17 }} />}
+                    </IconButton>
+                    <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>{currency.format(total)}</Typography>
+                  </Stack>
                 </Stack>
               </AccordionSummary>
 
