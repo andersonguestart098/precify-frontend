@@ -176,8 +176,10 @@ export default function SearchPage() {
     <Box sx={{
       display: { xs: "block", md: "none" }, position: "sticky",
       top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
-      mx: { xs: -2, sm: -3 }, px: { xs: 1.2, sm: 2 }, py: .3,
-      bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)"
+      mx: { xs: -2, sm: -3 }, px: { xs: 1.2, sm: 2 }, py: 0,
+      minHeight: "var(--mobile-context-height)", display: "flex", alignItems: "center",
+      bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)",
+      "& > section": { width: "100%" }
     }}>
       {catalogLoading ? <SegmentRailSkeleton compact /> : <SegmentCarousel compactMobile catalog={catalog} selected={params.get("segmentCode") ?? ""}
         onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />}
