@@ -181,7 +181,7 @@ export default function AppLayout() {
   return <Box minHeight="100dvh" sx={{
     "--header-height": { xs: "70px", md: "60px", xl: "70px" },
     "--sidebar-width": { md: "188px", xl: "224px" },
-    "--bottom-nav-height": "70px", "--ai-overhang": "22px", "--content-clearance": "12px",
+    "--bottom-nav-height": "70px", "--mobile-context-height": "44px", "--ai-overhang": "22px", "--content-clearance": "12px",
     background: location.pathname === "/ia" ? "#101614" : "radial-gradient(circle at 78% 8%,rgba(0,107,79,.06),transparent 24rem),#f7f9f8"
   }}>
     <DesktopSidebar />
@@ -242,11 +242,12 @@ export default function AppLayout() {
       {location.pathname === "/inicio" && <Box sx={{
         display: { xs: "block", md: "none" }, position: "sticky",
         top: "calc(var(--header-height) + env(safe-area-inset-top, 0px))", zIndex: theme => theme.zIndex.appBar - 1,
+        minHeight: "var(--mobile-context-height)", display: "flex", alignItems: "center",
         bgcolor: "#f7f9f8", borderBottom: "1px solid rgba(0,107,79,.07)"
       }}>
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3 } }}>
           <ButtonBase onClick={requestLocation} disabled={geoStatus === "loading"} sx={{
-            minHeight: 38, width: "100%", px: 0, gap: .7, color: geoStatus === "error" ? "#9d514b" : "#45675c",
+            minHeight: "var(--mobile-context-height)", width: "100%", px: 0, gap: .7, color: geoStatus === "error" ? "#9d514b" : "#45675c",
             justifyContent: "flex-start", borderRadius: 1.5, WebkitTapHighlightColor: "transparent", textAlign: "left"
           }}>
             <Box component="svg" aria-hidden="true" sx={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
