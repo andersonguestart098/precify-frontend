@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, ButtonBase, Checkbox, Chip,
-  CircularProgress, Container, Divider, MenuItem, Paper, Stack, TextField, Typography
+  CircularProgress, Container, Divider, IconButton, MenuItem, Paper, Stack, TextField, Typography
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
@@ -14,6 +14,8 @@ import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
   saveLaborPlan,
@@ -27,6 +29,7 @@ import {
   laborTeamGroups, laborThirdPartyPhases,
   type LaborCatalogGroup, type LaborCatalogItem, type LaborSource,
 } from "../data/laborCatalog";
+import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 
 const modeOptions: Array<{
   value: Exclude<LaborMode, "">;
@@ -46,7 +49,7 @@ function includesSearch(group: LaborCatalogGroup, item: LaborCatalogItem, search
 }
 
 function LaborGroupCard({
-  group, source, mode, search, selections, onToggle, onOriginChange,
+  group, source, mode, search, selections, onToggle, onOriginChange, favoriteCodes, favoriteBusy, onFavorite,
 }: {
   group: LaborCatalogGroup;
   source: LaborSource;
@@ -55,6 +58,9 @@ function LaborGroupCard({
   selections: Record<string, LaborPlanItem>;
   onToggle: (item: LaborCatalogItem, source: LaborSource) => void;
   onOriginChange: (code: string, origin: LaborPlanItem["origin"]) => void;
+  favoriteCodes: Set<string>;
+  favoriteBusy: (code: string) => boolean;
+  onFavorite: (code: string) => void;
 }) {
   const visible = group.items.filter(item => includesSearch(group, item, search));
   if (!visible.length) return null;
@@ -99,6 +105,21 @@ function LaborGroupCard({
                 <Typography fontWeight={selected ? 800 : 680} color="#284d41" sx={{ fontSize: { xs: 12.4, sm: 13 } }}>{item.title}</Typography>
                 {item.section && <Typography sx={{ mt: .12, fontSize: 9.6, color: "#83928d" }}>{item.section}</Typography>}
               </Box>
+              <IconButton
+                size="small"
+                aria-label={favoriteCodes.has(item.code) ? `Remover ${item.title} dos favoritos` : `Favoritar ${item.title}`}
+                aria-pressed={favoriteCodes.has(item.code)}
+                disabled={favoriteBusy(item.code)}
+                onClick={() => onFavorite(item.code)}
+                sx={{
+                  width: 30, height: 30, flexShrink: 0,
+                  color: favoriteCodes.has(item.code) ? "#b77b00" : "#7c9189",
+                  bgcolor: favoriteCodes.has(item.code) ? "#fff6d7" : "transparent",
+                  "&:hover": { bgcolor: favoriteCodes.has(item.code) ? "#ffefb3" : "#edf5f2" },
+                }}
+              >
+                {favoriteCodes.has(item.code) ? <StarRoundedIcon sx={{ fontSize: 17 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 17 }} />}
+              </IconButton>
               {mode === "BOTH" && selected && <TextField select size="small" value={selected.origin}
                 onChange={event => onOriginChange(item.code, event.target.value as LaborPlanItem["origin"])}
                 sx={{ width: 108, flexShrink: 0, "& .MuiInputBase-root": { height: 32, borderRadius: "8px", fontSize: 10.5, bgcolor: "#fff" } }}>
@@ -117,6 +138,7 @@ function LaborGroupCard({
 export default function LaborPage() {
   const { projectId } = useParams<{ projectId?: string }>();
   const user = useAccount();
+  const workspaceFavorites = useWorkspaceFavorites();
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [loading, setLoading] = useState(() => {
     const projectsCached = Boolean(getCachedProjects(user.id));
@@ -362,7 +384,7 @@ export default function LaborPage() {
         </Stack>
       </Stack>
 
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
       {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
 
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
@@ -474,7 +496,7 @@ export default function LaborPage() {
               <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>Gestão, supervisão, execução e apoio.</Typography>
             </Box>
           </Stack>
-          <Stack gap={.8}>{laborTeamGroups.map(group => <LaborGroupCard key={group.code} group={group} source="TEAM" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} />)}</Stack>
+          <Stack gap={.8}>{laborTeamGroups.map(group => <LaborGroupCard key={group.code} group={group} source="TEAM" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
         </Box>}
 
         {(mode === "THIRD_PARTY" || mode === "BOTH") && <Box component="section" mt={2.6}>
@@ -485,7 +507,7 @@ export default function LaborPage() {
               <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>Especialidades organizadas nas 6 fases definidas para a obra.</Typography>
             </Box>
           </Stack>
-          <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} />)}</Stack>
+          <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
         </Box>}
 
         <Accordion
