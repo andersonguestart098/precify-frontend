@@ -135,6 +135,68 @@ function LaborGroupCard({
   </Accordion>;
 }
 
+function LaborDatabaseGroup({
+  group,
+  search,
+  favoriteCodes,
+  favoriteBusy,
+  onFavorite,
+}: {
+  group: LaborCatalogGroup;
+  search: string;
+  favoriteCodes: Set<string>;
+  favoriteBusy: (code: string) => boolean;
+  onFavorite: (code: string) => void;
+}) {
+  const visible = group.items.filter(item => includesSearch(group, item, search));
+  if (!visible.length) return null;
+
+  return <Accordion disableGutters elevation={0} defaultExpanded={Boolean(search)} sx={{
+    border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff",
+    "&::before": { display: "none" }, boxShadow: "0 3px 14px rgba(21,72,56,.025)",
+  }}>
+    <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ fontSize: 20, color: "#6f877e" }} />} sx={{
+      px: { xs: 1.35, sm: 1.6 }, minHeight: 56, bgcolor: "#fbfdfc",
+      "& .MuiAccordionSummary-content": { my: .85 },
+    }}>
+      <Box minWidth={0}>
+        <Typography fontWeight={850} color="#21483b" sx={{ fontSize: { xs: 13.5, sm: 14.5 } }}>{group.title}</Typography>
+        <Typography color="text.secondary" sx={{ fontSize: 10.3, mt: .12 }}>
+          {group.subtitle || `${group.items.length} opções`}
+        </Typography>
+      </Box>
+    </AccordionSummary>
+    <AccordionDetails sx={{ px: { xs: 1.05, sm: 1.3 }, pt: 0, pb: .8 }}>
+      <Divider sx={{ mb: .4 }} />
+      <Stack divider={<Divider flexItem />}>
+        {visible.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={.8} sx={{ py: .55, px: .35 }}>
+          <Box minWidth={0} flex={1}>
+            <Typography fontWeight={700} color="#284d41" sx={{ fontSize: { xs: 12.1, sm: 12.7 } }}>{item.title}</Typography>
+            {item.section && <Typography color="text.secondary" sx={{ fontSize: 9.2, mt: .1 }}>{item.section}</Typography>}
+          </Box>
+          <IconButton
+            size="small"
+            aria-label={favoriteCodes.has(item.code) ? `Remover ${item.title} dos favoritos` : `Favoritar ${item.title}`}
+            aria-pressed={favoriteCodes.has(item.code)}
+            disabled={favoriteBusy(item.code)}
+            onClick={() => onFavorite(item.code)}
+            sx={{
+              width: 32, height: 32, flexShrink: 0,
+              color: favoriteCodes.has(item.code) ? "#b77b00" : "#7c9189",
+              bgcolor: favoriteCodes.has(item.code) ? "#fff6d7" : "#f5f8f7",
+              border: "1px solid",
+              borderColor: favoriteCodes.has(item.code) ? "#ead07d" : "#e1e9e6",
+              "&:hover": { bgcolor: favoriteCodes.has(item.code) ? "#ffefb3" : "#edf5f2" },
+            }}
+          >
+            {favoriteCodes.has(item.code) ? <StarRoundedIcon sx={{ fontSize: 18 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 18 }} />}
+          </IconButton>
+        </Stack>)}
+      </Stack>
+    </AccordionDetails>
+  </Accordion>;
+}
+
 export default function LaborPage() {
   const { projectId } = useParams<{ projectId?: string }>();
   const user = useAccount();
@@ -242,93 +304,119 @@ export default function LaborPage() {
 
   if (loading) return <Container maxWidth="lg" sx={{ minHeight: 420, display: "grid", placeItems: "center" }}><CircularProgress /></Container>;
 
-  if (!projectId) return <Container maxWidth="lg" component="main" sx={{ py: { xs: 3, md: 5 }, pb: { xs: 5, md: 5 } }}>
-    <Box sx={{ maxWidth: 920, mx: "auto" }}>
-      <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>Planejamento da obra</Typography>
-      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.4} mt={.3}>
+  if (!projectId) return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.5, md: 4.5 }, pb: { xs: 5, md: 5 } }}>
+    <Box sx={{ maxWidth: 980, mx: "auto" }}>
+      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.4}>
         <Stack direction="row" alignItems="center" gap={1.1}>
           <Box sx={{ width: 46, height: 46, borderRadius: 3, display: "grid", placeItems: "center", color: "#195b45", bgcolor: "#e9f4f0", border: "1px solid #d3e8e0" }}>
             <HardHat size={27} weight="duotone" />
           </Box>
           <Box>
+            <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>Banco de mão de obra</Typography>
             <Typography component="h1" sx={{
               fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em",
               background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             }}>Mão de obra</Typography>
-            <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>Escolha a obra para montar o planejamento.</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>
+              Consulte funções e especialidades e favorite o que usa com mais frequência.
+            </Typography>
           </Box>
         </Stack>
 
         <Stack direction="row" alignItems="center" gap={.8} sx={{ alignSelf: { xs: "flex-end", sm: "auto" } }}>
-          <Typography sx={{ fontSize: { xs: 12.2, md: 12.9 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
-            Cadastrar obra
-          </Typography>
-          <ButtonBase component={RouterLink} to="/obras" aria-label="Cadastrar obra" sx={{
+          <Typography sx={{ fontSize: { xs: 12.2, md: 12.9 }, fontWeight: 820, color: "#2f5c4c" }}>Cadastrar obra</Typography>
+          <ButtonBase component={RouterLink} to="/obras?new=1" aria-label="Cadastrar obra" sx={{
             width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
-            color: "#17664f",
-            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-            border: "1px solid rgba(0,107,79,.14)",
-            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
-            transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
-            "&:active": { transform: "scale(.96)" },
-            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-            "@media (hover:hover)": {
-              "&:hover": {
-                transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
-                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
-              },
-            },
-            "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-          }}>
-            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
-          </ButtonBase>
+            color: "#17664f", background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+            border: "1px solid rgba(0,107,79,.14)", boxShadow: "0 4px 12px rgba(24,60,48,.08)",
+            "&:hover": { borderColor: "rgba(0,107,79,.24)", background: "linear-gradient(145deg,#ffffff,#e3f1ec)" },
+          }}><AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} /></ButtonBase>
         </Stack>
       </Stack>
 
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-      {!projects.length ? <Paper variant="outlined" sx={{
-        mt: 3, p: { xs: 3, sm: 4 }, borderRadius: 4, textAlign: "center",
-        borderColor: "#dce9e5", bgcolor: "#fbfdfc",
-      }}>
-        <HomeWorkOutlinedIcon sx={{ fontSize: 40, color: "#7e988f" }} />
-        <Typography fontWeight={850} color="#284d40" mt={1}>Nenhuma obra cadastrada ainda.</Typography>
-        <Typography color="text.secondary" fontSize={13} mt={.45}>
-          Cadastre uma obra para começar o planejamento de mão de obra e manter tudo vinculado desde o início.
-        </Typography>
-        <Stack direction="row" justifyContent="center" alignItems="center" gap={.8} mt={2}>
-          <Typography sx={{ fontSize: 12.2, fontWeight: 820, color: "#2f5c4c" }}>Cadastrar obra</Typography>
-          <ButtonBase component={RouterLink} to="/obras" aria-label="Cadastrar primeira obra" sx={{
-            width: 42, height: 42, borderRadius: "50%", color: "#17664f",
-            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-            border: "1px solid rgba(0,107,79,.14)",
-            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
-            "&:hover": { borderColor: "rgba(0,107,79,.24)", background: "linear-gradient(145deg,#ffffff,#e3f1ec)" },
-            "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-          }}>
-            <AddRoundedIcon sx={{ fontSize: 22 }} />
-          </ButtonBase>
+      {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
+
+      <TextField
+        fullWidth
+        size="small"
+        value={search}
+        onChange={event => setSearch(event.target.value)}
+        placeholder="Buscar função, equipe ou especialidade"
+        slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: .8, fontSize: 18, color: "#789087" }} /> } }}
+        sx={{
+          mt: 2.2,
+          "& .MuiInputBase-root": { borderRadius: "10px", bgcolor: "#fff", minHeight: 42, boxShadow: "0 2px 10px rgba(21,72,56,.02)" },
+          "& fieldset": { borderColor: "#d9e6e1" },
+        }}
+      />
+
+      <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: 1.2, alignItems: "start" }}>
+        <Stack gap={.8}>
+          <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
+            <Groups2OutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
+            <Box>
+              <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Equipe própria</Typography>
+              <Typography color="text.secondary" sx={{ fontSize: 10 }}>Funções internas para montar a equipe.</Typography>
+            </Box>
+          </Stack>
+          {laborTeamGroups.map(group => <LaborDatabaseGroup
+            key={group.code}
+            group={group}
+            search={normalizedSearch}
+            favoriteCodes={workspaceFavorites.favorites.LABOR}
+            favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
+            onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
+          />)}
         </Stack>
-      </Paper> : <Box sx={{ mt: 3, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: 1 }}>
-        {projects.map(work => <ButtonBase key={work.id} component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`}
-          sx={{
-            p: { xs: 1.35, sm: 1.5 }, minHeight: 76, borderRadius: "11px",
+
+        <Stack gap={.8}>
+          <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
+            <HandshakeOutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
+            <Box>
+              <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Terceiros</Typography>
+              <Typography color="text.secondary" sx={{ fontSize: 10 }}>Especialidades organizadas por fase da obra.</Typography>
+            </Box>
+          </Stack>
+          {laborThirdPartyPhases.map(group => <LaborDatabaseGroup
+            key={group.code}
+            group={group}
+            search={normalizedSearch}
+            favoriteCodes={workspaceFavorites.favorites.LABOR}
+            favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
+            onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
+          />)}
+        </Stack>
+      </Box>
+
+      <Box component="section" aria-labelledby="labor-planning-title" sx={{ mt: { xs: 3.2, md: 4 }, pt: 2.3, borderTop: "1px solid #dfe9e5" }}>
+        <Typography id="labor-planning-title" fontWeight={900} color="#21483b" sx={{ fontSize: { xs: 15.5, md: 17 } }}>Planejamento por obra</Typography>
+        <Typography color="text.secondary" sx={{ mt: .25, fontSize: { xs: 10.8, md: 11.8 } }}>
+          Escolha uma obra para vincular as necessidades de mão de obra ao planejamento.
+        </Typography>
+
+        {!projects.length ? <Paper variant="outlined" sx={{ mt: 1.4, p: { xs: 2.5, sm: 3 }, borderRadius: 3, textAlign: "center", borderColor: "#dce9e5", bgcolor: "#fbfdfc" }}>
+          <HomeWorkOutlinedIcon sx={{ fontSize: 36, color: "#7e988f" }} />
+          <Typography fontWeight={850} color="#284d40" mt={.8}>Nenhuma obra cadastrada ainda.</Typography>
+          <Typography color="text.secondary" fontSize={12} mt={.35}>Cadastre uma obra para começar o planejamento.</Typography>
+        </Paper> : <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: .8 }}>
+          {projects.map(work => <ButtonBase key={work.id} component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`} sx={{
+            p: { xs: 1.25, sm: 1.4 }, minHeight: 72, borderRadius: "11px",
             border: "1px solid #d9e6e1", bgcolor: "#fff", textAlign: "left", justifyContent: "stretch",
             boxShadow: "0 3px 14px rgba(21,72,56,.03)",
-            transition: "transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease,background 160ms ease",
-            "&:hover": { transform: "translateY(-1px)", borderColor: "#9fcdbd", bgcolor: "#f9fcfb", boxShadow: "0 8px 24px rgba(21,72,56,.065)" },
+            "&:hover": { transform: "translateY(-1px)", borderColor: "#9fcdbd", bgcolor: "#f9fcfb" },
           }}>
-          <Stack direction="row" alignItems="center" width="100%" gap={1.25}>
-            <Box sx={{ width: 40, height: 40, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6" }}><HomeWorkOutlinedIcon /></Box>
-            <Box flex={1} minWidth={0}>
-              <Typography fontWeight={850} color="#21483b" noWrap>{work.name}</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 11.5 }}>{work.compositionIds.length} {work.compositionIds.length === 1 ? "composição vinculada" : "composições vinculadas"}</Typography>
-            </Box>
-            <ArrowForwardRoundedIcon sx={{ color: "#6f8b81" }} />
-          </Stack>
-        </ButtonBase>)}
-      </Box>}
+            <Stack direction="row" alignItems="center" width="100%" gap={1.15}>
+              <Box sx={{ width: 38, height: 38, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6" }}><HomeWorkOutlinedIcon /></Box>
+              <Box flex={1} minWidth={0}>
+                <Typography fontWeight={850} color="#21483b" noWrap>{work.name}</Typography>
+                <Typography color="text.secondary" sx={{ fontSize: 10.8 }}>{work.compositionIds.length} {work.compositionIds.length === 1 ? "composição vinculada" : "composições vinculadas"}</Typography>
+              </Box>
+              <ArrowForwardRoundedIcon sx={{ color: "#6f8b81" }} />
+            </Stack>
+          </ButtonBase>)}
+        </Box>}
+      </Box>
     </Box>
   </Container>;
 
