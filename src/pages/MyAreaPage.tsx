@@ -16,7 +16,7 @@ import { useAccount } from "../auth/session";
 const tools = [
   { to: "/obras", label: "Obras", description: "Acompanhe seus projetos", icon: HomeWorkOutlinedIcon },
   { to: "/composicoes", label: "Composições", description: "Materiais e custos", icon: CalculateOutlinedIcon },
-  { to: "/favoritos", label: "Favoritos", description: "Materiais salvos", icon: StarOutlineRoundedIcon },
+  { to: "/favoritos", label: "Favoritos", description: "Obras, materiais, M.O. e composições", icon: StarOutlineRoundedIcon },
   { to: "/historico", label: "Histórico", description: "Recentes e mais buscados", icon: HistoryRoundedIcon, hot: true },
 ] as const;
 
