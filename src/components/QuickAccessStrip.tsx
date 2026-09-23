@@ -22,7 +22,7 @@ const shortcuts = [
   {
     to: "/mao-de-obra",
     label: "Mão de obra",
-    description: "Funções e serviços",
+    description: "Profissionais e serviços",
     icon: <HardHat size={22} weight="duotone" aria-hidden="true" />,
     featured: true,
     art: "right",
@@ -99,11 +99,8 @@ export default function QuickAccessStrip() {
     </Stack>
 
     <Box sx={{
-      display: "grid",
-      gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", sm: "repeat(3,minmax(0,1fr))", md: "repeat(6,minmax(0,1fr))" },
-      gap: { xs: .85, md: .95, xl: 1.15 },
-      pb: .5,
-      px: .05,
+      display: "flex", gap: { xs: .95, md: 1.1, xl: 1.25 }, overflowX: "auto", pb: .65, px: .05,
+      scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
       {shortcuts.map(({ to, label, description, icon, featured, art, available }, index) => <ButtonBase
         key={to}
@@ -113,9 +110,9 @@ export default function QuickAccessStrip() {
         onClick={available ? undefined : event => event.preventDefault()}
         sx={{
           position: "relative", overflow: "hidden",
-          width: "100%", minWidth: 0,
-          minHeight: { xs: 104, sm: 108, md: 104, xl: 118 }, px: { xs: 1.15, md: 1.05, xl: 1.4 }, py: { xs: 1.1, md: 1.05, xl: 1.35 },
-          borderRadius: { xs: "15px", md: "14px", xl: "18px" }, textAlign: "left",
+          width: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 }, minWidth: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+          minHeight: { xs: 104, sm: 108, md: 110, xl: 120 }, px: { xs: 1.3, md: 1.4, xl: 1.55 }, py: { xs: 1.2, md: 1.25, xl: 1.4 },
+          borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
           borderColor: featured ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.095)",
