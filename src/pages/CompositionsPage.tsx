@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
@@ -34,15 +34,18 @@ type ProjectOption = { id: string; label: string };
 
 export default function CompositionsPage() {
   const user = useAccount();
+  const [params] = useSearchParams();
   const workspaceFavorites = useWorkspaceFavorites();
   const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
-  const [projectFilter, setProjectFilter] = useState("");
+  const [projectFilter, setProjectFilter] = useState(() => params.get("obra") ?? "");
   const [loading, setLoading] = useState(() => !(getCachedCompositions(user.id) && getCachedProjects(user.id)));
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [newName, setNewName] = useState("");
+
+  useEffect(() => { setProjectFilter(params.get("obra") ?? ""); }, [params]);
 
   useEffect(() => {
     let active = true;
@@ -233,6 +236,9 @@ export default function CompositionsPage() {
           sx={{ width: { xs: "100%", sm: 290 }, "& .MuiOutlinedInput-root": { borderRadius: 999, bgcolor: "#fbfcfc" } }}
         />
         <Button component={RouterLink} to="/obras" sx={{ textTransform: "none", fontWeight: 700 }}>Gerenciar obras</Button>
+        {projects.some(project => project.id === projectFilter) && <Button component={RouterLink}
+          to={`/obras/${encodeURIComponent(projectFilter)}/mao-de-obra`}
+          sx={{ textTransform: "none", fontWeight: 700 }}>Equipe e serviços desta obra</Button>}
         <Button disabled={loading || !visibleCompositions.length} onClick={() => downloadCompositions(visibleCompositions)} sx={{ ml: { sm: "auto" }, textTransform: "none", fontWeight: 700 }}>Exportar CSV</Button>
       </Stack>
 

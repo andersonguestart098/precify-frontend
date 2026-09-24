@@ -312,14 +312,14 @@ export default function LaborPage() {
             <HardHat size={27} weight="duotone" />
           </Box>
           <Box>
-            <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>Banco de mão de obra</Typography>
+            <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>Mão de obra por obra</Typography>
             <Typography component="h1" sx={{
               fontSize: { xs: 31, md: 42 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.04em",
               background: "linear-gradient(112deg,#13382e,#006b4f 68%,#269b78)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             }}>Mão de obra</Typography>
             <Typography color="text.secondary" sx={{ fontSize: { xs: 12.5, md: 14 }, mt: .45 }}>
-              Consulte funções e especialidades e favorite o que usa com mais frequência.
+              Escolha uma obra para planejar equipes e serviços. Consulte o catálogo de especialidades abaixo.
             </Typography>
           </Box>
         </Stack>
@@ -337,85 +337,109 @@ export default function LaborPage() {
 
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
 
-      <TextField
-        fullWidth
-        size="small"
-        value={search}
-        onChange={event => setSearch(event.target.value)}
-        placeholder="Buscar função, equipe ou especialidade"
-        slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: .8, fontSize: 18, color: "#789087" }} /> } }}
-        sx={{
-          mt: 2.2,
-          "& .MuiInputBase-root": { borderRadius: "10px", bgcolor: "#fff", minHeight: 42, boxShadow: "0 2px 10px rgba(21,72,56,.02)" },
-          "& fieldset": { borderColor: "#d9e6e1" },
-        }}
-      />
-
-      <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: 1.2, alignItems: "start" }}>
-        <Stack gap={.8}>
-          <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
-            <Groups2OutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
-            <Box>
-              <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Equipe própria</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 10 }}>Funções internas para montar a equipe.</Typography>
-            </Box>
-          </Stack>
-          {laborTeamGroups.map(group => <LaborDatabaseGroup
-            key={group.code}
-            group={group}
-            search={normalizedSearch}
-            favoriteCodes={workspaceFavorites.favorites.LABOR}
-            favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
-            onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
-          />)}
+      <Box component="section" aria-labelledby="labor-planning-title" sx={{ mt: { xs: 2.5, md: 3 } }}>
+        <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} justifyContent="space-between" gap={1}>
+          <Box>
+            <Typography id="labor-planning-title" fontWeight={900} color="#21483b" sx={{ fontSize: { xs: 17, md: 19 } }}>Escolha a obra</Typography>
+            <Typography color="text.secondary" sx={{ mt: .25, fontSize: { xs: 11.5, md: 12.5 } }}>
+              Equipes e serviços são planejados dentro de cada obra, junto com as composições.
+            </Typography>
+          </Box>
+          <Chip size="small" label={`${projects.length} ${projects.length === 1 ? "obra" : "obras"}`} sx={{ alignSelf: "flex-start", bgcolor: "#e9f4f0", color: "#1f674f", fontWeight: 800 }} />
         </Stack>
-
-        <Stack gap={.8}>
-          <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
-            <HandshakeOutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
-            <Box>
-              <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Terceiros</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 10 }}>Especialidades organizadas por fase da obra.</Typography>
-            </Box>
-          </Stack>
-          {laborThirdPartyPhases.map(group => <LaborDatabaseGroup
-            key={group.code}
-            group={group}
-            search={normalizedSearch}
-            favoriteCodes={workspaceFavorites.favorites.LABOR}
-            favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
-            onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
-          />)}
-        </Stack>
-      </Box>
-
-      <Box component="section" aria-labelledby="labor-planning-title" sx={{ mt: { xs: 3.2, md: 4 }, pt: 2.3, borderTop: "1px solid #dfe9e5" }}>
-        <Typography id="labor-planning-title" fontWeight={900} color="#21483b" sx={{ fontSize: { xs: 15.5, md: 17 } }}>Planejamento por obra</Typography>
-        <Typography color="text.secondary" sx={{ mt: .25, fontSize: { xs: 10.8, md: 11.8 } }}>
-          Escolha uma obra para vincular as necessidades de mão de obra ao planejamento.
-        </Typography>
 
         {!projects.length ? <Paper variant="outlined" sx={{ mt: 1.4, p: { xs: 2.5, sm: 3 }, borderRadius: 3, textAlign: "center", borderColor: "#dce9e5", bgcolor: "#fbfdfc" }}>
           <HomeWorkOutlinedIcon sx={{ fontSize: 36, color: "#7e988f" }} />
           <Typography fontWeight={850} color="#284d40" mt={.8}>Nenhuma obra cadastrada ainda.</Typography>
-          <Typography color="text.secondary" fontSize={12} mt={.35}>Cadastre uma obra para começar o planejamento.</Typography>
-        </Paper> : <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: .8 }}>
-          {projects.map(work => <ButtonBase key={work.id} component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`} sx={{
-            p: { xs: 1.25, sm: 1.4 }, minHeight: 72, borderRadius: "11px",
-            border: "1px solid #d9e6e1", bgcolor: "#fff", textAlign: "left", justifyContent: "stretch",
-            boxShadow: "0 3px 14px rgba(21,72,56,.03)",
-            "&:hover": { transform: "translateY(-1px)", borderColor: "#9fcdbd", bgcolor: "#f9fcfb" },
-          }}>
-            <Stack direction="row" alignItems="center" width="100%" gap={1.15}>
-              <Box sx={{ width: 38, height: 38, borderRadius: "9px", display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6" }}><HomeWorkOutlinedIcon /></Box>
-              <Box flex={1} minWidth={0}>
-                <Typography fontWeight={850} color="#21483b" noWrap>{work.name}</Typography>
-                <Typography color="text.secondary" sx={{ fontSize: 10.8 }}>{work.compositionIds.length} {work.compositionIds.length === 1 ? "composição vinculada" : "composições vinculadas"}</Typography>
-              </Box>
-              <ArrowForwardRoundedIcon sx={{ color: "#6f8b81" }} />
-            </Stack>
-          </ButtonBase>)}
+          <Typography color="text.secondary" fontSize={12} mt={.35}>Cadastre uma obra para planejar equipe e serviços.</Typography>
+          <Button component={RouterLink} to="/obras?new=1" variant="contained" sx={{ mt: 1.5, textTransform: "none", borderRadius: 2 }}>Cadastrar obra</Button>
+        </Paper> : <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2,minmax(0,1fr))" }, gap: 1.15 }}>
+          {projects.map(work => {
+            const cachedPlan = getCachedLaborPlan(user.id, work.id);
+            const teamCount = cachedPlan?.items.filter(item => item.origin === "TEAM" || item.origin === "BOTH").length ?? 0;
+            const serviceCount = cachedPlan?.items.filter(item => item.origin === "THIRD_PARTY" || item.origin === "BOTH").length ?? 0;
+            return <Paper key={work.id} variant="outlined" sx={{ p: { xs: 1.6, sm: 1.8 }, borderRadius: 3, borderColor: "#d9e6e1", bgcolor: "#fff", boxShadow: "0 4px 16px rgba(21,72,56,.035)" }}>
+              <Stack direction="row" alignItems="center" gap={1.1}>
+                <Box sx={{ width: 40, height: 40, borderRadius: "10px", display: "grid", placeItems: "center", bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6", flexShrink: 0 }}><HomeWorkOutlinedIcon /></Box>
+                <Box minWidth={0} flex={1}>
+                  <Typography fontWeight={850} color="#21483b" noWrap>{work.name}</Typography>
+                  <Typography color="text.secondary" sx={{ fontSize: 10.8 }}>{work.compositionIds.length} {work.compositionIds.length === 1 ? "composição vinculada" : "composições vinculadas"}</Typography>
+                </Box>
+              </Stack>
+              <Stack direction="row" gap={.6} flexWrap="wrap" mt={1.3}>
+                <Chip size="small" icon={<Groups2OutlinedIcon />} label={cachedPlan ? `Equipe: ${teamCount} ${teamCount === 1 ? "função" : "funções"}` : "Equipe"} sx={{ bgcolor: "#f0f8f5", fontSize: 10 }} />
+                <Chip size="small" icon={<HandshakeOutlinedIcon />} label={cachedPlan ? `${serviceCount} serviços` : "Serviços"} sx={{ bgcolor: "#f0f8f5", fontSize: 10 }} />
+              </Stack>
+              <Stack direction="row" gap={1} flexWrap="wrap" mt={1.5}>
+                <Button component={RouterLink} to={`/obras/${encodeURIComponent(work.id)}/mao-de-obra`} variant="contained" size="small" endIcon={<ArrowForwardRoundedIcon />} sx={{ textTransform: "none", borderRadius: 2, fontWeight: 750 }}>
+                  Equipes e serviços
+                </Button>
+                <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(work.id)}`} variant="outlined" size="small" sx={{ textTransform: "none", borderRadius: 2, fontWeight: 750 }}>
+                  Composições
+                </Button>
+              </Stack>
+            </Paper>;
+          })}
         </Box>}
+      </Box>
+
+      <Box component="section" aria-labelledby="labor-catalog-title" sx={{ mt: { xs: 3.3, md: 4 }, pt: 2.5, borderTop: "1px solid #dfe9e5" }}>
+        <Typography id="labor-catalog-title" fontWeight={900} color="#21483b" sx={{ fontSize: { xs: 16, md: 18 } }}>Explorar funções e especialidades</Typography>
+        <Typography color="text.secondary" sx={{ mt: .25, fontSize: { xs: 11, md: 12 } }}>
+          Consulte o catálogo e salve seus favoritos. Para incluir uma função no planejamento, abra a obra acima.
+        </Typography>
+        <TextField
+          fullWidth
+          size="small"
+          value={search}
+          onChange={event => setSearch(event.target.value)}
+          placeholder="Buscar função, equipe ou especialidade"
+          slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: .8, fontSize: 18, color: "#789087" }} /> } }}
+          sx={{
+            mt: 2.2,
+            "& .MuiInputBase-root": { borderRadius: "10px", bgcolor: "#fff", minHeight: 42, boxShadow: "0 2px 10px rgba(21,72,56,.02)" },
+            "& fieldset": { borderColor: "#d9e6e1" },
+          }}
+        />
+
+        <Box sx={{ mt: 1.4, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: 1.2, alignItems: "start" }}>
+          <Stack gap={.8}>
+            <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
+              <Groups2OutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
+              <Box>
+                <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Equipe própria</Typography>
+                <Typography color="text.secondary" sx={{ fontSize: 10 }}>Funções internas para montar a equipe.</Typography>
+              </Box>
+            </Stack>
+            {laborTeamGroups.map(group => <LaborDatabaseGroup
+              key={group.code}
+              group={group}
+              search={normalizedSearch}
+              favoriteCodes={workspaceFavorites.favorites.LABOR}
+              favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
+              onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
+            />)}
+          </Stack>
+
+          <Stack gap={.8}>
+            <Stack direction="row" alignItems="center" gap={.7} mb={.1}>
+              <HandshakeOutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
+              <Box>
+                <Typography fontWeight={900} color="#21483b" sx={{ fontSize: 14.5 }}>Terceiros</Typography>
+                <Typography color="text.secondary" sx={{ fontSize: 10 }}>Especialidades organizadas por fase da obra.</Typography>
+              </Box>
+            </Stack>
+            {laborThirdPartyPhases.map(group => <LaborDatabaseGroup
+              key={group.code}
+              group={group}
+              search={normalizedSearch}
+              favoriteCodes={workspaceFavorites.favorites.LABOR}
+              favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)}
+              onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }}
+            />)}
+          </Stack>
+        </Box>
+
       </Box>
     </Box>
   </Container>;
@@ -474,6 +498,17 @@ export default function LaborPage() {
 
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
       {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+
+      <Stack direction="row" gap={.85} flexWrap="wrap" mt={2} aria-label="Navegação desta obra">
+        <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`} size="small" variant="outlined"
+          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Composições ({project.compositionIds.length})</Button>
+        <Button component="a" href="#labor-mode-title" size="small" variant="outlined"
+          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Planejamento</Button>
+        {(mode === "TEAM" || mode === "BOTH") && <Button component="a" href="#labor-team-title" size="small" variant="outlined"
+          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Equipe ({teamSelected + bothSelected} funções)</Button>}
+        {(mode === "THIRD_PARTY" || mode === "BOTH") && <Button component="a" href="#labor-services-title" size="small" variant="outlined"
+          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Serviços ({thirdSelected + bothSelected})</Button>}
+      </Stack>
 
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
         <Typography id="labor-mode-title" fontWeight={850} color="#244d40" sx={{ fontSize: 15 }}>Como esta obra será atendida?</Typography>
@@ -576,7 +611,7 @@ export default function LaborPage() {
             "& fieldset": { borderColor: "#d9e6e1" },
           }} />
 
-        {(mode === "TEAM" || mode === "BOTH") && <Box component="section" mt={2.3}>
+        {(mode === "TEAM" || mode === "BOTH") && <Box component="section" id="labor-team-title" mt={2.3} sx={{ scrollMarginTop: 24 }}>
           <Stack direction="row" alignItems="center" gap={.8} mb={1}>
             <Groups2OutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
             <Box>
@@ -587,7 +622,7 @@ export default function LaborPage() {
           <Stack gap={.8}>{laborTeamGroups.map(group => <LaborGroupCard key={group.code} group={group} source="TEAM" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
         </Box>}
 
-        {(mode === "THIRD_PARTY" || mode === "BOTH") && <Box component="section" mt={2.6}>
+        {(mode === "THIRD_PARTY" || mode === "BOTH") && <Box component="section" id="labor-services-title" mt={2.6} sx={{ scrollMarginTop: 24 }}>
           <Stack direction="row" alignItems="center" gap={.8} mb={1}>
             <HandshakeOutlinedIcon sx={{ color: "#36745e", fontSize: 20 }} />
             <Box>

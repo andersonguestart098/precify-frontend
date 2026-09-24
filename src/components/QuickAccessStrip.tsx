@@ -99,7 +99,7 @@ export default function QuickAccessStrip() {
     </Stack>
 
     <Box sx={{
-      display: "flex", gap: { xs: .95, md: 1.1, xl: 1.25 }, overflowX: "auto", pb: .65, px: .05,
+      display: "flex", gap: { xs: .95, md: 1.1, xl: 1.25 }, overflowX: "auto", pt: .75, pb: .75, px: .5,
       scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
       {shortcuts.map(({ to, label, description, icon, featured, art, available }, index) => <ButtonBase

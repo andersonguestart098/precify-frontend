@@ -115,7 +115,7 @@ function SessionRoutes() {
   </Stack>;
   if (user && !entryRedirectDone.current) {
     entryRedirectDone.current = true;
-    if (location.pathname !== "/inicio") return <Navigate to="/inicio" replace />;
+    if (location.pathname === "/" || location.pathname === "/login") return <Navigate to="/inicio" replace />;
   }
   return <Routes>
     <Route path="/login" element={<LoginPage />} />
