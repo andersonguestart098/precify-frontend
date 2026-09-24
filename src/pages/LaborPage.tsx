@@ -472,45 +472,25 @@ export default function LaborPage() {
           }}>{project.name}</Typography>
           <Typography color="text.secondary" sx={{ mt: .55, fontSize: { xs: 12.5, md: 14 } }}>Defina como a obra será atendida e selecione somente o que ela precisa.</Typography>
         </Box>
-        <Stack direction="row" alignItems="center" gap={{ xs: .8, md: 1 }} flexWrap="wrap"
-          sx={{ alignSelf: { xs: "stretch", lg: "auto" }, justifyContent: { xs: "flex-start", lg: "flex-end" } }}>
-          {selectedItems.length > 0 ? <Stack direction="row" alignItems="center" gap={.7}>
-            <Typography sx={{ fontSize: { xs: 11.8, md: 12.5 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
+        <Stack gap={1} sx={{ alignSelf: { xs: "stretch", lg: "auto" }, alignItems: { xs: "stretch", lg: "flex-end" } }}>
+          <Stack direction="row" alignItems="center" gap={{ xs: .8, md: 1 }} flexWrap="wrap"
+            sx={{ justifyContent: { xs: "flex-start", lg: "flex-end" } }}>
+            <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`}
+              startIcon={<CalculateOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+              Composições ({project.compositionIds.length})
+            </Button>
+            <Button component={RouterLink} to="/produtos"
+              startIcon={<Inventory2OutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+              Produtos
+            </Button>
+            {selectedItems.length > 0 && <Button onClick={openSummary} aria-label="Abrir resumo da obra"
+              startIcon={<SummarizeOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
               Resumo da obra
-            </Typography>
-            <ButtonBase onClick={openSummary} aria-label="Abrir resumo da obra" sx={{
-              width: { xs: 40, md: 42 }, height: { xs: 40, md: 42 }, borderRadius: "50%", flexShrink: 0,
-              color: "#17664f",
-              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-              border: "1px solid rgba(0,107,79,.14)",
-              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
-              transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
-              "&:active": { transform: "scale(.96)" },
-              "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-              "@media (hover:hover)": {
-                "&:hover": {
-                  transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
-                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
-                },
-              },
-              "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-            }}>
-              <SummarizeOutlinedIcon sx={{ fontSize: { xs: 19, md: 20 } }} />
-            </ButtonBase>
-          </Stack> : null}
-
-          <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`}
-            startIcon={<CalculateOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
-            Composições ({project.compositionIds.length})
-          </Button>
-          <Button component={RouterLink} to="/produtos"
-            startIcon={<Inventory2OutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
-            Produtos
-          </Button>
+            </Button>}
+          </Stack>
           <Button component={RouterLink} to="/mao-de-obra"
             startIcon={<SwapHorizRoundedIcon sx={{ fontSize: 19 }} />}
-            sx={{ ...headerActionSx, borderColor: "#d4e2dd", background: "#fff", color: "#315e4e" }}>
+            sx={{ ...headerActionSx, alignSelf: "flex-end", borderColor: "#d4e2dd", background: "#fff", color: "#315e4e" }}>
             Trocar obra
           </Button>
         </Stack>
