@@ -10,6 +10,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import QuickAccessStrip from "../components/QuickAccessStrip";
+import { catalogCategoryIconSize, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import type { CatalogMaterial } from "../domain/search";
 import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
 
@@ -146,13 +147,7 @@ export default function HomePage() {
         columnGap: { md: 2, lg: 3, xl: 7 },
       }}>
         <Box minWidth={0}>
-          <Typography component="h1" sx={{
-            maxWidth: { md: 690, xl: 820 },
-            fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
-            mb: { xs: 1, md: .65, xl: 1 },
-            background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-          }}>
+          <Typography component="h1" sx={catalogHeroTitleSx}>
             Encontre o material certo para a sua obra.
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 }, maxWidth: { md: 690, xl: 820 } }}
@@ -234,12 +229,7 @@ export default function HomePage() {
       <Box sx={{ mt: { xs: .7, md: .95, xl: 1.15 }, pb: { xs: .15, md: .45, xl: .7 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-            <Typography sx={{
-              fontSize: { xs: 14.8, md: 16, xl: 17.4 },
-              fontWeight: 900,
-              color: "#1f4c3d",
-              letterSpacing: "-.02em",
-            }}>Explore por segmento</Typography>
+            <Typography sx={catalogSectionTitleSx}>Explore por segmento</Typography>
             <Skeleton variant="rounded" width={58} height={24} sx={{ bgcolor: "rgba(0,107,79,.06)" }} />
           </Stack>
           <Stack direction="row" gap={{ xs: 2.5, sm: 4, md: 2.75, xl: 4 }} sx={{ minHeight: { xs: 92, md: 78, xl: 92 }, overflow: "hidden", px: .5 }}>
@@ -253,12 +243,7 @@ export default function HomePage() {
 
       <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { xs: 1.1, md: 1.55, xl: 1.9 } }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
-          <Typography id="project-type-title" sx={{
-            fontSize: { xs: 14.8, md: 16, xl: 17.4 },
-            fontWeight: 900,
-            color: "#1f4c3d",
-            letterSpacing: "-.02em",
-          }}>O que você vai construir?</Typography>
+          <Typography id="project-type-title" sx={catalogSectionTitleSx}>O que você vai construir?</Typography>
           <Stack direction="row" gap={.25} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
             <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
               <ChevronLeftRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
@@ -295,8 +280,8 @@ export default function HomePage() {
               "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
             }}>
               <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Box sx={{ width: { xs: 40, md: 34, xl: 40 }, height: { xs: 40, md: 34, xl: 40 }, borderRadius: { xs: "12px", md: "10px", xl: "12px" }, display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b", "& svg": { width: { md: 24, xl: 29 }, height: { md: 24, xl: 29 } } }}>
-                  <Icon size={29} weight="duotone" aria-hidden="true" />
+                <Box sx={{ width: { xs: 40, md: 40, xl: 44 }, height: { xs: 40, md: 40, xl: 44 }, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b", "& svg": { width: catalogCategoryIconSize, height: catalogCategoryIconSize } }}>
+                  <Icon size={28} weight="duotone" aria-hidden="true" />
                 </Box>
                 <Box aria-hidden="true" sx={{ width: { xs: 18, md: 16, xl: 18 }, height: { xs: 18, md: 16, xl: 18 }, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad99" : "#dbe8e4", bgcolor: selected ? "#e8f3ed" : "transparent", display: "grid", placeItems: "center" }}>
                   {selected && <Check size={12} weight="bold" />}

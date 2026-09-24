@@ -92,7 +92,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                     "55%": { transform: "scale(1.28) rotate(9deg)" },
                     "100%": { transform: "scale(1) rotate(0deg)" },
                   },
-                  "& svg": { fontSize: { md: 17, xl: 20 }, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
+                  "& svg": { fontSize: { md: 19, xl: 20 }, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
                   "@media (prefers-reduced-motion: reduce)": { "& svg": { animation: "none" } },
                 }}
               >
@@ -105,14 +105,14 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         <Stack sx={{ minWidth: 0, p: { xs: 1.35, sm: 1.6, md: 1.2, xl: 1.7 } }} justifyContent="space-between" gap={{ xs: 1, md: .7, xl: 1 }}>
           <Box minWidth={0}>
             <Stack direction="row" alignItems="center" gap={.6} flexWrap="wrap" mb={{ xs: .45, md: .3, xl: .45 }}>
-              {highlighted && <Chip label="Destaque" size="small" sx={{ height: { xs: 20, md: 17, xl: 20 }, bgcolor: "#edf6f3", color: "#235847", fontWeight: 800, fontSize: { xs: 10, md: 8.8, xl: 10 } }} />}
-              <Typography color="primary" sx={{ fontSize: { xs: 10.5, md: 9.5, xl: 11 }, fontWeight: 800, letterSpacing: ".01em" }}>
+              {highlighted && <Chip label="Destaque" size="small" sx={{ height: { xs: 20, md: 20, xl: 22 }, bgcolor: "#edf6f3", color: "#235847", fontWeight: 800, fontSize: { xs: 10, md: 10, xl: 11 } }} />}
+              <Typography color="primary" sx={{ fontSize: { xs: 10.5, md: 10.5, xl: 11.5 }, fontWeight: 800, letterSpacing: ".01em" }}>
                 {material.materialCode} · {material.familyName}
               </Typography>
             </Stack>
 
             <Typography component="h2" sx={{
-              fontSize: { xs: 15, sm: 17, md: 14.5, xl: 17 },
+              fontSize: { xs: 15, sm: 17, md: 15.5, xl: 18 },
               lineHeight: 1.18,
               fontWeight: 800,
               letterSpacing: "-.015em",
@@ -125,31 +125,31 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               {material.materialName}
             </Typography>
 
-            <Typography color="text.secondary" sx={{ mt: .3, fontSize: { xs: 11, md: 10, xl: 12 } }} noWrap>
+            <Typography color="text.secondary" sx={{ mt: .3, fontSize: { xs: 11, md: 11, xl: 12 } }} noWrap>
               {material.segmentName}
             </Typography>
 
             <Stack direction="row" gap={.45} flexWrap="wrap" mt={{ xs: .75, md: .5, xl: .75 }}>
               <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
-                sx={{ height: { xs: 20, md: 17, xl: 20 }, fontSize: { xs: 9.5, md: 8.5, xl: 10 }, borderColor: "#dce6e2", color: "#526861" }} />
+                sx={{ height: { xs: 20, md: 20, xl: 22 }, fontSize: { xs: 9.5, md: 9.5, xl: 10 }, borderColor: "#dce6e2", color: "#526861" }} />
               <Chip size="small" label={offers.length ? `${offers.length} oferta${offers.length > 1 ? "s" : ""}` : "Sem cotação"}
-                sx={{ height: { xs: 20, md: 17, xl: 20 }, fontSize: { xs: 9.5, md: 8.5, xl: 10 }, bgcolor: "#eef7f4", color: "#2c6652" }} />
+                sx={{ height: { xs: 20, md: 20, xl: 22 }, fontSize: { xs: 9.5, md: 9.5, xl: 10 }, bgcolor: "#eef7f4", color: "#2c6652" }} />
             </Stack>
           </Box>
 
           <Box>
             {featured ? <Box>
-              <Typography color="text.secondary" sx={{ fontSize: { xs: 10.5, md: 9.3, xl: 11.5 }, lineHeight: 1.15 }} noWrap>
+              <Typography color="text.secondary" sx={{ fontSize: { xs: 10.5, md: 10.5, xl: 11.5 }, lineHeight: 1.15 }} noWrap>
                 {offers.length > 1 ? "A partir de" : "Cotação"} · {featured.quote.supplier}
               </Typography>
               <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mt={.15}>
-                <Typography sx={{ fontSize: { xs: 22, md: 18, xl: 24 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.025em", color: "#13382e" }}>
+                <Typography sx={{ fontSize: { xs: 22, md: 20, xl: 24 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.025em", color: "#13382e" }}>
                   {currency.format(featured.quote.value)}
                 </Typography>
                 {logoUrl && <ProtectedImage src={logoUrl} alt={`Logo de ${featured.quote.supplier}`}
                   sx={{ display: { xs: "none", sm: "grid" }, width: { md: 43, xl: 52 }, height: { md: 24, xl: 28 }, bgcolor: "transparent", p: 0, flexShrink: 0 }} />}
               </Stack>
-            </Box> : <Typography color="text.secondary" sx={{ fontSize: { xs: 12, md: 10.5, xl: 13 }, fontWeight: 600 }}>Cotação pendente</Typography>}
+            </Box> : <Typography color="text.secondary" sx={{ fontSize: { xs: 12, md: 11.5, xl: 13 }, fontWeight: 600 }}>Cotação pendente</Typography>}
 
             <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
               <Button

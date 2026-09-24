@@ -5,6 +5,7 @@ import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import type { CatalogMaterial } from "../domain/search";
+import { catalogCategoryIconSize, catalogSectionTitleSx } from "../styles/catalogVisual";
 
 const labels: Record<string, string> = {
   "1": "Agregados", "2": "Cimentos e gesso", "3": "Argamassas", "4": "Concretos", "5": "Aditivos",
@@ -72,12 +73,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
   return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, md: .55, xl: 1 }} sx={{ display: compactMobile ? { xs: "none", md: "flex" } : "flex" }}>
       <Stack direction="row" alignItems="center" gap={.35} minWidth={0}>
-        <Typography sx={{
-          fontSize: { xs: 14.8, md: 16, xl: 17.4 },
-          fontWeight: 900,
-          color: "#1f4c3d",
-          letterSpacing: "-.02em",
-        }}>Explore por segmento</Typography>
+        <Typography sx={catalogSectionTitleSx}>Explore por segmento</Typography>
         <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={2800} title="Escolha um segmento para ver apenas materiais daquela categoria. Você pode deslizar a lista para explorar todas as opções.">
           <IconButton size="small" aria-label="Como funciona a navegação por segmentos" sx={{
             width: { xs: 28, md: 24, xl: 28 }, height: { xs: 28, md: 24, xl: 28 }, ml: .15,
@@ -153,7 +149,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
               background: active ? "linear-gradient(145deg,#f1f8f5,#e4f0ec)" : "linear-gradient(145deg,#f2f7f5,#e8f1ee)",
               border: "1px solid", borderColor: active ? "rgba(0,107,79,.20)" : "rgba(0,107,79,.075)",
               boxShadow: "none", transition: "background-color 180ms,border-color 180ms,transform 180ms",
-              "& > svg": { width: compactMobile ? { xs: 13, md: 24, xl: 28 } : { md: 24, xl: 28 }, height: compactMobile ? { xs: 13, md: 24, xl: 28 } : { md: 24, xl: 28 } },
+              "& > svg": { width: compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize, height: compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize },
               "@media (prefers-reduced-motion: reduce)": { transition: "none" }
             }}><Icon size={compactMobile ? 13 : 28} weight="duotone" aria-hidden="true" />
               {active && !compactMobile && <Box aria-hidden="true" sx={{ position: "absolute", right: -2, bottom: -1, width: { xs: 16, md: 14, xl: 16 }, height: { xs: 16, md: 14, xl: 16 }, borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8", display: "grid", placeItems: "center" }}><Check size={10} weight="bold" /></Box>}

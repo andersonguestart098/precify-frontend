@@ -125,25 +125,25 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
   return <Box sx={{
     "& .MuiOutlinedInput-root": {
       minHeight: { xs: 52, md: 42, xl: 52 }, borderRadius: { xs: "26px", md: "21px", xl: "26px" }, bgcolor: "#f8faf9",
-      fontSize: { xs: 14, md: 12, xl: 14 }, transition: "background-color 180ms, box-shadow 180ms",
+      fontSize: { xs: 14, md: 13, xl: 14 }, transition: "background-color 180ms, box-shadow 180ms",
       "& fieldset": { borderColor: "#dfe7e4" },
       "&:hover": { bgcolor: "#f1f7f5", "& fieldset": { borderColor: "#a6c8bd" } },
       "&.Mui-focused": { bgcolor: "#fff", boxShadow: "0 0 0 3px #006b4f12", "& fieldset": { borderColor: "#006b4f", borderWidth: 1 } }
     },
-    "& .MuiInputLabel-root": { fontSize: { xs: 14, md: 12, xl: 14 }, color: "#62766f" },
-    "& .MuiInputAdornment-root": { "& .MuiSvgIcon-root": { fontSize: { md: 17, xl: 20 } } },
+    "& .MuiInputLabel-root": { fontSize: { xs: 14, md: 13, xl: 14 }, color: "#62766f" },
+    "& .MuiInputAdornment-root": { "& .MuiSvgIcon-root": { fontSize: { md: 18, xl: 20 } } },
     "& .MuiSelect-icon": { color: "#628177", right: { md: 9, xl: 12 } },
     "& .MuiSelect-select": { py: { xs: 1.5, md: 1, xl: 1.5 }, pl: { xs: 2, md: 1.15, xl: 2 } }
   }}>
     <Box sx={{ p: { xs: 2.5, md: 1.45, xl: 2.5 }, borderBottom: 1, borderColor: "divider" }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="row" gap={{ xs: .75, md: .45, xl: .75 }} alignItems="center">
-          <TuneOutlinedIcon color="primary" sx={{ fontSize: { md: 18, xl: 24 } }} />
-          <Typography variant="overline" color="primary" sx={{ fontSize: { md: 9, xl: 12 } }}>Filtros</Typography>
+          <TuneOutlinedIcon color="primary" sx={{ fontSize: { md: 20, xl: 22 } }} />
+          <Typography variant="overline" color="primary" sx={{ fontSize: { md: 10.5, xl: 11.3 } }}>Filtros</Typography>
         </Stack>
-        <Button size="small" sx={{ borderRadius: "999px", px: { md: .85, xl: 1.5 }, minWidth: 0, color: "#587068", bgcolor: "#f3f7f6", textTransform: "none", fontSize: { md: 10.5, xl: 13 }, "&:hover": { bgcolor: "#e7f0ed" }, "& .MuiButton-startIcon": { mr: { md: .3, xl: 1 } } }} startIcon={<ClearIcon sx={{ fontSize: { md: 16, xl: 20 } }} />} onClick={onClearFilters}>Limpar</Button>
+        <Button size="small" sx={{ borderRadius: "999px", px: { md: .85, xl: 1.5 }, minWidth: 0, color: "#587068", bgcolor: "#f3f7f6", textTransform: "none", fontSize: { md: 11.5, xl: 13 }, "&:hover": { bgcolor: "#e7f0ed" }, "& .MuiButton-startIcon": { mr: { md: .3, xl: 1 } } }} startIcon={<ClearIcon sx={{ fontSize: { md: 18, xl: 20 } }} />} onClick={onClearFilters}>Limpar</Button>
       </Stack>
-      <Typography variant="h6" fontWeight={700} letterSpacing="-.02em" mt={{ xs: 1.5, md: .8, xl: 1.5 }} sx={{ fontSize: { md: 16, xl: 20 } }}>Refine sua busca</Typography>
+      <Typography variant="h6" fontWeight={800} letterSpacing="-.02em" mt={{ xs: 1.5, md: .8, xl: 1.5 }} sx={{ fontSize: { md: 16, xl: 18 } }}>Refine sua busca</Typography>
     </Box>
     <Box sx={{ px: { xs: 2.5, md: 1.4, xl: 2.5 }, pt: { xs: 1, md: .5, xl: 1 } }}>
       {select("scope", "Exibir", onlyFavorites ? "favorites" : "", [{ code: "favorites", name: "Meus favoritos" }], "Todos", next => onOnlyFavoritesChange(next === "favorites"))}
@@ -154,8 +154,8 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
 
       <Box sx={{ py: { xs: 1.25, md: .65, xl: 1.25 } }}>
         <Stack direction="row" alignItems="center" gap={{ xs: .75, md: .45, xl: .75 }} mb={{ xs: .8, md: .45, xl: .8 }}>
-          <PaymentsOutlinedIcon sx={{ fontSize: { xs: 18, md: 16, xl: 18 }, color: "#518070" }} />
-          <Typography sx={{ fontSize: { xs: 12.5, md: 10.5, xl: 12.5 }, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
+          <PaymentsOutlinedIcon sx={{ fontSize: { xs: 18, md: 18, xl: 20 }, color: "#518070" }} />
+          <Typography sx={{ fontSize: { xs: 12.5, md: 12, xl: 13 }, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
         </Stack>
         <Stack direction="row" gap={{ xs: 1, md: .65, xl: 1 }}>
           <TextField fullWidth size="small" type="text" label="De" value={priceText.min}
@@ -165,7 +165,7 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
             onFocus={() => focusPrice("max")} onBlur={() => blurPrice("max")} onChange={event => editPrice("max", event.target.value)}
             placeholder="0,00" slotProps={{ input: { startAdornment: <InputAdornment position="start">R$</InputAdornment> }, htmlInput: { inputMode: "decimal", maxLength: 18 } }} />
         </Stack>
-        <Typography sx={{ mt: { xs: .7, md: .45, xl: .7 }, px: .5, fontSize: { xs: 11.5, md: 9.5, xl: 11.5 }, lineHeight: 1.3, color: "#879791" }}>Digite o mínimo, o máximo ou os dois valores.</Typography>
+        <Typography sx={{ mt: { xs: .7, md: .45, xl: .7 }, px: .5, fontSize: { xs: 11.5, md: 10.5, xl: 11.5 }, lineHeight: 1.3, color: "#879791" }}>Digite o mínimo, o máximo ou os dois valores.</Typography>
       </Box>
 
       {select("state", "Estado", value("state"), stateOptions.map((name) => ({ code: name, name })))}

@@ -8,6 +8,7 @@ import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import { HardHat } from "@phosphor-icons/react";
+import { catalogSectionTitleSx } from "../styles/catalogVisual";
 
 const shortcuts = [
   {
@@ -74,13 +75,7 @@ export default function QuickAccessStrip() {
     <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .9, md: 1 }}>
       <Box>
         <Stack direction="row" alignItems="center" gap={.45}>
-          <Typography id="quick-access-title" sx={{
-            fontSize: { xs: 14.8, md: 16, xl: 17.4 },
-            fontWeight: 900,
-            color: "#1f4c3d",
-            letterSpacing: "-.02em",
-            lineHeight: 1.1,
-          }}>
+          <Typography id="quick-access-title" sx={{ ...catalogSectionTitleSx, lineHeight: 1.1 }}>
             Acessos rápidos
           </Typography>
           <LocalFireDepartmentRoundedIcon aria-hidden="true" sx={{
@@ -152,20 +147,20 @@ export default function QuickAccessStrip() {
             background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
             border: "1px solid rgba(0,107,79,.06)",
             boxShadow: "0 2px 6px rgba(24,60,48,.035)",
-            "& svg": { width: { xs: 22, md: 22, xl: 24 }, height: { xs: 22, md: 22, xl: 24 } },
+            "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
           }}>{icon}</Box>
           <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
             bgcolor: "rgba(255,255,255,.6)", border: "1px solid rgba(0,107,79,.065)",
             boxShadow: "inset 0 1px 0 rgba(255,255,255,.72)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
           }}>
-            <ArrowOutwardRoundedIcon sx={{ fontSize: 15.5 }} />
+            <ArrowOutwardRoundedIcon sx={{ fontSize: { xs: 16, xl: 18 } }} />
           </Box>
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
-          <Typography sx={{ fontSize: { xs: 12.8, md: 12.8, xl: 13.8 }, fontWeight: 900, color: "#1f493b", lineHeight: 1.15, letterSpacing: "-.015em" }}>{label}</Typography>
-          <Typography sx={{ mt: .34, fontSize: { xs: 9.7, md: 9.8, xl: 10.5 }, lineHeight: 1.3, color: "#74877f" }}>{description}</Typography>
+          <Typography sx={{ fontSize: { xs: 12.8, md: 13.2, xl: 14 }, fontWeight: 900, color: "#1f493b", lineHeight: 1.15, letterSpacing: "-.015em" }}>{label}</Typography>
+          <Typography sx={{ mt: .34, fontSize: { xs: 9.7, md: 10.5, xl: 11.2 }, lineHeight: 1.3, color: "#74877f" }}>{description}</Typography>
         </Box>
       </ButtonBase>)}
     </Box>

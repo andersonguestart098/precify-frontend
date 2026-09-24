@@ -90,10 +90,10 @@ export default function DesktopSidebar() {
           "@keyframes sidebarAiOrbit": { to: { transform: "rotate(360deg)" } },
           "@media (prefers-reduced-motion: reduce)": { "&::before": { animation: "none" } },
         }}>
-          <Icon sx={{ fontSize: { md: 15, xl: 18 }, filter: active ? "drop-shadow(0 0 3px rgba(255,255,255,.55))" : "none" }} />
-        </Box> : <Icon sx={{ fontSize: { md: 18, xl: 21 } }} />}
+          <Icon sx={{ fontSize: { md: 17, xl: 19 }, filter: active ? "drop-shadow(0 0 3px rgba(255,255,255,.55))" : "none" }} />
+        </Box> : <Icon sx={{ fontSize: { md: 20, xl: 22 } }} />}
       </ListItemIcon>
-      <ListItemText primary={label} primaryTypographyProps={{ fontSize: { md: 11.7, xl: 13 }, fontWeight: active ? 750 : 550, lineHeight: 1.22 }} />
+      <ListItemText primary={label} primaryTypographyProps={{ fontSize: { md: 12.5, xl: 13 }, fontWeight: active ? 750 : 550, lineHeight: 1.22 }} />
     </ListItemButton>;
   });
 
@@ -121,7 +121,7 @@ export default function DesktopSidebar() {
     </List>
 
     <Stack direction="row" alignItems="center" gap={{ md: .5, xl: .75 }} sx={{
-      mt: "auto", p: { md: 1.05, xl: 1.45 }, minHeight: { md: 54, xl: 68 },
+      mt: "auto", p: { md: 1.05, xl: 1.45 }, minHeight: { md: 60, xl: 68 },
       borderTop: "1px solid #eaf0ee", flexShrink: 0, bgcolor: "#fff",
     }}>
       <ButtonBase component={RouterLink} to="/perfil" sx={{
@@ -130,10 +130,14 @@ export default function DesktopSidebar() {
         "&:hover": { bgcolor: "rgba(0,107,79,.035)" },
         "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 2 },
       }}>
-        <Avatar src={user.avatarUrl || undefined} sx={{ width: { md: 31, xl: 36 }, height: { md: 31, xl: 36 } }}>{user.name.charAt(0)}</Avatar>
+        <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{
+          width: { md: 36, xl: 40 }, height: { md: 36, xl: 40 },
+          border: "2px solid #006b4f", bgcolor: "#e3f2ed", color: "primary.dark",
+          boxShadow: "0 3px 10px rgba(24,60,48,.13)", flexShrink: 0,
+        }}>{user.name.charAt(0).toUpperCase()}</Avatar>
         <Box minWidth={0}>
-          <Typography noWrap fontWeight={700} fontSize={{ md: 10.7, xl: 12 }}>{user.name}</Typography>
-          <Typography noWrap fontSize={{ md: 9.2, xl: 10 }} color="text.secondary">Minha conta</Typography>
+          <Typography noWrap fontWeight={700} fontSize={{ md: 11.5, xl: 12 }}>{user.name}</Typography>
+          <Typography noWrap fontSize={{ md: 10, xl: 10.5 }} color="text.secondary">Minha conta</Typography>
         </Box>
       </ButtonBase>
 

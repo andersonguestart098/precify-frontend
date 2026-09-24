@@ -1,5 +1,6 @@
 import { ResultSkeletons } from "../components/SearchSkeleton";
 import { SegmentCarousel } from "../components/SegmentCarousel";
+import { catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { Alert, Box, Button, ButtonBase, CircularProgress, Container, Drawer, IconButton, Paper, Pagination, Skeleton, Stack, Typography } from "@mui/material";
@@ -187,11 +188,7 @@ export default function SearchPage() {
 
     <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
       <AccountGreeting />
-      <Typography component="h1" sx={{
-        maxWidth: { md: 690, xl: 820 }, fontWeight: 900, fontSize: { xs: 35, md: 38, xl: 49 }, letterSpacing: "-.045em", lineHeight: 1.03,
-        mb: { xs: 1, md: .65, xl: 1 }, background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
-        WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
-      }}>
+      <Typography component="h1" sx={catalogHeroTitleSx}>
         <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material certo.</Box>
         <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>Encontre o material certo pelas especificações.</Box>
       </Typography>
@@ -210,8 +207,8 @@ export default function SearchPage() {
       <Box minWidth={0}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
           <Box minWidth={0}>
-            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 8.2, md: 9.5, xl: 12 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
-            <Typography variant="h5" fontWeight={800} sx={{ fontSize: { xs: 14.5, sm: 15.5, md: 18, xl: 24 }, lineHeight: 1.2, mt: .2 }}>
+            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 10, md: 10.5, xl: 11.3 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
+            <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
               {loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}
             </Typography>
           </Box>
