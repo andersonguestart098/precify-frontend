@@ -6,14 +6,17 @@ import {
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
+import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { HardHat } from "@phosphor-icons/react";
@@ -41,6 +44,17 @@ const modeOptions: Array<{
   { value: "THIRD_PARTY", title: "Contratar terceiro", description: "Especialidades organizadas por fase da obra", icon: HandshakeOutlinedIcon },
   { value: "BOTH", title: "Ambas as opções", description: "Combine equipe própria e terceiros por necessidade", icon: CompareArrowsRoundedIcon },
 ];
+
+const headerActionSx = {
+  minHeight: 42, px: 1.65, borderRadius: 999, textTransform: "none", fontWeight: 800,
+  fontSize: 12.5, whiteSpace: "nowrap", color: "#215e49",
+  border: "1px solid #c9e1d7", background: "linear-gradient(145deg,#ffffff,#f0f9f5)",
+  boxShadow: "0 4px 12px rgba(21,72,56,.06)",
+  transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease",
+  "&:hover": { transform: "translateY(-2px)", borderColor: "#83bca7", boxShadow: "0 8px 18px rgba(21,72,56,.11)", background: "#eaf7f1" },
+  "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+  "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+} as const;
 
 function includesSearch(group: LaborCatalogGroup, item: LaborCatalogItem, search: string) {
   if (!search) return true;
@@ -448,7 +462,7 @@ export default function LaborPage() {
 
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.5, md: 4.5 }, pb: { xs: 5, md: 5 } }}>
     <Box sx={{ maxWidth: 1020, mx: "auto" }}>
-      <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ md: "end" }} gap={2}>
+      <Stack direction={{ xs: "column", lg: "row" }} justifyContent="space-between" alignItems={{ lg: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.3 }}>Mão de obra da obra</Typography>
           <Typography component="h1" sx={{
@@ -459,7 +473,7 @@ export default function LaborPage() {
           <Typography color="text.secondary" sx={{ mt: .55, fontSize: { xs: 12.5, md: 14 } }}>Defina como a obra será atendida e selecione somente o que ela precisa.</Typography>
         </Box>
         <Stack direction="row" alignItems="center" gap={{ xs: .8, md: 1 }} flexWrap="wrap"
-          sx={{ alignSelf: { xs: "flex-start", md: "auto" } }}>
+          sx={{ alignSelf: { xs: "stretch", lg: "auto" }, justifyContent: { xs: "flex-start", lg: "flex-end" } }}>
           {selectedItems.length > 0 ? <Stack direction="row" alignItems="center" gap={.7}>
             <Typography sx={{ fontSize: { xs: 11.8, md: 12.5 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
               Resumo da obra
@@ -486,11 +500,17 @@ export default function LaborPage() {
             </ButtonBase>
           </Stack> : null}
 
-          <Button component={RouterLink} to="/mao-de-obra" variant="outlined" sx={{
-            minHeight: 40, px: 1.55,
-            borderRadius: "10px", textTransform: "none", fontWeight: 780, borderColor: "#cfdfd9", color: "#315e4e",
-            bgcolor: "rgba(255,255,255,.78)", "&:hover": { borderColor: "#94c5b3", bgcolor: "#f7fbf9" },
-          }}>
+          <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`}
+            startIcon={<CalculateOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+            Composições ({project.compositionIds.length})
+          </Button>
+          <Button component={RouterLink} to="/produtos"
+            startIcon={<Inventory2OutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+            Produtos
+          </Button>
+          <Button component={RouterLink} to="/mao-de-obra"
+            startIcon={<SwapHorizRoundedIcon sx={{ fontSize: 19 }} />}
+            sx={{ ...headerActionSx, borderColor: "#d4e2dd", background: "#fff", color: "#315e4e" }}>
             Trocar obra
           </Button>
         </Stack>
@@ -498,17 +518,6 @@ export default function LaborPage() {
 
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
       {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
-
-      <Stack direction="row" gap={.85} flexWrap="wrap" mt={2} aria-label="Navegação desta obra">
-        <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`} size="small" variant="outlined"
-          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Composições ({project.compositionIds.length})</Button>
-        <Button component="a" href="#labor-mode-title" size="small" variant="outlined"
-          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Planejamento</Button>
-        {(mode === "TEAM" || mode === "BOTH") && <Button component="a" href="#labor-team-title" size="small" variant="outlined"
-          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Equipe ({teamSelected + bothSelected} funções)</Button>}
-        {(mode === "THIRD_PARTY" || mode === "BOTH") && <Button component="a" href="#labor-services-title" size="small" variant="outlined"
-          sx={{ borderRadius: 999, textTransform: "none", fontWeight: 750 }}>Serviços ({thirdSelected + bothSelected})</Button>}
-      </Stack>
 
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
         <Typography id="labor-mode-title" fontWeight={850} color="#244d40" sx={{ fontSize: 15 }}>Como esta obra será atendida?</Typography>
