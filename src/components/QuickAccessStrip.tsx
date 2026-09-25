@@ -164,40 +164,39 @@ export default function QuickAccessStrip() {
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
-            borderRadius: featured ? "50%" : { xs: "12px", md: "12px", xl: "14px" },
+            borderRadius: { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
             color: featured ? "#fff" : "#285e4c",
             background: featured
-              ? "linear-gradient(145deg,#0a7659,#005f48)"
+              ? "linear-gradient(145deg,#148064,#08664f)"
               : "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: featured ? "2px solid rgba(211,244,233,.86)" : "1px solid rgba(0,107,79,.06)",
+            border: featured ? "1px solid rgba(185,229,214,.82)" : "1px solid rgba(0,107,79,.06)",
             boxShadow: featured
-              ? "0 6px 14px rgba(0,107,79,.20), 0 0 0 3px rgba(38,155,120,.07), inset 0 0 0 1px rgba(255,255,255,.16)"
+              ? "0 5px 13px rgba(0,107,79,.18), 0 0 0 2px rgba(38,155,120,.055), inset 0 1px 0 rgba(255,255,255,.18)"
               : "0 2px 6px rgba(24,60,48,.035)",
             ...(featured ? {
-              animation: "aiIconFloat 3.8s ease-in-out infinite",
+              animation: "aiIconGlow 4.2s ease-in-out infinite",
               "&::before": {
                 content: '""',
                 position: "absolute",
-                inset: -4,
-                borderRadius: "50%",
-                background: "conic-gradient(from 0deg,rgba(191,233,219,.28),rgba(76,193,154,.68),rgba(0,107,79,.32),rgba(120,223,189,.72),rgba(216,244,235,.34),rgba(57,146,116,.62),rgba(191,233,219,.28))",
+                inset: -3,
+                borderRadius: { xs: "14px", md: "14px", xl: "16px" },
+                border: "1px solid rgba(38,155,120,.18)",
                 zIndex: -1,
-                opacity: .85,
-                animation: "aiBorderOrbit 9s linear infinite",
+                opacity: .62,
+                boxShadow: "0 0 10px rgba(38,155,120,.11)",
               },
-              "@keyframes aiBorderOrbit": { to: { transform: "rotate(360deg)" } },
-              "@keyframes aiIconFloat": {
-                "0%,100%": { transform: "translateY(0) scale(1)", boxShadow: "0 6px 14px rgba(0,107,79,.20), 0 0 0 3px rgba(38,155,120,.07), inset 0 0 0 1px rgba(255,255,255,.16)" },
-                "50%": { transform: "translateY(-1px) scale(1.03)", boxShadow: "0 8px 18px rgba(0,107,79,.25), 0 0 0 4px rgba(38,155,120,.09), inset 0 0 0 1px rgba(255,255,255,.20)" },
+              "@keyframes aiIconGlow": {
+                "0%,100%": { transform: "translateY(0)", boxShadow: "0 5px 13px rgba(0,107,79,.18), 0 0 0 2px rgba(38,155,120,.055), inset 0 1px 0 rgba(255,255,255,.18)" },
+                "50%": { transform: "translateY(-1px)", boxShadow: "0 7px 16px rgba(0,107,79,.22), 0 0 0 3px rgba(38,155,120,.075), inset 0 1px 0 rgba(255,255,255,.22)" },
               },
               "& svg": {
-                animation: "aiSparkle 3.8s ease-in-out infinite",
-                filter: "drop-shadow(0 0 3px rgba(255,255,255,.34))",
+                animation: "aiSparkle 4.2s ease-in-out infinite",
+                filter: "drop-shadow(0 0 2px rgba(255,255,255,.28))",
               },
               "@keyframes aiSparkle": {
-                "0%,100%": { transform: "scale(.98)", opacity: .92 },
-                "50%": { transform: "scale(1.07)", opacity: 1 },
+                "0%,100%": { transform: "scale(.99)", opacity: .94 },
+                "50%": { transform: "scale(1.045)", opacity: 1 },
               },
             } : {}),
             "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
