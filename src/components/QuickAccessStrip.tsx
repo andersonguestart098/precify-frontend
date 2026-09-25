@@ -1,9 +1,9 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Box, ButtonBase, Stack, Typography } from "@mui/material";
-import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddHomeWorkOutlinedIcon from "@mui/icons-material/AddHomeWorkOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import { HardHat } from "@phosphor-icons/react";
@@ -47,10 +47,10 @@ const shortcuts = [
     available: true,
   },
   {
-    to: "/composicoes",
-    label: "Composições",
-    description: "Materiais e custos",
-    icon: <CalculateOutlinedIcon />,
+    to: "/favoritos",
+    label: "Favoritos",
+    description: "Tudo que você salvou",
+    icon: <StarOutlineRoundedIcon />,
     featured: false,
     art: "left",
     available: true,
