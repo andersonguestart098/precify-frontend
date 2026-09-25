@@ -100,7 +100,7 @@ export default function QuickAccessStrip() {
           borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.095)",
+          borderColor: featured ? "rgba(0,107,79,.38)" : "rgba(0,107,79,.095)",
           background: featured
             ? "linear-gradient(148deg,rgba(250,253,252,.99) 0%,rgba(231,245,240,.98) 58%,rgba(220,239,232,.94) 100%)"
             : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
@@ -121,10 +121,16 @@ export default function QuickAccessStrip() {
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
           ...(featured ? {
-            animation: "aiCardBreath 4.8s ease-in-out infinite",
+            animation: "aiCardBreath 3.8s ease-in-out infinite",
             "@keyframes aiCardBreath": {
-              "0%,100%": { boxShadow: "0 8px 22px rgba(0,107,79,.075), inset 0 1px 0 rgba(255,255,255,.9)" },
-              "50%": { boxShadow: "0 10px 27px rgba(0,107,79,.13), 0 0 0 2px rgba(38,155,120,.045), inset 0 1px 0 rgba(255,255,255,.94)" },
+              "0%,100%": {
+                borderColor: "rgba(0,107,79,.30)",
+                boxShadow: "0 8px 22px rgba(0,107,79,.08), 0 0 0 0 rgba(38,155,120,0), inset 0 1px 0 rgba(255,255,255,.92)",
+              },
+              "50%": {
+                borderColor: "rgba(38,155,120,.56)",
+                boxShadow: "0 11px 28px rgba(0,107,79,.15), 0 0 0 3px rgba(38,155,120,.085), inset 0 1px 0 rgba(255,255,255,.96)",
+              },
             },
             "&::after": {
               content: '""', position: "absolute", inset: -1, borderRadius: "inherit", zIndex: 0,
@@ -151,11 +157,30 @@ export default function QuickAccessStrip() {
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 }, borderRadius: { xs: "12px", md: "12px", xl: "14px" },
-            display: "grid", placeItems: "center", color: "#285e4c",
-            background: "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: "1px solid rgba(0,107,79,.06)",
-            boxShadow: "0 2px 6px rgba(24,60,48,.035)",
+            display: "grid", placeItems: "center",
+            color: featured ? "#0a7257" : "#285e4c",
+            background: featured
+              ? "linear-gradient(145deg,#f4fbf8,#d7eee5)"
+              : "linear-gradient(145deg,#eef8f4,#dfeee8)",
+            border: featured ? "1px solid rgba(38,155,120,.22)" : "1px solid rgba(0,107,79,.06)",
+            boxShadow: featured ? "0 3px 10px rgba(0,107,79,.10)" : "0 2px 6px rgba(24,60,48,.035)",
+            ...(featured ? {
+              animation: "aiIconPulse 2.8s ease-in-out infinite",
+              "@keyframes aiIconPulse": {
+                "0%,100%": { transform: "scale(1)", boxShadow: "0 3px 10px rgba(0,107,79,.10)" },
+                "50%": { transform: "scale(1.055)", boxShadow: "0 4px 14px rgba(38,155,120,.24), 0 0 0 3px rgba(38,155,120,.07)" },
+              },
+              "& svg": {
+                animation: "aiSparkle 2.8s ease-in-out infinite",
+                filter: "drop-shadow(0 0 0 rgba(38,155,120,0))",
+              },
+              "@keyframes aiSparkle": {
+                "0%,100%": { transform: "rotate(0deg) scale(1)", filter: "drop-shadow(0 0 0 rgba(38,155,120,0))" },
+                "50%": { transform: "rotate(7deg) scale(1.08)", filter: "drop-shadow(0 2px 4px rgba(38,155,120,.28))" },
+              },
+            } : {}),
             "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
+            "@media (prefers-reduced-motion: reduce)": { animation: "none", "& svg": { animation: "none" } },
           }}>{icon}</Box>
           <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
