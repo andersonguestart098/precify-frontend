@@ -120,6 +120,24 @@ export default function QuickAccessStrip() {
               : "radial-gradient(circle at 38% 38%,rgba(38,155,120,.07),rgba(38,155,120,.018) 60%,transparent 73%)",
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
+          ...(featured ? {
+            animation: "aiCardBreath 4.8s ease-in-out infinite",
+            "@keyframes aiCardBreath": {
+              "0%,100%": { boxShadow: "0 8px 22px rgba(0,107,79,.075), inset 0 1px 0 rgba(255,255,255,.9)" },
+              "50%": { boxShadow: "0 10px 27px rgba(0,107,79,.13), 0 0 0 2px rgba(38,155,120,.045), inset 0 1px 0 rgba(255,255,255,.94)" },
+            },
+            "&::after": {
+              content: '""', position: "absolute", inset: -1, borderRadius: "inherit", zIndex: 0,
+              pointerEvents: "none", opacity: .58,
+              background: "linear-gradient(112deg,transparent 22%,rgba(255,255,255,.5) 46%,rgba(214,242,233,.24) 52%,transparent 70%)",
+              transform: "translateX(-135%)",
+              animation: "aiSoftSweep 5.4s ease-in-out infinite",
+            },
+            "@keyframes aiSoftSweep": {
+              "0%,68%": { transform: "translateX(-135%)" },
+              "86%,100%": { transform: "translateX(135%)" },
+            },
+          } : {}),
           ...(available ? {
             "@media (hover:hover)": { "&:hover": {
               transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.21)",
@@ -127,7 +145,7 @@ export default function QuickAccessStrip() {
             } },
           } : {}),
           "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-          "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
+          "@media (prefers-reduced-motion: reduce)": { transition: "none", animation: "none", "&::after": { animation: "none", display: "none" }, "&:hover": { transform: "none" } },
         }}
       >
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
