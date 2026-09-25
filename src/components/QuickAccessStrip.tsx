@@ -100,12 +100,12 @@ export default function QuickAccessStrip() {
           borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.38)" : "rgba(0,107,79,.095)",
+          borderColor: featured ? "rgba(0,107,79,.48)" : "rgba(0,107,79,.095)",
           background: featured
-            ? "linear-gradient(148deg,rgba(250,253,252,.99) 0%,rgba(231,245,240,.98) 58%,rgba(220,239,232,.94) 100%)"
+            ? "linear-gradient(142deg,#f7fdfa 0%,#e4f5ee 56%,#d5eee4 100%)"
             : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
           boxShadow: featured
-            ? "0 8px 22px rgba(0,107,79,.075), inset 0 1px 0 rgba(255,255,255,.9)"
+            ? "0 10px 28px rgba(0,107,79,.14), 0 0 0 2px rgba(38,155,120,.07), inset 0 1px 0 rgba(255,255,255,.94)"
             : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
           cursor: available ? "pointer" : "default",
           transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
@@ -121,15 +121,15 @@ export default function QuickAccessStrip() {
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
           ...(featured ? {
-            animation: "aiCardBreath 3.8s ease-in-out infinite",
+            animation: "aiCardBreath 3.6s ease-in-out infinite",
             "@keyframes aiCardBreath": {
               "0%,100%": {
-                borderColor: "rgba(0,107,79,.30)",
-                boxShadow: "0 8px 22px rgba(0,107,79,.08), 0 0 0 0 rgba(38,155,120,0), inset 0 1px 0 rgba(255,255,255,.92)",
+                borderColor: "rgba(0,107,79,.46)",
+                boxShadow: "0 10px 28px rgba(0,107,79,.13), 0 0 0 2px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.94)",
               },
               "50%": {
-                borderColor: "rgba(38,155,120,.56)",
-                boxShadow: "0 11px 28px rgba(0,107,79,.15), 0 0 0 3px rgba(38,155,120,.085), inset 0 1px 0 rgba(255,255,255,.96)",
+                borderColor: "rgba(38,155,120,.72)",
+                boxShadow: "0 13px 34px rgba(0,107,79,.20), 0 0 0 4px rgba(38,155,120,.11), inset 0 1px 0 rgba(255,255,255,.98)",
               },
             },
             "&::after": {
@@ -146,8 +146,11 @@ export default function QuickAccessStrip() {
           } : {}),
           ...(available ? {
             "@media (hover:hover)": { "&:hover": {
-              transform: "translateY(-2px)", borderColor: "rgba(0,107,79,.21)",
-              boxShadow: featured ? "0 12px 26px rgba(0,107,79,.11)" : "0 10px 23px rgba(0,107,79,.065)",
+              transform: "translateY(-2px)",
+              borderColor: featured ? "rgba(38,155,120,.72)" : "rgba(0,107,79,.21)",
+              boxShadow: featured
+                ? "0 14px 36px rgba(0,107,79,.22), 0 0 0 4px rgba(38,155,120,.11)"
+                : "0 10px 23px rgba(0,107,79,.065)",
             } },
           } : {}),
           "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
@@ -183,16 +186,19 @@ export default function QuickAccessStrip() {
             "@media (prefers-reduced-motion: reduce)": { animation: "none", "& svg": { animation: "none" } },
           }}>{icon}</Box>
           <Box sx={{
-            width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center", color: "#5c7a70",
-            bgcolor: "rgba(255,255,255,.6)", border: "1px solid rgba(0,107,79,.065)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,.72)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
+            width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center",
+            color: featured ? "#087458" : "#5c7a70",
+            bgcolor: featured ? "rgba(241,252,247,.88)" : "rgba(255,255,255,.6)",
+            border: featured ? "1px solid rgba(38,155,120,.18)" : "1px solid rgba(0,107,79,.065)",
+            boxShadow: featured ? "0 2px 8px rgba(0,107,79,.08), inset 0 1px 0 rgba(255,255,255,.9)" : "inset 0 1px 0 rgba(255,255,255,.72)",
+            backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
           }}>
             <ArrowOutwardRoundedIcon sx={{ fontSize: { xs: 16, xl: 18 } }} />
           </Box>
         </Stack>
 
         <Box minWidth={0} position="relative" zIndex={1}>
-          <Typography sx={{ fontSize: { xs: 12.8, md: 13.2, xl: 14 }, fontWeight: 900, color: "#1f493b", lineHeight: 1.15, letterSpacing: "-.015em" }}>{label}</Typography>
+          <Typography sx={{ fontSize: { xs: 12.8, md: 13.2, xl: 14 }, fontWeight: 900, color: featured ? "#0b624b" : "#1f493b", lineHeight: 1.15, letterSpacing: "-.015em" }}>{label}</Typography>
           <Typography sx={{ mt: .34, fontSize: { xs: 9.7, md: 10.5, xl: 11.2 }, lineHeight: 1.3, color: "#74877f" }}>{description}</Typography>
         </Box>
       </ButtonBase>)}
