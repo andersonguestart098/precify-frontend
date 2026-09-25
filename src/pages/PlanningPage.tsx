@@ -30,40 +30,9 @@ import {
 import type { Composition } from "../domain/composition";
 import { downloadProjectSnapshot } from "../domain/export";
 import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
+import { projectTypeLabel, projectTypeOptions } from "../data/projectTypes";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-
-const projectTypeOptions = [
-  ["1.1", "Residencial • Unifamiliar (casa térrea / sobrado)"],
-  ["1.2", "Residencial • Multifamiliar horizontal (condomínio de casas)"],
-  ["1.3", "Residencial • Multifamiliar vertical – padrão econômico"],
-  ["1.4", "Residencial • Multifamiliar vertical – padrão médio"],
-  ["1.5", "Residencial • Multifamiliar vertical – alto padrão"],
-  ["1.6", "Residencial • Loteamento / urbanização residencial"],
-  ["2.1", "Comercial • Varejo / lojas"],
-  ["2.2", "Comercial • Edifícios corporativos / escritórios"],
-  ["2.3", "Comercial • Shopping centers"],
-  ["2.4", "Comercial • Hotelaria / flats"],
-  ["2.5", "Comercial • Restaurantes / food service"],
-  ["3.1", "Institucional • Educacional (escolas, universidades)"],
-  ["3.2", "Institucional • Saúde (hospitais, clínicas, UBS)"],
-  ["3.3", "Institucional • Público / administrativo"],
-  ["3.4", "Institucional • Religioso"],
-  ["3.5", "Institucional • Cultural / esportivo"],
-  ["4.1", "Industrial • Galpões industriais"],
-  ["4.2", "Industrial • Plantas fabris / produtivas"],
-  ["4.3", "Industrial • Armazéns / centros logísticos"],
-  ["4.4", "Industrial • Agroindustrial"],
-  ["5.1", "Infraestrutura • Viária (rodovias, pontes, pavimentação)"],
-  ["5.2", "Infraestrutura • Saneamento (água, esgoto)"],
-  ["5.3", "Infraestrutura • Energia (subestações, transmissão)"],
-  ["5.4", "Infraestrutura • Telecomunicações"],
-  ["5.5", "Infraestrutura • Urbana (drenagem, urbanização)"],
-] as const;
-
-function projectTypeLabel(code?: string | null) {
-  return projectTypeOptions.find(([value]) => value === code)?.[1] ?? "";
-}
 
 function laborModeLabel(mode: LaborPlan["mode"]) {
   if (mode === "TEAM") return "Equipe própria";
@@ -229,6 +198,12 @@ export default function PlanningPage() {
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState<Record<string, boolean>>({});
   const [error, setError] = useState("");
+  const typeFilter = params.get("tipo") ?? "";
+  const typeFilterLabel = projectTypeLabel(typeFilter);
+  const filteredProjects = useMemo(
+    () => typeFilter ? projects.filter(project => project.projectType === typeFilter) : projects,
+    [projects, typeFilter],
+  );
 
   useEffect(() => {
     let active = true;
@@ -253,10 +228,10 @@ export default function PlanningPage() {
   }, [user.id]);
 
   const selectedCompositions = useMemo(() => compositions.filter(composition => ids.includes(composition.id)), [compositions, ids]);
-  const totalCompositionLinks = useMemo(() => projects.reduce((sum, project) => sum + project.compositionIds.length, 0), [projects]);
-  const overallTotal = useMemo(() => projects.reduce((sum, project) => sum + compositions
+  const totalCompositionLinks = useMemo(() => filteredProjects.reduce((sum, project) => sum + project.compositionIds.length, 0), [filteredProjects]);
+  const overallTotal = useMemo(() => filteredProjects.reduce((sum, project) => sum + compositions
     .filter(composition => project.compositionIds.includes(composition.id))
-    .reduce((subtotal, composition) => subtotal + composition.total, 0), 0), [projects, compositions]);
+    .reduce((subtotal, composition) => subtotal + composition.total, 0), 0), [filteredProjects, compositions]);
 
   const ensureLaborPlan = async (projectId: string) => {
     if (laborPlans[projectId] || laborLoading[projectId]) return;
@@ -278,7 +253,7 @@ export default function PlanningPage() {
   const resetForm = () => {
     setEditing(undefined);
     setName("");
-    setProjectType("");
+    setProjectType(typeFilterLabel ? typeFilter : "");
     setLocation("");
     setNotes("");
     setIds([]);
@@ -315,6 +290,14 @@ export default function PlanningPage() {
     setIds(project.compositionIds);
     setError("");
     setFormOpen(true);
+  };
+
+  const clearTypeFilter = () => {
+    setParams(current => {
+      const next = new URLSearchParams(current);
+      next.delete("tipo");
+      return next;
+    }, { replace: true });
   };
 
   const save = async () => {
@@ -419,7 +402,7 @@ export default function PlanningPage() {
         border: "1px solid #dce9e5", borderRadius: "12px", overflow: "hidden", bgcolor: "#fbfdfc",
       }}>
         {[
-          { label: "Obras cadastradas", value: String(projects.length) },
+          { label: typeFilterLabel ? "Obras filtradas" : "Obras cadastradas", value: String(filteredProjects.length) },
           { label: "Composições vinculadas", value: String(totalCompositionLinks) },
           { label: "Total das composições", value: currency.format(overallTotal) },
         ].map((metric, index) => <Box key={metric.label} sx={{
@@ -432,6 +415,17 @@ export default function PlanningPage() {
         </Box>)}
       </Box>
 
+      {typeFilterLabel && <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={.8} mt={1.35}>
+        <Chip
+          label={`Tipo de obra: ${typeFilterLabel}`}
+          onDelete={clearTypeFilter}
+          sx={{ alignSelf: { xs: "flex-start", sm: "center" }, bgcolor: "#e9f4f0", color: "#245843", fontWeight: 780 }}
+        />
+        <Typography color="text.secondary" sx={{ fontSize: 11.5 }}>
+          Mostrando somente as obras cadastradas neste tipo.
+        </Typography>
+      </Stack>}
+
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
 
       {busy ? <Box minHeight={260} display="grid" sx={{ placeItems: "center" }}><CircularProgress /></Box> : !projects.length ?
@@ -440,9 +434,18 @@ export default function PlanningPage() {
           <Typography fontWeight={850} color="#284d40" mt={1.2}>Nenhuma obra cadastrada.</Typography>
           <Typography color="text.secondary" fontSize={14} mt={.5}>Crie uma obra e vincule uma ou várias composições a ela.</Typography>
           <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew} sx={{ mt: 2.2, borderRadius: "9px", textTransform: "none" }}>Criar obra</Button>
+        </Box> : !filteredProjects.length ?
+        <Box sx={{ mt: 4, py: 6, textAlign: "center", borderTop: "1px solid #e3ebe8", borderBottom: "1px solid #e3ebe8" }}>
+          <HomeWorkOutlinedIcon sx={{ fontSize: 40, color: "#8ca199" }} />
+          <Typography fontWeight={850} color="#284d40" mt={1.1}>Nenhuma obra deste tipo.</Typography>
+          <Typography color="text.secondary" fontSize={13} mt={.45}>Você pode limpar o filtro ou cadastrar uma nova obra já com este tipo selecionado.</Typography>
+          <Stack direction="row" justifyContent="center" gap={1} mt={2}>
+            <Button variant="outlined" onClick={clearTypeFilter} sx={{ borderRadius: "9px", textTransform: "none" }}>Limpar filtro</Button>
+            <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew} sx={{ borderRadius: "9px", textTransform: "none" }}>Criar obra</Button>
+          </Stack>
         </Box> :
         <Stack gap={1} mt={3}>
-          {projects.map(project => {
+          {filteredProjects.map(project => {
             const lists = compositions.filter(composition => project.compositionIds.includes(composition.id));
             const total = lists.reduce((sum, composition) => sum + composition.total, 0);
             const laborPlan = laborPlans[project.id];
@@ -594,10 +597,10 @@ export default function PlanningPage() {
               onChange={event => setName(event.target.value)} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <Autocomplete
               options={projectTypeOptions}
-              value={projectTypeOptions.find(([value]) => value === projectType) ?? null}
-              getOptionLabel={option => `${option[0]} — ${option[1]}`}
-              isOptionEqualToValue={(option, value) => option[0] === value[0]}
-              onChange={(_, selected) => setProjectType(selected?.[0] ?? "")}
+              value={projectTypeOptions.find(option => option.value === projectType) ?? null}
+              getOptionLabel={option => `${option.value} — ${option.fullLabel}`}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              onChange={(_, selected) => setProjectType(selected?.value ?? "")}
               noOptionsText="Nenhum tipo encontrado"
               renderInput={params => <TextField {...params} label="Tipo de obra" placeholder="Selecione o tipo de obra" />}
             />
