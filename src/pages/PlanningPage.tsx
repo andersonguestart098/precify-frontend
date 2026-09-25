@@ -253,7 +253,7 @@ export default function PlanningPage() {
   const resetForm = () => {
     setEditing(undefined);
     setName("");
-    setProjectType(typeFilterLabel ? typeFilter : "");
+    setProjectType("");
     setLocation("");
     setNotes("");
     setIds([]);
@@ -263,7 +263,7 @@ export default function PlanningPage() {
   const openNew = () => {
     setEditing(undefined);
     setName("");
-    setProjectType("");
+    setProjectType(typeFilterLabel ? typeFilter : "");
     setLocation("");
     setNotes("");
     setIds([]);
