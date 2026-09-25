@@ -138,15 +138,40 @@ export default function QuickAccessStrip() {
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
             borderRadius: { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
-            color: featured ? "#17664f" : "#285e4c",
+            overflow: "hidden",
+            color: featured ? "rgba(16,96,74,.86)" : "#285e4c",
             background: featured
-              ? "linear-gradient(145deg,#f2faf7,#e3f2ec)"
+              ? "linear-gradient(145deg,rgba(255,255,255,.88) 0%,rgba(244,250,247,.8) 54%,rgba(232,245,240,.72) 100%)"
               : "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: featured ? "1px solid rgba(0,107,79,.11)" : "1px solid rgba(0,107,79,.06)",
+            border: featured ? "1px solid rgba(0,107,79,.075)" : "1px solid rgba(0,107,79,.06)",
             boxShadow: featured
-              ? "0 3px 8px rgba(0,107,79,.055)"
+              ? "0 7px 18px rgba(0,107,79,.055), inset 0 1px 0 rgba(255,255,255,.82)"
               : "0 2px 6px rgba(24,60,48,.035)",
-            "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
+            backdropFilter: featured ? "blur(9px)" : "none",
+            WebkitBackdropFilter: featured ? "blur(9px)" : "none",
+            "&::before": featured ? {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              borderRadius: "inherit",
+              background: "radial-gradient(circle at 28% 24%,rgba(255,255,255,.55),transparent 58%)",
+              pointerEvents: "none",
+            } : {},
+            "&::after": featured ? {
+              content: '""',
+              position: "absolute",
+              inset: 2,
+              borderRadius: "inherit",
+              border: "1px solid rgba(255,255,255,.38)",
+              pointerEvents: "none",
+            } : {},
+            "& svg": {
+              width: { xs: 22, md: 24, xl: 26 },
+              height: { xs: 22, md: 24, xl: 26 },
+              position: "relative",
+              zIndex: 1,
+              filter: featured ? "drop-shadow(0 1px 2px rgba(0,107,79,.07))" : "none",
+            },
             "@media (prefers-reduced-motion: reduce)": {
               animation: "none",
               "&::before": { animation: "none" },
