@@ -100,12 +100,12 @@ export default function QuickAccessStrip() {
           borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.48)" : "rgba(0,107,79,.095)",
+          borderColor: featured ? "rgba(0,107,79,.42)" : "rgba(0,107,79,.095)",
           background: featured
-            ? "linear-gradient(142deg,#f7fdfa 0%,#e4f5ee 56%,#d5eee4 100%)"
+            ? "linear-gradient(135deg,rgba(253,255,254,.99) 0%,rgba(233,247,241,.98) 48%,rgba(218,241,232,.96) 100%)"
             : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
           boxShadow: featured
-            ? "0 10px 28px rgba(0,107,79,.14), 0 0 0 2px rgba(38,155,120,.07), inset 0 1px 0 rgba(255,255,255,.94)"
+            ? "0 12px 30px rgba(0,107,79,.13), 0 0 0 1px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.98)"
             : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
           cursor: available ? "pointer" : "default",
           transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
@@ -121,27 +121,31 @@ export default function QuickAccessStrip() {
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
           ...(featured ? {
-            animation: "aiCardBreath 3.6s ease-in-out infinite",
-            "@keyframes aiCardBreath": {
+            animation: "aiCardAura 4.6s ease-in-out infinite",
+            "@keyframes aiCardAura": {
               "0%,100%": {
-                borderColor: "rgba(0,107,79,.46)",
-                boxShadow: "0 10px 28px rgba(0,107,79,.13), 0 0 0 2px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.94)",
+                boxShadow: "0 12px 30px rgba(0,107,79,.13), 0 0 0 1px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.98)",
               },
               "50%": {
-                borderColor: "rgba(38,155,120,.72)",
-                boxShadow: "0 13px 34px rgba(0,107,79,.20), 0 0 0 4px rgba(38,155,120,.11), inset 0 1px 0 rgba(255,255,255,.98)",
+                boxShadow: "0 14px 34px rgba(0,107,79,.17), 0 0 0 3px rgba(38,155,120,.09), inset 0 1px 0 rgba(255,255,255,1)",
               },
             },
             "&::after": {
-              content: '""', position: "absolute", inset: -1, borderRadius: "inherit", zIndex: 0,
-              pointerEvents: "none", opacity: .58,
-              background: "linear-gradient(112deg,transparent 22%,rgba(255,255,255,.5) 46%,rgba(214,242,233,.24) 52%,transparent 70%)",
-              transform: "translateX(-135%)",
-              animation: "aiSoftSweep 5.4s ease-in-out infinite",
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              borderRadius: "inherit",
+              zIndex: 0,
+              pointerEvents: "none",
+              opacity: .72,
+              background: "linear-gradient(115deg,transparent 0%,transparent 35%,rgba(255,255,255,.62) 48%,rgba(210,241,230,.34) 53%,transparent 66%,transparent 100%)",
+              backgroundSize: "220% 100%",
+              backgroundPosition: "140% 0",
+              animation: "aiGlassSweep 5.8s cubic-bezier(.4,0,.2,1) infinite",
             },
-            "@keyframes aiSoftSweep": {
-              "0%,68%": { transform: "translateX(-135%)" },
-              "86%,100%": { transform: "translateX(135%)" },
+            "@keyframes aiGlassSweep": {
+              "0%,64%": { backgroundPosition: "140% 0" },
+              "86%,100%": { backgroundPosition: "-120% 0" },
             },
           } : {}),
           ...(available ? {
@@ -168,18 +172,18 @@ export default function QuickAccessStrip() {
             border: featured ? "1px solid rgba(38,155,120,.22)" : "1px solid rgba(0,107,79,.06)",
             boxShadow: featured ? "0 3px 10px rgba(0,107,79,.10)" : "0 2px 6px rgba(24,60,48,.035)",
             ...(featured ? {
-              animation: "aiIconPulse 2.8s ease-in-out infinite",
-              "@keyframes aiIconPulse": {
-                "0%,100%": { transform: "scale(1)", boxShadow: "0 3px 10px rgba(0,107,79,.10)" },
-                "50%": { transform: "scale(1.055)", boxShadow: "0 4px 14px rgba(38,155,120,.24), 0 0 0 3px rgba(38,155,120,.07)" },
+              animation: "aiIconFloat 3.8s ease-in-out infinite",
+              "@keyframes aiIconFloat": {
+                "0%,100%": { transform: "translateY(0) scale(1)", boxShadow: "0 3px 10px rgba(0,107,79,.10)" },
+                "50%": { transform: "translateY(-1.5px) scale(1.035)", boxShadow: "0 5px 16px rgba(38,155,120,.20), 0 0 0 2px rgba(38,155,120,.055)" },
               },
               "& svg": {
-                animation: "aiSparkle 2.8s ease-in-out infinite",
-                filter: "drop-shadow(0 0 0 rgba(38,155,120,0))",
+                animation: "aiSparkle 3.8s ease-in-out infinite",
+                filter: "drop-shadow(0 2px 4px rgba(38,155,120,.14))",
               },
               "@keyframes aiSparkle": {
-                "0%,100%": { transform: "rotate(0deg) scale(1)", filter: "drop-shadow(0 0 0 rgba(38,155,120,0))" },
-                "50%": { transform: "rotate(7deg) scale(1.08)", filter: "drop-shadow(0 2px 4px rgba(38,155,120,.28))" },
+                "0%,100%": { transform: "rotate(0deg) scale(1)" },
+                "50%": { transform: "rotate(5deg) scale(1.06)" },
               },
             } : {}),
             "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
