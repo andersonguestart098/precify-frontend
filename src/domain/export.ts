@@ -48,7 +48,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
 
   for (const composition of compositions) {
     rows.push([
-      "COMPOSIÇÃO", project.name, project.id,
+      "COMPOSIÇÃO", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
       composition.name, composition.id, composition.createdAt, composition.updatedAt,
       "", "", "", "", "",
       "", "", "", "", composition.total,
