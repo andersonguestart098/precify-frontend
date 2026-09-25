@@ -3,7 +3,7 @@ import type { Composition, CompositionItemInput } from "../domain/composition";
 
 const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8080/api").replace(/\/$/, "");
 
-export interface Project { id: string; name: string; compositionIds: string[]; }
+export interface Project { id: string; name: string; projectType?: string | null; location?: string | null; notes?: string | null; compositionIds: string[]; }
 
 export type LaborMode = "" | "TEAM" | "THIRD_PARTY" | "BOTH";
 export type LaborSource = "TEAM" | "THIRD_PARTY";
