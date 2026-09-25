@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
-import { HouseLine, Buildings, BuildingApartment, Storefront, Factory, Bank, RoadHorizon, MapTrifold, Check, GraduationCap, Hospital, ForkKnife, Bed, Warehouse, Lightning, Broadcast, Drop, Tree } from "@phosphor-icons/react";
+import { HouseLine, Buildings, BuildingApartment, Storefront, Factory, Bank, RoadHorizon, MapTrifold, GraduationCap, Hospital, ForkKnife, Bed, Warehouse, Lightning, Broadcast, Drop, Tree } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import AccountGreeting from "../components/AccountGreeting";
@@ -13,54 +14,15 @@ import QuickAccessStrip from "../components/QuickAccessStrip";
 import { catalogCategoryIconSize, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import type { CatalogMaterial } from "../domain/search";
 import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
+import { projectTypeGroups } from "../data/projectTypes";
 
-const projectTypeGroups = [
-  {
-    code: "1", segment: "Residencial", icon: HouseLine, types: [
-      ["1.1", "Unifamiliar (casa térrea / sobrado)"],
-      ["1.2", "Multifamiliar horizontal (condomínio de casas)"],
-      ["1.3", "Multifamiliar vertical – padrão econômico"],
-      ["1.4", "Multifamiliar vertical – padrão médio"],
-      ["1.5", "Multifamiliar vertical – alto padrão"],
-      ["1.6", "Loteamento / urbanização residencial"],
-    ],
-  },
-  {
-    code: "2", segment: "Comercial", icon: Storefront, types: [
-      ["2.1", "Varejo / lojas"],
-      ["2.2", "Edifícios corporativos / escritórios"],
-      ["2.3", "Shopping centers"],
-      ["2.4", "Hotelaria / flats"],
-      ["2.5", "Restaurantes / food service"],
-    ],
-  },
-  {
-    code: "3", segment: "Institucional", icon: Bank, types: [
-      ["3.1", "Educacional (escolas, universidades)"],
-      ["3.2", "Saúde (hospitais, clínicas, UBS)"],
-      ["3.3", "Público / administrativo"],
-      ["3.4", "Religioso"],
-      ["3.5", "Cultural / esportivo"],
-    ],
-  },
-  {
-    code: "4", segment: "Industrial", icon: Factory, types: [
-      ["4.1", "Galpões industriais"],
-      ["4.2", "Plantas fabris / produtivas"],
-      ["4.3", "Armazéns / centros logísticos"],
-      ["4.4", "Agroindustrial"],
-    ],
-  },
-  {
-    code: "5", segment: "Infraestrutura", icon: RoadHorizon, types: [
-      ["5.1", "Viária (rodovias, pontes, pavimentação)"],
-      ["5.2", "Saneamento (água, esgoto)"],
-      ["5.3", "Energia (subestações, transmissão)"],
-      ["5.4", "Telecomunicações"],
-      ["5.5", "Urbana (drenagem, urbanização)"],
-    ],
-  },
-] as const;
+const projectGroupIcons: Record<string, Icon> = {
+  "1": HouseLine,
+  "2": Storefront,
+  "3": Bank,
+  "4": Factory,
+  "5": RoadHorizon,
+};
 
 const projectIcons: Record<string, Icon> = {
   "1.1": HouseLine, "1.2": Buildings, "1.3": BuildingApartment, "1.4": BuildingApartment, "1.5": BuildingApartment, "1.6": MapTrifold,
@@ -69,8 +31,12 @@ const projectIcons: Record<string, Icon> = {
   "4.1": Warehouse, "4.3": Warehouse, "4.4": Tree,
   "5.2": Drop, "5.3": Lightning, "5.4": Broadcast, "5.5": MapTrifold,
 };
+
 const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value, label]) => ({
-  value, label, segment: group.segment, icon: projectIcons[value] ?? group.icon,
+  value,
+  label,
+  segment: group.segment,
+  icon: projectIcons[value] ?? projectGroupIcons[group.code],
 })));
 
 export default function HomePage() {
@@ -81,7 +47,6 @@ export default function HomePage() {
     locationText: string;
     requestLocation: () => void;
   }>();
-  const [projectType, setProjectType] = useState("");
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => getCachedCatalog() ?? []);
   const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [projectScrolling, setProjectScrolling] = useState(false);
@@ -263,16 +228,13 @@ export default function HomePage() {
           "&::-webkit-scrollbar-thumb": { backgroundColor: projectScrolling ? "#a9d7c8" : "transparent", borderRadius: 999 }
         }}>
           {projectTypes.map(({ value, label, segment, icon: Icon }) => {
-            const selected = projectType === value;
-            return <ButtonBase key={value} aria-pressed={selected} onClick={() => setProjectType(selected ? "" : value)} sx={{
+            return <ButtonBase key={value} aria-label={`Ver obras do tipo ${segment}: ${label}`} onClick={() => navigate(`/obras?tipo=${encodeURIComponent(value)}`)} sx={{
               width: { xs: 174, sm: 190, md: 158, xl: 190 }, minWidth: { xs: 174, sm: 190, md: 158, xl: 190 }, minHeight: { xs: 126, md: 104, xl: 126 }, px: { xs: 1.5, md: 1.2, xl: 1.5 }, py: { xs: 1.5, md: 1.05, xl: 1.5 }, borderRadius: "14px",
               scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: { xs: 1, md: .7, xl: 1 }, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
               color: "#1a4f3e", border: "1px solid",
-              borderColor: selected ? "rgba(0,107,79,.42)" : "rgba(0,107,79,.13)",
-              background: selected
-                ? "linear-gradient(145deg,#ffffff,#e8f3ed)"
-                : "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,245,.74))",
-              boxShadow: selected ? "0 0 0 3px rgba(38,155,120,.08),0 6px 16px rgba(0,107,79,.09)" : "0 3px 12px rgba(24,60,48,.045)",
+              borderColor: "rgba(0,107,79,.13)",
+              background: "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,245,.74))",
+              boxShadow: "0 3px 12px rgba(24,60,48,.045)",
               transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
               WebkitTapHighlightColor: "transparent",
               "@media (hover: hover)": { "&:hover": { transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.3)", boxShadow: "0 6px 16px rgba(0,107,79,.08)" } },
@@ -283,8 +245,8 @@ export default function HomePage() {
                 <Box sx={{ width: { xs: 40, md: 40, xl: 44 }, height: { xs: 40, md: 40, xl: 44 }, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b", "& svg": { width: catalogCategoryIconSize, height: catalogCategoryIconSize } }}>
                   <Icon size={28} weight="duotone" aria-hidden="true" />
                 </Box>
-                <Box aria-hidden="true" sx={{ width: { xs: 18, md: 16, xl: 18 }, height: { xs: 18, md: 16, xl: 18 }, borderRadius: "50%", border: "1px solid", borderColor: selected ? "#70ad99" : "#dbe8e4", bgcolor: selected ? "#e8f3ed" : "transparent", display: "grid", placeItems: "center" }}>
-                  {selected && <Check size={12} weight="bold" />}
+                <Box aria-hidden="true" sx={{ width: { xs: 22, md: 20, xl: 22 }, height: { xs: 22, md: 20, xl: 22 }, borderRadius: "50%", border: "1px solid #dbe8e4", bgcolor: "rgba(255,255,255,.72)", color: "#55786c", display: "grid", placeItems: "center" }}>
+                  <ArrowForwardRoundedIcon sx={{ fontSize: { xs: 14, md: 13, xl: 14 } }} />
                 </Box>
               </Stack>
               <Box minWidth={0}>
