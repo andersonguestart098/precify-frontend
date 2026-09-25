@@ -31,14 +31,14 @@ export function downloadCompositions(compositions: Composition[]) {
 export function projectSnapshotCsv(project: Project, compositions: Composition[], laborPlan?: LaborPlan): string {
   const rows: unknown[][] = [
     [
-      "Tipo", "Obra", "ID da obra",
+      "Tipo", "Obra", "ID da obra", "Tipo de obra", "Localização", "Observações",
       "Composição", "ID composição", "Criada em", "Atualizada em",
       "Item / necessidade", "ID item", "Código material / M.O.", "ID produto", "Imagem",
       "Fornecedor", "Unidade", "Quantidade", "Preço unitário", "Subtotal",
       "Origem M.O.", "Fonte M.O.", "Modo M.O.", "Atualização M.O.",
     ],
     [
-      "RESUMO", project.name, project.id,
+      "RESUMO", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
       "", "", "", "",
       "", "", "", "", "",
       "", "", "", "", compositions.reduce((sum, composition) => sum + composition.total, 0),
@@ -57,7 +57,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
 
     if (!composition.items.length) {
       rows.push([
-        "ITEM COMPOSIÇÃO", project.name, project.id,
+        "ITEM COMPOSIÇÃO", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
         composition.name, composition.id, composition.createdAt, composition.updatedAt,
         "Sem itens", "", "", "", "",
         "", "", "", "", 0,
@@ -68,7 +68,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
 
     for (const item of composition.items) {
       rows.push([
-        "ITEM COMPOSIÇÃO", project.name, project.id,
+        "ITEM COMPOSIÇÃO", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
         composition.name, composition.id, composition.createdAt, composition.updatedAt,
         item.name, item.id, item.materialCode, item.productId ?? "", item.imageUrl ?? "",
         item.supplier ?? "", item.unit, item.quantity, item.unitPrice,
@@ -81,7 +81,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
   if (laborPlan?.items.length) {
     for (const item of laborPlan.items) {
       rows.push([
-        "MÃO DE OBRA", project.name, project.id,
+        "MÃO DE OBRA", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
         "", "", "", "",
         item.title, "", item.code, "", "",
         "", "", "", "", "",
@@ -90,7 +90,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
     }
   } else {
     rows.push([
-      "MÃO DE OBRA", project.name, project.id,
+      "MÃO DE OBRA", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
       "", "", "", "",
       "Nenhuma mão de obra vinculada", "", "", "", "",
       "", "", "", "", "",
