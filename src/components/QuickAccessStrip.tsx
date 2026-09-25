@@ -100,12 +100,12 @@ export default function QuickAccessStrip() {
           borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.42)" : "rgba(0,107,79,.095)",
+          borderColor: featured ? "rgba(0,107,79,.18)" : "rgba(0,107,79,.095)",
           background: featured
-            ? "linear-gradient(135deg,rgba(253,255,254,.99) 0%,rgba(233,247,241,.98) 48%,rgba(218,241,232,.96) 100%)"
+            ? "linear-gradient(148deg,rgba(255,255,255,.98) 0%,rgba(241,249,246,.94) 58%,rgba(232,245,240,.9) 100%)"
             : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
           boxShadow: featured
-            ? "0 12px 30px rgba(0,107,79,.13), 0 0 0 1px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.98)"
+            ? "0 7px 19px rgba(0,107,79,.05), 0 0 0 1px rgba(38,155,120,.025), inset 0 1px 0 rgba(255,255,255,.88)"
             : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
           cursor: available ? "pointer" : "default",
           transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
@@ -120,40 +120,12 @@ export default function QuickAccessStrip() {
               : "radial-gradient(circle at 38% 38%,rgba(38,155,120,.07),rgba(38,155,120,.018) 60%,transparent 73%)",
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
-          ...(featured ? {
-            animation: "aiCardAura 4.6s ease-in-out infinite",
-            "@keyframes aiCardAura": {
-              "0%,100%": {
-                boxShadow: "0 12px 30px rgba(0,107,79,.13), 0 0 0 1px rgba(38,155,120,.06), inset 0 1px 0 rgba(255,255,255,.98)",
-              },
-              "50%": {
-                boxShadow: "0 14px 34px rgba(0,107,79,.17), 0 0 0 3px rgba(38,155,120,.09), inset 0 1px 0 rgba(255,255,255,1)",
-              },
-            },
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              borderRadius: "inherit",
-              zIndex: 0,
-              pointerEvents: "none",
-              opacity: .72,
-              background: "linear-gradient(115deg,transparent 0%,transparent 35%,rgba(255,255,255,.62) 48%,rgba(210,241,230,.34) 53%,transparent 66%,transparent 100%)",
-              backgroundSize: "220% 100%",
-              backgroundPosition: "140% 0",
-              animation: "aiGlassSweep 5.8s cubic-bezier(.4,0,.2,1) infinite",
-            },
-            "@keyframes aiGlassSweep": {
-              "0%,64%": { backgroundPosition: "140% 0" },
-              "86%,100%": { backgroundPosition: "-120% 0" },
-            },
-          } : {}),
           ...(available ? {
             "@media (hover:hover)": { "&:hover": {
               transform: "translateY(-2px)",
-              borderColor: featured ? "rgba(38,155,120,.72)" : "rgba(0,107,79,.21)",
+              borderColor: featured ? "rgba(0,107,79,.28)" : "rgba(0,107,79,.21)",
               boxShadow: featured
-                ? "0 14px 36px rgba(0,107,79,.22), 0 0 0 4px rgba(38,155,120,.11)"
+                ? "0 10px 24px rgba(0,107,79,.075), 0 0 0 1px rgba(38,155,120,.04)"
                 : "0 10px 23px rgba(0,107,79,.065)",
             } },
           } : {}),
@@ -166,39 +138,14 @@ export default function QuickAccessStrip() {
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
             borderRadius: { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
-            color: featured ? "#fff" : "#285e4c",
+            color: featured ? "#17664f" : "#285e4c",
             background: featured
-              ? "linear-gradient(145deg,#148064,#08664f)"
+              ? "linear-gradient(145deg,#f2faf7,#e3f2ec)"
               : "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: featured ? "1px solid rgba(185,229,214,.82)" : "1px solid rgba(0,107,79,.06)",
+            border: featured ? "1px solid rgba(0,107,79,.11)" : "1px solid rgba(0,107,79,.06)",
             boxShadow: featured
-              ? "0 5px 13px rgba(0,107,79,.18), 0 0 0 2px rgba(38,155,120,.055), inset 0 1px 0 rgba(255,255,255,.18)"
+              ? "0 3px 8px rgba(0,107,79,.055)"
               : "0 2px 6px rgba(24,60,48,.035)",
-            ...(featured ? {
-              animation: "aiIconGlow 4.2s ease-in-out infinite",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                inset: -3,
-                borderRadius: { xs: "14px", md: "14px", xl: "16px" },
-                border: "1px solid rgba(38,155,120,.18)",
-                zIndex: -1,
-                opacity: .62,
-                boxShadow: "0 0 10px rgba(38,155,120,.11)",
-              },
-              "@keyframes aiIconGlow": {
-                "0%,100%": { transform: "translateY(0)", boxShadow: "0 5px 13px rgba(0,107,79,.18), 0 0 0 2px rgba(38,155,120,.055), inset 0 1px 0 rgba(255,255,255,.18)" },
-                "50%": { transform: "translateY(-1px)", boxShadow: "0 7px 16px rgba(0,107,79,.22), 0 0 0 3px rgba(38,155,120,.075), inset 0 1px 0 rgba(255,255,255,.22)" },
-              },
-              "& svg": {
-                animation: "aiSparkle 4.2s ease-in-out infinite",
-                filter: "drop-shadow(0 0 2px rgba(255,255,255,.28))",
-              },
-              "@keyframes aiSparkle": {
-                "0%,100%": { transform: "scale(.99)", opacity: .94 },
-                "50%": { transform: "scale(1.045)", opacity: 1 },
-              },
-            } : {}),
             "& svg": { width: { xs: 22, md: 24, xl: 26 }, height: { xs: 22, md: 24, xl: 26 } },
             "@media (prefers-reduced-motion: reduce)": {
               animation: "none",
@@ -208,10 +155,10 @@ export default function QuickAccessStrip() {
           }}>{icon}</Box>
           <Box sx={{
             width: 28, height: 28, borderRadius: "10px", display: "grid", placeItems: "center",
-            color: featured ? "#087458" : "#5c7a70",
-            bgcolor: featured ? "rgba(241,252,247,.88)" : "rgba(255,255,255,.6)",
-            border: featured ? "1px solid rgba(38,155,120,.18)" : "1px solid rgba(0,107,79,.065)",
-            boxShadow: featured ? "0 2px 8px rgba(0,107,79,.08), inset 0 1px 0 rgba(255,255,255,.9)" : "inset 0 1px 0 rgba(255,255,255,.72)",
+            color: featured ? "#17664f" : "#5c7a70",
+            bgcolor: featured ? "rgba(248,252,250,.9)" : "rgba(255,255,255,.6)",
+            border: featured ? "1px solid rgba(0,107,79,.10)" : "1px solid rgba(0,107,79,.065)",
+            boxShadow: featured ? "inset 0 1px 0 rgba(255,255,255,.9)" : "inset 0 1px 0 rgba(255,255,255,.72)",
             backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)",
           }}>
             <ArrowOutwardRoundedIcon sx={{ fontSize: { xs: 16, xl: 18 } }} />
