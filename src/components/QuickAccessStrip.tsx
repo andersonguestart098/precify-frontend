@@ -4,7 +4,6 @@ import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddHomeWorkOutlinedIcon from "@mui/icons-material/AddHomeWorkOutlined";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import ArrowOutwardRoundedIcon from "@mui/icons-material/ArrowOutwardRounded";
 import LocalFireDepartmentRoundedIcon from "@mui/icons-material/LocalFireDepartmentRounded";
 import { HardHat } from "@phosphor-icons/react";
@@ -16,7 +15,7 @@ const shortcuts = [
     label: "Materiais",
     description: "Banco de materiais",
     icon: <Inventory2OutlinedIcon />,
-    featured: true,
+    featured: false,
     art: "left",
     available: true,
   },
@@ -25,17 +24,8 @@ const shortcuts = [
     label: "Mão de obra",
     description: "Profissionais e serviços",
     icon: <HardHat size={22} weight="duotone" aria-hidden="true" />,
-    featured: true,
-    art: "right",
-    available: true,
-  },
-  {
-    to: "/obras?new=1",
-    label: "Criar obra",
-    description: "Novo planejamento",
-    icon: <AddHomeWorkOutlinedIcon />,
     featured: false,
-    art: "left",
+    art: "right",
     available: true,
   },
   {
@@ -43,6 +33,15 @@ const shortcuts = [
     label: "IA",
     description: "Assistente Precify",
     icon: <AutoAwesomeIcon />,
+    featured: true,
+    art: "left",
+    available: true,
+  },
+  {
+    to: "/obras?new=1",
+    label: "Criar obra",
+    description: "Novo planejamento",
+    icon: <AddHomeWorkOutlinedIcon />,
     featured: false,
     art: "right",
     available: true,
@@ -54,15 +53,6 @@ const shortcuts = [
     icon: <CalculateOutlinedIcon />,
     featured: false,
     art: "left",
-    available: true,
-  },
-  {
-    to: "/favoritos",
-    label: "Meus favoritos",
-    description: "Tudo que você salvou",
-    icon: <StarOutlineRoundedIcon />,
-    featured: false,
-    art: "right",
     available: true,
   },
 ] as const;
