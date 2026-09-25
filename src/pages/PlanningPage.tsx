@@ -33,6 +33,38 @@ import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
+const projectTypeOptions = [
+  ["1.1", "Residencial • Unifamiliar (casa térrea / sobrado)"],
+  ["1.2", "Residencial • Multifamiliar horizontal (condomínio de casas)"],
+  ["1.3", "Residencial • Multifamiliar vertical – padrão econômico"],
+  ["1.4", "Residencial • Multifamiliar vertical – padrão médio"],
+  ["1.5", "Residencial • Multifamiliar vertical – alto padrão"],
+  ["1.6", "Residencial • Loteamento / urbanização residencial"],
+  ["2.1", "Comercial • Varejo / lojas"],
+  ["2.2", "Comercial • Edifícios corporativos / escritórios"],
+  ["2.3", "Comercial • Shopping centers"],
+  ["2.4", "Comercial • Hotelaria / flats"],
+  ["2.5", "Comercial • Restaurantes / food service"],
+  ["3.1", "Institucional • Educacional (escolas, universidades)"],
+  ["3.2", "Institucional • Saúde (hospitais, clínicas, UBS)"],
+  ["3.3", "Institucional • Público / administrativo"],
+  ["3.4", "Institucional • Religioso"],
+  ["3.5", "Institucional • Cultural / esportivo"],
+  ["4.1", "Industrial • Galpões industriais"],
+  ["4.2", "Industrial • Plantas fabris / produtivas"],
+  ["4.3", "Industrial • Armazéns / centros logísticos"],
+  ["4.4", "Industrial • Agroindustrial"],
+  ["5.1", "Infraestrutura • Viária (rodovias, pontes, pavimentação)"],
+  ["5.2", "Infraestrutura • Saneamento (água, esgoto)"],
+  ["5.3", "Infraestrutura • Energia (subestações, transmissão)"],
+  ["5.4", "Infraestrutura • Telecomunicações"],
+  ["5.5", "Infraestrutura • Urbana (drenagem, urbanização)"],
+] as const;
+
+function projectTypeLabel(code?: string | null) {
+  return projectTypeOptions.find(([value]) => value === code)?.[1] ?? "";
+}
+
 function laborModeLabel(mode: LaborPlan["mode"]) {
   if (mode === "TEAM") return "Equipe própria";
   if (mode === "THIRD_PARTY") return "Terceiros";
@@ -187,6 +219,9 @@ export default function PlanningPage() {
   const [laborLoading, setLaborLoading] = useState<Record<string, boolean>>({});
   const [laborErrors, setLaborErrors] = useState<Record<string, string>>({});
   const [name, setName] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [location, setLocation] = useState("");
+  const [notes, setNotes] = useState("");
   const [ids, setIds] = useState<string[]>([]);
   const [editing, setEditing] = useState<string>();
   const [formOpen, setFormOpen] = useState(false);
@@ -243,6 +278,9 @@ export default function PlanningPage() {
   const resetForm = () => {
     setEditing(undefined);
     setName("");
+    setProjectType("");
+    setLocation("");
+    setNotes("");
     setIds([]);
     setFormOpen(false);
   };
@@ -250,6 +288,9 @@ export default function PlanningPage() {
   const openNew = () => {
     setEditing(undefined);
     setName("");
+    setProjectType("");
+    setLocation("");
+    setNotes("");
     setIds([]);
     setError("");
     setFormOpen(true);
@@ -268,6 +309,9 @@ export default function PlanningPage() {
   const openEdit = (project: Project) => {
     setEditing(project.id);
     setName(project.name);
+    setProjectType(project.projectType ?? "");
+    setLocation(project.location ?? "");
+    setNotes(project.notes ?? "");
     setIds(project.compositionIds);
     setError("");
     setFormOpen(true);
@@ -278,7 +322,7 @@ export default function PlanningPage() {
     if (!cleanName) return;
     setSaving(true); setError("");
     try {
-      const result = await saveProject({ name: cleanName, compositionIds: ids }, editing);
+      const result = await saveProject({ name: cleanName, projectType, location: location.trim(), notes: notes.trim(), compositionIds: ids }, editing);
       setProjects(current => {
         const next = [...current.filter(project => project.id !== result.id), result];
         saveCachedProjects(user.id, next);
@@ -423,6 +467,9 @@ export default function PlanningPage() {
                     </Box>
                     <Box minWidth={0}>
                       <Typography fontWeight={880} color="#21483b" noWrap sx={{ fontSize: { xs: 13.2, sm: 14 } }}>{project.name}</Typography>
+                      {(projectTypeLabel(project.projectType) || project.location) && <Typography color="#668178" noWrap sx={{ fontSize: 9.2, mt: .18 }}>
+                        {[projectTypeLabel(project.projectType), project.location].filter(Boolean).join(" • ")}
+                      </Typography>}
                       <Stack direction="row" alignItems="center" gap={.6} mt={.2}>
                         <Typography color="text.secondary" sx={{ fontSize: 9.7 }}>
                           {lists.length} {lists.length === 1 ? "composição" : "composições"}
@@ -540,11 +587,25 @@ export default function PlanningPage() {
           "& .MuiAutocomplete-popupIndicator": { color: "#628177" },
         }}>
           <Typography color="text.secondary" sx={{ fontSize: 13, lineHeight: 1.5, mb: 2 }}>
-            Dê um nome à obra e escolha as composições que fazem parte dela. A mesma composição pode pertencer a várias obras.
+            Cadastre os dados básicos da obra e vincule as composições que fazem parte dela.
           </Typography>
           <Stack gap={1.45}>
             <TextField autoFocus label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
               onChange={event => setName(event.target.value)} slotProps={{ htmlInput: { maxLength: 80 } }} />
+            <Autocomplete
+              options={projectTypeOptions}
+              value={projectTypeOptions.find(([value]) => value === projectType) ?? null}
+              getOptionLabel={option => `${option[0]} — ${option[1]}`}
+              isOptionEqualToValue={(option, value) => option[0] === value[0]}
+              onChange={(_, selected) => setProjectType(selected?.[0] ?? "")}
+              noOptionsText="Nenhum tipo encontrado"
+              renderInput={params => <TextField {...params} label="Tipo de obra" placeholder="Selecione o tipo de obra" />}
+            />
+            <TextField label="Localização" placeholder="Ex.: Porto Alegre / RS" value={location}
+              onChange={event => setLocation(event.target.value)} slotProps={{ htmlInput: { maxLength: 180 } }} />
+            <TextField label="Observações" placeholder="Informações adicionais sobre a obra" value={notes}
+              onChange={event => setNotes(event.target.value)} multiline minRows={3}
+              slotProps={{ htmlInput: { maxLength: 1000 } }} />
             <Autocomplete
               multiple
               options={compositions}
