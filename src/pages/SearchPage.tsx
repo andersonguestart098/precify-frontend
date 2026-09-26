@@ -7,6 +7,8 @@ import { Alert, Box, Button, ButtonBase, CircularProgress, Container, Drawer, Ic
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import ViewModuleRoundedIcon from "@mui/icons-material/ViewModuleRounded";
+import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
@@ -62,6 +64,7 @@ export default function SearchPage() {
   const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [resultView, setResultView] = useState<"list" | "mosaic">("list");
 
   const searchKey = useMemo(() => JSON.stringify({
     query,
@@ -214,6 +217,27 @@ export default function SearchPage() {
           </Box>
           <Stack direction="row" alignItems="center" gap={.5}>
             <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)} sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .8, fontSize: 11.5 }}>{hasFilters ? "Filtros ativos" : "Filtros"}</Button>
+            <Box sx={{
+              display: { xs: "none", md: "flex" }, alignItems: "center", gap: .15, p: .2,
+              border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.72)",
+            }}>
+              <IconButton size="small" aria-label="Exibir produtos em mosaico" aria-pressed={resultView === "mosaic"}
+                onClick={() => setResultView("mosaic")} sx={{
+                  width: 30, height: 30, borderRadius: "7px",
+                  color: resultView === "mosaic" ? "#17664f" : "#789087",
+                  bgcolor: resultView === "mosaic" ? "#e8f4ef" : "transparent",
+                }}>
+                <ViewModuleRoundedIcon sx={{ fontSize: 17 }} />
+              </IconButton>
+              <IconButton size="small" aria-label="Exibir produtos em lista" aria-pressed={resultView === "list"}
+                onClick={() => setResultView("list")} sx={{
+                  width: 30, height: 30, borderRadius: "7px",
+                  color: resultView === "list" ? "#17664f" : "#789087",
+                  bgcolor: resultView === "list" ? "#e8f4ef" : "transparent",
+                }}>
+                <ViewListRoundedIcon sx={{ fontSize: 17 }} />
+              </IconButton>
+            </Box>
             {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"
               sx={{ width: { md: 34, xl: 40 }, height: { md: 34, xl: 40 } }}><AddIcon /></IconButton>}
           </Stack>
@@ -221,9 +245,15 @@ export default function SearchPage() {
 
         {(error || catalogError || favorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError || favorites.error}</Alert>}
         {loading && !response ? <ResultSkeletons /> :
-          <Stack gap={{ xs: 2, md: 1.25, xl: 2 }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
+          <Box sx={{
+            display: "grid",
+            gridTemplateColumns: resultView === "mosaic" ? { xs: "1fr", md: "repeat(2,minmax(0,1fr))" } : "1fr",
+            gap: { xs: 2, md: 1.25, xl: 2 },
+            alignItems: "stretch",
+          }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
+            layout={resultView}
             favorite={favorites.codes.has(result.material.materialCode)} favoriteBusy={favorites.loading || favorites.busy.has(result.material.materialCode)}
-            onFavorite={() => { void favorites.toggle(result.material.materialCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />)}</Stack>}
+            onFavorite={() => { void favorites.toggle(result.material.materialCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />)}</Box>}
         {!loading && !error && !response?.content.length && <Alert severity="info">{onlyFavorites ? "Nenhum favorito corresponde aos filtros selecionados." : "Nenhum material corresponde aos filtros. Tente ampliar sua busca."}</Alert>}
         {(response?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary" count={response!.totalPages} page={page + 1} disabled={loading}
           onChange={(_, value) => change({ page: String(value - 1) }, false)} /></Stack>}
