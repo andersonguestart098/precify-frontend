@@ -4,8 +4,6 @@ import { Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from "@mui/ma
 import ChevronLeftRounded from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRounded from "@mui/icons-material/ChevronRightRounded";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
-import ViewModuleRoundedIcon from "@mui/icons-material/ViewModuleRounded";
-import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
 import type { CatalogMaterial } from "../domain/search";
 import { catalogCategoryIconSize, catalogSectionTitleSx } from "../styles/catalogVisual";
 
@@ -80,7 +78,6 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
   const drag = useRef({ x: 0, scroll: 0, active: false, moved: false });
   const scrollTimer = useRef<number | undefined>(undefined);
   const [scrolling, setScrolling] = useState(false);
-  const [viewMode, setViewMode] = useState<"mosaic" | "list">("mosaic");
 
   const segments = useMemo(() => [...new Map(catalog.map(m => [m.segmentCode, m.segmentName])).entries()]
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })), [catalog]);
@@ -125,39 +122,11 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
     });
   };
 
-  const listMode = viewMode === "list" && !compactMobile;
-
   return <Box component="section" aria-label="Filtrar por segmento" sx={{ mb: 0, minWidth: 0 }}>
     <Stack direction="row" justifyContent="space-between" alignItems="center" mb={{ xs: 1, md: .55, xl: 1 }} sx={{ display: compactMobile ? { xs: "none", md: "flex" } : "flex" }}>
       <Typography sx={catalogSectionTitleSx}>Explore por segmento</Typography>
 
       <Stack direction="row" alignItems="center" gap={.45} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
-        {!compactMobile && <Box sx={{
-          display: "flex", alignItems: "center", gap: .15, p: .2, mr: .25,
-          border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.72)",
-        }}>
-          <Tooltip title="Exibir em mosaico" arrow>
-            <IconButton size="small" aria-label="Exibir segmentos em mosaico" aria-pressed={viewMode === "mosaic"}
-              onClick={() => setViewMode("mosaic")} sx={{
-                width: 30, height: 30, borderRadius: "7px",
-                color: viewMode === "mosaic" ? "#17664f" : "#789087",
-                bgcolor: viewMode === "mosaic" ? "#e8f4ef" : "transparent",
-              }}>
-              <ViewModuleRoundedIcon sx={{ fontSize: 17 }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Exibir em lista" arrow>
-            <IconButton size="small" aria-label="Exibir segmentos em lista" aria-pressed={viewMode === "list"}
-              onClick={() => setViewMode("list")} sx={{
-                width: 30, height: 30, borderRadius: "7px",
-                color: viewMode === "list" ? "#17664f" : "#789087",
-                bgcolor: viewMode === "list" ? "#e8f4ef" : "transparent",
-              }}>
-              <ViewListRoundedIcon sx={{ fontSize: 17 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>}
-
         <Tooltip title="Segmentos anteriores" arrow>
           <IconButton size="small" aria-label="Segmentos anteriores" onClick={() => move(-1)} sx={{
             color: "#39725f", width: { xs: 34, md: 36, xl: 40 }, height: { xs: 34, md: 36, xl: 40 },
@@ -203,9 +172,9 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
       }}
       sx={{
         display: "flex",
-        gap: listMode ? .8 : compactMobile ? { xs: .55, sm: .65, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
+        gap: compactMobile ? { xs: .55, sm: .65, md: 1.15, xl: 1.6 } : { xs: 1.35, sm: 1.6, md: 1.15, xl: 1.6 },
         overflowX: "auto",
-        py: listMode ? .45 : compactMobile ? { xs: .12, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
+        py: compactMobile ? { xs: .12, md: .45, xl: .8 } : { xs: .8, md: .45, xl: .8 },
         px: compactMobile ? { xs: .08, md: 0 } : 0,
         cursor: "grab", "&:active": { cursor: "grabbing" }, userSelect: "none", WebkitOverflowScrolling: "touch",
         scrollbarWidth: "thin", scrollbarColor: scrolling ? "#a9d7c8 transparent" : "transparent transparent",
@@ -231,41 +200,40 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
           onClick={() => onSelect(code === selected ? "" : code)}
           sx={{
             position: "relative",
-            width: listMode ? { xs: 210, md: 220, xl: 240 } : compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
-            minWidth: listMode ? { xs: 210, md: 220, xl: 240 } : compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
-            minHeight: listMode ? 56 : compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
+            width: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
+            minWidth: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
+            minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
             flexShrink: 0,
             display: "flex",
-            flexDirection: listMode ? "row" : compactMobile ? { xs: "row", md: "column" } : "column",
+            flexDirection: compactMobile ? { xs: "row", md: "column" } : "column",
             alignItems: "center",
-            justifyContent: listMode ? "flex-start" : { xs: "flex-start", md: "center" },
-            gap: listMode ? .9 : compactMobile ? { xs: .45, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
-            borderRadius: listMode ? "11px" : compactMobile ? { xs: "8px", md: 2 } : 2,
-            px: listMode ? 1 : compactMobile ? { xs: .5, md: 0 } : 0,
-            py: listMode ? .65 : compactMobile ? { xs: .18, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
-            border: listMode ? "1px solid" : compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
-            borderColor: listMode ? active ? "rgba(0,107,79,.24)" : "rgba(0,107,79,.09)" : compactMobile ? { xs: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.06)", md: "transparent" } : "transparent",
-            background: listMode ? active ? "#eef7f3" : "rgba(255,255,255,.78)" : compactMobile ? { xs: active ? "rgba(0,107,79,.04)" : "rgba(255,255,255,.20)", md: "transparent" } : "transparent",
-            boxShadow: listMode ? "0 2px 9px rgba(24,60,48,.025)" : "none",
+            justifyContent: { xs: "flex-start", md: "center" },
+            gap: compactMobile ? { xs: .45, md: .65, xl: 1 } : { xs: 1, md: .65, xl: 1 },
+            borderRadius: compactMobile ? { xs: "8px", md: 2 } : 2,
+            px: compactMobile ? { xs: .5, md: 0 } : 0,
+            py: compactMobile ? { xs: .18, md: .25, xl: .5 } : { xs: .5, md: .25, xl: .5 },
+            border: compactMobile ? { xs: "1px solid", md: "0 solid transparent" } : "0 solid transparent",
+            borderColor: compactMobile ? { xs: active ? "rgba(0,107,79,.22)" : "rgba(0,107,79,.06)", md: "transparent" } : "transparent",
+            background: compactMobile ? { xs: active ? "rgba(0,107,79,.04)" : "rgba(255,255,255,.20)", md: "transparent" } : "transparent",
+            boxShadow: "none",
             "&.Mui-focusVisible": { outline: "2px solid #006b4f", outlineOffset: 1 },
-            "&:hover": listMode ? { bgcolor: active ? "#e8f4ef" : "#f6faf8", borderColor: "rgba(0,107,79,.20)" } : undefined,
             "&:hover .segment-icon": { bgcolor: active ? "#e7f3ee" : "#edf5f2", borderColor: "#9acdbb", transform: "translateY(-1px)" }
           }}>
           <Box className="segment-icon" sx={{
             position: "relative", flexShrink: 0,
-            width: listMode ? 36 : compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-            height: listMode ? 36 : compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-            borderRadius: listMode ? "9px" : compactMobile ? { xs: "6px", md: "50%" } : "50%",
+            width: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+            height: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+            borderRadius: compactMobile ? { xs: "6px", md: "50%" } : "50%",
             display: "grid", placeItems: "center",
             color: active ? "#174a39" : "#3f6759",
             background: active ? "linear-gradient(145deg,#f1f8f5,#e4f0ec)" : "linear-gradient(145deg,#f2f7f5,#e8f1ee)",
             border: "1px solid", borderColor: active ? "rgba(0,107,79,.20)" : "rgba(0,107,79,.075)",
             boxShadow: "none", transition: "background-color 180ms,border-color 180ms,transform 180ms",
-            "& > svg": { width: listMode ? 20 : compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize, height: listMode ? 20 : compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize },
+            "& > svg": { width: compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize, height: compactMobile ? { xs: 13, md: 24, lg: 26, xl: 28 } : catalogCategoryIconSize },
             "@media (prefers-reduced-motion: reduce)": { transition: "none" }
           }}>
-            <Icon size={listMode ? 20 : compactMobile ? 13 : 28} weight="duotone" aria-hidden="true" />
-            {active && !compactMobile && !listMode && <Box aria-hidden="true" sx={{
+            <Icon size={compactMobile ? 13 : 28} weight="duotone" aria-hidden="true" />
+            {active && !compactMobile && <Box aria-hidden="true" sx={{
               position: "absolute", right: -2, bottom: -1,
               width: { xs: 16, md: 14, xl: 16 }, height: { xs: 16, md: 14, xl: 16 },
               borderRadius: "50%", bgcolor: "#ecf7f3", color: "#275d4b", border: "2px solid #f7f9f8",
@@ -274,30 +242,30 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
           </Box>
 
           <Typography component="span" sx={{
-            fontSize: listMode ? { xs: 10.8, md: 11.2, xl: 11.8 } : compactMobile ? { xs: 7.8, sm: 8, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
-            lineHeight: listMode ? 1.25 : compactMobile ? 1 : 1.3,
+            fontSize: compactMobile ? { xs: 7.8, sm: 8, md: 10, xl: 11 } : { xs: 11, md: 10, xl: 11 },
+            lineHeight: compactMobile ? 1 : 1.3,
             fontWeight: active ? 700 : 550,
             color: active ? "#174a39" : "#63776f",
-            textAlign: listMode ? "left" : compactMobile ? { xs: "left", md: "center" } : "center",
+            textAlign: compactMobile ? { xs: "left", md: "center" } : "center",
             minWidth: 0,
-            flex: listMode ? 1 : compactMobile ? { xs: 1, md: "initial" } : "initial",
+            flex: compactMobile ? { xs: 1, md: "initial" } : "initial",
             overflow: "hidden", textOverflow: "ellipsis",
-            whiteSpace: listMode ? "nowrap" : compactMobile ? { xs: "nowrap", md: "normal" } : "normal",
-            pr: listMode ? 2.6 : 0,
+            whiteSpace: compactMobile ? { xs: "nowrap", md: "normal" } : "normal",
+            pr: 0,
           }}>{code ? labels[code] || name : "Todos"}</Typography>
 
           <Tooltip arrow enterTouchDelay={0} leaveTouchDelay={3200} title={helpText}>
             <Box component="span" role="img" aria-label={`Sobre ${code ? labels[code] || name : "todos os segmentos"}`}
               onClick={event => { event.preventDefault(); event.stopPropagation(); }}
               sx={{
-                position: "absolute", top: listMode ? 8 : 2, right: listMode ? 7 : 0,
-                width: listMode ? 22 : 18, height: listMode ? 22 : 18,
+                position: "absolute", top: 2, right: 0,
+                width: 18, height: 18,
                 borderRadius: "50%", display: compactMobile ? { xs: "none", md: "grid" } : "grid", placeItems: "center",
                 color: "#5e7d72", bgcolor: "rgba(255,255,255,.88)",
                 border: "1px solid rgba(0,107,79,.11)",
                 cursor: "help", zIndex: 2,
               }}>
-              <HelpOutlineRoundedIcon sx={{ fontSize: listMode ? 14 : 12 }} />
+              <HelpOutlineRoundedIcon sx={{ fontSize: 12 }} />
             </Box>
           </Tooltip>
         </ButtonBase>;
