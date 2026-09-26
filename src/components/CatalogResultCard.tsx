@@ -253,19 +253,19 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
       <Box sx={{
         display: "grid",
         gridTemplateColumns: layout === "mosaic"
-          ? { xs: "42% minmax(0,58%)", sm: "180px minmax(0,1fr)", md: "1fr" }
-          : { xs: "42% minmax(0,58%)", sm: "180px minmax(0,1fr)", md: "150px minmax(0,1fr)", xl: "190px minmax(0,1fr)" },
-        minHeight: layout === "mosaic" ? { xs: 206, md: 390, xl: 430 } : { xs: 206, md: 166, xl: 210 },
+          ? { xs: "1fr", sm: "1fr", md: "1fr" }
+          : { xs: "38% minmax(0,62%)", sm: "180px minmax(0,1fr)", md: "150px minmax(0,1fr)", xl: "190px minmax(0,1fr)" },
+        minHeight: layout === "mosaic" ? { xs: 292, sm: 330, md: 390, xl: 430 } : { xs: 184, sm: 206, md: 166, xl: 210 },
       }}>
         <Box sx={{
           position: "relative",
           minWidth: 0,
           bgcolor: "#f7f8f8",
-          borderRight: layout === "mosaic" ? { xs: "1px solid #edf1ef", md: 0 } : "1px solid #edf1ef",
-          borderBottom: layout === "mosaic" ? { xs: 0, md: "1px solid #edf1ef" } : 0,
+          borderRight: layout === "mosaic" ? 0 : "1px solid #edf1ef",
+          borderBottom: layout === "mosaic" ? "1px solid #edf1ef" : 0,
           display: "grid",
           placeItems: "center",
-          p: { xs: 1.25, md: 1, xl: 1.5 },
+          p: layout === "mosaic" ? { xs: .75, sm: 1, md: 1, xl: 1.5 } : { xs: .8, sm: 1.25, md: 1, xl: 1.5 },
         }}>
           <ProtectedImage
             src={photo}
@@ -274,8 +274,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
             sx={{
               width: "100%",
               height: "100%",
-              maxHeight: layout === "mosaic" ? { xs: 178, md: 190, xl: 220 } : { xs: 178, md: 140, xl: 178 },
-              minHeight: layout === "mosaic" ? { xs: 150, md: 170, xl: 195 } : { xs: 150, md: 126, xl: 150 },
+              maxHeight: layout === "mosaic" ? { xs: 118, sm: 150, md: 190, xl: 220 } : { xs: 150, sm: 178, md: 140, xl: 178 },
+              minHeight: layout === "mosaic" ? { xs: 108, sm: 138, md: 170, xl: 195 } : { xs: 132, sm: 150, md: 126, xl: 150 },
               bgcolor: "transparent",
               border: 0,
               borderRadius: 0,
@@ -293,7 +293,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                 disabled={favoriteBusy}
                 onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
                 sx={{
-                  width: { xs: 36, md: 31, xl: 36 }, height: { xs: 36, md: 31, xl: 36 },
+                  width: layout === "mosaic" ? { xs: 30, sm: 34, md: 31, xl: 36 } : { xs: 32, sm: 36, md: 31, xl: 36 },
+                  height: layout === "mosaic" ? { xs: 30, sm: 34, md: 31, xl: 36 } : { xs: 32, sm: 36, md: 31, xl: 36 },
                   color: favorite ? "#b77b00" : "#435b53",
                   bgcolor: favorite ? "#fff7d9" : "rgba(255,255,255,.96)",
                   border: "1px solid",
@@ -315,17 +316,26 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           </Tooltip>
         </Box>
 
-        <Stack sx={{ minWidth: 0, p: { xs: 1.35, sm: 1.6, md: 1.2, xl: 1.7 } }} justifyContent="space-between" gap={{ xs: 1, md: .7, xl: 1 }}>
+        <Stack sx={{
+          minWidth: 0,
+          p: layout === "mosaic" ? { xs: .9, sm: 1.2, md: 1.2, xl: 1.7 } : { xs: 1.05, sm: 1.6, md: 1.2, xl: 1.7 },
+        }} justifyContent="space-between" gap={layout === "mosaic" ? { xs: .75, md: .7, xl: 1 } : { xs: .8, md: .7, xl: 1 }}>
           <Box minWidth={0}>
             <Stack direction="row" alignItems="center" gap={.6} flexWrap="wrap" mb={{ xs: .45, md: .3, xl: .45 }}>
               {highlighted && <Chip label="Destaque" size="small" sx={{ height: { xs: 20, md: 20, xl: 22 }, bgcolor: "#edf6f3", color: "#235847", fontWeight: 800, fontSize: { xs: 10, md: 10, xl: 11 } }} />}
-              <Typography color="primary" sx={{ fontSize: { xs: 10.5, md: 10.5, xl: 11.5 }, fontWeight: 800, letterSpacing: ".01em" }}>
-                {material.materialCode} · {material.familyName}
+              <Typography color="primary" sx={{
+                minWidth: 0,
+                fontSize: layout === "mosaic" ? { xs: 9.1, sm: 10, md: 10.5, xl: 11.5 } : { xs: 9.8, md: 10.5, xl: 11.5 },
+                fontWeight: 800, letterSpacing: ".01em",
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {material.materialCode}
+                <Box component="span" sx={{ display: layout === "mosaic" ? { xs: "none", sm: "inline" } : "inline" }}> · {material.familyName}</Box>
               </Typography>
             </Stack>
 
             <Typography component="h2" sx={{
-              fontSize: { xs: 15, sm: 17, md: 15.5, xl: 18 },
+              fontSize: layout === "mosaic" ? { xs: 12.1, sm: 14, md: 15.5, xl: 18 } : { xs: 14.2, sm: 17, md: 15.5, xl: 18 },
               lineHeight: 1.18,
               fontWeight: 800,
               letterSpacing: "-.015em",
@@ -338,35 +348,58 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               {material.materialName}
             </Typography>
 
-            <Typography color="text.secondary" sx={{ mt: .3, fontSize: { xs: 11, md: 11, xl: 12 } }} noWrap>
+            <Typography color="text.secondary" sx={{
+              mt: .3,
+              fontSize: layout === "mosaic" ? { xs: 9.2, sm: 10.2, md: 11, xl: 12 } : { xs: 10.2, md: 11, xl: 12 },
+            }} noWrap>
               {material.segmentName}
             </Typography>
 
-            <Stack direction="row" gap={.45} flexWrap="wrap" mt={{ xs: .75, md: .5, xl: .75 }}>
+            <Stack direction="row" gap={.35} flexWrap="wrap" mt={layout === "mosaic" ? { xs: .55, md: .5, xl: .75 } : { xs: .65, md: .5, xl: .75 }}>
               <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
-                sx={{ height: { xs: 20, md: 20, xl: 22 }, fontSize: { xs: 9.5, md: 9.5, xl: 10 }, borderColor: "#dce6e2", color: "#526861" }} />
+                sx={{
+                  height: layout === "mosaic" ? { xs: 18, sm: 20, md: 20, xl: 22 } : { xs: 19, md: 20, xl: 22 },
+                  fontSize: layout === "mosaic" ? { xs: 8, sm: 9, md: 9.5, xl: 10 } : { xs: 8.8, md: 9.5, xl: 10 },
+                  borderColor: "#dce6e2", color: "#526861",
+                  "& .MuiChip-label": { px: layout === "mosaic" ? { xs: .55, md: .8 } : undefined },
+                }} />
               <Chip size="small" label={offers.length ? `${offers.length} oferta${offers.length > 1 ? "s" : ""}` : "Sem cotação"}
-                sx={{ height: { xs: 20, md: 20, xl: 22 }, fontSize: { xs: 9.5, md: 9.5, xl: 10 }, bgcolor: "#eef7f4", color: "#2c6652" }} />
+                sx={{
+                  height: layout === "mosaic" ? { xs: 18, sm: 20, md: 20, xl: 22 } : { xs: 19, md: 20, xl: 22 },
+                  fontSize: layout === "mosaic" ? { xs: 8, sm: 9, md: 9.5, xl: 10 } : { xs: 8.8, md: 9.5, xl: 10 },
+                  bgcolor: "#eef7f4", color: "#2c6652",
+                  "& .MuiChip-label": { px: layout === "mosaic" ? { xs: .55, md: .8 } : undefined },
+                }} />
             </Stack>
           </Box>
 
           <Box>
             {featured ? <Box>
-              <Typography color="text.secondary" sx={{ fontSize: { xs: 10.5, md: 10.5, xl: 11.5 }, lineHeight: 1.15 }} noWrap>
+              <Typography color="text.secondary" sx={{
+                fontSize: layout === "mosaic" ? { xs: 8.8, sm: 9.8, md: 10.5, xl: 11.5 } : { xs: 9.8, md: 10.5, xl: 11.5 },
+                lineHeight: 1.15,
+              }} noWrap>
                 {offers.length > 1 ? "A partir de" : "Cotação"} · {featured.quote.supplier}
               </Typography>
               <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mt={.15}>
-                <Typography sx={{ fontSize: { xs: 22, md: 20, xl: 24 }, lineHeight: 1, fontWeight: 900, letterSpacing: "-.025em", color: "#13382e" }}>
+                <Typography sx={{
+                  fontSize: layout === "mosaic" ? { xs: 16.5, sm: 19, md: 20, xl: 24 } : { xs: 19, md: 20, xl: 24 },
+                  lineHeight: 1, fontWeight: 900, letterSpacing: "-.025em", color: "#13382e",
+                }}>
                   {currency.format(featured.quote.value)}
                 </Typography>
                 {logoUrl && <ProtectedImage src={logoUrl} alt={`Logo de ${featured.quote.supplier}`}
                   sx={{ display: { xs: "none", sm: "grid" }, width: { md: 43, xl: 52 }, height: { md: 24, xl: 28 }, bgcolor: "transparent", p: 0, flexShrink: 0 }} />}
               </Stack>
-            </Box> : <Typography color="text.secondary" sx={{ fontSize: { xs: 12, md: 11.5, xl: 13 }, fontWeight: 600 }}>Cotação pendente</Typography>}
+            </Box> : <Typography color="text.secondary" sx={{
+              fontSize: layout === "mosaic" ? { xs: 9.4, sm: 10.5, md: 11.5, xl: 13 } : { xs: 10.5, md: 11.5, xl: 13 },
+              fontWeight: 600,
+            }}>Cotação pendente</Typography>}
 
-            <Stack direction={layout === "mosaic" ? { xs: "column", sm: "row", md: "column", xl: "row" } : { xs: "column", sm: "row" }}
-              alignItems={layout === "mosaic" ? { sm: "center", md: "stretch", xl: "center" } : { sm: "center" }}
-              gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
+            <Stack direction={layout === "mosaic" ? { xs: "column", md: "column", xl: "row" } : { xs: "row", sm: "row" }}
+              alignItems={layout === "mosaic" ? { xs: "stretch", xl: "center" } : "center"}
+              gap={layout === "mosaic" ? { xs: .45, md: .5, xl: .7 } : { xs: .5, md: .5, xl: .7 }}
+              mt={layout === "mosaic" ? { xs: .7, md: .7, xl: 1 } : { xs: .75, md: .7, xl: 1 }}>
               <Button
                 onClick={() => setCompositionOpen(true)}
                 startIcon={<PlaylistAddRoundedIcon />}
@@ -376,14 +409,14 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                   order: 1,
                   flex: { sm: "0 0 auto" },
                   alignSelf: { sm: "flex-start" },
-                  minHeight: { xs: 36, md: 28, xl: 34 },
-                  px: { xs: 1.4, md: 1.05, xl: 1.3 },
+                  minHeight: layout === "mosaic" ? { xs: 30, sm: 34, md: 28, xl: 34 } : { xs: 32, md: 28, xl: 34 },
+                  px: layout === "mosaic" ? { xs: .75, sm: 1.1, md: 1.05, xl: 1.3 } : { xs: .9, md: 1.05, xl: 1.3 },
                   borderRadius: 999,
                   textTransform: "none",
                   whiteSpace: "nowrap",
                   fontWeight: 850,
                   letterSpacing: "-.01em",
-                  fontSize: { xs: 11.5, md: 9.5, xl: 11.25 },
+                  fontSize: layout === "mosaic" ? { xs: 8.9, sm: 10.3, md: 9.5, xl: 11.25 } : { xs: 9.8, md: 9.5, xl: 11.25 },
                   color: "#fff",
                   border: "1px solid rgba(0,82,61,.12)",
                   background: "linear-gradient(105deg,#087458 0%,#078b67 100%)",
@@ -397,18 +430,19 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                   "&:active": { transform: "translateY(0) scale(.985)", boxShadow: "0 2px 7px rgba(0,107,79,.16)" },
                   "& .MuiButton-startIcon": {
                     mr: { xs: .65, md: .5, xl: .6 },
-                    width: { xs: 22, md: 18, xl: 20 },
-                    height: { xs: 22, md: 18, xl: 20 },
+                    width: layout === "mosaic" ? { xs: 18, sm: 21, md: 18, xl: 20 } : { xs: 19, md: 18, xl: 20 },
+                    height: layout === "mosaic" ? { xs: 18, sm: 21, md: 18, xl: 20 } : { xs: 19, md: 18, xl: 20 },
                     borderRadius: "50%",
                     display: "grid",
                     placeItems: "center",
                     bgcolor: "rgba(255,255,255,.13)",
-                    "& svg": { fontSize: { xs: 15, md: 13, xl: 14 } },
+                    "& svg": { fontSize: layout === "mosaic" ? { xs: 12, sm: 14, md: 13, xl: 14 } : { xs: 13, md: 13, xl: 14 } },
                   },
                   "&.Mui-focusVisible": { outline: "3px solid #006b4f40", outlineOffset: 2 },
                 }}
               >
-                Adicionar à composição
+                <Box component="span" sx={{ display: { xs: "inline", sm: "none" } }}>Adicionar</Box>
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>Adicionar à composição</Box>
               </Button>
 
               <Button
@@ -418,8 +452,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                 startIcon={<VisibilityOutlinedIcon />}
                 sx={{
                   order: 2,
-                  minHeight: { xs: 34, md: 30, xl: 36 },
-                  px: { xs: 1.15, md: .85, xl: 1.2 },
+                  minHeight: layout === "mosaic" ? { xs: 30, sm: 34, md: 30, xl: 36 } : { xs: 32, md: 30, xl: 36 },
+                  px: layout === "mosaic" ? { xs: .65, sm: 1, md: .85, xl: 1.2 } : { xs: .8, md: .85, xl: 1.2 },
                   borderRadius: 999,
                   textTransform: "none",
                   whiteSpace: "nowrap",
@@ -427,12 +461,13 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                   bgcolor: "#f4f8f6",
                   border: "1px solid #dde8e4",
                   fontWeight: 750,
-                  fontSize: { xs: 11, md: 9.8, xl: 11.5 },
+                  fontSize: layout === "mosaic" ? { xs: 8.8, sm: 10.1, md: 9.8, xl: 11.5 } : { xs: 9.5, md: 9.8, xl: 11.5 },
                   "&:hover": { bgcolor: "#eaf3ef" },
                   "& .MuiButton-startIcon": { mr: .45, "& svg": { fontSize: { md: 15, xl: 17 } } },
                 }}
               >
-                Ver detalhes
+                <Box component="span" sx={{ display: { xs: "inline", sm: "none" } }}>Detalhes</Box>
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>Ver detalhes</Box>
               </Button>
             </Stack>
 
