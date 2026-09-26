@@ -47,6 +47,10 @@ function laborOriginLabel(origin: LaborPlanItem["origin"]) {
   return "Ambos";
 }
 
+function laborPlanTotal(plan?: LaborPlan) {
+  return plan?.items.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0) ?? 0;
+}
+
 function CompositionPanel({ composition }: { composition: Composition }) {
   return <Accordion disableGutters elevation={0} sx={{
     border: "1px solid #e0e9e6", borderRadius: "10px !important", overflow: "hidden",
@@ -192,7 +196,12 @@ export default function PlanningPage() {
   const workspaceFavorites = useWorkspaceFavorites();
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
   const [compositions, setCompositions] = useState<Composition[]>(() => getCachedCompositions(user.id) ?? []);
-  const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>({});
+  const [laborPlans, setLaborPlans] = useState<Record<string, LaborPlan>>(() => Object.fromEntries(
+    (getCachedProjects(user.id) ?? []).flatMap(project => {
+      const plan = getCachedLaborPlan(user.id, project.id);
+      return plan ? [[project.id, plan] as const] : [];
+    }),
+  ));
   const [laborLoading, setLaborLoading] = useState<Record<string, boolean>>({});
   const [laborErrors, setLaborErrors] = useState<Record<string, string>>({});
   const [name, setName] = useState("");
@@ -223,6 +232,56 @@ export default function PlanningPage() {
   }, [user.id]);
 
   useEffect(() => {
+    if (!projects.length) return;
+    let active = true;
+
+    const pendingIds = projects
+      .filter(project => !getCachedLaborPlan(user.id, project.id))
+      .map(project => project.id);
+    if (pendingIds.length) {
+      setLaborLoading(current => ({
+        ...current,
+        ...Object.fromEntries(pendingIds.map(projectId => [projectId, true])),
+      }));
+    }
+
+    void Promise.all(projects.map(async project => {
+      try {
+        const plan = getCachedLaborPlan(user.id, project.id) ?? await loadLaborPlanCached(user.id, project.id);
+        return { projectId: project.id, plan, error: "" };
+      } catch (reason) {
+        return {
+          projectId: project.id,
+          plan: undefined,
+          error: reason instanceof Error ? reason.message : "Não foi possível carregar a mão de obra desta obra.",
+        };
+      }
+    })).then(results => {
+      if (!active) return;
+
+      setLaborPlans(current => {
+        const next = { ...current };
+        for (const result of results) if (result.plan) next[result.projectId] = result.plan;
+        return next;
+      });
+
+      setLaborErrors(current => {
+        const next = { ...current };
+        for (const result of results) next[result.projectId] = result.error;
+        return next;
+      });
+
+      setLaborLoading(current => {
+        const next = { ...current };
+        for (const result of results) next[result.projectId] = false;
+        return next;
+      });
+    });
+
+    return () => { active = false; };
+  }, [projects, user.id]);
+
+  useEffect(() => {
     const syncFromCache = (event: Event) => {
       const detail = (event as CustomEvent<{ userId?: string }>).detail;
       if (detail?.userId && detail.userId !== user.id) return;
@@ -237,9 +296,16 @@ export default function PlanningPage() {
 
   const selectedCompositions = useMemo(() => compositions.filter(composition => ids.includes(composition.id)), [compositions, ids]);
   const totalCompositionLinks = useMemo(() => filteredProjects.reduce((sum, project) => sum + project.compositionIds.length, 0), [filteredProjects]);
-  const overallTotal = useMemo(() => filteredProjects.reduce((sum, project) => sum + compositions
+  const overallCompositionTotal = useMemo(() => filteredProjects.reduce((sum, project) => sum + compositions
     .filter(composition => project.compositionIds.includes(composition.id))
     .reduce((subtotal, composition) => subtotal + composition.total, 0), 0), [filteredProjects, compositions]);
+  const overallLaborTotal = useMemo(() => filteredProjects.reduce(
+    (sum, project) => sum + laborPlanTotal(laborPlans[project.id]),
+    0,
+  ), [filteredProjects, laborPlans]);
+  const overallTotal = overallCompositionTotal + overallLaborTotal;
+  const totalsPending = filteredProjects.some(project => !laborPlans[project.id] && !laborErrors[project.id]);
+  const totalsUnavailable = filteredProjects.some(project => !laborPlans[project.id] && Boolean(laborErrors[project.id]));
 
   const ensureLaborPlan = async (projectId: string) => {
     if (laborPlans[projectId] || laborLoading[projectId]) return;
@@ -412,7 +478,7 @@ export default function PlanningPage() {
         {[
           { label: typeFilterLabel ? "Obras filtradas" : "Obras cadastradas", value: String(filteredProjects.length) },
           { label: "Composições vinculadas", value: String(totalCompositionLinks) },
-          { label: "Total das composições", value: currency.format(overallTotal) },
+          { label: "Custo total das obras", value: totalsPending ? "Calculando..." : totalsUnavailable ? "Indisponível" : currency.format(overallTotal) },
         ].map((metric, index) => <Box key={metric.label} sx={{
           px: { xs: 1.5, sm: 1.7 }, py: 1.35,
           borderLeft: { xs: 0, sm: index ? "1px solid #e0e9e6" : 0 },
@@ -455,8 +521,11 @@ export default function PlanningPage() {
         <Stack gap={1} mt={3}>
           {filteredProjects.map(project => {
             const lists = compositions.filter(composition => project.compositionIds.includes(composition.id));
-            const total = lists.reduce((sum, composition) => sum + composition.total, 0);
+            const compositionTotal = lists.reduce((sum, composition) => sum + composition.total, 0);
             const laborPlan = laborPlans[project.id];
+            const laborTotal = laborPlanTotal(laborPlan);
+            const projectTotal = compositionTotal + laborTotal;
+            const projectTotalPending = !laborPlan && !laborErrors[project.id];
 
             return <Box key={project.id} sx={{ position: "relative" }}><Accordion disableGutters elevation={0}
               onChange={(_, expanded) => { if (expanded) void ensureLaborPlan(project.id); }}
@@ -490,7 +559,9 @@ export default function PlanningPage() {
                     </Box>
                   </Stack>
                   <Stack direction="row" alignItems="center" gap={.55} flexShrink={0}>
-                    <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>{currency.format(total)}</Typography>
+                    <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>
+                      {projectTotalPending ? "Calculando..." : currency.format(projectTotal)}
+                    </Typography>
                   </Stack>
                 </Stack>
               </AccordionSummary>
@@ -504,7 +575,7 @@ export default function PlanningPage() {
                         <LinkRoundedIcon sx={{ color: "#39725f", fontSize: 18 }} />
                         <Box>
                           <Typography id={`compositions-${project.id}`} fontWeight={850} color="#21483b" sx={{ fontSize: 12.8 }}>Composições vinculadas</Typography>
-                          <Typography color="text.secondary" sx={{ fontSize: 9.4 }}>{lists.length ? `${lists.length} composições • ${currency.format(total)}` : "Nenhuma composição vinculada"}</Typography>
+                          <Typography color="text.secondary" sx={{ fontSize: 9.4 }}>{lists.length ? `${lists.length} composições • ${currency.format(compositionTotal)}` : "Nenhuma composição vinculada"}</Typography>
                         </Box>
                       </Stack>
                       <Button size="small" startIcon={<EditOutlinedIcon />} onClick={() => openEdit(project)}
