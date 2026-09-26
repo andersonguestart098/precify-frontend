@@ -499,7 +499,7 @@ export default function LaborPage() {
   if (!project) return <Container maxWidth="lg" sx={{ py: 5 }}><Alert severity="warning">Essa obra não está disponível na sua conta.</Alert></Container>;
 
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.5, md: 4.5 }, pb: { xs: 5, md: 5 } }}>
-    <Box sx={{ maxWidth: 1020, mx: "auto" }}>
+    <Box sx={{ maxWidth: 1020, mx: "auto", position: "relative" }}>
       <Stack direction={{ xs: "column", lg: "row" }} justifyContent="space-between" alignItems={{ lg: "end" }} gap={2}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.3 }}>Mão de obra da obra</Typography>
@@ -575,6 +575,93 @@ export default function LaborPage() {
       </Box>
 
       {mode && <>
+        <Box sx={{
+          display: { xs: "none", xl: "block" },
+          position: "absolute",
+          left: "calc(100% + 18px)",
+          top: 188,
+          bottom: 0,
+          width: 146,
+          pointerEvents: "none",
+          zIndex: 9,
+        }}>
+          <ButtonBase
+            onClick={() => void save()}
+            disabled={saving}
+            aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
+            sx={{
+              position: "sticky",
+              top: "calc(var(--header-height, 64px) + 18px)",
+              width: "100%",
+              minHeight: 92,
+              p: 1.15,
+              borderRadius: "18px",
+              pointerEvents: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "stretch",
+              justifyContent: "space-between",
+              textAlign: "left",
+              color: "#205544",
+              background: success
+                ? "linear-gradient(150deg,#f1faf6 0%,#e5f3ed 100%)"
+                : "linear-gradient(150deg,#ffffff 0%,#edf7f2 100%)",
+              border: "1px solid",
+              borderColor: success ? "#aed5c6" : "#c7e0d7",
+              boxShadow: "0 10px 26px rgba(21,72,56,.10), inset 0 1px 0 rgba(255,255,255,.94)",
+              transition: "transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease",
+              "&:active": { transform: "scale(.98)" },
+              "&.Mui-disabled": { opacity: .82, color: "#205544" },
+              "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.22)", outlineOffset: 3 },
+              "@media (hover:hover)": {
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  borderColor: "#9dcdbb",
+                  boxShadow: "0 14px 32px rgba(21,72,56,.14), inset 0 1px 0 rgba(255,255,255,.96)",
+                },
+              },
+              "@media (prefers-reduced-motion: reduce)": {
+                transition: "none",
+                "&:hover": { transform: "none" },
+              },
+            }}
+          >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" gap=.8>
+              <Box sx={{
+                width: 38,
+                height: 38,
+                borderRadius: "12px",
+                display: "grid",
+                placeItems: "center",
+                flexShrink: 0,
+                bgcolor: success ? "#d8eee5" : "#e4f2ec",
+                border: "1px solid",
+                borderColor: success ? "#bddfD2" : "#d2e7de",
+                color: "#176a52",
+              }}>
+                {saving ? <CircularProgress size={17} thickness={5} sx={{ color: "#176a52" }} /> :
+                  success ? <CheckRoundedIcon sx={{ fontSize: 20 }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
+              </Box>
+              <ArrowForwardRoundedIcon aria-hidden="true" sx={{ fontSize: 18, color: "#739087" }} />
+            </Stack>
+
+            <Box mt={1}>
+              <Typography sx={{
+                fontSize: 12.4,
+                fontWeight: 900,
+                lineHeight: 1.08,
+                letterSpacing: "-.015em",
+                color: "#1f5141",
+              }}>
+                {saving ? "Salvando..." : success ? "Salvo" : "Salvar"}
+              </Typography>
+              <Typography sx={{ mt: .35, fontSize: 9.4, lineHeight: 1.25, color: "#698078" }}>
+                {success ? "Planejamento atualizado" : "Planejamento da obra"}
+              </Typography>
+            </Box>
+          </ButtonBase>
+        </Box>
+
         <Paper variant="outlined" sx={{
           mt: 1.8, px: { xs: 1.35, sm: 1.7 }, py: 1.2, borderRadius: "13px",
           position: "sticky",
@@ -608,6 +695,7 @@ export default function LaborPage() {
               disabled={saving}
               aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
               sx={{
+                display: { xs: "flex", xl: "none" },
                 width: { xs: "100%", sm: 250 },
                 minHeight: 58,
                 px: 1,
