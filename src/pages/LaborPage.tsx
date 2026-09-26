@@ -7,6 +7,7 @@ import {
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import CompareArrowsRoundedIcon from "@mui/icons-material/CompareArrowsRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
@@ -534,7 +535,6 @@ export default function LaborPage() {
       </Stack>
 
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
-      {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
 
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
         <Typography id="labor-mode-title" fontWeight={850} color="#244d40" sx={{ fontSize: 15 }}>Como esta obra será atendida?</Typography>
@@ -603,22 +603,68 @@ export default function LaborPage() {
               </Stack>
             </Box>
 
-            <Button
-              variant="contained"
-              startIcon={saving ? <CircularProgress size={16} sx={{ color: "inherit" }} /> : <SaveRoundedIcon />}
+            <ButtonBase
               onClick={() => void save()}
               disabled={saving}
-              aria-label="Salvar planejamento de mão de obra"
+              aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
               sx={{
-                minHeight: 46, px: { xs: 2, sm: 2.4 }, borderRadius: "12px",
-                textTransform: "none", fontWeight: 850, fontSize: { xs: 12.2, sm: 13 },
-                alignSelf: { xs: "stretch", sm: "center" },
-                bgcolor: "#087458", boxShadow: "0 7px 18px rgba(0,107,79,.20)",
-                "&:hover": { bgcolor: "#006b4f", boxShadow: "0 9px 22px rgba(0,107,79,.24)" },
+                width: { xs: "100%", sm: 294 }, minHeight: 62, px: 1.05, py: .8,
+                borderRadius: "15px", alignSelf: { xs: "stretch", sm: "center" },
+                justifyContent: "flex-start", textAlign: "left", color: "#fff",
+                overflow: "hidden", position: "relative",
+                background: success
+                  ? "linear-gradient(135deg,#17795f 0%,#0f6f56 58%,#0a644d 100%)"
+                  : "linear-gradient(135deg,#0b8060 0%,#087458 55%,#006b4f 100%)",
+                border: "1px solid rgba(255,255,255,.16)",
+                boxShadow: success
+                  ? "0 8px 20px rgba(0,107,79,.17), inset 0 1px 0 rgba(255,255,255,.17)"
+                  : "0 10px 24px rgba(0,107,79,.23), inset 0 1px 0 rgba(255,255,255,.16)",
+                transition: "transform 170ms ease, box-shadow 170ms ease, filter 170ms ease",
+                "&::after": {
+                  content: '""', position: "absolute", width: 88, height: 88, borderRadius: "50%",
+                  right: -30, top: -44, pointerEvents: "none",
+                  background: "radial-gradient(circle,rgba(255,255,255,.16),rgba(255,255,255,0) 70%)",
+                },
+                "&:active": { transform: "scale(.985)" },
+                "&.Mui-disabled": { opacity: .82, color: "#fff" },
+                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.28)", outlineOffset: 3 },
+                "@media (hover:hover)": {
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 14px 30px rgba(0,107,79,.28), inset 0 1px 0 rgba(255,255,255,.19)",
+                    filter: "saturate(1.04)",
+                  },
+                },
+                "@media (prefers-reduced-motion: reduce)": {
+                  transition: "none", "&:hover": { transform: "none" },
+                },
               }}
             >
-              {saving ? "Salvando..." : "Salvar planejamento"}
-            </Button>
+              <Box sx={{
+                width: 43, height: 43, borderRadius: "12px", flexShrink: 0,
+                display: "grid", placeItems: "center",
+                bgcolor: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.14)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,.12)",
+              }}>
+                {saving ? <CircularProgress size={19} thickness={5} sx={{ color: "#fff" }} /> :
+                  success ? <CheckRoundedIcon sx={{ fontSize: 22 }} /> : <SaveRoundedIcon sx={{ fontSize: 21 }} />}
+              </Box>
+
+              <Box minWidth={0} flex={1} ml={1.05} aria-live="polite">
+                <Typography sx={{ fontSize: { xs: 12.7, sm: 13.2 }, fontWeight: 900, lineHeight: 1.12, letterSpacing: "-.012em" }}>
+                  {saving ? "Salvando planejamento..." : success ? "Planejamento salvo" : "Salvar planejamento"}
+                </Typography>
+                <Typography sx={{ mt: .32, fontSize: { xs: 9.7, sm: 10.1 }, lineHeight: 1.25, color: "rgba(255,255,255,.77)" }}>
+                  {saving ? "Gravando equipe, serviços e custos" :
+                    success ? "Alterações registradas com sucesso" : "Equipe, serviços e custos desta obra"}
+                </Typography>
+              </Box>
+
+              <ArrowForwardRoundedIcon aria-hidden="true" sx={{
+                position: "relative", zIndex: 1, ml: .55, mr: .15, flexShrink: 0,
+                fontSize: 19, color: "rgba(255,255,255,.75)",
+              }} />
+            </ButtonBase>
           </Stack>
         </Paper>
 
