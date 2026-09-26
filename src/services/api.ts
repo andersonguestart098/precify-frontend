@@ -8,7 +8,7 @@ export interface Project { id: string; name: string; projectType?: string | null
 export type LaborMode = "" | "TEAM" | "THIRD_PARTY" | "BOTH";
 export type LaborSource = "TEAM" | "THIRD_PARTY";
 export type LaborOrigin = LaborSource | "BOTH";
-export interface LaborPlanItem { code: string; title: string; source: LaborSource; origin: LaborOrigin; }
+export interface LaborPlanItem { code: string; title: string; source: LaborSource; origin: LaborOrigin; cost: number; }
 export interface LaborPlan { projectId: string; mode: LaborMode; items: LaborPlanItem[]; updatedAt?: string | null; }
 export interface LaborPlanInput { mode: Exclude<LaborMode, "">; items: LaborPlanItem[]; }
 export interface SearchHistory { id: string; query: string; createdAt: string; }
