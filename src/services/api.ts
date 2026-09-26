@@ -102,6 +102,9 @@ export const updateProductImages = (id: string, images: { imageUrl?: string; sup
   apiRequest<Product>(`/products/${encodeURIComponent(id)}/images`, { method: "PATCH", body: JSON.stringify(images) });
 
 export interface ProductBasicUpdate {
+  name: string;
+  brand: string;
+  model: string;
   description: string;
   quoteValue: number;
   supplier: string;
