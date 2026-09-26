@@ -375,6 +375,14 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             </> : <>
               <Typography sx={{ fontSize: { xs: 22, md: 24 }, fontWeight: 850, color: "#173f33" }}>Cotação pendente</Typography>
               <Typography variant="body2" color="text.secondary" mt={.35}>Não há cotação cadastrada para esta seleção.</Typography>
+              {user.role === "ADMIN" && product && editableVariation && <Button
+                size="small"
+                startIcon={<EditRoundedIcon />}
+                onClick={startEditing}
+                sx={{ mt: 1.1, px: .4, textTransform: "none", fontWeight: 780, color: "#17664f" }}
+              >
+                Lançar cotação
+              </Button>}
             </>}
           </Box>
 
