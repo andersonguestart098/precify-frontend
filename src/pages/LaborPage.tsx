@@ -653,14 +653,14 @@ export default function LaborPage() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 1,
-                  color: hasUnsavedChanges ? "#fff" : "#496e60",
+                  color: hasUnsavedChanges ? "#17664f" : "#496e60",
                   background: hasUnsavedChanges
-                    ? "linear-gradient(135deg,#087858,#00583f)"
+                    ? "linear-gradient(145deg,#f8fffb,#e5f4ed)"
                     : "#edf5f1",
                   border: "1px solid",
-                  borderColor: hasUnsavedChanges ? "#006b4f" : "#d6e6dd",
+                  borderColor: hasUnsavedChanges ? "#aed8c8" : "#d6e6dd",
                   boxShadow: hasUnsavedChanges
-                    ? "0 7px 16px rgba(0,88,63,.22)"
+                    ? "0 6px 16px rgba(21,72,56,.09), inset 0 1px 0 rgba(255,255,255,.95)"
                     : "none",
                   transition: "transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, background 150ms ease",
                   "&.Mui-disabled": {
@@ -675,8 +675,9 @@ export default function LaborPage() {
                   "@media (hover:hover)": {
                     "&:not(.Mui-disabled):hover": {
                       transform: "translateY(-1px)",
-                      background: "#006b4f",
-                      boxShadow: "0 10px 22px rgba(0,88,63,.28)",
+                      background: "#ddf0e6",
+                      borderColor: "#84bea9",
+                      boxShadow: "0 8px 18px rgba(21,72,56,.13)",
                     },
                   },
                   "@media (prefers-reduced-motion: reduce)": {
@@ -692,7 +693,7 @@ export default function LaborPage() {
                   display: "grid",
                   placeItems: "center",
                   flexShrink: 0,
-                  bgcolor: hasUnsavedChanges ? "rgba(255,255,255,.16)" : "#dcece4",
+                  bgcolor: hasUnsavedChanges ? "#d5eadf" : "#dcece4",
                 }}>
                   {saving
                     ? <CircularProgress size={18} thickness={5} sx={{ color: "#496e60" }} />
