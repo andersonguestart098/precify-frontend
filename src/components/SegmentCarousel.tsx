@@ -22,6 +22,55 @@ const labels: Record<string, string> = {
   "44": "Aquecimento", "45": "Acessibilidade", "46": "Piscinas", "47": "Fachadas"
 };
 const segmentIcons = [Mountains, Package, PaintBucket, Cube, Flask, Wall, SquaresFour, Mountains, Tree, Columns, Cube, Hammer, StackIcon, Circle, SquaresFour, Umbrella, Waves, PaintBrush, Clipboard, HouseLine, Wall, SquaresFour, Door, Pipe, Bathtub, Gear, Plugs, ShieldCheck, Lightbulb, WifiHigh, Snowflake, Fire, FireExtinguisher, SolarPanel, Drop, RoadHorizon, Plant, Flower, CraneTower, Wrench, HardHat, Fire, Factory, Thermometer, Elevator, SwimmingPool, Buildings];
+const segmentHelp: Record<string, { title: string; description: string }> = {
+  "1": { title: "Agregados, Solos e Minerais", description: "Materiais de origem mineral, naturais ou beneficiados, provenientes de jazidas, pedreiras e processamento de solos e agregados." },
+  "2": { title: "Cimentos, Cal e Gesso", description: "Materiais minerais produzidos industrialmente por moagem e/ou calcinação, utilizados principalmente como ligantes na construção." },
+  "3": { title: "Argamassas, Grautes e Rejuntes", description: "Misturas industrializadas à base de cimento, agregados e aditivos, destinadas a assentamento, preenchimento, regularização e acabamento." },
+  "4": { title: "Concretos e Pré-moldados", description: "Produtos à base de cimento, agregados e armaduras, moldados em obra ou industrialmente para uso estrutural e construtivo." },
+  "5": { title: "Aditivos e Químicos de Construção", description: "Produtos químicos industrializados utilizados para modificar, proteger ou melhorar o desempenho de materiais e sistemas construtivos." },
+  "6": { title: "Alvenaria e Vedação", description: "Blocos, tijolos e componentes destinados à execução de paredes, divisórias e sistemas de vedação." },
+  "7": { title: "Cerâmicos e Porcelanatos", description: "Produtos obtidos do processamento e queima de massas cerâmicas, destinados principalmente a pisos, paredes e revestimentos." },
+  "8": { title: "Rochas Ornamentais e Naturais", description: "Pedras naturais extraídas de jazidas e beneficiadas por corte, polimento ou acabamento para aplicação construtiva e decorativa." },
+  "9": { title: "Madeira e Derivados", description: "Produtos provenientes da madeira natural ou reconstituída, incluindo peças serradas, painéis e componentes industrializados." },
+  "10": { title: "Aço e Ferro", description: "Produtos siderúrgicos derivados do ferro e do aço, como barras, perfis, chapas, tubos e componentes estruturais." },
+  "11": { title: "Metais Não Ferrosos", description: "Produtos fabricados a partir de metais como alumínio, cobre, zinco e suas ligas, em diferentes formas e aplicações." },
+  "12": { title: "Fixadores, Ferragens e Elementos Mecânicos", description: "Componentes metálicos fabricados para união, fixação, montagem e funcionamento mecânico de sistemas e estruturas." },
+  "13": { title: "Plásticos e Polímeros", description: "Produtos fabricados a partir de resinas e polímeros, transformados em tubos, chapas, perfis, peças e componentes." },
+  "14": { title: "Borrachas, Elastômeros e Vedações", description: "Materiais à base de borrachas naturais ou sintéticas destinados principalmente a vedação, isolamento, absorção e proteção." },
+  "15": { title: "Vidros, Espelhos e Chapas Transparentes", description: "Produtos obtidos da fusão e transformação de matérias-primas minerais, utilizados em fechamentos, revestimentos e elementos transparentes." },
+  "16": { title: "Impermeabilização", description: "Produtos e sistemas destinados à proteção contra água e umidade, incluindo mantas, membranas, argamassas e produtos químicos." },
+  "17": { title: "Isolamento Térmico, Acústico e Proteção Passiva", description: "Materiais desenvolvidos para reduzir transferência de calor, ruído ou propagação de incêndio em edificações." },
+  "18": { title: "Tintas, Vernizes e Revestimentos", description: "Produtos líquidos, pastosos ou preparados industrialmente para proteção, acabamento e tratamento de superfícies." },
+  "19": { title: "Adesivos, Selantes e Espumas", description: "Produtos químicos utilizados para colagem, vedação, preenchimento e isolamento de juntas e interfaces." },
+  "20": { title: "Coberturas, Calhas e Rufos", description: "Componentes destinados à cobertura de edificações e à proteção, coleta e condução das águas pluviais." },
+  "21": { title: "Drywall, Forros e Divisórias", description: "Sistemas industrializados leves compostos por placas, perfis e acessórios para paredes, forros e divisórias internas." },
+  "22": { title: "Pisos e Revestimentos Não Cerâmicos", description: "Materiais de acabamento para pisos e superfícies, como madeira, vinílicos, laminados, borracha e materiais compostos." },
+  "23": { title: "Portas, Janelas, Esquadrias e Ferragens", description: "Sistemas de fechamento e acesso fabricados em madeira, alumínio, aço, PVC, vidro e outros materiais, incluindo acessórios." },
+  "24": { title: "Hidráulica, Sanitária e Águas Pluviais", description: "Tubos, conexões e componentes destinados à condução, distribuição, coleta e descarte de água e efluentes." },
+  "25": { title: "Louças, Metais Sanitários e Acessórios", description: "Produtos e acessórios destinados aos ambientes sanitários, fabricados principalmente em cerâmica, metais, polímeros e materiais compostos." },
+  "26": { title: "Bombas, Válvulas e Controle de Fluidos", description: "Equipamentos e componentes destinados a movimentar, controlar, regular ou bloquear líquidos e outros fluidos." },
+  "27": { title: "Elétrica - Condutores e Infraestrutura", description: "Cabos, fios, eletrodutos, canaletas, leitos e demais componentes para condução e infraestrutura elétrica." },
+  "28": { title: "Elétrica - Proteção, Comando e Distribuição", description: "Equipamentos e componentes para proteção, comando, controle e distribuição de energia elétrica." },
+  "29": { title: "Iluminação", description: "Luminárias, lâmpadas, fontes, drivers e sistemas destinados à iluminação de ambientes internos e externos." },
+  "30": { title: "Telecomunicações, Dados, Segurança e Automação", description: "Equipamentos e componentes para comunicação, transmissão de dados, monitoramento, segurança e automação predial." },
+  "31": { title: "Climatização, Ventilação e Refrigeração", description: "Equipamentos e componentes destinados a climatizar, ventilar, filtrar, renovar ou refrigerar ambientes." },
+  "32": { title: "Gás Combustível e Instalações", description: "Tubos, conexões, válvulas, reguladores e componentes utilizados na condução e controle de gases combustíveis." },
+  "33": { title: "Segurança Contra Incêndio", description: "Equipamentos e sistemas destinados à prevenção, detecção, alarme, proteção e combate a incêndios." },
+  "34": { title: "Energia Solar, Geração e Armazenamento", description: "Equipamentos destinados à geração e armazenamento de energia, incluindo sistemas solares, inversores, baterias e componentes." },
+  "35": { title: "Geossintéticos, Drenagem e Contenção", description: "Materiais sintéticos e componentes utilizados em drenagem, estabilização de solos, contenção e proteção de obras de terra." },
+  "36": { title: "Pavimentação e Materiais Asfálticos", description: "Materiais e componentes utilizados na execução, recuperação e manutenção de pavimentos e vias." },
+  "37": { title: "Saneamento e Infraestrutura Urbana", description: "Tubos, conexões, equipamentos e componentes destinados a redes de água, esgoto, drenagem e infraestrutura urbana." },
+  "38": { title: "Paisagismo, Irrigação e Urbanização", description: "Materiais, equipamentos e componentes destinados a áreas externas, paisagismo, irrigação, espaços públicos e urbanização." },
+  "39": { title: "Formas, Escoramentos e Andaimes", description: "Sistemas temporários ou reutilizáveis utilizados para moldagem, sustentação, apoio e acesso durante a execução de obras." },
+  "40": { title: "Ferramentas, Abrasivos e Consumíveis", description: "Ferramentas e materiais de desgaste utilizados para cortar, perfurar, lixar, desbastar, fixar e executar serviços de obra." },
+  "41": { title: "EPIs, EPCs e Sinalização de Segurança", description: "Equipamentos e materiais destinados à proteção individual e coletiva, isolamento, orientação e sinalização de riscos." },
+  "42": { title: "Refratários e Alta Temperatura", description: "Materiais minerais e cerâmicos desenvolvidos para suportar altas temperaturas em equipamentos e processos térmicos." },
+  "43": { title: "Máquinas e Equipamentos de Obra", description: "Equipamentos mecânicos, elétricos, hidráulicos ou motorizados utilizados na execução, movimentação e apoio às obras." },
+  "44": { title: "Aquecimento de Água e Sistemas Térmicos", description: "Equipamentos e componentes destinados ao aquecimento, armazenamento e distribuição de água quente e energia térmica." },
+  "45": { title: "Transporte Vertical e Acessibilidade", description: "Equipamentos e sistemas destinados ao transporte de pessoas e à acessibilidade, incluindo elevadores, plataformas e componentes." },
+  "46": { title: "Piscinas, Spas e Tratamento de Água", description: "Equipamentos, componentes, revestimentos e produtos destinados à construção, circulação, filtragem e tratamento de água de piscinas e spas." },
+  "47": { title: "Fachadas, Brises e Revestimentos Técnicos", description: "Sistemas e componentes externos destinados à proteção, acabamento, controle solar e desempenho técnico de fachadas." },
+};
 export function segmentIconFor(code: string) { return segmentIcons[Number(code) - 1] ?? Shapes; }
 
 export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = false }: {
@@ -36,35 +85,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
   const segments = useMemo(() => [...new Map(catalog.map(m => [m.segmentCode, m.segmentName])).entries()]
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })), [catalog]);
 
-  const segmentDescriptions = useMemo(() => {
-    const grouped = new Map<string, { name: string; families: Set<string>; materials: Set<string>; notes: Set<string> }>();
-    for (const material of catalog) {
-      const entry = grouped.get(material.segmentCode) ?? {
-        name: material.segmentName,
-        families: new Set<string>(),
-        materials: new Set<string>(),
-        notes: new Set<string>(),
-      };
-      if (material.familyName?.trim()) entry.families.add(material.familyName.trim());
-      if (material.materialName?.trim()) entry.materials.add(material.materialName.trim());
-      if (material.observation?.trim() && !/material canônico/i.test(material.observation)) entry.notes.add(material.observation.trim());
-      grouped.set(material.segmentCode, entry);
-    }
 
-    const result = new Map<string, string>();
-    for (const [code, entry] of grouped) {
-      const families = [...entry.families].slice(0, 5);
-      const materials = [...entry.materials].slice(0, 4);
-      const note = [...entry.notes][0];
-      const parts = [
-        note || `${entry.name}: grupo do catálogo técnico de materiais da construção.`,
-        families.length ? `Famílias: ${families.join(", ")}.` : "",
-        materials.length ? `Exemplos: ${materials.join(", ")}.` : "",
-      ].filter(Boolean);
-      result.set(code, parts.join(" "));
-    }
-    return result;
-  }, [catalog]);
 
   const showScrollbar = () => {
     setScrolling(true);
@@ -195,9 +216,12 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
         const Icon = segmentIconFor(code);
         const active = code === selected;
-        const helpText = code
-          ? segmentDescriptions.get(code) ?? `${name}: segmento do catálogo técnico de materiais.`
-          : "Exibe todos os segmentos do catálogo sem aplicar filtro.";
+        const help = code ? segmentHelp[code] : undefined;
+        const helpText = help
+          ? `${help.title}. ${help.description}`
+          : code
+            ? `${name}: segmento do catálogo técnico de materiais.`
+            : "Exibe todos os segmentos do catálogo sem aplicar filtro.";
 
         return <ButtonBase
           key={code}
