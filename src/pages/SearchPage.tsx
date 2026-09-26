@@ -189,8 +189,8 @@ export default function SearchPage() {
     <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
       <AccountGreeting />
       <Typography component="h1" sx={catalogHeroTitleSx}>
-        <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o material certo.</Box>
-        <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>Encontre o material certo pelas especificações.</Box>
+        <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>Encontre o custo certo.</Box>
+        <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>Encontre o custo certo pelas especificações.</Box>
       </Typography>
       <Typography color="text.secondary" sx={{ fontSize: { xs: 16, md: 13, xl: 16 } }}>Filtre e compare produtos por especificação.</Typography>
     </Box>
