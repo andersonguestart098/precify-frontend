@@ -120,6 +120,7 @@ function LaborOverview({
   const teamCount = plan?.items.filter(item => item.origin === "TEAM").length ?? 0;
   const thirdCount = plan?.items.filter(item => item.origin === "THIRD_PARTY").length ?? 0;
   const bothCount = plan?.items.filter(item => item.origin === "BOTH").length ?? 0;
+  const laborTotal = plan?.items.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0) ?? 0;
 
   return <Box component="section" aria-labelledby={`labor-${project.id}`} sx={{
     border: "1px solid #dbe7e3", borderRadius: "11px", bgcolor: "#fbfdfc", overflow: "hidden",
@@ -136,7 +137,7 @@ function LaborOverview({
           <Typography id={`labor-${project.id}`} fontWeight={850} color="#21483b" sx={{ fontSize: 13.2 }}>Mão de obra</Typography>
           {loading ? <Typography color="text.secondary" sx={{ fontSize: 10 }}>Carregando planejamento...</Typography> :
             <Typography color="text.secondary" sx={{ fontSize: 10 }}>
-              {plan?.items.length ? `${plan.items.length} necessidades • ${laborModeLabel(plan.mode)}` : "Nenhum planejamento de mão de obra salvo"}
+              {plan?.items.length ? `${plan.items.length} necessidades • ${laborModeLabel(plan.mode)} • ${currency.format(laborTotal)}` : "Nenhum planejamento de mão de obra salvo"}
             </Typography>}
         </Box>
       </Stack>
@@ -156,6 +157,10 @@ function LaborOverview({
           {teamCount > 0 && <Chip size="small" label={`${teamCount} equipe`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1 }} />}
           {thirdCount > 0 && <Chip size="small" label={`${thirdCount} terceiro${thirdCount > 1 ? "s" : ""}`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1 }} />}
           {bothCount > 0 && <Chip size="small" label={`${bothCount} ambos`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1 }} />}
+          <Chip size="small" label={`Total M.O. ${currency.format(laborTotal)}`} sx={{
+            height: 23, borderRadius: "7px", fontSize: 9.1, fontWeight: 820,
+            bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1",
+          }} />
         </Stack>
         <Box sx={{
           px: { xs: 1.05, sm: 1.35 }, pb: 1.2,
@@ -168,6 +173,9 @@ function LaborOverview({
               <Typography fontWeight={760} color="#315247" sx={{ fontSize: 10.6, lineHeight: 1.25 }}>{item.title}</Typography>
               <Typography color="text.secondary" sx={{ fontSize: 8.5, mt: .1 }}>{item.code}</Typography>
             </Box>
+            <Typography sx={{ fontSize: 9.8, fontWeight: 820, color: "#176047", whiteSpace: "nowrap" }}>
+              {currency.format(Number(item.cost ?? 0))}
+            </Typography>
             <Chip size="small" label={laborOriginLabel(item.origin)} sx={{
               height: 21, borderRadius: "6px", flexShrink: 0, fontSize: 8.7, fontWeight: 760,
               bgcolor: item.origin === "THIRD_PARTY" ? "#f1f4f3" : "#e9f5f0", color: "#31594b",
