@@ -13,7 +13,7 @@ import type { CatalogResult } from "../domain/search";
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 export function CatalogResultCard({ result, favorite = false, favoriteBusy = false, onFavorite, layout = "list" }: {
-  result: CatalogResult; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void; layout?: "list" | "mosaic";
+  result: CatalogResult; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void; layout?: "list" | "mosaic" | "single";
 }) {
   const location = useLocation();
   const [animateFavorite, setAnimateFavorite] = useState(false);
