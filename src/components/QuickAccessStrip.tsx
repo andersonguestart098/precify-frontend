@@ -95,17 +95,29 @@ export default function QuickAccessStrip() {
         onClick={available ? undefined : event => event.preventDefault()}
         sx={{
           position: "relative", overflow: "hidden",
-          width: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 }, minWidth: { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
-          minHeight: { xs: 104, sm: 108, md: 110, xl: 120 }, px: { xs: 1.3, md: 1.4, xl: 1.55 }, py: { xs: 1.2, md: 1.25, xl: 1.4 },
-          borderRadius: { xs: "16px", md: "16px", xl: "18px" }, scrollSnapAlign: "start", textAlign: "left",
+          width: featured
+            ? { xs: 178, sm: 196, md: 204, lg: 220, xl: 236 }
+            : { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+          minWidth: featured
+            ? { xs: 178, sm: 196, md: 204, lg: 220, xl: 236 }
+            : { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+          minHeight: featured
+            ? { xs: 116, sm: 120, md: 124, xl: 132 }
+            : { xs: 104, sm: 108, md: 110, xl: 120 },
+          px: { xs: 1.3, md: 1.4, xl: 1.55 },
+          py: featured ? { xs: 1.35, md: 1.4, xl: 1.5 } : { xs: 1.2, md: 1.25, xl: 1.4 },
+          borderRadius: featured
+            ? { xs: "22px 15px 22px 15px", md: "24px 16px 24px 16px" }
+            : { xs: "16px", md: "16px", xl: "18px" },
+          scrollSnapAlign: "start", textAlign: "left",
           display: "flex", flexDirection: "column", alignItems: "stretch", justifyContent: "space-between", gap: 1,
           color: "#244d40", border: "1px solid",
-          borderColor: featured ? "rgba(0,107,79,.18)" : "rgba(0,107,79,.095)",
+          borderColor: featured ? "rgba(0,107,79,.26)" : "rgba(0,107,79,.095)",
           background: featured
-            ? "linear-gradient(148deg,rgba(255,255,255,.98) 0%,rgba(241,249,246,.94) 58%,rgba(232,245,240,.9) 100%)"
+            ? "linear-gradient(145deg,rgba(255,255,255,.995) 0%,rgba(239,250,246,.98) 48%,rgba(224,243,235,.96) 100%)"
             : "linear-gradient(148deg,rgba(255,255,255,.96) 0%,rgba(245,249,248,.9) 58%,rgba(237,246,243,.84) 100%)",
           boxShadow: featured
-            ? "0 7px 19px rgba(0,107,79,.05), 0 0 0 1px rgba(38,155,120,.025), inset 0 1px 0 rgba(255,255,255,.88)"
+            ? "0 11px 28px rgba(0,107,79,.10), 0 0 0 1px rgba(38,155,120,.055), inset 0 1px 0 rgba(255,255,255,.92)"
             : "0 5px 16px rgba(24,60,48,.03), inset 0 1px 0 rgba(255,255,255,.78)",
           cursor: available ? "pointer" : "default",
           transition: "transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background 180ms ease",
@@ -120,12 +132,27 @@ export default function QuickAccessStrip() {
               : "radial-gradient(circle at 38% 38%,rgba(38,155,120,.07),rgba(38,155,120,.018) 60%,transparent 73%)",
             transform: `rotate(${index % 2 === 0 ? 16 : -12}deg)`, pointerEvents: "none",
           },
+          "&::after": featured ? {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            borderRadius: "inherit",
+            background: "linear-gradient(118deg,transparent 0%,transparent 34%,rgba(255,255,255,.58) 47%,rgba(255,255,255,.16) 54%,transparent 68%,transparent 100%)",
+            transform: "translateX(-145%)",
+            animation: "precifyAiSheen 3.15s ease-in-out infinite",
+            pointerEvents: "none",
+          } : {},
+          "@keyframes precifyAiSheen": {
+            "0%": { transform: "translateX(-145%)" },
+            "52%": { transform: "translateX(145%)" },
+            "100%": { transform: "translateX(145%)" },
+          },
           ...(available ? {
             "@media (hover:hover)": { "&:hover": {
-              transform: "translateY(-2px)",
-              borderColor: featured ? "rgba(0,107,79,.28)" : "rgba(0,107,79,.21)",
+              transform: featured ? "translateY(-3px) scale(1.012)" : "translateY(-2px)",
+              borderColor: featured ? "rgba(0,107,79,.40)" : "rgba(0,107,79,.21)",
               boxShadow: featured
-                ? "0 10px 24px rgba(0,107,79,.075), 0 0 0 1px rgba(38,155,120,.04)"
+                ? "0 15px 34px rgba(0,107,79,.14), 0 0 0 1px rgba(38,155,120,.08)"
                 : "0 10px 23px rgba(0,107,79,.065)",
             } },
           } : {}),
@@ -136,7 +163,7 @@ export default function QuickAccessStrip() {
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
-            borderRadius: { xs: "12px", md: "12px", xl: "14px" },
+            borderRadius: featured ? { xs: "14px", md: "14px", xl: "16px" } : { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
             overflow: "hidden",
             color: featured ? "rgba(16,96,74,.86)" : "#285e4c",
@@ -170,7 +197,15 @@ export default function QuickAccessStrip() {
               height: { xs: 22, md: 24, xl: 26 },
               position: "relative",
               zIndex: 1,
-              filter: featured ? "drop-shadow(0 1px 2px rgba(0,107,79,.07))" : "none",
+              filter: featured ? "drop-shadow(0 2px 5px rgba(0,107,79,.16))" : "none",
+              animation: featured ? "precifyAiSparkle 2.1s ease-in-out infinite" : "none",
+              transformOrigin: "center",
+            },
+            "@keyframes precifyAiSparkle": {
+              "0%,100%": { transform: "scale(1) rotate(0deg)", opacity: .9 },
+              "24%": { transform: "scale(1.1) rotate(5deg)", opacity: 1 },
+              "50%": { transform: "scale(.97) rotate(-3deg)", opacity: .94 },
+              "76%": { transform: "scale(1.07) rotate(3deg)", opacity: 1 },
             },
             "@media (prefers-reduced-motion: reduce)": {
               animation: "none",
