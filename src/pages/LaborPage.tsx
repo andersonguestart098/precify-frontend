@@ -145,8 +145,8 @@ function LaborGroupCard({
                 <MenuItem value="BOTH">Ambos</MenuItem>
               </TextField>}
             </Stack>
-            {selected && <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={.6}
-              sx={{ pl: { xs: 4.9, sm: 5.1 }, pr: .35, pt: .35, pb: .55 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={.6}
+              sx={{ pl: { xs: 4.9, sm: 5.1 }, pr: .35, pt: .35, pb: .55, opacity: selected ? 1 : .58 }}>
               <Typography sx={{ fontSize: 10.2, fontWeight: 760, color: "#5e746c", minWidth: 92 }}>
                 Custo estimado
               </Typography>
@@ -154,19 +154,22 @@ function LaborGroupCard({
                 size="small"
                 type="number"
                 label="Custo (R$)"
-                value={selected.cost > 0 ? selected.cost : ""}
+                disabled={!selected}
+                value={selected && selected.cost > 0 ? selected.cost : ""}
+                placeholder={selected ? "0,00" : "Selecione a opção"}
                 onChange={event => {
+                  if (!selected) return;
                   const parsed = Number(event.target.value);
                   onCostChange(item.code, Number.isFinite(parsed) && parsed >= 0 ? parsed : 0);
                 }}
                 slotProps={{ htmlInput: { min: 0, step: "0.01", inputMode: "decimal" } }}
                 sx={{
-                  width: { xs: "100%", sm: 170 },
+                  width: { xs: "100%", sm: 180 },
                   "& .MuiInputBase-root": { height: 38, borderRadius: "9px", fontSize: 11.5, bgcolor: "#fff" },
                   "& .MuiInputLabel-root": { fontSize: 11.5 },
                 }}
               />
-            </Stack>}
+            </Stack>
           </Box>;
         })}
       </Stack>
