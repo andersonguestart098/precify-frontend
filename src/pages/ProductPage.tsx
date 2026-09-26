@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
-import { productDetail, updateProductBasic, type CatalogDetail } from "../services/api";
+import { createProduct, productDetail, updateProductBasic, type CatalogDetail } from "../services/api";
 import { detailOffers, formatDate, matchesSelection, type VariationSelection } from "../domain/productDetails";
 import type { CatalogOffer } from "../domain/search";
 import { ProtectedImage } from "../components/ProtectedImage";
@@ -76,6 +76,16 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     ?? product?.variations.find(variation => matchesSelection(variation, selection))
     ?? product?.variations[0];
   const editableQuote = editableVariation?.quote;
+  const catalogVariation = selection
+    ? material.variations.find(variation => variation.variationCode === selection.variationCode)
+    : material.variations[0];
+  const catalogOption = selection?.optionCode
+    ? catalogVariation?.options.find(option => option.optionCode === selection.optionCode)
+    : catalogVariation?.options[0];
+  const editVariationCode = editableVariation?.variationCode ?? catalogVariation?.variationCode;
+  const editOptionCode = editableVariation?.optionCode ?? catalogOption?.optionCode ?? null;
+  const editVariationLabel = editableVariation?.label ?? catalogOption?.name ?? catalogVariation?.name ?? "Padrão";
+  const canAdminEdit = user.role === "ADMIN" && Boolean(editVariationCode);
   const favorite = favorites.codes.has(code);
 
   const select = (value: VariationSelection) => {
@@ -84,13 +94,17 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   };
 
   const startEditing = () => {
-    if (!product || !editableVariation) return;
+    if (!canAdminEdit) return;
+    if (!product && catalogVariation?.options.length && !selection?.optionCode) {
+      setEditError("Escolha uma opção do material antes de lançar a cotação.");
+      return;
+    }
     setEditError("");
     setEditSuccess("");
-    setNameDraft(product.name);
-    setBrandDraft(product.brand);
-    setModelDraft(product.model);
-    setDescriptionDraft(product.description || material.observation || material.materialName);
+    setNameDraft(product?.name ?? material.materialName);
+    setBrandDraft(product?.brand ?? "");
+    setModelDraft(product?.model ?? "");
+    setDescriptionDraft(product?.description || material.observation || material.materialName);
     setQuoteDraft(editableQuote ? String(editableQuote.value).replace(".", ",") : "0,00");
     setSupplierDraft(editableQuote?.supplier?.toLocaleLowerCase("pt-BR").includes("a definir") ? "" : (editableQuote?.supplier ?? ""));
     setEditing(true);
@@ -102,7 +116,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   };
 
   const saveBasicDetails = async () => {
-    if (!product || !editableVariation) return;
+    if (!editVariationCode) return;
     const quoteValue = Number((quoteDraft.trim() || "0").replace(",", "."));
     if (!nameDraft.trim()) {
       setEditError("Informe o nome do produto.");
@@ -133,18 +147,47 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     setEditError("");
     setEditSuccess("");
     try {
-      await updateProductBasic(product.id, {
-        name: nameDraft.trim(),
-        brand: brandDraft.trim(),
-        model: modelDraft.trim(),
-        description: descriptionDraft.trim(),
-        quoteValue,
-        supplier: supplierDraft.trim(),
-        variationCode: editableVariation.variationCode ?? null,
-        optionCode: editableVariation.optionCode ?? null,
-      });
+      if (product && editableVariation) {
+        await updateProductBasic(product.id, {
+          name: nameDraft.trim(),
+          brand: brandDraft.trim(),
+          model: modelDraft.trim(),
+          description: descriptionDraft.trim(),
+          quoteValue,
+          supplier: supplierDraft.trim(),
+          variationCode: editableVariation.variationCode ?? null,
+          optionCode: editableVariation.optionCode ?? null,
+        });
+      } else {
+        await createProduct({
+          name: nameDraft.trim(),
+          brand: brandDraft.trim(),
+          model: modelDraft.trim(),
+          segmentCode: material.segmentCode,
+          segment: material.segmentName,
+          familyCode: material.familyCode,
+          category: material.familyName,
+          materialCode: material.materialCode,
+          material: material.materialName,
+          description: descriptionDraft.trim(),
+          imageUrl: material.imageUrl ?? null,
+          supplierLogoUrl: material.supplierLogoUrl ?? null,
+          attributes: { catalogMaterialCode: material.materialCode },
+          variations: [{
+            variationCode: editVariationCode,
+            optionCode: editOptionCode,
+            label: editVariationLabel,
+            quote: {
+              value: quoteValue,
+              supplier: supplierDraft.trim() || "A definir",
+              date: new Date().toISOString().slice(0, 10),
+              region: "RS",
+            },
+          }],
+        });
+      }
       setEditing(false);
-      setEditSuccess("Dados do produto atualizados.");
+      setEditSuccess(product ? "Dados do produto atualizados." : "Produto e cotação cadastrados.");
       setRevision(value => value + 1);
     } catch (reason) {
       setEditError(reason instanceof Error ? reason.message : "Não foi possível atualizar os dados do produto.");
@@ -276,7 +319,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             </Box>
 
             <Stack direction="row" alignItems="center" gap={.65} flexShrink={0}>
-              {user.role === "ADMIN" && product && editableVariation && (editing ? <>
+              {canAdminEdit && (editing ? <>
                 <IconButton
                   aria-label="Cancelar edição"
                   onClick={cancelEditing}
@@ -362,7 +405,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                 />
               </Stack>
               <Typography variant="caption" color="text.secondary">
-                {editableVariation?.label || "Opção selecionada"}
+                {editVariationLabel}
                 {editableQuote?.region ? " · " + editableQuote.region : ""}
                 {editableQuote?.date ? " · " + formatDate(editableQuote.date) : ""}
               </Typography>
@@ -375,7 +418,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
             </> : <>
               <Typography sx={{ fontSize: { xs: 22, md: 24 }, fontWeight: 850, color: "#173f33" }}>Cotação pendente</Typography>
               <Typography variant="body2" color="text.secondary" mt={.35}>Não há cotação cadastrada para esta seleção.</Typography>
-              {user.role === "ADMIN" && product && editableVariation && <Button
+              {canAdminEdit && <Button
                 size="small"
                 startIcon={<EditRoundedIcon />}
                 onClick={startEditing}
