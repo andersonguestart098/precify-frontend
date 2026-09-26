@@ -65,6 +65,21 @@ function includesSearch(group: LaborCatalogGroup, item: LaborCatalogItem, search
   return haystack.includes(search);
 }
 
+function laborPlanSignature(mode: LaborMode, items: LaborPlanItem[]) {
+  return JSON.stringify({
+    mode,
+    items: [...items]
+      .sort((left, right) => left.code.localeCompare(right.code))
+      .map(item => ({
+        code: item.code,
+        title: item.title,
+        source: item.source,
+        origin: item.origin,
+        cost: Number(item.cost ?? 0),
+      })),
+  });
+}
+
 function LaborGroupCard({
   group, source, mode, search, selections, onToggle, onOriginChange, onCostChange, favoriteCodes, favoriteBusy, onFavorite,
 }: {
@@ -255,6 +270,7 @@ export default function LaborPage() {
   const [success, setSuccess] = useState("");
   const [mode, setMode] = useState<LaborMode>("");
   const [selections, setSelections] = useState<Record<string, LaborPlanItem>>({});
+  const [savedSignature, setSavedSignature] = useState(() => laborPlanSignature("", []));
   const [search, setSearch] = useState("");
   const [summaryExpanded, setSummaryExpanded] = useState(true);
   const [summaryPulse, setSummaryPulse] = useState(false);
@@ -274,11 +290,14 @@ export default function LaborPage() {
         if (!active) return;
         setProjects(works);
         if (plan) {
+          const normalizedItems = plan.items.map(item => ({ ...item, cost: Number(item.cost ?? 0) }));
           setMode(plan.mode);
-          setSelections(Object.fromEntries(plan.items.map(item => [item.code, { ...item, cost: Number(item.cost ?? 0) }])));
+          setSelections(Object.fromEntries(normalizedItems.map(item => [item.code, item])));
+          setSavedSignature(laborPlanSignature(plan.mode, normalizedItems));
         } else {
           setMode("");
           setSelections({});
+          setSavedSignature(laborPlanSignature("", []));
         }
       })
       .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : "Não foi possível carregar a mão de obra."); })
@@ -293,6 +312,7 @@ export default function LaborPage() {
   const thirdSelected = selectedItems.filter(item => item.origin === "THIRD_PARTY").length;
   const bothSelected = selectedItems.filter(item => item.origin === "BOTH").length;
   const laborTotal = selectedItems.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0);
+  const hasUnsavedChanges = Boolean(mode) && laborPlanSignature(mode, selectedItems) !== savedSignature;
 
   const chooseMode = (nextMode: Exclude<LaborMode, "">) => {
     setMode(nextMode);
@@ -346,8 +366,10 @@ export default function LaborPage() {
     try {
       const saved = await saveLaborPlan(projectId, { mode, items: selectedItems });
       saveCachedLaborPlan(user.id, projectId, saved);
+      const normalizedItems = saved.items.map(item => ({ ...item, cost: Number(item.cost ?? 0) }));
       setMode(saved.mode);
-      setSelections(Object.fromEntries(saved.items.map(item => [item.code, { ...item, cost: Number(item.cost ?? 0) }])));
+      setSelections(Object.fromEntries(normalizedItems.map(item => [item.code, item])));
+      setSavedSignature(laborPlanSignature(saved.mode, normalizedItems));
       setSuccess("Planejamento de mão de obra salvo nesta obra.");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Não foi possível salvar o planejamento.");
@@ -575,96 +597,10 @@ export default function LaborPage() {
       </Box>
 
       {mode && <>
-        <Box sx={{
-          display: { xs: "none", xl: "block" },
-          position: "absolute",
-          left: "calc(100% + 18px)",
-          top: 188,
-          bottom: 0,
-          width: 146,
-          pointerEvents: "none",
-          zIndex: 9,
-        }}>
-          <ButtonBase
-            onClick={() => void save()}
-            disabled={saving}
-            aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
-            sx={{
-              position: "sticky",
-              top: "calc(var(--header-height, 64px) + 18px)",
-              width: "100%",
-              minHeight: 92,
-              p: 1.15,
-              borderRadius: "18px",
-              pointerEvents: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "stretch",
-              justifyContent: "space-between",
-              textAlign: "left",
-              color: "#205544",
-              background: success
-                ? "linear-gradient(150deg,#f1faf6 0%,#e5f3ed 100%)"
-                : "linear-gradient(150deg,#ffffff 0%,#edf7f2 100%)",
-              border: "1px solid",
-              borderColor: success ? "#aed5c6" : "#c7e0d7",
-              boxShadow: "0 10px 26px rgba(21,72,56,.10), inset 0 1px 0 rgba(255,255,255,.94)",
-              transition: "transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease",
-              "&:active": { transform: "scale(.98)" },
-              "&.Mui-disabled": { opacity: .82, color: "#205544" },
-              "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.22)", outlineOffset: 3 },
-              "@media (hover:hover)": {
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  borderColor: "#9dcdbb",
-                  boxShadow: "0 14px 32px rgba(21,72,56,.14), inset 0 1px 0 rgba(255,255,255,.96)",
-                },
-              },
-              "@media (prefers-reduced-motion: reduce)": {
-                transition: "none",
-                "&:hover": { transform: "none" },
-              },
-            }}
-          >
-            <Stack direction="row" alignItems="center" justifyContent="space-between" gap={.8}>
-              <Box sx={{
-                width: 38,
-                height: 38,
-                borderRadius: "12px",
-                display: "grid",
-                placeItems: "center",
-                flexShrink: 0,
-                bgcolor: success ? "#d8eee5" : "#e4f2ec",
-                border: "1px solid",
-                borderColor: success ? "#bddfD2" : "#d2e7de",
-                color: "#176a52",
-              }}>
-                {saving ? <CircularProgress size={17} thickness={5} sx={{ color: "#176a52" }} /> :
-                  success ? <CheckRoundedIcon sx={{ fontSize: 20 }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
-              </Box>
-              <ArrowForwardRoundedIcon aria-hidden="true" sx={{ fontSize: 18, color: "#739087" }} />
-            </Stack>
-
-            <Box mt={1}>
-              <Typography sx={{
-                fontSize: 12.4,
-                fontWeight: 900,
-                lineHeight: 1.08,
-                letterSpacing: "-.015em",
-                color: "#1f5141",
-              }}>
-                {saving ? "Salvando..." : success ? "Salvo" : "Salvar"}
-              </Typography>
-              <Typography sx={{ mt: .35, fontSize: 9.4, lineHeight: 1.25, color: "#698078" }}>
-                {success ? "Planejamento atualizado" : "Planejamento da obra"}
-              </Typography>
-            </Box>
-          </ButtonBase>
-        </Box>
-
         <Paper variant="outlined" sx={{
           mt: 1.8, px: { xs: 1.35, sm: 1.7 }, py: 1.2, borderRadius: "13px",
-          position: "sticky",
+          position: "sticky", overflow: "visible",
+
           top: { xs: "calc(var(--header-height, 56px) + var(--mobile-context-height, 0px) + 8px)", md: "calc(var(--header-height, 64px) + 10px)" },
           zIndex: 8,
           borderColor: "#bcd9cf", bgcolor: "rgba(250,253,252,.97)",
@@ -692,91 +628,115 @@ export default function LaborPage() {
 
             <ButtonBase
               onClick={() => void save()}
-              disabled={saving}
-              aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
+              disabled={saving || !hasUnsavedChanges}
+              aria-label={hasUnsavedChanges ? "Salvar alterações da mão de obra" : "Planejamento salvo"}
               sx={{
                 display: { xs: "flex", xl: "none" },
-                width: { xs: "100%", sm: 250 },
-                minHeight: 58,
-                px: 1,
-                py: .75,
-                borderRadius: "15px",
+                width: { xs: "100%", sm: "auto" },
+                minWidth: { sm: 176 },
+                minHeight: 46,
+                px: 1.35,
+                borderRadius: 999,
                 alignSelf: { xs: "stretch", sm: "center" },
-                justifyContent: "flex-start",
-                textAlign: "left",
-                color: "#215645",
-                overflow: "hidden",
-                position: "relative",
-                background: success
-                  ? "linear-gradient(145deg,#eef8f4 0%,#e6f4ee 100%)"
-                  : "linear-gradient(145deg,#f8fcfa 0%,#edf7f2 100%)",
+                justifyContent: "center",
+                gap: .75,
+                color: hasUnsavedChanges ? "#fff" : "#4f6f64",
+                background: hasUnsavedChanges
+                  ? "linear-gradient(135deg,#0b8060,#006b4f)"
+                  : "linear-gradient(145deg,#f8fbfa,#edf4f1)",
                 border: "1px solid",
-                borderColor: success ? "#b8dacd" : "#cfe4db",
-                boxShadow: "0 6px 18px rgba(21,72,56,.08)",
-                transition: "transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease, background 170ms ease",
-                "&:active": { transform: "scale(.985)" },
-                "&.Mui-disabled": { opacity: .82, color: "#215645" },
-                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.20)", outlineOffset: 3 },
+                borderColor: hasUnsavedChanges ? "#087458" : "#d7e5e0",
+                boxShadow: hasUnsavedChanges ? "0 8px 20px rgba(0,107,79,.18)" : "none",
+                transition: "transform 160ms ease, box-shadow 160ms ease, background 160ms ease",
+                "&.Mui-disabled": { opacity: 1, color: "#668078" },
+                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.22)", outlineOffset: 2 },
                 "@media (hover:hover)": {
-                  "&:hover": {
+                  "&:not(.Mui-disabled):hover": {
                     transform: "translateY(-1px)",
-                    borderColor: "#b8dacd",
-                    boxShadow: "0 10px 24px rgba(21,72,56,.10)",
-                    background: "linear-gradient(145deg,#fafdfb 0%,#eaf5f0 100%)",
+                    boxShadow: "0 11px 24px rgba(0,107,79,.22)",
                   },
-                },
-                "@media (prefers-reduced-motion: reduce)": {
-                  transition: "none",
-                  "&:hover": { transform: "none" },
                 },
               }}
             >
-              <Box sx={{
-                width: 40,
-                height: 40,
-                borderRadius: "12px",
-                flexShrink: 0,
-                display: "grid",
-                placeItems: "center",
-                bgcolor: success ? "#dcefe7" : "#e7f3ee",
-                border: "1px solid",
-                borderColor: success ? "#c7e4d8" : "#d6e9e0",
-                color: success ? "#0f6f56" : "#2d6a57",
-              }}>
-                {saving ? <CircularProgress size={18} thickness={5} sx={{ color: "#2d6a57" }} /> :
-                  success ? <CheckRoundedIcon sx={{ fontSize: 21 }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
-              </Box>
-
-              <Box minWidth={0} flex={1} ml={1} aria-live="polite">
-                <Typography sx={{
-                  fontSize: { xs: 12.4, sm: 12.8 },
-                  fontWeight: 900,
-                  lineHeight: 1.12,
-                  letterSpacing: "-.012em",
-                  color: "#1f5141",
-                }}>
-                  {saving ? "Salvando planejamento..." : success ? "Planejamento salvo" : "Salvar planejamento"}
-                </Typography>
-                <Typography sx={{
-                  mt: .28,
-                  fontSize: { xs: 9.4, sm: 9.8 },
-                  lineHeight: 1.25,
-                  color: "#5e7c71",
-                }}>
-                  {saving ? "Gravando equipe, serviços e custos" :
-                    success ? "Alterações registradas com sucesso" : "Equipe, serviços e custos da obra"}
-                </Typography>
-              </Box>
-
-              <ArrowForwardRoundedIcon aria-hidden="true" sx={{
-                ml: .45,
-                mr: .1,
-                flexShrink: 0,
-                fontSize: 18,
-                color: "#6c8b80",
-              }} />
+              {saving ? <CircularProgress size={17} thickness={5} sx={{ color: "inherit" }} /> :
+                hasUnsavedChanges ? <SaveRoundedIcon sx={{ fontSize: 18 }} /> : <CheckRoundedIcon sx={{ fontSize: 18 }} />}
+              <Typography sx={{ fontSize: 11.8, fontWeight: 900, lineHeight: 1 }}>
+                {saving ? "Salvando..." : hasUnsavedChanges ? "Salvar alterações" : "Salvo"}
+              </Typography>
             </ButtonBase>
           </Stack>
+
+          <ButtonBase
+            onClick={() => void save()}
+            disabled={saving || !hasUnsavedChanges}
+            aria-label={hasUnsavedChanges ? "Salvar alterações da mão de obra" : "Planejamento salvo"}
+            sx={{
+              display: { xs: "none", xl: "flex" },
+              position: "absolute",
+              right: -132,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 118,
+              height: 50,
+              px: 1.15,
+              borderRadius: "0 15px 15px 0",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: .65,
+              color: hasUnsavedChanges ? "#fff" : "#4f6f64",
+              background: hasUnsavedChanges
+                ? "linear-gradient(135deg,#0b8060 0%,#006b4f 100%)"
+                : "linear-gradient(145deg,#f7fbf9 0%,#edf5f1 100%)",
+              border: "1px solid",
+              borderLeft: "none",
+              borderColor: hasUnsavedChanges ? "#087458" : "#cfe0da",
+              boxShadow: hasUnsavedChanges
+                ? "8px 8px 22px rgba(0,107,79,.16)"
+                : "7px 7px 18px rgba(21,72,56,.07)",
+              transition: "transform 160ms ease, box-shadow 160ms ease, background 160ms ease",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                left: -9,
+                top: 0,
+                width: 10,
+                height: "100%",
+                bgcolor: hasUnsavedChanges ? "#0b8060" : "#f4f9f7",
+                borderTop: "1px solid",
+                borderBottom: "1px solid",
+                borderColor: hasUnsavedChanges ? "#087458" : "#cfe0da",
+              },
+              "&.Mui-disabled": { opacity: 1, color: "#668078" },
+              "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.22)", outlineOffset: 3 },
+              "@media (hover:hover)": {
+                "&:not(.Mui-disabled):hover": {
+                  transform: "translateY(-50%) translateX(3px)",
+                  boxShadow: "10px 10px 26px rgba(0,107,79,.21)",
+                },
+              },
+              "@media (prefers-reduced-motion: reduce)": {
+                transition: "none",
+                "&:hover": { transform: "translateY(-50%)" },
+              },
+            }}
+          >
+            {saving ? <CircularProgress size={17} thickness={5} sx={{ color: "inherit" }} /> :
+              hasUnsavedChanges ? <SaveRoundedIcon sx={{ fontSize: 18 }} /> : <CheckRoundedIcon sx={{ fontSize: 18 }} />}
+            <Box minWidth={0} textAlign="left">
+              <Typography sx={{ fontSize: 11.6, fontWeight: 900, lineHeight: 1.05, whiteSpace: "nowrap" }}>
+                {saving ? "Salvando" : hasUnsavedChanges ? "Salvar" : "Salvo"}
+              </Typography>
+              <Typography sx={{
+                mt: .2,
+                fontSize: 8.1,
+                lineHeight: 1,
+                whiteSpace: "nowrap",
+                color: hasUnsavedChanges ? "rgba(255,255,255,.72)" : "#82968f",
+              }}>
+                {hasUnsavedChanges ? "alterações" : "atualizado"}
+              </Typography>
+            </Box>
+          </ButtonBase>
         </Paper>
 
         <TextField fullWidth size="small" value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar função ou especialidade"
