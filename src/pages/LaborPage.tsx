@@ -653,21 +653,21 @@ export default function LaborPage() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 1,
-                  color: hasUnsavedChanges ? "#17664f" : "#496e60",
+                  color: hasUnsavedChanges ? "#17664f" : "#246b4e",
                   background: hasUnsavedChanges
                     ? "linear-gradient(145deg,#f8fffb,#e5f4ed)"
-                    : "#edf5f1",
+                    : "#e3f5e9",
                   border: "1px solid",
-                  borderColor: hasUnsavedChanges ? "#aed8c8" : "#d6e6dd",
+                  borderColor: hasUnsavedChanges ? "#aed8c8" : "#b8dec6",
                   boxShadow: hasUnsavedChanges
                     ? "0 6px 16px rgba(21,72,56,.09), inset 0 1px 0 rgba(255,255,255,.95)"
                     : "none",
                   transition: "transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, background 150ms ease",
                   "&.Mui-disabled": {
                     opacity: 1,
-                    color: "#496e60",
-                    background: "#edf5f1",
-                    borderColor: "#d6e6dd",
+                    color: "#246b4e",
+                    background: "#e3f5e9",
+                    borderColor: "#b8dec6",
                     boxShadow: "none",
                   },
                   "&:active": { transform: "scale(.98)" },
@@ -693,7 +693,7 @@ export default function LaborPage() {
                   display: "grid",
                   placeItems: "center",
                   flexShrink: 0,
-                  bgcolor: hasUnsavedChanges ? "#d5eadf" : "#dcece4",
+                  bgcolor: hasUnsavedChanges ? "#d5eadf" : "#ccebd7",
                 }}>
                   {saving
                     ? <CircularProgress size={18} thickness={5} sx={{ color: "#496e60" }} />
