@@ -9,6 +9,7 @@ import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -33,6 +34,14 @@ import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 import { projectTypeLabel, projectTypeOptions } from "../data/projectTypes";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const workShortcutSx = {
+  minHeight: 42, flexShrink: 0, px: 1.5, borderRadius: 999,
+  textTransform: "none", whiteSpace: "nowrap", fontSize: 11.5, fontWeight: 800,
+  color: "#245b48", bgcolor: "#f1f8f5", border: "1px solid #d3e7de",
+  scrollSnapAlign: "start",
+  "&:hover": { bgcolor: "#e5f3ed", borderColor: "#a8d3c1" },
+  "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+} as const;
 
 function laborModeLabel(mode: LaborPlan["mode"]) {
   if (mode === "TEAM") return "Equipe própria";
@@ -72,8 +81,11 @@ function CompositionPanel({ composition }: { composition: Composition }) {
           <Typography color="text.secondary" sx={{ fontSize: 9.8, mt: .15 }}>
             {composition.items.length} {composition.items.length === 1 ? "item" : "itens"}
           </Typography>
+          <Typography fontWeight={850} color="#176047" sx={{ display: { xs: "block", sm: "none" }, fontSize: 11, mt: .15 }}>
+            {currency.format(composition.total)}
+          </Typography>
         </Box>
-        <Typography fontWeight={850} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 11.5, sm: 12.5 } }}>
+        <Typography fontWeight={850} color="#176047" whiteSpace="nowrap" sx={{ display: { xs: "none", sm: "block" }, fontSize: 12.5 }}>
           {currency.format(composition.total)}
         </Typography>
       </Stack>
@@ -366,6 +378,18 @@ export default function PlanningPage() {
     setFormOpen(true);
   };
 
+  useEffect(() => {
+    const projectId = params.get("vincular");
+    if (!projectId || busy) return;
+    const project = projects.find(item => item.id === projectId);
+    if (project) openEdit(project);
+    setParams(current => {
+      const next = new URLSearchParams(current);
+      next.delete("vincular");
+      return next;
+    }, { replace: true });
+  }, [busy, params, projects, setParams]);
+
   const clearTypeFilter = () => {
     setParams(current => {
       const next = new URLSearchParams(current);
@@ -535,17 +559,17 @@ export default function PlanningPage() {
               }}>
               <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
                 px: { xs: 1.25, sm: 1.7 }, minHeight: 70, bgcolor: "#fbfdfc",
-                "& .MuiAccordionSummary-content": { my: 1, mr: 6.5 },
+                "& .MuiAccordionSummary-content": { my: 1, minWidth: 0, mr: 6.5 },
               }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%" minWidth={0} pr={.8} gap={1.4}>
-                  <Stack direction="row" alignItems="center" gap={1} minWidth={0}>
+                <Stack direction="row" alignItems="center" width="100%" minWidth={0} pr={.4} gap={1}>
+                  <Stack direction="row" alignItems="center" gap={1} minWidth={0} flex={1}>
                     <Box sx={{
                       width: 38, height: 38, borderRadius: "9px", display: "grid", placeItems: "center",
                       bgcolor: "#e9f4f0", color: "#28634f", border: "1px solid #dcebe6", flexShrink: 0,
                     }}>
                       <HomeWorkOutlinedIcon sx={{ fontSize: 20 }} />
                     </Box>
-                    <Box minWidth={0}>
+                    <Box minWidth={0} flex={1}>
                       <Typography fontWeight={880} color="#21483b" noWrap sx={{ fontSize: { xs: 13.2, sm: 14 } }}>{project.name}</Typography>
                       {(projectTypeLabel(project.projectType) || project.location) && <Typography color="#668178" noWrap sx={{ fontSize: 9.2, mt: .18 }}>
                         {[projectTypeLabel(project.projectType), project.location].filter(Boolean).join(" • ")}
@@ -556,19 +580,31 @@ export default function PlanningPage() {
                         </Typography>
                         {laborPlan?.items.length ? <Typography color="#4f7769" sx={{ fontSize: 9.7 }}>• {laborPlan.items.length} M.O.</Typography> : null}
                       </Stack>
+                      <Typography fontWeight={900} color="#176047" noWrap sx={{ display: { xs: "block", sm: "none" }, fontSize: 12.2, mt: .35 }}>
+                        {projectTotalPending ? "Calculando..." : currency.format(projectTotal)}
+                      </Typography>
                     </Box>
                   </Stack>
-                  <Stack direction="row" alignItems="center" gap={.55} flexShrink={0}>
+                  <Stack direction="row" alignItems="center" gap={.55} flexShrink={0} sx={{ display: { xs: "none", sm: "flex" } }}>
                     <Typography fontWeight={900} color="#176047" whiteSpace="nowrap" sx={{ fontSize: { xs: 12.2, sm: 14 } }}>
                       {projectTotalPending ? "Calculando..." : currency.format(projectTotal)}
                     </Typography>
                   </Stack>
                 </Stack>
               </AccordionSummary>
-              <AccordionDetails sx={{ p: { xs: 1.15, sm: 1.5 }, pt: 0 }}>
+              <AccordionDetails sx={{ p: { xs: 1.15, sm: 1.5 }, pt: 0, minWidth: 0 }}>
                 <Divider sx={{ mb: 1.15 }} />
 
                 <Stack gap={1.1}>
+                  <Box component="nav" aria-label={`Ações da obra ${project.name}`} sx={{
+                    display: "flex", gap: .75, overflowX: "auto", pb: .6,
+                    scrollSnapType: "x proximity", scrollbarWidth: "thin",
+                  }}>
+                    <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}&adicionar=1`}
+                      startIcon={<AddRoundedIcon />} sx={workShortcutSx}>Adicionar produtos</Button>
+                    <Button onClick={() => openEdit(project)} startIcon={<LinkRoundedIcon />} sx={workShortcutSx}>Vincular composição</Button>
+                    <Button component={RouterLink} to="/produtos" startIcon={<SearchRoundedIcon />} sx={workShortcutSx}>Explorar produtos</Button>
+                  </Box>
                   <Box component="section" aria-labelledby={`compositions-${project.id}`}>
                     <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={.8} mb={.8}>
                       <Stack direction="row" alignItems="center" gap={.7}>
@@ -578,16 +614,16 @@ export default function PlanningPage() {
                           <Typography color="text.secondary" sx={{ fontSize: 9.4 }}>{lists.length ? `${lists.length} composições • ${currency.format(compositionTotal)}` : "Nenhuma composição vinculada"}</Typography>
                         </Box>
                       </Stack>
-                      <Button size="small" startIcon={<EditOutlinedIcon />} onClick={() => openEdit(project)}
+                      <Button size="small" component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`} startIcon={<EditOutlinedIcon />}
                         sx={{ borderRadius: "8px", alignSelf: { xs: "flex-start", sm: "center" }, textTransform: "none", fontWeight: 760 }}>
-                        Editar vínculos
+                        Gerenciar composições
                       </Button>
                     </Stack>
 
                     {lists.length ? <Stack gap={.65}>
                       {lists.map(composition => <CompositionPanel key={composition.id} composition={composition} />)}
                     </Stack> : <Box sx={{ py: 2, px: 1.2, border: "1px dashed #d8e4df", borderRadius: "10px", textAlign: "center" }}>
-                      <Typography color="text.secondary" sx={{ fontSize: 11 }}>Use “Editar vínculos” para adicionar composições a esta obra.</Typography>
+                      <Typography color="text.secondary" sx={{ fontSize: 11 }}>Use “Vincular composição” acima para adicionar composições a esta obra.</Typography>
                     </Box>}
                   </Box>
 

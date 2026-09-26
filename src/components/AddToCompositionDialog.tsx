@@ -12,6 +12,8 @@ import type { CatalogResult } from "../domain/search";
 import type { Composition } from "../domain/composition";
 import { addCompositionItem, createComposition, listCompositions, listProjects, type Project } from "../services/api";
 import { ProtectedImage } from "./ProtectedImage";
+import { useAccount } from "../auth/session";
+import { saveCachedCompositions } from "../services/appWarmCache";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const units = ["un", "m²", "m", "kg", "L", "saco", "caixa"];
@@ -23,6 +25,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
   result: CatalogResult;
   onClose: () => void;
 }) {
+  const user = useAccount();
   const [compositions, setCompositions] = useState<Composition[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,7 +89,11 @@ export function AddToCompositionDialog({ open, result, onClose }: {
     setSavingId(composition.id); setError("");
     try {
       const updated = await addCompositionItem(composition.id, itemPayload());
-      setCompositions(current => current.map(entry => entry.id === updated.id ? updated : entry));
+      setCompositions(current => {
+        const next = current.map(entry => entry.id === updated.id ? updated : entry);
+        saveCachedCompositions(user.id, next);
+        return next;
+      });
       setSavedName(updated.name);
       window.dispatchEvent(new Event("precify-compositions-updated"));
     } catch (err) {
@@ -101,7 +108,11 @@ export function AddToCompositionDialog({ open, result, onClose }: {
     try {
       const created = await createComposition(name);
       const updated = await addCompositionItem(created.id, itemPayload());
-      setCompositions(current => [updated, ...current]);
+      setCompositions(current => {
+        const next = [updated, ...current];
+        saveCachedCompositions(user.id, next);
+        return next;
+      });
       setSavedName(updated.name); setCreating(false); setNewName(""); setCompositionQuery("");
       window.dispatchEvent(new Event("precify-compositions-updated"));
     } catch (err) {
