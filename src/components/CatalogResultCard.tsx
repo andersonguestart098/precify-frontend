@@ -12,8 +12,8 @@ import type { CatalogResult } from "../domain/search";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
-export function CatalogResultCard({ result, favorite = false, favoriteBusy = false, onFavorite }: {
-  result: CatalogResult; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void;
+export function CatalogResultCard({ result, favorite = false, favoriteBusy = false, onFavorite, layout = "list" }: {
+  result: CatalogResult; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void; layout?: "list" | "mosaic";
 }) {
   const location = useLocation();
   const [animateFavorite, setAnimateFavorite] = useState(false);
@@ -42,14 +42,17 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
     }}>
       <Box sx={{
         display: "grid",
-        gridTemplateColumns: { xs: "42% minmax(0,58%)", sm: "180px minmax(0,1fr)", md: "150px minmax(0,1fr)", xl: "190px minmax(0,1fr)" },
-        minHeight: { xs: 206, md: 166, xl: 210 },
+        gridTemplateColumns: layout === "mosaic"
+          ? { xs: "42% minmax(0,58%)", sm: "180px minmax(0,1fr)", md: "1fr" }
+          : { xs: "42% minmax(0,58%)", sm: "180px minmax(0,1fr)", md: "150px minmax(0,1fr)", xl: "190px minmax(0,1fr)" },
+        minHeight: layout === "mosaic" ? { xs: 206, md: 390, xl: 430 } : { xs: 206, md: 166, xl: 210 },
       }}>
         <Box sx={{
           position: "relative",
           minWidth: 0,
           bgcolor: "#f7f8f8",
-          borderRight: "1px solid #edf1ef",
+          borderRight: layout === "mosaic" ? { xs: "1px solid #edf1ef", md: 0 } : "1px solid #edf1ef",
+          borderBottom: layout === "mosaic" ? { xs: 0, md: "1px solid #edf1ef" } : 0,
           display: "grid",
           placeItems: "center",
           p: { xs: 1.25, md: 1, xl: 1.5 },
@@ -61,8 +64,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
             sx={{
               width: "100%",
               height: "100%",
-              maxHeight: { xs: 178, md: 140, xl: 178 },
-              minHeight: { xs: 150, md: 126, xl: 150 },
+              maxHeight: layout === "mosaic" ? { xs: 178, md: 190, xl: 220 } : { xs: 178, md: 140, xl: 178 },
+              minHeight: layout === "mosaic" ? { xs: 150, md: 170, xl: 195 } : { xs: 150, md: 126, xl: 150 },
               bgcolor: "transparent",
               border: 0,
               borderRadius: 0,
@@ -151,7 +154,9 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               </Stack>
             </Box> : <Typography color="text.secondary" sx={{ fontSize: { xs: 12, md: 11.5, xl: 13 }, fontWeight: 600 }}>Cotação pendente</Typography>}
 
-            <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
+            <Stack direction={layout === "mosaic" ? { xs: "column", sm: "row", md: "column", xl: "row" } : { xs: "column", sm: "row" }}
+              alignItems={layout === "mosaic" ? { sm: "center", md: "stretch", xl: "center" } : { sm: "center" }}
+              gap={{ xs: .65, md: .5, xl: .7 }} mt={{ xs: 1, md: .7, xl: 1 }}>
               <Button
                 onClick={() => setCompositionOpen(true)}
                 startIcon={<PlaylistAddRoundedIcon />}
