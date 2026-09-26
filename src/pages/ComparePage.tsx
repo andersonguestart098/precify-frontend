@@ -119,7 +119,9 @@ export default function ComparePage() {
   const snapshots = useMemo(() => selectedProjects.map(project => {
     const linkedCompositions = compositions.filter(composition => project.compositionIds.includes(composition.id));
     const plan = laborPlans[project.id];
-    const total = linkedCompositions.reduce((sum, composition) => sum + composition.total, 0);
+    const compositionTotal = linkedCompositions.reduce((sum, composition) => sum + composition.total, 0);
+    const laborTotal = plan?.items.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0) ?? 0;
+    const total = compositionTotal + laborTotal;
     const itemCount = linkedCompositions.reduce((sum, composition) => sum + composition.items.length, 0);
     const teamCount = plan?.items.filter(item => item.origin === "TEAM").length ?? 0;
     const thirdCount = plan?.items.filter(item => item.origin === "THIRD_PARTY").length ?? 0;
@@ -129,6 +131,8 @@ export default function ComparePage() {
       project,
       compositions: linkedCompositions,
       plan,
+      compositionTotal,
+      laborTotal,
       total,
       itemCount,
       teamCount,
@@ -146,8 +150,8 @@ export default function ComparePage() {
     const mostLabor = snapshots.reduce((best, current) => (current.plan?.items.length ?? 0) > (best.plan?.items.length ?? 0) ? current : best);
 
     const costLine = lowest.total === highest.total
-      ? `Todas as obras estão com o mesmo total de composições: ${currency.format(lowest.total)}.`
-      : `${lowest.project.name} está com o menor total (${currency.format(lowest.total)}) e ${highest.project.name} com o maior (${currency.format(highest.total)}), diferença de ${currency.format(highest.total - lowest.total)}.`;
+      ? `Todas as obras estão com o mesmo custo total estimado: ${currency.format(lowest.total)}.`
+      : `${lowest.project.name} está com o menor custo total estimado (${currency.format(lowest.total)}) e ${highest.project.name} com o maior (${currency.format(highest.total)}), diferença de ${currency.format(highest.total - lowest.total)}.`;
 
     return [
       costLine,
@@ -175,17 +179,17 @@ export default function ComparePage() {
     }}>
       <Box sx={{ mb: { xs: 1.9, md: 2.8 } }}>
         <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.35 }}>
-          Análise de obras
+          Inteligência de negócio
         </Typography>
         <Typography component="h1" sx={{
           mt: .3, fontSize: { xs: 36, sm: 40, md: 40, lg: 42, xl: 50 }, lineHeight: 1.03, fontWeight: 900, letterSpacing: "-.045em",
           background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
-          Comparar obras
+          Transforme seus dados em inteligência de negócio
         </Typography>
         <Typography color="text.secondary" sx={{ mt: .7, maxWidth: 860, fontSize: { xs: 13.4, sm: 14, md: 13.5, lg: 14, xl: 15 }, lineHeight: 1.5 }}>
-          Composições, custos e mão de obra lado a lado. Toque nas obras para incluir ou remover da comparação.
+          Compare obras lado a lado para entender onde o custo está concentrado, identificar diferenças entre composições e mão de obra e apoiar decisões de planejamento e orçamento.
         </Typography>
       </Box>
 
@@ -299,8 +303,10 @@ export default function ComparePage() {
 
             {[
               ["Composições", (snapshot: typeof snapshots[number]) => String(snapshot.compositions.length)],
-              ["Itens", (snapshot: typeof snapshots[number]) => String(snapshot.itemCount)],
-              ["Custo", (snapshot: typeof snapshots[number]) => currency.format(snapshot.total)],
+              ["Itens / produtos", (snapshot: typeof snapshots[number]) => String(snapshot.itemCount)],
+              ["Custo materiais/composições", (snapshot: typeof snapshots[number]) => currency.format(snapshot.compositionTotal)],
+              ["Custo mão de obra", (snapshot: typeof snapshots[number]) => currency.format(snapshot.laborTotal)],
+              ["Custo total da obra", (snapshot: typeof snapshots[number]) => currency.format(snapshot.total)],
               ["Modo M.O.", (snapshot: typeof snapshots[number]) => laborModeLabel(snapshot.plan?.mode ?? "")],
               ["Necessidades", (snapshot: typeof snapshots[number]) => String(snapshot.plan?.items.length ?? 0)],
               ["Equipe", (snapshot: typeof snapshots[number]) => String(snapshot.teamCount)],
@@ -319,8 +325,8 @@ export default function ComparePage() {
                   "&:last-child": { borderRight: 0 },
                 }}>
                   <Typography sx={{
-                    fontSize: { xs: 11.8, md: 12.8, xl: 13.2 }, fontWeight: label === "Custo" ? 850 : 720,
-                    color: label === "Custo" ? "#176047" : "#36564b", lineHeight: 1.2,
+                    fontSize: { xs: 11.8, md: 12.8, xl: 13.2 }, fontWeight: String(label).startsWith("Custo") ? (label === "Custo total da obra" ? 900 : 820) : 720,
+                    color: label === "Custo total da obra" ? "#0b654b" : String(label).startsWith("Custo") ? "#2a6652" : "#36564b", lineHeight: 1.2,
                   }}>
                     {valueFn(snapshot)}
                   </Typography>
@@ -365,13 +371,24 @@ export default function ComparePage() {
                 <Typography fontWeight={820} color="#315247" sx={{ fontSize: { xs: 11.4, md: 12.4 } }}>Mão de obra</Typography>
               </Stack>
               {snapshot.plan?.items.length ? <Stack gap={.56}>
-                {snapshot.plan.items.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={.5}>
+                {snapshot.plan.items.map(item => <Stack key={item.code} direction="row" alignItems="center" gap={.55}>
                   <Typography flex={1} sx={{ fontSize: { xs: 10.4, md: 11.2 }, color: "#536d64", lineHeight: 1.3 }}>{item.title}</Typography>
+                  <Typography sx={{ fontSize: { xs: 9.7, md: 10.4 }, fontWeight: 800, color: "#176047", whiteSpace: "nowrap" }}>
+                    {currency.format(Number(item.cost ?? 0))}
+                  </Typography>
                   <Chip size="small" label={originLabel(item.origin)} sx={{
                     height: { xs: 21, md: 23 }, borderRadius: "6px", fontSize: { xs: 8.6, md: 9.2 }, fontWeight: 760, bgcolor: "#eaf4f0", color: "#31594b",
                   }} />
                 </Stack>)}
               </Stack> : <Typography color="text.secondary" sx={{ fontSize: 9.2 }}>Sem planejamento salvo.</Typography>}
+              <Divider sx={{ my: .9 }} />
+              <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1}>
+                <Typography sx={{ fontSize: { xs: 10.5, md: 11.3 }, fontWeight: 820, color: "#315247" }}>Custo total estimado da obra</Typography>
+                <Typography sx={{ fontSize: { xs: 12.2, md: 13.2 }, fontWeight: 900, color: "#0f6b50", whiteSpace: "nowrap" }}>{currency.format(snapshot.total)}</Typography>
+              </Stack>
+              <Typography color="text.secondary" sx={{ mt: .2, fontSize: 8.8 }}>
+                Materiais/composições {currency.format(snapshot.compositionTotal)} + M.O. {currency.format(snapshot.laborTotal)}
+              </Typography>
             </Box>
           </Paper>)}
         </Box>
