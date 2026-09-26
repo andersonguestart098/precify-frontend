@@ -30,6 +30,216 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
   const logoUrl = featured?.supplierLogoUrl || result.supplierLogoUrl || material.supplierLogoUrl;
   const highlighted = result.featured === true;
 
+  if (layout === "list") return <>
+    <Paper
+      variant="outlined"
+      sx={{
+        overflow: "hidden",
+        borderRadius: { xs: "12px", md: "10px" },
+        borderColor: "#e3ebe8",
+        bgcolor: "#fff",
+        boxShadow: "0 1px 5px rgba(19,56,46,.025)",
+        transition: "background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease",
+        "&:hover": {
+          bgcolor: "#fbfdfc",
+          borderColor: "#cbded7",
+          boxShadow: "0 5px 16px rgba(19,56,46,.055)",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "72px minmax(0,1fr)",
+            md: "64px minmax(150px,1.8fr) minmax(95px,.9fr) minmax(88px,.75fr) minmax(105px,.8fr) minmax(170px,1.2fr)",
+            xl: "72px minmax(240px,2.1fr) minmax(150px,1fr) minmax(120px,.8fr) minmax(145px,.9fr) minmax(235px,1.35fr)",
+          },
+          columnGap: { xs: 1.15, md: 1, xl: 1.4 },
+          rowGap: { xs: .65, md: 0 },
+          alignItems: "center",
+          minHeight: { xs: 112, md: 82, xl: 92 },
+          px: { xs: 1.1, md: 1.2, xl: 1.5 },
+          py: { xs: 1, md: .8, xl: .95 },
+        }}
+      >
+        <Box sx={{
+          position: "relative",
+          width: { xs: 72, md: 56, xl: 64 },
+          height: { xs: 72, md: 56, xl: 64 },
+          borderRadius: { xs: "10px", md: "9px" },
+          bgcolor: "#f6f8f7",
+          border: "1px solid #edf1ef",
+          display: "grid",
+          placeItems: "center",
+          overflow: "visible",
+          alignSelf: { xs: "start", md: "center" },
+        }}>
+          <ProtectedImage
+            src={photo}
+            alt={featured?.name ?? material.materialName}
+            fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
+            sx={{
+              width: "100%", height: "100%", bgcolor: "transparent", border: 0,
+              borderRadius: "9px", p: .25, "& img": { objectFit: "contain" },
+            }}
+          />
+          <Tooltip title={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}>
+            <span style={{ position: "absolute", left: -7, bottom: -7 }}>
+              <IconButton
+                aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                aria-pressed={favorite}
+                loading={favoriteBusy}
+                disabled={favoriteBusy}
+                onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
+                sx={{
+                  width: { xs: 29, md: 27 }, height: { xs: 29, md: 27 },
+                  color: favorite ? "#b77b00" : "#4f675e",
+                  bgcolor: favorite ? "#fff7d9" : "#fff",
+                  border: "1px solid",
+                  borderColor: favorite ? "#efd78a" : "#dce5e2",
+                  boxShadow: "0 2px 7px rgba(16,42,33,.09)",
+                  "&:hover": { bgcolor: favorite ? "#fff0bb" : "#f8fbfa", color: favorite ? "#a97000" : "#006b4f" },
+                  "@keyframes favoritePop": {
+                    "0%": { transform: "scale(.7) rotate(-18deg)" },
+                    "55%": { transform: "scale(1.28) rotate(9deg)" },
+                    "100%": { transform: "scale(1) rotate(0deg)" },
+                  },
+                  "& svg": { fontSize: 16, animation: favorite && animateFavorite ? "favoritePop 420ms ease-out" : "none" },
+                  "@media (prefers-reduced-motion: reduce)": { "& svg": { animation: "none" } },
+                }}
+              >
+                {favorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Box>
+
+        <Box minWidth={0} sx={{ alignSelf: "center" }}>
+          <Stack direction="row" alignItems="center" gap={.45} minWidth={0}>
+            {highlighted && <Chip label="Destaque" size="small" sx={{
+              height: 18, flexShrink: 0, bgcolor: "#edf6f3", color: "#235847",
+              fontWeight: 800, fontSize: 8.8, "& .MuiChip-label": { px: .65 },
+            }} />}
+            <Typography color="primary" noWrap sx={{
+              minWidth: 0, fontSize: { xs: 9.6, md: 9.4, xl: 10.2 },
+              fontWeight: 850, letterSpacing: ".015em",
+            }}>
+              {material.materialCode}
+            </Typography>
+          </Stack>
+          <Typography component="h2" sx={{
+            mt: .18, fontSize: { xs: 13.3, md: 12.6, xl: 14.2 }, lineHeight: 1.22,
+            fontWeight: 820, letterSpacing: "-.012em", color: "#173f33",
+            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+          }}>
+            {material.materialName}
+          </Typography>
+          <Typography noWrap sx={{ mt: .2, fontSize: { xs: 9.7, md: 9.2, xl: 10.2 }, color: "#7b8d86" }}>
+            {material.familyName}
+          </Typography>
+          <Stack direction="row" gap={.4} flexWrap="wrap" mt={.55} sx={{ display: { xs: "flex", md: "none" } }}>
+            <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
+              sx={{ height: 19, fontSize: 8.7, borderColor: "#dce6e2", color: "#526861" }} />
+            <Chip size="small" label={offers.length ? `${offers.length} oferta${offers.length > 1 ? "s" : ""}` : "Sem cotação"}
+              sx={{ height: 19, fontSize: 8.7, bgcolor: "#eef7f4", color: "#2c6652" }} />
+          </Stack>
+        </Box>
+
+        <Box sx={{ display: { xs: "none", md: "block" }, minWidth: 0 }}>
+          <Typography noWrap sx={{ fontSize: { md: 10.4, xl: 11.5 }, fontWeight: 760, color: "#315247" }}>
+            {material.segmentName}
+          </Typography>
+          <Typography noWrap sx={{ mt: .18, fontSize: { md: 8.8, xl: 9.6 }, color: "#8a9994" }}>
+            {material.familyName}
+          </Typography>
+        </Box>
+
+        <Stack sx={{ display: { xs: "none", md: "flex" } }} gap={.35} alignItems="flex-start">
+          <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
+            sx={{
+              maxWidth: "100%", height: { md: 19, xl: 21 }, fontSize: { md: 8.4, xl: 9.1 },
+              borderColor: "#dce6e2", color: "#526861", "& .MuiChip-label": { px: .7, overflow: "hidden", textOverflow: "ellipsis" },
+            }} />
+          <Chip size="small" label={offers.length ? `${offers.length} oferta${offers.length > 1 ? "s" : ""}` : "Sem cotação"}
+            sx={{
+              maxWidth: "100%", height: { md: 19, xl: 21 }, fontSize: { md: 8.4, xl: 9.1 },
+              bgcolor: "#eef7f4", color: "#2c6652", "& .MuiChip-label": { px: .7 },
+            }} />
+        </Stack>
+
+        <Box sx={{
+          minWidth: 0,
+          gridColumn: { xs: "2", md: "auto" },
+          alignSelf: "center",
+          textAlign: { xs: "left", md: "right" },
+        }}>
+          {featured ? <>
+            <Typography noWrap sx={{ fontSize: { xs: 9.2, md: 8.6, xl: 9.5 }, color: "#82918c", lineHeight: 1.15 }}>
+              {offers.length > 1 ? "A partir de" : "Cotação"}
+            </Typography>
+            <Typography noWrap sx={{
+              mt: .12, fontSize: { xs: 16.2, md: 14.2, xl: 16.5 }, lineHeight: 1,
+              fontWeight: 900, letterSpacing: "-.025em", color: "#13382e",
+            }}>
+              {currency.format(featured.quote.value)}
+            </Typography>
+            <Typography noWrap sx={{ mt: .2, fontSize: { xs: 8.8, md: 8.1, xl: 9 }, color: "#8b9b95" }}>
+              {featured.quote.supplier}
+            </Typography>
+          </> : <Typography sx={{ fontSize: { xs: 10.5, md: 9.4, xl: 10.4 }, fontWeight: 700, color: "#82918c" }}>
+            Cotação pendente
+          </Typography>}
+        </Box>
+
+        <Stack
+          direction="row"
+          justifyContent={{ xs: "flex-start", md: "flex-end" }}
+          alignItems="center"
+          gap={{ xs: .55, md: .45, xl: .65 }}
+          sx={{ gridColumn: { xs: "2", md: "auto" }, minWidth: 0 }}
+        >
+          <Button
+            onClick={() => setCompositionOpen(true)}
+            startIcon={<PlaylistAddRoundedIcon />}
+            variant="contained"
+            disableElevation
+            sx={{
+              minWidth: 0, minHeight: { xs: 31, md: 30, xl: 34 },
+              px: { xs: 1, md: .9, xl: 1.15 }, borderRadius: 999,
+              textTransform: "none", whiteSpace: "nowrap", fontWeight: 820,
+              fontSize: { xs: 9.6, md: 8.6, xl: 9.8 }, color: "#fff",
+              border: "1px solid rgba(0,82,61,.10)",
+              background: "linear-gradient(105deg,#087458 0%,#078b67 100%)",
+              boxShadow: "0 3px 8px rgba(0,107,79,.14)",
+              "&:hover": { background: "linear-gradient(105deg,#075f49 0%,#087b5d 100%)", boxShadow: "0 5px 11px rgba(0,107,79,.18)" },
+              "& .MuiButton-startIcon": { mr: .4, "& svg": { fontSize: { xs: 14, md: 13, xl: 14 } } },
+            }}
+          >
+            <Box component="span" sx={{ display: { xs: "none", lg: "inline" } }}>Adicionar à composição</Box>
+            <Box component="span" sx={{ display: { xs: "inline", lg: "none" } }}>Adicionar</Box>
+          </Button>
+          <Tooltip title="Ver detalhes">
+            <IconButton
+              component={RouterLink}
+              to={`/produtos/${encodeURIComponent(material.materialCode)}`}
+              state={{ fromSearch: location.pathname + location.search }}
+              aria-label="Ver detalhes"
+              sx={{
+                width: { xs: 31, md: 30, xl: 34 }, height: { xs: 31, md: 30, xl: 34 },
+                flexShrink: 0, color: "#31594c", bgcolor: "#f4f8f6",
+                border: "1px solid #dde8e4", "&:hover": { bgcolor: "#eaf3ef" },
+              }}
+            >
+              <VisibilityOutlinedIcon sx={{ fontSize: { xs: 16, md: 15, xl: 17 } }} />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
+    </Paper>
+    <AddToCompositionDialog open={compositionOpen} result={result} onClose={() => setCompositionOpen(false)} />
+  </>;
+
   return <>
     <Paper variant="outlined" sx={{
       overflow: "hidden",
