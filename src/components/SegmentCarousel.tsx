@@ -21,17 +21,6 @@ const labels: Record<string, string> = {
   "40": "Ferramentas", "41": "Proteção e EPIs", "42": "Refratários", "43": "Equipamentos",
   "44": "Aquecimento", "45": "Acessibilidade", "46": "Piscinas", "47": "Fachadas"
 };
-
-const segmentObservations: Record<string, string> = Object.fromEntries([
-  ...Array.from({ length: 42 }, (_, index) => [
-    String(index + 1),
-    "Base reconstruída do zero segundo os conceitos oficiais de Segmento, Família, Material e Variação.",
-  ]),
-  ...Array.from({ length: 5 }, (_, index) => [
-    String(index + 43),
-    "Segmento acrescentado na auditoria de cobertura integral do shopping de construção.",
-  ]),
-]);
 const segmentIcons = [Mountains, Package, PaintBucket, Cube, Flask, Wall, SquaresFour, Mountains, Tree, Columns, Cube, Hammer, StackIcon, Circle, SquaresFour, Umbrella, Waves, PaintBrush, Clipboard, HouseLine, Wall, SquaresFour, Door, Pipe, Bathtub, Gear, Plugs, ShieldCheck, Lightbulb, WifiHigh, Snowflake, Fire, FireExtinguisher, SolarPanel, Drop, RoadHorizon, Plant, Flower, CraneTower, Wrench, HardHat, Fire, Factory, Thermometer, Elevator, SwimmingPool, Buildings];
 export function segmentIconFor(code: string) { return segmentIcons[Number(code) - 1] ?? Shapes; }
 
@@ -46,6 +35,36 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
 
   const segments = useMemo(() => [...new Map(catalog.map(m => [m.segmentCode, m.segmentName])).entries()]
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true })), [catalog]);
+
+  const segmentDescriptions = useMemo(() => {
+    const grouped = new Map<string, { name: string; families: Set<string>; materials: Set<string>; notes: Set<string> }>();
+    for (const material of catalog) {
+      const entry = grouped.get(material.segmentCode) ?? {
+        name: material.segmentName,
+        families: new Set<string>(),
+        materials: new Set<string>(),
+        notes: new Set<string>(),
+      };
+      if (material.familyName?.trim()) entry.families.add(material.familyName.trim());
+      if (material.materialName?.trim()) entry.materials.add(material.materialName.trim());
+      if (material.observation?.trim() && !/material canônico/i.test(material.observation)) entry.notes.add(material.observation.trim());
+      grouped.set(material.segmentCode, entry);
+    }
+
+    const result = new Map<string, string>();
+    for (const [code, entry] of grouped) {
+      const families = [...entry.families].slice(0, 5);
+      const materials = [...entry.materials].slice(0, 4);
+      const note = [...entry.notes][0];
+      const parts = [
+        note || `${entry.name}: grupo do catálogo técnico de materiais da construção.`,
+        families.length ? `Famílias: ${families.join(", ")}.` : "",
+        materials.length ? `Exemplos: ${materials.join(", ")}.` : "",
+      ].filter(Boolean);
+      result.set(code, parts.join(" "));
+    }
+    return result;
+  }, [catalog]);
 
   const showScrollbar = () => {
     setScrolling(true);
@@ -176,7 +195,9 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
       {[["", "Todos os segmentos"], ...segments].map(([code, name]) => {
         const Icon = segmentIconFor(code);
         const active = code === selected;
-        const helpText = code ? segmentObservations[code] ?? "" : "";
+        const helpText = code
+          ? segmentDescriptions.get(code) ?? `${name}: segmento do catálogo técnico de materiais.`
+          : "Exibe todos os segmentos do catálogo sem aplicar filtro.";
 
         return <ButtonBase
           key={code}
