@@ -45,6 +45,8 @@ const modeOptions: Array<{
   { value: "BOTH", title: "Ambas as opções", description: "Combine equipe própria e terceiros por necessidade", icon: CompareArrowsRoundedIcon },
 ];
 
+const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
 const headerActionSx = {
   minHeight: 42, px: 1.65, borderRadius: 999, textTransform: "none", fontWeight: 800,
   fontSize: 12.5, whiteSpace: "nowrap", color: "#215e49",
@@ -63,7 +65,7 @@ function includesSearch(group: LaborCatalogGroup, item: LaborCatalogItem, search
 }
 
 function LaborGroupCard({
-  group, source, mode, search, selections, onToggle, onOriginChange, favoriteCodes, favoriteBusy, onFavorite,
+  group, source, mode, search, selections, onToggle, onOriginChange, onCostChange, favoriteCodes, favoriteBusy, onFavorite,
 }: {
   group: LaborCatalogGroup;
   source: LaborSource;
@@ -72,6 +74,7 @@ function LaborGroupCard({
   selections: Record<string, LaborPlanItem>;
   onToggle: (item: LaborCatalogItem, source: LaborSource) => void;
   onOriginChange: (code: string, origin: LaborPlanItem["origin"]) => void;
+  onCostChange: (code: string, cost: number) => void;
   favoriteCodes: Set<string>;
   favoriteBusy: (code: string) => boolean;
   onFavorite: (code: string) => void;
@@ -142,6 +145,28 @@ function LaborGroupCard({
                 <MenuItem value="BOTH">Ambos</MenuItem>
               </TextField>}
             </Stack>
+            {selected && <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={.6}
+              sx={{ pl: { xs: 4.9, sm: 5.1 }, pr: .35, pt: .35, pb: .55 }}>
+              <Typography sx={{ fontSize: 10.2, fontWeight: 760, color: "#5e746c", minWidth: 92 }}>
+                Custo estimado
+              </Typography>
+              <TextField
+                size="small"
+                type="number"
+                label="Custo (R$)"
+                value={selected.cost > 0 ? selected.cost : ""}
+                onChange={event => {
+                  const parsed = Number(event.target.value);
+                  onCostChange(item.code, Number.isFinite(parsed) && parsed >= 0 ? parsed : 0);
+                }}
+                slotProps={{ htmlInput: { min: 0, step: "0.01", inputMode: "decimal" } }}
+                sx={{
+                  width: { xs: "100%", sm: 170 },
+                  "& .MuiInputBase-root": { height: 38, borderRadius: "9px", fontSize: 11.5, bgcolor: "#fff" },
+                  "& .MuiInputLabel-root": { fontSize: 11.5 },
+                }}
+              />
+            </Stack>}
           </Box>;
         })}
       </Stack>
@@ -246,7 +271,7 @@ export default function LaborPage() {
         setProjects(works);
         if (plan) {
           setMode(plan.mode);
-          setSelections(Object.fromEntries(plan.items.map(item => [item.code, item])));
+          setSelections(Object.fromEntries(plan.items.map(item => [item.code, { ...item, cost: Number(item.cost ?? 0) }])));
         } else {
           setMode("");
           setSelections({});
@@ -263,6 +288,7 @@ export default function LaborPage() {
   const teamSelected = selectedItems.filter(item => item.origin === "TEAM").length;
   const thirdSelected = selectedItems.filter(item => item.origin === "THIRD_PARTY").length;
   const bothSelected = selectedItems.filter(item => item.origin === "BOTH").length;
+  const laborTotal = selectedItems.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0);
 
   const chooseMode = (nextMode: Exclude<LaborMode, "">) => {
     setMode(nextMode);
@@ -279,7 +305,7 @@ export default function LaborPage() {
     setSelections(current => {
       const next = { ...current };
       if (next[item.code]) delete next[item.code];
-      else next[item.code] = { code: item.code, title: item.title, source, origin: source };
+      else next[item.code] = { code: item.code, title: item.title, source, origin: source, cost: 0 };
       return next;
     });
   };
@@ -287,6 +313,14 @@ export default function LaborPage() {
   const changeOrigin = (code: string, origin: LaborPlanItem["origin"]) => {
     setSuccess("");
     setSelections(current => current[code] ? { ...current, [code]: { ...current[code], origin } } : current);
+  };
+
+  const changeCost = (code: string, cost: number) => {
+    setSuccess("");
+    setSelections(current => current[code] ? {
+      ...current,
+      [code]: { ...current[code], cost: Math.max(0, Number.isFinite(cost) ? cost : 0) },
+    } : current);
   };
 
   const openSummary = () => {
@@ -309,7 +343,7 @@ export default function LaborPage() {
       const saved = await saveLaborPlan(projectId, { mode, items: selectedItems });
       saveCachedLaborPlan(user.id, projectId, saved);
       setMode(saved.mode);
-      setSelections(Object.fromEntries(saved.items.map(item => [item.code, item])));
+      setSelections(Object.fromEntries(saved.items.map(item => [item.code, { ...item, cost: Number(item.cost ?? 0) }])));
       setSuccess("Planejamento de mão de obra salvo nesta obra.");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Não foi possível salvar o planejamento.");
@@ -539,12 +573,24 @@ export default function LaborPage() {
 
       {mode && <>
         <Paper variant="outlined" sx={{
-          mt: 1.8, px: { xs: 1.25, sm: 1.55 }, py: 1.1, borderRadius: "11px",
-          borderColor: "#d9e6e1", bgcolor: "#fbfdfc", boxShadow: "0 3px 14px rgba(21,72,56,.025)",
+          mt: 1.8, px: { xs: 1.35, sm: 1.7 }, py: 1.2, borderRadius: "13px",
+          position: "sticky",
+          top: { xs: "calc(var(--header-height, 56px) + var(--mobile-context-height, 0px) + 8px)", md: "calc(var(--header-height, 64px) + 10px)" },
+          zIndex: 8,
+          borderColor: "#bcd9cf", bgcolor: "rgba(250,253,252,.97)",
+          boxShadow: "0 10px 28px rgba(21,72,56,.10), 0 0 0 1px rgba(0,107,79,.025)",
+          backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
         }}>
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={1.15}>
-            <Box flex={1}>
-              <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 13 }}>{selectedItems.length} {selectedItems.length === 1 ? "necessidade selecionada" : "necessidades selecionadas"}</Typography>
+          <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={1.2}>
+            <Box flex={1} minWidth={0}>
+              <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "baseline" }} gap={{ xs: .25, sm: 1.1 }}>
+                <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 13 }}>
+                  {selectedItems.length} {selectedItems.length === 1 ? "necessidade selecionada" : "necessidades selecionadas"}
+                </Typography>
+                <Typography sx={{ fontSize: { xs: 14.5, sm: 16 }, fontWeight: 900, color: "#0f6b50", letterSpacing: "-.02em" }}>
+                  Total M.O.: {currency.format(laborTotal)}
+                </Typography>
+              </Stack>
               <Stack direction="row" gap={.55} flexWrap="wrap" mt={.55}>
                 {mode === "BOTH" ? <>
                   <Chip size="small" label={`${teamSelected} equipe`} sx={{ height: 22, fontSize: 9.5 }} />
@@ -553,42 +599,23 @@ export default function LaborPage() {
                 </> : <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>{mode === "TEAM" ? "Equipe própria" : "Empresas e autônomos especializados"}</Typography>}
               </Stack>
             </Box>
-            <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}>
-              <Typography sx={{
-                fontSize: { xs: 12.2, md: 12.9 },
-                fontWeight: 820,
-                color: saving ? "#8aa098" : "#2f5c4c",
-                letterSpacing: "-.01em",
-              }}>
-                Salvar planejamento
-              </Typography>
-              <ButtonBase onClick={() => void save()} disabled={saving} aria-label="Salvar planejamento" sx={{
-                width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
-                color: "#17664f",
-                background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-                border: "1px solid rgba(0,107,79,.14)",
-                boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
-                transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
-                "&:active": { transform: "scale(.96)" },
-                "&.Mui-disabled": {
-                  opacity: .55,
-                  color: "#7f958d",
-                  background: "#f3f6f5",
-                  boxShadow: "none",
-                },
-                "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
-                "@media (hover:hover)": {
-                  "&:hover": {
-                    transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
-                    background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                    boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
-                  },
-                },
-                "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
-              }}>
-                {saving ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <SaveRoundedIcon sx={{ fontSize: { xs: 20, md: 21 } }} />}
-              </ButtonBase>
-            </Stack>
+
+            <Button
+              variant="contained"
+              startIcon={saving ? <CircularProgress size={16} sx={{ color: "inherit" }} /> : <SaveRoundedIcon />}
+              onClick={() => void save()}
+              disabled={saving}
+              aria-label="Salvar planejamento de mão de obra"
+              sx={{
+                minHeight: 46, px: { xs: 2, sm: 2.4 }, borderRadius: "12px",
+                textTransform: "none", fontWeight: 850, fontSize: { xs: 12.2, sm: 13 },
+                alignSelf: { xs: "stretch", sm: "center" },
+                bgcolor: "#087458", boxShadow: "0 7px 18px rgba(0,107,79,.20)",
+                "&:hover": { bgcolor: "#006b4f", boxShadow: "0 9px 22px rgba(0,107,79,.24)" },
+              }}
+            >
+              {saving ? "Salvando..." : "Salvar planejamento"}
+            </Button>
           </Stack>
         </Paper>
 
@@ -608,7 +635,7 @@ export default function LaborPage() {
               <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>Gestão, supervisão, execução e apoio.</Typography>
             </Box>
           </Stack>
-          <Stack gap={.8}>{laborTeamGroups.map(group => <LaborGroupCard key={group.code} group={group} source="TEAM" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
+          <Stack gap={.8}>{laborTeamGroups.map(group => <LaborGroupCard key={group.code} group={group} source="TEAM" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} onCostChange={changeCost} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
         </Box>}
 
         {(mode === "THIRD_PARTY" || mode === "BOTH") && <Box component="section" id="labor-services-title" mt={2.6} sx={{ scrollMarginTop: 24 }}>
@@ -619,7 +646,7 @@ export default function LaborPage() {
               <Typography color="text.secondary" sx={{ fontSize: 10.5 }}>Especialidades organizadas nas 6 fases definidas para a obra.</Typography>
             </Box>
           </Stack>
-          <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
+          <Stack gap={.8}>{laborThirdPartyPhases.map(group => <LaborGroupCard key={group.code} group={group} source="THIRD_PARTY" mode={mode} search={normalizedSearch} selections={selections} onToggle={toggleItem} onOriginChange={changeOrigin} onCostChange={changeCost} favoriteCodes={workspaceFavorites.favorites.LABOR} favoriteBusy={code => workspaceFavorites.loading || workspaceFavorites.isBusy("LABOR", code)} onFavorite={code => { void workspaceFavorites.toggle("LABOR", code); }} />)}</Stack>
         </Box>}
 
         <Accordion
@@ -663,8 +690,13 @@ export default function LaborPage() {
                   <Typography fontWeight={760} color="#294d41" sx={{ fontSize: 11.5 }}>{item.title}</Typography>
                   <Typography sx={{ fontSize: 8.8, color: "#91a09a" }}>{item.code}</Typography>
                 </Box>
-                <Chip size="small" label={item.origin === "TEAM" ? "Equipe" : item.origin === "THIRD_PARTY" ? "Terceiro" : "Ambos"}
-                  sx={{ height: 22, borderRadius: "7px", fontSize: 9.2, fontWeight: 750, bgcolor: "#e7f3ee", color: "#245843" }} />
+                <Stack direction="row" alignItems="center" gap={.55} flexShrink={0}>
+                  <Typography sx={{ fontSize: 10.2, fontWeight: 820, color: "#176047", whiteSpace: "nowrap" }}>
+                    {currency.format(Number(item.cost ?? 0))}
+                  </Typography>
+                  <Chip size="small" label={item.origin === "TEAM" ? "Equipe" : item.origin === "THIRD_PARTY" ? "Terceiro" : "Ambos"}
+                    sx={{ height: 22, borderRadius: "7px", fontSize: 9.2, fontWeight: 750, bgcolor: "#e7f3ee", color: "#245843" }} />
+                </Stack>
               </Stack>)}
             </Stack> : <Typography color="text.secondary" sx={{ fontSize: 11, py: 1 }}>Selecione funções ou especialidades acima para compor o resumo.</Typography>}
           </AccordionDetails>
