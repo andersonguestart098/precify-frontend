@@ -7,6 +7,7 @@ import { Alert, Box, Button, ButtonBase, CircularProgress, Container, Drawer, Ic
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import ViewAgendaRoundedIcon from "@mui/icons-material/ViewAgendaRounded";
 import ViewModuleRoundedIcon from "@mui/icons-material/ViewModuleRounded";
 import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
 import AccountGreeting from "../components/AccountGreeting";
@@ -64,7 +65,7 @@ export default function SearchPage() {
   const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
-  const [resultView, setResultView] = useState<"list" | "mosaic">("list");
+  const [resultView, setResultView] = useState<"single" | "mosaic" | "list">("mosaic");
 
   const searchKey = useMemo(() => JSON.stringify({
     query,
@@ -221,7 +222,15 @@ export default function SearchPage() {
               display: { xs: "none", md: "flex" }, alignItems: "center", gap: .15, p: .2,
               border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.72)",
             }}>
-              <IconButton size="small" aria-label="Exibir produtos em mosaico" aria-pressed={resultView === "mosaic"}
+              <IconButton size="small" aria-label="Exibir produtos em uma coluna" aria-pressed={resultView === "single"}
+                onClick={() => setResultView("single")} sx={{
+                  width: 30, height: 30, borderRadius: "7px",
+                  color: resultView === "single" ? "#17664f" : "#789087",
+                  bgcolor: resultView === "single" ? "#e8f4ef" : "transparent",
+                }}>
+                <ViewAgendaRoundedIcon sx={{ fontSize: 17 }} />
+              </IconButton>
+              <IconButton size="small" aria-label="Exibir produtos em duas colunas" aria-pressed={resultView === "mosaic"}
                 onClick={() => setResultView("mosaic")} sx={{
                   width: 30, height: 30, borderRadius: "7px",
                   color: resultView === "mosaic" ? "#17664f" : "#789087",
@@ -229,7 +238,7 @@ export default function SearchPage() {
                 }}>
                 <ViewModuleRoundedIcon sx={{ fontSize: 17 }} />
               </IconButton>
-              <IconButton size="small" aria-label="Exibir produtos em lista" aria-pressed={resultView === "list"}
+              <IconButton size="small" aria-label="Exibir produtos em lista compacta" aria-pressed={resultView === "list"}
                 onClick={() => setResultView("list")} sx={{
                   width: 30, height: 30, borderRadius: "7px",
                   color: resultView === "list" ? "#17664f" : "#789087",
