@@ -44,6 +44,9 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
   const [savingDetails, setSavingDetails] = useState(false);
   const [editError, setEditError] = useState("");
   const [editSuccess, setEditSuccess] = useState("");
+  const [nameDraft, setNameDraft] = useState("");
+  const [brandDraft, setBrandDraft] = useState("");
+  const [modelDraft, setModelDraft] = useState("");
   const [descriptionDraft, setDescriptionDraft] = useState("");
   const [quoteDraft, setQuoteDraft] = useState("");
   const [supplierDraft, setSupplierDraft] = useState("");
@@ -84,8 +87,11 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     if (!product || !editableVariation) return;
     setEditError("");
     setEditSuccess("");
+    setNameDraft(product.name);
+    setBrandDraft(product.brand);
+    setModelDraft(product.model);
     setDescriptionDraft(product.description || material.observation || material.materialName);
-    setQuoteDraft(editableQuote && editableQuote.value > 0 ? String(editableQuote.value) : "");
+    setQuoteDraft(editableQuote ? String(editableQuote.value).replace(".", ",") : "0,00");
     setSupplierDraft(editableQuote?.supplier?.toLocaleLowerCase("pt-BR").includes("a definir") ? "" : (editableQuote?.supplier ?? ""));
     setEditing(true);
   };
@@ -97,7 +103,19 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
 
   const saveBasicDetails = async () => {
     if (!product || !editableVariation) return;
-    const quoteValue = Number(quoteDraft.trim().replace(",", "."));
+    const quoteValue = Number((quoteDraft.trim() || "0").replace(",", "."));
+    if (!nameDraft.trim()) {
+      setEditError("Informe o nome do produto.");
+      return;
+    }
+    if (!brandDraft.trim()) {
+      setEditError("Informe a marca do produto.");
+      return;
+    }
+    if (!modelDraft.trim()) {
+      setEditError("Informe o modelo do produto.");
+      return;
+    }
     if (!descriptionDraft.trim()) {
       setEditError("Informe a descrição do produto.");
       return;
@@ -106,8 +124,8 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
       setEditError("Informe uma cotação válida.");
       return;
     }
-    if (!supplierDraft.trim()) {
-      setEditError("Informe o fornecedor.");
+    if (quoteValue > 0 && !supplierDraft.trim()) {
+      setEditError("Informe o fornecedor para uma cotação com valor.");
       return;
     }
 
@@ -116,6 +134,9 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
     setEditSuccess("");
     try {
       await updateProductBasic(product.id, {
+        name: nameDraft.trim(),
+        brand: brandDraft.trim(),
+        model: modelDraft.trim(),
         description: descriptionDraft.trim(),
         quoteValue,
         supplier: supplierDraft.trim(),
@@ -210,19 +231,48 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
           <Typography variant="caption" display="block" color="text.secondary" sx={{ mb: 1 }}>Código {material.materialCode}</Typography>
 
           <Stack direction="row" justifyContent="space-between" alignItems="start" gap={1.25}>
-            <Box minWidth={0}>
-              <Typography component="h1" sx={{
-                fontWeight: 900,
-                fontSize: { xs: 28, sm: 32, md: 29, lg: 31, xl: 36 },
-                letterSpacing: "-.04em",
-                lineHeight: 1.08,
-                background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}>{product?.name ?? material.materialName}</Typography>
-              <Typography color="text.secondary" sx={{ mt: .85, fontSize: { xs: 14.5, md: 13.5, lg: 14, xl: 15.5 } }}>
-                {[product?.brand, product?.model].filter(Boolean).join(" · ") || material.familyName}
-              </Typography>
+            <Box minWidth={0} flex={1}>
+              {editing ? <Stack gap={1}>
+                <TextField
+                  label="Nome do produto"
+                  value={nameDraft}
+                  onChange={event => setNameDraft(event.target.value)}
+                  size="small"
+                  fullWidth
+                  sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
+                />
+                <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
+                  <TextField
+                    label="Marca"
+                    value={brandDraft}
+                    onChange={event => setBrandDraft(event.target.value)}
+                    size="small"
+                    fullWidth
+                    sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
+                  />
+                  <TextField
+                    label="Modelo"
+                    value={modelDraft}
+                    onChange={event => setModelDraft(event.target.value)}
+                    size="small"
+                    fullWidth
+                    sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
+                  />
+                </Stack>
+              </Stack> : <>
+                <Typography component="h1" sx={{
+                  fontWeight: 900,
+                  fontSize: { xs: 28, sm: 32, md: 29, lg: 31, xl: 36 },
+                  letterSpacing: "-.04em",
+                  lineHeight: 1.08,
+                  background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}>{product?.name ?? material.materialName}</Typography>
+                <Typography color="text.secondary" sx={{ mt: .85, fontSize: { xs: 14.5, md: 13.5, lg: 14, xl: 15.5 } }}>
+                  {[product?.brand, product?.model].filter(Boolean).join(" · ") || material.familyName}
+                </Typography>
+              </>}
             </Box>
 
             <Stack direction="row" alignItems="center" gap={.65} flexShrink={0}>
@@ -292,11 +342,12 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                 <TextField
                   label="Cotação (R$)"
                   value={quoteDraft}
-                  onChange={event => setQuoteDraft(event.target.value)}
+                  onChange={event => setQuoteDraft(event.target.value.replace(/[^0-9,\.]/g, ""))}
                   slotProps={{ htmlInput: { inputMode: "decimal" } }}
                   size="small"
                   fullWidth
                   placeholder="0,00"
+                  helperText="Pode permanecer em R$ 0,00 enquanto a cotação estiver pendente."
                   sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
                 />
                 <TextField
@@ -306,6 +357,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                   size="small"
                   fullWidth
                   placeholder="Nome do fornecedor"
+                  helperText="Obrigatório quando a cotação for maior que zero."
                   sx={{ "& .MuiInputBase-root": { borderRadius: 2 } }}
                 />
               </Stack>
