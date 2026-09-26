@@ -558,109 +558,6 @@ export default function LaborPage() {
 
       {(error || workspaceFavorites.error) && <Alert severity="error" sx={{ mt: 2 }}>{error || workspaceFavorites.error}</Alert>}
 
-      <Box
-        aria-live="polite"
-        sx={{
-          position: "fixed",
-          right: { xs: 14, sm: 18, md: 22, lg: 28, xl: 36 },
-          bottom: { xs: "calc(var(--bottom-nav-height, 68px) + 18px)", md: "auto" },
-          top: { xs: "auto", md: "50%" },
-          transform: { xs: "none", md: "translateY(-50%)" },
-          zIndex: 1205,
-          pointerEvents: "none",
-        }}
-      >
-        <Stack alignItems="center" gap={.45}>
-          <Box sx={{ position: "relative", pointerEvents: "auto" }}>
-            {hasUnsavedChanges && <Box sx={{
-              position: "absolute",
-              top: 1,
-              right: 1,
-              width: 9,
-              height: 9,
-              borderRadius: "50%",
-              bgcolor: "#d8942d",
-              border: "2px solid #fff",
-              boxShadow: "0 0 0 3px rgba(216,148,45,.12)",
-              zIndex: 2,
-            }} />}
-
-            <ButtonBase
-              onClick={() => void save()}
-              disabled={!mode || !hasUnsavedChanges || saving}
-              aria-label={
-                saving
-                  ? "Salvando alterações da mão de obra"
-                  : hasUnsavedChanges
-                    ? "Salvar alterações da mão de obra"
-                    : "Mão de obra salva"
-              }
-              sx={{
-                width: { xs: 48, md: 52 },
-                height: { xs: 48, md: 52 },
-                borderRadius: "50%",
-                display: "grid",
-                placeItems: "center",
-                color: hasUnsavedChanges ? "#17664f" : "#5f766d",
-                background: hasUnsavedChanges
-                  ? "linear-gradient(145deg,rgba(255,255,255,.99),rgba(231,244,239,.98))"
-                  : "rgba(255,255,255,.94)",
-                border: "1px solid",
-                borderColor: hasUnsavedChanges ? "rgba(0,107,79,.20)" : "rgba(67,102,90,.11)",
-                boxShadow: hasUnsavedChanges
-                  ? "0 9px 24px rgba(21,72,56,.14), inset 0 1px 0 rgba(255,255,255,.96)"
-                  : "0 5px 16px rgba(21,72,56,.07), inset 0 1px 0 rgba(255,255,255,.9)",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
-                "&.Mui-disabled": {
-                  opacity: 1,
-                  color: mode ? "#4f7568" : "#94a39e",
-                  borderColor: mode ? "rgba(0,107,79,.10)" : "rgba(67,102,90,.08)",
-                  background: "rgba(255,255,255,.90)",
-                },
-                "&:active": { transform: "scale(.95)" },
-                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.18)", outlineOffset: 3 },
-                "@media (hover:hover)": {
-                  "&:not(.Mui-disabled):hover": {
-                    transform: "translateY(-2px)",
-                    borderColor: "rgba(0,107,79,.30)",
-                    boxShadow: "0 12px 28px rgba(21,72,56,.17), inset 0 1px 0 rgba(255,255,255,.98)",
-                  },
-                },
-                "@media (prefers-reduced-motion: reduce)": {
-                  transition: "none",
-                  "&:hover": { transform: "none" },
-                },
-              }}
-            >
-              {saving
-                ? <CircularProgress size={20} thickness={5} sx={{ color: "#17664f" }} />
-                : hasUnsavedChanges
-                  ? <SaveRoundedIcon sx={{ fontSize: { xs: 20, md: 22 } }} />
-                  : <CheckRoundedIcon sx={{ fontSize: { xs: 20, md: 22 } }} />}
-            </ButtonBase>
-          </Box>
-
-          <Typography sx={{
-            px: .65,
-            py: .18,
-            borderRadius: 999,
-            fontSize: { xs: 8.5, md: 9 },
-            lineHeight: 1.1,
-            fontWeight: 850,
-            color: saving ? "#557168" : hasUnsavedChanges ? "#315e4e" : "#758981",
-            bgcolor: "rgba(255,255,255,.82)",
-            boxShadow: "0 2px 8px rgba(21,72,56,.04)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            whiteSpace: "nowrap",
-          }}>
-            {saving ? "Salvando" : hasUnsavedChanges ? "Salvar" : mode ? "Salvo" : "Salvar"}
-          </Typography>
-        </Stack>
-      </Box>
-
       <Box component="section" aria-labelledby="labor-mode-title" mt={3}>
         <Typography id="labor-mode-title" fontWeight={850} color="#244d40" sx={{ fontSize: 15 }}>Como esta obra será atendida?</Typography>
         <Typography color="text.secondary" sx={{ fontSize: 11.5, mt: .25 }}>Uma decisão simples na entrada. Você pode mudar depois.</Typography>
@@ -715,7 +612,7 @@ export default function LaborPage() {
           WebkitBackdropFilter: "blur(12px)",
         }}>
           <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} justifyContent="space-between" gap={1.2}>
-            <Box minWidth={0}>
+            <Box minWidth={0} flex={1}>
               <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "baseline" }} gap={{ xs: .25, sm: 1.1 }}>
                 <Typography fontWeight={850} color="#21483b" sx={{ fontSize: 13 }}>
                   {selectedItems.length} {selectedItems.length === 1 ? "necessidade selecionada" : "necessidades selecionadas"}
@@ -735,7 +632,66 @@ export default function LaborPage() {
               </Stack>
             </Box>
 
-
+            <ButtonBase
+              onClick={() => void save()}
+              disabled={!hasUnsavedChanges || saving}
+              aria-label={
+                saving
+                  ? "Salvando alterações da mão de obra"
+                  : hasUnsavedChanges
+                    ? "Salvar alterações da mão de obra"
+                    : "Mão de obra salva"
+              }
+              sx={{
+                minWidth: { xs: 88, sm: 96 },
+                height: 38,
+                px: 1.15,
+                borderRadius: 999,
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: .55,
+                color: hasUnsavedChanges ? "#17664f" : "#55746a",
+                background: hasUnsavedChanges
+                  ? "linear-gradient(145deg,#ffffff,#e9f4ef)"
+                  : "rgba(244,248,246,.92)",
+                border: "1px solid",
+                borderColor: hasUnsavedChanges ? "rgba(0,107,79,.20)" : "rgba(67,102,90,.11)",
+                boxShadow: hasUnsavedChanges
+                  ? "0 4px 12px rgba(21,72,56,.09), inset 0 1px 0 rgba(255,255,255,.95)"
+                  : "none",
+                transition: "transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease, background 150ms ease",
+                "&.Mui-disabled": {
+                  opacity: 1,
+                  color: "#58776c",
+                  background: "rgba(244,248,246,.92)",
+                  borderColor: "rgba(67,102,90,.11)",
+                },
+                "&:active": { transform: "scale(.97)" },
+                "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.28)", outlineOffset: 2 },
+                "@media (hover:hover)": {
+                  "&:not(.Mui-disabled):hover": {
+                    transform: "translateY(-1px)",
+                    borderColor: "rgba(0,107,79,.28)",
+                    boxShadow: "0 6px 15px rgba(21,72,56,.12)",
+                  },
+                },
+                "@media (prefers-reduced-motion: reduce)": {
+                  transition: "none",
+                  "&:hover": { transform: "none" },
+                },
+              }}
+            >
+              {saving
+                ? <CircularProgress size={15} thickness={5} sx={{ color: "#17664f" }} />
+                : hasUnsavedChanges
+                  ? <SaveRoundedIcon sx={{ fontSize: 17 }} />
+                  : <CheckRoundedIcon sx={{ fontSize: 17 }} />}
+              <Typography sx={{ fontSize: 10.5, fontWeight: 850, lineHeight: 1, whiteSpace: "nowrap" }}>
+                {saving ? "Salvando" : hasUnsavedChanges ? "Salvar" : "Salvo"}
+              </Typography>
+            </ButtonBase>
           </Stack>
         </Paper>
 
