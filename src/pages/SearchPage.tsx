@@ -65,7 +65,7 @@ export default function SearchPage() {
   const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
-  const [resultView, setResultView] = useState<"single" | "mosaic" | "list">("mosaic");
+  const [resultView, setResultView] = useState<"single" | "mosaic" | "list">("single");
 
   const searchKey = useMemo(() => JSON.stringify({
     query,
