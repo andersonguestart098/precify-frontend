@@ -244,11 +244,36 @@ export default function SearchPage() {
         </Stack>
 
         {(error || catalogError || favorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError || favorites.error}</Alert>}
+        {resultView === "list" && !loading && Boolean(response?.content.length) && <Box sx={{
+          display: { xs: "none", md: "grid" },
+          gridTemplateColumns: {
+            md: "64px minmax(150px,1.8fr) minmax(95px,.9fr) minmax(88px,.75fr) minmax(105px,.8fr) minmax(170px,1.2fr)",
+            xl: "72px minmax(240px,2.1fr) minmax(150px,1fr) minmax(120px,.8fr) minmax(145px,.9fr) minmax(235px,1.35fr)",
+          },
+          columnGap: { md: 1, xl: 1.4 },
+          px: { md: 1.2, xl: 1.5 },
+          pb: .65,
+          color: "#7e8f89",
+          "& > span": {
+            fontSize: { md: 8.6, xl: 9.4 },
+            fontWeight: 820,
+            letterSpacing: ".055em",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+          },
+        }}>
+          <Box component="span" aria-hidden="true" />
+          <Box component="span">Material</Box>
+          <Box component="span">Classificação</Box>
+          <Box component="span">Status</Box>
+          <Box component="span" sx={{ textAlign: "right" }}>Preço</Box>
+          <Box component="span" sx={{ textAlign: "right" }}>Ações</Box>
+        </Box>}
         {loading && !response ? <ResultSkeletons /> :
           <Box sx={{
             display: "grid",
             gridTemplateColumns: resultView === "mosaic" ? { xs: "1fr", md: "repeat(2,minmax(0,1fr))" } : "1fr",
-            gap: { xs: 2, md: 1.25, xl: 2 },
+            gap: resultView === "list" ? { xs: .9, md: .65, xl: .8 } : { xs: 2, md: 1.25, xl: 2 },
             alignItems: "stretch",
           }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
             layout={resultView}
