@@ -29,20 +29,24 @@ export function downloadCompositions(compositions: Composition[]) {
 }
 
 export function projectSnapshotCsv(project: Project, compositions: Composition[], laborPlan?: LaborPlan): string {
+  const compositionTotal = compositions.reduce((sum, composition) => sum + composition.total, 0);
+  const laborTotal = laborPlan?.items.reduce((sum, item) => sum + Math.max(0, Number(item.cost ?? 0)), 0) ?? 0;
+  const projectTotal = compositionTotal + laborTotal;
+
   const rows: unknown[][] = [
     [
       "Tipo", "Obra", "ID da obra", "Tipo de obra", "Localização", "Observações",
       "Composição", "ID composição", "Criada em", "Atualizada em",
       "Item / necessidade", "ID item", "Código material / M.O.", "ID produto", "Imagem",
       "Fornecedor", "Unidade", "Quantidade", "Preço unitário", "Subtotal",
-      "Origem M.O.", "Fonte M.O.", "Modo M.O.", "Atualização M.O.",
+      "Custo M.O.", "Custo total obra", "Origem M.O.", "Fonte M.O.", "Modo M.O.", "Atualização M.O.",
     ],
     [
       "RESUMO", project.name, project.id, project.projectType ?? "", project.location ?? "", project.notes ?? "",
       "", "", "", "",
       "", "", "", "", "",
-      "", "", "", "", compositions.reduce((sum, composition) => sum + composition.total, 0),
-      "", "", laborPlan?.mode ?? "", laborPlan?.updatedAt ?? "",
+      "", "", "", "", compositionTotal,
+      laborTotal, projectTotal, "", "", laborPlan?.mode ?? "", laborPlan?.updatedAt ?? "",
     ],
   ];
 
@@ -52,7 +56,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
       composition.name, composition.id, composition.createdAt, composition.updatedAt,
       "", "", "", "", "",
       "", "", "", "", composition.total,
-      "", "", "", "",
+      "", "", "", "", "", "",
     ]);
 
     if (!composition.items.length) {
@@ -61,7 +65,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
         composition.name, composition.id, composition.createdAt, composition.updatedAt,
         "Sem itens", "", "", "", "",
         "", "", "", "", 0,
-        "", "", "", "",
+        "", "", "", "", "", "",
       ]);
       continue;
     }
@@ -73,7 +77,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
         item.name, item.id, item.materialCode, item.productId ?? "", item.imageUrl ?? "",
         item.supplier ?? "", item.unit, item.quantity, item.unitPrice,
         Math.round(item.quantity * item.unitPrice * 100) / 100,
-        "", "", "", "",
+        "", "", "", "", "", "",
       ]);
     }
   }
@@ -85,7 +89,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
         "", "", "", "",
         item.title, "", item.code, "", "",
         "", "", "", "", "",
-        item.origin, item.source, laborPlan.mode, laborPlan.updatedAt ?? "",
+        Number(item.cost ?? 0), "", item.origin, item.source, laborPlan.mode, laborPlan.updatedAt ?? "",
       ]);
     }
   } else {
@@ -94,7 +98,7 @@ export function projectSnapshotCsv(project: Project, compositions: Composition[]
       "", "", "", "",
       "Nenhuma mão de obra vinculada", "", "", "", "",
       "", "", "", "", "",
-      "", "", laborPlan?.mode ?? "", laborPlan?.updatedAt ?? "",
+      0, "", "", "", laborPlan?.mode ?? "", laborPlan?.updatedAt ?? "",
     ]);
   }
 
