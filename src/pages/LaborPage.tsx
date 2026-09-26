@@ -626,7 +626,7 @@ export default function LaborPage() {
               },
             }}
           >
-            <Stack direction="row" alignItems="center" justifyContent="space-between" gap=.8>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" gap={.8}>
               <Box sx={{
                 width: 38,
                 height: 38,
