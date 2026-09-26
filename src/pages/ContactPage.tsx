@@ -22,10 +22,10 @@ export default function ContactPage() {
     <Box sx={{ maxWidth: 860 }}>
       <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.5 }}>Contato</Typography>
       <Typography component="h1" sx={{ mt: .8, maxWidth: 760, fontSize: { xs: 38, md: 45, xl: 58 }, lineHeight: 1.02, fontWeight: 900, letterSpacing: "-.05em", ...gradientText }}>
-        Vamos conversar sobre o seu projeto.
+        Precisa de ajuda com o Precify?
       </Typography>
       <Typography sx={{ mt: { xs: 2.2, md: 1.7, xl: 2.2 }, maxWidth: 700, fontSize: { xs: 16, md: 15.5, xl: 18 }, lineHeight: 1.75, color: "#61756e" }}>
-        Para dúvidas, sugestões, parcerias ou uma demonstração do Precify, fale com a nossa equipe pelos canais abaixo.
+        Use este canal para dúvidas de uso, acesso ou para localizar informações no sistema — por exemplo, quando não encontrar um material no catálogo.
       </Typography>
     </Box>
 
@@ -35,10 +35,10 @@ export default function ContactPage() {
       <Box>
         <Typography sx={{ fontSize: { md: 11, xl: 12 }, fontWeight: 850, textTransform: "uppercase", letterSpacing: 1.4, color: "#6d837b" }}>Fale com a gente</Typography>
         <Typography sx={{ mt: 1.5, maxWidth: 360, fontSize: { xs: 24, md: 26, xl: 30 }, lineHeight: 1.25, fontWeight: 850, letterSpacing: "-.03em", ...gradientText }}>
-          Atendimento simples, direto e sem formulários desnecessários.
+          Um canal direto para dúvidas do dia a dia.
         </Typography>
         <Typography sx={{ mt: 1.7, maxWidth: 420, fontSize: { md: 14, xl: 15.5 }, lineHeight: 1.8, color: "#5f726b" }}>
-          Estamos estruturando os canais oficiais de atendimento. Assim que forem definidos, eles serão disponibilizados aqui.
+          Se algo não estiver claro, se você não encontrar um material ou tiver dificuldade para usar alguma função, entre em contato pelos canais disponíveis.
         </Typography>
       </Box>
 
@@ -57,7 +57,7 @@ export default function ContactPage() {
 
     <Box sx={{ mt: { xs: 6, md: 5.5, xl: 8 }, pt: 2.5, borderTop: "1px solid #dfe9e5" }}>
       <Typography sx={{ maxWidth: 680, fontSize: { md: 12.5, xl: 13.5 }, lineHeight: 1.7, color: "#82918c" }}>
-        Precisa apresentar o Precify para sua equipe ou avaliar a solução em um cenário real? Entre em contato para solicitar uma demonstração.
+        Nosso objetivo neste canal é ajudar você a encontrar o que precisa e utilizar os recursos disponíveis no Precify.
       </Typography>
     </Box>
   </Container>;
