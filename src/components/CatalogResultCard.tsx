@@ -34,6 +34,134 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
     <Paper
       variant="outlined"
       sx={{
+        display: { xs: "block", md: "none" },
+        overflow: "hidden",
+        borderRadius: "10px",
+        borderColor: "#e4ece9",
+        bgcolor: "#fff",
+        boxShadow: "0 1px 4px rgba(19,56,46,.025)",
+      }}
+    >
+      <Box sx={{
+        display: "grid",
+        gridTemplateColumns: "46px minmax(0,1fr) auto",
+        alignItems: "center",
+        gap: .75,
+        minHeight: 66,
+        px: .75,
+        py: .6,
+      }}>
+        <Box sx={{
+          position: "relative",
+          width: 46,
+          height: 46,
+          borderRadius: "8px",
+          bgcolor: "#f6f8f7",
+          border: "1px solid #edf1ef",
+          display: "grid",
+          placeItems: "center",
+        }}>
+          <ProtectedImage
+            src={photo}
+            alt={featured?.name ?? material.materialName}
+            fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
+            sx={{
+              width: "100%", height: "100%", bgcolor: "transparent", border: 0,
+              borderRadius: "7px", p: .15, "& img": { objectFit: "contain" },
+            }}
+          />
+          <IconButton
+            aria-label={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+            aria-pressed={favorite}
+            loading={favoriteBusy}
+            disabled={favoriteBusy}
+            onClick={() => { setAnimateFavorite(!favorite); onFavorite?.(); }}
+            sx={{
+              position: "absolute", left: -5, bottom: -5,
+              width: 22, height: 22, p: 0,
+              color: favorite ? "#b77b00" : "#60756d",
+              bgcolor: favorite ? "#fff7d9" : "#fff",
+              border: "1px solid",
+              borderColor: favorite ? "#efd78a" : "#dce5e2",
+              boxShadow: "0 1px 4px rgba(16,42,33,.08)",
+              "& svg": { fontSize: 13 },
+            }}
+          >
+            {favorite ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+          </IconButton>
+        </Box>
+
+        <Box minWidth={0}>
+          <Stack direction="row" alignItems="center" gap={.4} minWidth={0}>
+            <Typography color="primary" noWrap sx={{ fontSize: 8.6, fontWeight: 850, letterSpacing: ".01em" }}>
+              {material.materialCode}
+            </Typography>
+            {highlighted && <Chip label="Destaque" size="small" sx={{
+              height: 15, fontSize: 7.2, bgcolor: "#edf6f3", color: "#235847",
+              "& .MuiChip-label": { px: .45 },
+            }} />}
+          </Stack>
+
+          <Typography component="h2" noWrap sx={{
+            mt: .08, fontSize: 11.6, lineHeight: 1.2, fontWeight: 820,
+            letterSpacing: "-.01em", color: "#173f33",
+          }}>
+            {material.materialName}
+          </Typography>
+
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={.6} mt={.28} minWidth={0}>
+            <Typography noWrap sx={{ minWidth: 0, flex: 1, fontSize: 8.2, color: "#7b8d86" }}>
+              {material.familyName}
+            </Typography>
+            {featured ? <Typography noWrap sx={{ fontSize: 9.4, fontWeight: 850, color: "#214d3f", flexShrink: 0 }}>
+              {currency.format(featured.quote.value)}
+            </Typography> : <Typography noWrap sx={{ fontSize: 8.1, fontWeight: 720, color: "#84938e", flexShrink: 0 }}>
+              Cotação pendente
+            </Typography>}
+          </Stack>
+        </Box>
+
+        <Stack direction="row" alignItems="center" gap={.35}>
+          <Tooltip title="Adicionar à composição">
+            <IconButton
+              onClick={() => setCompositionOpen(true)}
+              aria-label="Adicionar à composição"
+              sx={{
+                width: 28, height: 28, p: 0,
+                color: "#fff",
+                bgcolor: "#087458",
+                border: "1px solid rgba(0,82,61,.10)",
+                boxShadow: "0 2px 6px rgba(0,107,79,.13)",
+                "&:hover": { bgcolor: "#075f49" },
+              }}
+            >
+              <PlaylistAddRoundedIcon sx={{ fontSize: 15 }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Ver detalhes">
+            <IconButton
+              component={RouterLink}
+              to={`/produtos/${encodeURIComponent(material.materialCode)}`}
+              state={{ fromSearch: location.pathname + location.search }}
+              aria-label="Ver detalhes"
+              sx={{
+                width: 28, height: 28, p: 0,
+                color: "#31594c", bgcolor: "#f4f8f6",
+                border: "1px solid #dde8e4",
+                "&:hover": { bgcolor: "#eaf3ef" },
+              }}
+            >
+              <VisibilityOutlinedIcon sx={{ fontSize: 14 }} />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
+    </Paper>
+
+    <Paper
+      variant="outlined"
+      sx={{
+        display: { xs: "none", md: "block" },
         overflow: "hidden",
         borderRadius: { xs: "12px", md: "10px" },
         borderColor: "#e3ebe8",
