@@ -292,7 +292,7 @@ export default function SearchPage() {
               ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" }
               : "1fr",
             gap: resultView === "list"
-              ? { xs: .75, md: .65, xl: .8 }
+              ? { xs: .45, md: .65, xl: .8 }
               : resultView === "mosaic"
                 ? { xs: .8, sm: 1, md: 1.25, xl: 2 }
                 : { xs: 1.1, md: 1.25, xl: 2 },
