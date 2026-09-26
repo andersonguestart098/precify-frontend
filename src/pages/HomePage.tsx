@@ -1,43 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Box, ButtonBase, Container, Skeleton, Stack, Typography } from "@mui/material";
-import { HouseLine, Buildings, BuildingApartment, Storefront, Factory, Bank, RoadHorizon, MapTrifold, GraduationCap, Hospital, ForkKnife, Bed, Warehouse, Lightning, Broadcast, Drop, Tree } from "@phosphor-icons/react";
-import type { Icon } from "@phosphor-icons/react";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import QuickAccessStrip from "../components/QuickAccessStrip";
-import { catalogCategoryIconSize, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
+import { catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import type { CatalogMaterial } from "../domain/search";
 import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
-import { projectTypeGroups } from "../data/projectTypes";
-
-const projectGroupIcons: Record<string, Icon> = {
-  "1": HouseLine,
-  "2": Storefront,
-  "3": Bank,
-  "4": Factory,
-  "5": RoadHorizon,
-};
-
-const projectIcons: Record<string, Icon> = {
-  "1.1": HouseLine, "1.2": Buildings, "1.3": BuildingApartment, "1.4": BuildingApartment, "1.5": BuildingApartment, "1.6": MapTrifold,
-  "2.2": Buildings, "2.4": Bed, "2.5": ForkKnife,
-  "3.1": GraduationCap, "3.2": Hospital,
-  "4.1": Warehouse, "4.3": Warehouse, "4.4": Tree,
-  "5.2": Drop, "5.3": Lightning, "5.4": Broadcast, "5.5": MapTrifold,
-};
-
-const projectTypes = projectTypeGroups.flatMap(group => group.types.map(([value, label]) => ({
-  value,
-  label,
-  segment: group.segment,
-  icon: projectIcons[value] ?? projectGroupIcons[group.code],
-})));
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -49,24 +20,6 @@ export default function HomePage() {
   }>();
   const [catalog, setCatalog] = useState<CatalogMaterial[]>(() => getCachedCatalog() ?? []);
   const [catalogLoading, setCatalogLoading] = useState(() => !getCachedCatalog());
-  const [projectScrolling, setProjectScrolling] = useState(false);
-  const projectRail = useRef<HTMLDivElement>(null);
-  const projectScrollTimer = useRef<number | undefined>(undefined);
-
-  const showProjectScrollbar = () => {
-    setProjectScrolling(true);
-    window.clearTimeout(projectScrollTimer.current);
-    projectScrollTimer.current = window.setTimeout(() => setProjectScrolling(false), 700);
-  };
-
-  const moveProjectTypes = (direction: number) => {
-    const rail = projectRail.current;
-    if (rail) rail.scrollBy({
-      left: direction * rail.clientWidth * .78,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-    });
-  };
-
   useEffect(() => {
     let mounted = true;
     setCatalogLoading(!getCachedCatalog());
@@ -85,8 +38,6 @@ export default function HomePage() {
       window.removeEventListener("precify-app-data-refreshed", syncFromCache);
     };
   }, []);
-
-  useEffect(() => () => window.clearTimeout(projectScrollTimer.current), []);
 
   return <Container maxWidth="xl" component="main" sx={{
     minHeight: { xs: "calc(100dvh - var(--header-height) - var(--mobile-context-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - var(--header-height))" },
@@ -113,7 +64,7 @@ export default function HomePage() {
       }}>
         <Box minWidth={0}>
           <Typography component="h1" sx={catalogHeroTitleSx}>
-            Encontre o material certo para a sua obra.
+            Encontre o custo certo para a sua obra.
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 }, maxWidth: { md: 690, xl: 820 } }}
             mb={{ xs: 2.25, md: 1.75, xl: 3 }}>
@@ -206,59 +157,7 @@ export default function HomePage() {
         </> : <SegmentCarousel catalog={catalog} selected="" onSelect={segmentCode => navigate(`/produtos?segmentCode=${encodeURIComponent(segmentCode)}`)} />}
       </Box>
 
-      <Box component="section" aria-labelledby="project-type-title" sx={{ maxWidth: { xs: 680, md: "100%" }, mt: { xs: 1.1, md: 1.55, xl: 1.9 } }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: 1.1, md: .65, xl: 1.1 }}>
-          <Typography id="project-type-title" sx={catalogSectionTitleSx}>O que você vai construir?</Typography>
-          <Stack direction="row" gap={.25} sx={{ mr: { xs: 0, md: 6, xl: 0 } }}>
-            <ButtonBase aria-label="Tipos anteriores" onClick={() => moveProjectTypes(-1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
-              <ChevronLeftRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
-            </ButtonBase>
-            <ButtonBase aria-label="Próximos tipos" onClick={() => moveProjectTypes(1)} sx={{ color: "#39725f", width: { md: 36, xl: 44 }, height: { md: 36, xl: 44 }, borderRadius: "50%", "&:focus-visible": { outline: "2px solid #006b4f" } }}>
-              <ChevronRightRoundedIcon sx={{ fontSize: { md: 20, xl: 24 } }} />
-            </ButtonBase>
-          </Stack>
-        </Stack>
-
-        <Box ref={projectRail} role="group" aria-label="Tipos de obra" onScroll={showProjectScrollbar} sx={{
-          display: "flex", gap: { xs: 1.05, md: .8, xl: 1.05 }, overflowX: "auto", px: .15, py: .45, scrollSnapType: "x proximity",
-          WebkitOverflowScrolling: "touch", scrollbarWidth: "thin",
-          scrollbarColor: projectScrolling ? "#a9d7c8 transparent" : "transparent transparent",
-          "&::-webkit-scrollbar": { height: 3 },
-          "&::-webkit-scrollbar-track": { background: "transparent" },
-          "&::-webkit-scrollbar-thumb": { backgroundColor: projectScrolling ? "#a9d7c8" : "transparent", borderRadius: 999 }
-        }}>
-          {projectTypes.map(({ value, label, segment, icon: Icon }) => {
-            return <ButtonBase key={value} aria-label={`Ver obras do tipo ${segment}: ${label}`} onClick={() => navigate(`/obras?tipo=${encodeURIComponent(value)}`)} sx={{
-              width: { xs: 174, sm: 190, md: 158, xl: 190 }, minWidth: { xs: 174, sm: 190, md: 158, xl: 190 }, minHeight: { xs: 126, md: 104, xl: 126 }, px: { xs: 1.5, md: 1.2, xl: 1.5 }, py: { xs: 1.5, md: 1.05, xl: 1.5 }, borderRadius: "14px",
-              scrollSnapAlign: "start", display: "flex", flexDirection: "column", gap: { xs: 1, md: .7, xl: 1 }, alignItems: "stretch", justifyContent: "flex-start", textAlign: "left",
-              color: "#1a4f3e", border: "1px solid",
-              borderColor: "rgba(0,107,79,.13)",
-              background: "linear-gradient(145deg,rgba(255,255,255,.9),rgba(239,248,245,.74))",
-              boxShadow: "0 3px 12px rgba(24,60,48,.045)",
-              transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
-              WebkitTapHighlightColor: "transparent",
-              "@media (hover: hover)": { "&:hover": { transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.3)", boxShadow: "0 6px 16px rgba(0,107,79,.08)" } },
-              "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-              "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } }
-            }}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Box sx={{ width: { xs: 40, md: 40, xl: 44 }, height: { xs: 40, md: 40, xl: 44 }, borderRadius: "12px", display: "grid", placeItems: "center", background: "linear-gradient(135deg,#edf8f4,#dff0ea)", color: "#295d4b", "& svg": { width: catalogCategoryIconSize, height: catalogCategoryIconSize } }}>
-                  <Icon size={28} weight="duotone" aria-hidden="true" />
-                </Box>
-                <Box aria-hidden="true" sx={{ width: { xs: 22, md: 20, xl: 22 }, height: { xs: 22, md: 20, xl: 22 }, borderRadius: "50%", border: "1px solid #dbe8e4", bgcolor: "rgba(255,255,255,.72)", color: "#55786c", display: "grid", placeItems: "center" }}>
-                  <ArrowForwardRoundedIcon sx={{ fontSize: { xs: 14, md: 13, xl: 14 } }} />
-                </Box>
-              </Stack>
-              <Box minWidth={0}>
-                <Typography component="span" display="block" sx={{ color: "#55786c", fontSize: { xs: 10.5, md: 9.5, xl: 10.5 }, fontWeight: 600, lineHeight: 1.3 }}>{segment}</Typography>
-                <Typography component="span" display="block" sx={{ fontSize: { xs: 12, md: 10.8, xl: 12 }, fontWeight: 700, lineHeight: 1.32, mt: .35 }}>{label}</Typography>
-              </Box>
-            </ButtonBase>;
-          })}
-        </Box>
-
-
-      </Box>
+      
     </Box>
   </Container>;
 }
