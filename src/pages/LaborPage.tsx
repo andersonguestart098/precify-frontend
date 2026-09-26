@@ -608,61 +608,84 @@ export default function LaborPage() {
               disabled={saving}
               aria-label={success ? "Planejamento salvo. Salvar novamente" : "Salvar planejamento de mão de obra"}
               sx={{
-                width: { xs: "100%", sm: 294 }, minHeight: 62, px: 1.05, py: .8,
-                borderRadius: "15px", alignSelf: { xs: "stretch", sm: "center" },
-                justifyContent: "flex-start", textAlign: "left", color: "#fff",
-                overflow: "hidden", position: "relative",
+                width: { xs: "100%", sm: 250 },
+                minHeight: 58,
+                px: 1,
+                py: .75,
+                borderRadius: "15px",
+                alignSelf: { xs: "stretch", sm: "center" },
+                justifyContent: "flex-start",
+                textAlign: "left",
+                color: "#215645",
+                overflow: "hidden",
+                position: "relative",
                 background: success
-                  ? "linear-gradient(135deg,#17795f 0%,#0f6f56 58%,#0a644d 100%)"
-                  : "linear-gradient(135deg,#0b8060 0%,#087458 55%,#006b4f 100%)",
-                border: "1px solid rgba(255,255,255,.16)",
-                boxShadow: success
-                  ? "0 8px 20px rgba(0,107,79,.17), inset 0 1px 0 rgba(255,255,255,.17)"
-                  : "0 10px 24px rgba(0,107,79,.23), inset 0 1px 0 rgba(255,255,255,.16)",
-                transition: "transform 170ms ease, box-shadow 170ms ease, filter 170ms ease",
-                "&::after": {
-                  content: '""', position: "absolute", width: 88, height: 88, borderRadius: "50%",
-                  right: -30, top: -44, pointerEvents: "none",
-                  background: "radial-gradient(circle,rgba(255,255,255,.16),rgba(255,255,255,0) 70%)",
-                },
+                  ? "linear-gradient(145deg,#eef8f4 0%,#e6f4ee 100%)"
+                  : "linear-gradient(145deg,#f8fcfa 0%,#edf7f2 100%)",
+                border: "1px solid",
+                borderColor: success ? "#b8dacd" : "#cfe4db",
+                boxShadow: "0 6px 18px rgba(21,72,56,.08)",
+                transition: "transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease, background 170ms ease",
                 "&:active": { transform: "scale(.985)" },
-                "&.Mui-disabled": { opacity: .82, color: "#fff" },
-                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.28)", outlineOffset: 3 },
+                "&.Mui-disabled": { opacity: .82, color: "#215645" },
+                "&.Mui-focusVisible": { outline: "3px solid rgba(38,155,120,.20)", outlineOffset: 3 },
                 "@media (hover:hover)": {
                   "&:hover": {
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 14px 30px rgba(0,107,79,.28), inset 0 1px 0 rgba(255,255,255,.19)",
-                    filter: "saturate(1.04)",
+                    transform: "translateY(-1px)",
+                    borderColor: "#b8dacd",
+                    boxShadow: "0 10px 24px rgba(21,72,56,.10)",
+                    background: "linear-gradient(145deg,#fafdfb 0%,#eaf5f0 100%)",
                   },
                 },
                 "@media (prefers-reduced-motion: reduce)": {
-                  transition: "none", "&:hover": { transform: "none" },
+                  transition: "none",
+                  "&:hover": { transform: "none" },
                 },
               }}
             >
               <Box sx={{
-                width: 43, height: 43, borderRadius: "12px", flexShrink: 0,
-                display: "grid", placeItems: "center",
-                bgcolor: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.14)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,.12)",
+                width: 40,
+                height: 40,
+                borderRadius: "12px",
+                flexShrink: 0,
+                display: "grid",
+                placeItems: "center",
+                bgcolor: success ? "#dcefe7" : "#e7f3ee",
+                border: "1px solid",
+                borderColor: success ? "#c7e4d8" : "#d6e9e0",
+                color: success ? "#0f6f56" : "#2d6a57",
               }}>
-                {saving ? <CircularProgress size={19} thickness={5} sx={{ color: "#fff" }} /> :
-                  success ? <CheckRoundedIcon sx={{ fontSize: 22 }} /> : <SaveRoundedIcon sx={{ fontSize: 21 }} />}
+                {saving ? <CircularProgress size={18} thickness={5} sx={{ color: "#2d6a57" }} /> :
+                  success ? <CheckRoundedIcon sx={{ fontSize: 21 }} /> : <SaveRoundedIcon sx={{ fontSize: 20 }} />}
               </Box>
 
-              <Box minWidth={0} flex={1} ml={1.05} aria-live="polite">
-                <Typography sx={{ fontSize: { xs: 12.7, sm: 13.2 }, fontWeight: 900, lineHeight: 1.12, letterSpacing: "-.012em" }}>
+              <Box minWidth={0} flex={1} ml={1} aria-live="polite">
+                <Typography sx={{
+                  fontSize: { xs: 12.4, sm: 12.8 },
+                  fontWeight: 900,
+                  lineHeight: 1.12,
+                  letterSpacing: "-.012em",
+                  color: "#1f5141",
+                }}>
                   {saving ? "Salvando planejamento..." : success ? "Planejamento salvo" : "Salvar planejamento"}
                 </Typography>
-                <Typography sx={{ mt: .32, fontSize: { xs: 9.7, sm: 10.1 }, lineHeight: 1.25, color: "rgba(255,255,255,.77)" }}>
+                <Typography sx={{
+                  mt: .28,
+                  fontSize: { xs: 9.4, sm: 9.8 },
+                  lineHeight: 1.25,
+                  color: "#5e7c71",
+                }}>
                   {saving ? "Gravando equipe, serviços e custos" :
-                    success ? "Alterações registradas com sucesso" : "Equipe, serviços e custos desta obra"}
+                    success ? "Alterações registradas com sucesso" : "Equipe, serviços e custos da obra"}
                 </Typography>
               </Box>
 
               <ArrowForwardRoundedIcon aria-hidden="true" sx={{
-                position: "relative", zIndex: 1, ml: .55, mr: .15, flexShrink: 0,
-                fontSize: 19, color: "rgba(255,255,255,.75)",
+                ml: .45,
+                mr: .1,
+                flexShrink: 0,
+                fontSize: 18,
+                color: "#6c8b80",
               }} />
             </ButtonBase>
           </Stack>
