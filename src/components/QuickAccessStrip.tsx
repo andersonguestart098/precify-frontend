@@ -163,16 +163,19 @@ export default function QuickAccessStrip() {
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
             width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
-            borderRadius: featured ? { xs: "14px", md: "14px", xl: "16px" } : { xs: "12px", md: "12px", xl: "14px" },
+            borderRadius: featured ? 0 : { xs: "12px", md: "12px", xl: "14px" },
+            clipPath: featured
+              ? "polygon(22% 0%, 78% 0%, 100% 22%, 100% 78%, 78% 100%, 22% 100%, 0% 78%, 0% 22%)"
+              : "none",
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
             overflow: "hidden",
-            color: featured ? "rgba(16,96,74,.86)" : "#285e4c",
+            color: featured ? "#0f6b52" : "#285e4c",
             background: featured
-              ? "linear-gradient(145deg,rgba(255,255,255,.88) 0%,rgba(244,250,247,.8) 54%,rgba(232,245,240,.72) 100%)"
+              ? "linear-gradient(145deg,rgba(255,255,255,.98) 0%,rgba(233,247,240,.95) 52%,rgba(219,241,231,.92) 100%)"
               : "linear-gradient(145deg,#eef8f4,#dfeee8)",
-            border: featured ? "1px solid rgba(0,107,79,.075)" : "1px solid rgba(0,107,79,.06)",
+            border: featured ? "1px solid rgba(16,115,88,.14)" : "1px solid rgba(0,107,79,.06)",
             boxShadow: featured
-              ? "0 7px 18px rgba(0,107,79,.055), inset 0 1px 0 rgba(255,255,255,.82)"
+              ? "0 10px 22px rgba(0,107,79,.10), 0 0 0 1px rgba(38,155,120,.05), inset 0 1px 0 rgba(255,255,255,.92)"
               : "0 2px 6px rgba(24,60,48,.035)",
             backdropFilter: featured ? "blur(9px)" : "none",
             WebkitBackdropFilter: featured ? "blur(9px)" : "none",
@@ -180,8 +183,7 @@ export default function QuickAccessStrip() {
               content: '""',
               position: "absolute",
               inset: 0,
-              borderRadius: "inherit",
-              background: "radial-gradient(circle at 28% 24%,rgba(255,255,255,.55),transparent 58%)",
+              background: "radial-gradient(circle at 30% 25%,rgba(255,255,255,.75),transparent 42%),radial-gradient(circle at 75% 75%,rgba(38,155,120,.12),transparent 44%)",
               pointerEvents: "none",
             } : {},
             "&::after": featured ? {
@@ -197,15 +199,15 @@ export default function QuickAccessStrip() {
               height: { xs: 22, md: 24, xl: 26 },
               position: "relative",
               zIndex: 1,
-              filter: featured ? "drop-shadow(0 2px 5px rgba(0,107,79,.16))" : "none",
-              animation: featured ? "precifyAiSparkle 2.1s ease-in-out infinite" : "none",
+              filter: featured ? "drop-shadow(0 2px 5px rgba(0,107,79,.14))" : "none",
+              animation: featured ? "precifyAiIconFloat 2.2s ease-in-out infinite" : "none",
               transformOrigin: "center",
             },
-            "@keyframes precifyAiSparkle": {
-              "0%,100%": { transform: "scale(1) rotate(0deg)", opacity: .9 },
-              "24%": { transform: "scale(1.1) rotate(5deg)", opacity: 1 },
-              "50%": { transform: "scale(.97) rotate(-3deg)", opacity: .94 },
-              "76%": { transform: "scale(1.07) rotate(3deg)", opacity: 1 },
+            "@keyframes precifyAiIconFloat": {
+              "0%,100%": { transform: "scale(1) translateY(0px)", opacity: .95 },
+              "25%": { transform: "scale(1.06) translateY(-1px)", opacity: 1 },
+              "50%": { transform: "scale(.98) translateY(0px)", opacity: .92 },
+              "75%": { transform: "scale(1.04) translateY(-1px)", opacity: 1 },
             },
             "@media (prefers-reduced-motion: reduce)": {
               animation: "none",
