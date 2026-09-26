@@ -209,46 +209,53 @@ export default function SearchPage() {
       }}>{filters}</Paper>
 
       <Box minWidth={0}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
+        <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between"
+          alignItems={{ xs: "stretch", sm: "center" }} gap={{ xs: .9, sm: 1 }} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
           <Box minWidth={0}>
-            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 10, md: 10.5, xl: 11.3 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
+            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 9.6, md: 10.5, xl: 11.3 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
             <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
               {loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}
             </Typography>
           </Box>
-          <Stack direction="row" alignItems="center" gap={.5}>
-            <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)} sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .8, fontSize: 11.5 }}>{hasFilters ? "Filtros ativos" : "Filtros"}</Button>
-            <Box sx={{
-              display: { xs: "none", md: "flex" }, alignItems: "center", gap: .15, p: .2,
-              border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.72)",
-            }}>
-              <IconButton size="small" aria-label="Exibir produtos em uma coluna" aria-pressed={resultView === "single"}
-                onClick={() => setResultView("single")} sx={{
-                  width: 30, height: 30, borderRadius: "7px",
-                  color: resultView === "single" ? "#17664f" : "#789087",
-                  bgcolor: resultView === "single" ? "#e8f4ef" : "transparent",
-                }}>
-                <ViewAgendaRoundedIcon sx={{ fontSize: 17 }} />
-              </IconButton>
-              <IconButton size="small" aria-label="Exibir produtos em duas colunas" aria-pressed={resultView === "mosaic"}
-                onClick={() => setResultView("mosaic")} sx={{
-                  width: 30, height: 30, borderRadius: "7px",
-                  color: resultView === "mosaic" ? "#17664f" : "#789087",
-                  bgcolor: resultView === "mosaic" ? "#e8f4ef" : "transparent",
-                }}>
-                <ViewModuleRoundedIcon sx={{ fontSize: 17 }} />
-              </IconButton>
-              <IconButton size="small" aria-label="Exibir produtos em lista compacta" aria-pressed={resultView === "list"}
-                onClick={() => setResultView("list")} sx={{
-                  width: 30, height: 30, borderRadius: "7px",
-                  color: resultView === "list" ? "#17664f" : "#789087",
-                  bgcolor: resultView === "list" ? "#e8f4ef" : "transparent",
-                }}>
-                <ViewListRoundedIcon sx={{ fontSize: 17 }} />
-              </IconButton>
-            </Box>
-            {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"
-              sx={{ width: { md: 34, xl: 40 }, height: { md: 34, xl: 40 } }}><AddIcon /></IconButton>}
+          <Stack direction="row" alignItems="center" justifyContent={{ xs: "space-between", sm: "flex-end" }} gap={.65}>
+            <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)}
+              sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .65, fontSize: 10.8, fontWeight: 760 }}>
+              {hasFilters ? "Filtros ativos" : "Filtros"}
+            </Button>
+            <Stack direction="row" alignItems="center" gap={.4}>
+              <Box sx={{
+                display: "flex", alignItems: "center", gap: .12, p: .18,
+                border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.78)",
+                boxShadow: { xs: "0 2px 8px rgba(21,72,56,.035)", md: "none" },
+              }}>
+                <IconButton size="small" aria-label="Exibir produtos em uma coluna" aria-pressed={resultView === "single"}
+                  onClick={() => setResultView("single")} sx={{
+                    width: { xs: 32, md: 30 }, height: { xs: 32, md: 30 }, borderRadius: "7px",
+                    color: resultView === "single" ? "#17664f" : "#789087",
+                    bgcolor: resultView === "single" ? "#e8f4ef" : "transparent",
+                  }}>
+                  <ViewAgendaRoundedIcon sx={{ fontSize: { xs: 18, md: 17 } }} />
+                </IconButton>
+                <IconButton size="small" aria-label="Exibir produtos em duas colunas" aria-pressed={resultView === "mosaic"}
+                  onClick={() => setResultView("mosaic")} sx={{
+                    width: { xs: 32, md: 30 }, height: { xs: 32, md: 30 }, borderRadius: "7px",
+                    color: resultView === "mosaic" ? "#17664f" : "#789087",
+                    bgcolor: resultView === "mosaic" ? "#e8f4ef" : "transparent",
+                  }}>
+                  <ViewModuleRoundedIcon sx={{ fontSize: { xs: 18, md: 17 } }} />
+                </IconButton>
+                <IconButton size="small" aria-label="Exibir produtos em lista compacta" aria-pressed={resultView === "list"}
+                  onClick={() => setResultView("list")} sx={{
+                    width: { xs: 32, md: 30 }, height: { xs: 32, md: 30 }, borderRadius: "7px",
+                    color: resultView === "list" ? "#17664f" : "#789087",
+                    bgcolor: resultView === "list" ? "#e8f4ef" : "transparent",
+                  }}>
+                  <ViewListRoundedIcon sx={{ fontSize: { xs: 18, md: 17 } }} />
+                </IconButton>
+              </Box>
+              {user.role === "ADMIN" && <IconButton aria-label="Cadastrar produto" component={RouterLink} to="/produtos/novo" color="primary"
+                sx={{ width: { xs: 34, md: 34, xl: 40 }, height: { xs: 34, md: 34, xl: 40 } }}><AddIcon /></IconButton>}
+            </Stack>
           </Stack>
         </Stack>
 
@@ -281,8 +288,14 @@ export default function SearchPage() {
         {loading && !response ? <ResultSkeletons /> :
           <Box sx={{
             display: "grid",
-            gridTemplateColumns: resultView === "mosaic" ? { xs: "1fr", md: "repeat(2,minmax(0,1fr))" } : "1fr",
-            gap: resultView === "list" ? { xs: .9, md: .65, xl: .8 } : { xs: 2, md: 1.25, xl: 2 },
+            gridTemplateColumns: resultView === "mosaic"
+              ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" }
+              : "1fr",
+            gap: resultView === "list"
+              ? { xs: .75, md: .65, xl: .8 }
+              : resultView === "mosaic"
+                ? { xs: .8, sm: 1, md: 1.25, xl: 2 }
+                : { xs: 1.1, md: 1.25, xl: 2 },
             alignItems: "stretch",
           }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
             layout={resultView}
