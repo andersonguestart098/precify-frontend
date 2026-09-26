@@ -268,7 +268,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
               sx={{
                 position: "absolute", top: listMode ? 8 : 2, right: listMode ? 7 : 0,
                 width: listMode ? 22 : 18, height: listMode ? 22 : 18,
-                borderRadius: "50%", display: "grid", placeItems: "center",
+                borderRadius: "50%", display: compactMobile ? { xs: "none", md: "grid" } : "grid", placeItems: "center",
                 color: "#5e7d72", bgcolor: "rgba(255,255,255,.88)",
                 border: "1px solid rgba(0,107,79,.11)",
                 cursor: "help", zIndex: 2,
