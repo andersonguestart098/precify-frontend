@@ -220,14 +220,16 @@ export default function SearchPage() {
 
       <Box minWidth={0}>
         <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between"
-          alignItems={{ xs: "stretch", sm: "center" }} gap={{ xs: .9, sm: 1 }} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
+          alignItems={{ xs: "stretch", sm: "center" }} gap={{ xs: .9, sm: 1 }} mb={{ xs: 1.2, md: 1.25, xl: 2 }}
+          sx={{ display: { md: "grid" }, gridTemplateColumns: { md: "minmax(0,1fr) auto" } }}>
           <Box minWidth={0}>
             <Typography variant="overline" color="primary" sx={resultToolsLabelSx}>Resultados classificados</Typography>
             <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
               {loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}
             </Typography>
           </Box>
-          <Stack direction="row" alignItems="center" justifyContent={{ xs: "space-between", sm: "flex-end" }} gap={.65}>
+          <Stack direction="row" alignItems="center" justifyContent={{ xs: "space-between", sm: "flex-end" }} gap={.65}
+            sx={{ minWidth: 0, justifySelf: { md: "end" } }}>
             <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)}
               sx={{ ...resultToolsLabelSx, display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .65 }}>
               {hasFilters ? "Filtros ativos" : "Filtros"}
