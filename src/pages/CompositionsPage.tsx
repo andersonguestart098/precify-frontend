@@ -136,6 +136,7 @@ function CompositionWorkPicker({ composition, projects, linkedProjects, busy, on
   busy: boolean;
   onAdd: (project: Project) => void;
 }) {
+  const isWideScreen = useMediaQuery("(min-width:600px)");
   const [query, setQuery] = useState("");
   const linkedIds = new Set(linkedProjects.map(project => project.id));
   const available = projects.filter(project => !linkedIds.has(project.id));
@@ -147,7 +148,7 @@ function CompositionWorkPicker({ composition, projects, linkedProjects, busy, on
     getOptionLabel={project => project.name}
     noOptionsText={available.length ? "Nenhuma obra encontrada" : "Todas as obras estão vinculadas"}
     blurOnSelect={false} forcePopupIcon={false}
-    renderInput={params => <TextField {...params} autoFocus size="small" placeholder="Buscar outra obra"
+    renderInput={params => <TextField {...params} autoFocus={isWideScreen} size="small" placeholder="Buscar outra obra"
       slotProps={{ htmlInput: { ...params.inputProps, "aria-label": `Buscar obras para ${composition.name}` } }} />}
     renderOption={(props, project) => <Box component="li" {...props} key={project.id} sx={{ display: "flex", gap: 1, alignItems: "center", minHeight: 42 }}>
       <AddRoundedIcon sx={{ color: "#3c765e", fontSize: 18 }} />
@@ -157,7 +158,7 @@ function CompositionWorkPicker({ composition, projects, linkedProjects, busy, on
       </Box>
     </Box>}
     sx={{ width: { xs: 185, sm: 230 }, maxWidth: "100%", "& .MuiOutlinedInput-root": { borderRadius: "999px", bgcolor: "#fff", minHeight: 36, py: "0 !important" },
-      "& .MuiInputBase-input": { fontSize: 12, py: ".35rem !important" }, "& fieldset": { borderColor: "#cddfd5" } }} />;
+      "& .MuiInputBase-input": { fontSize: { xs: 16, sm: 12 }, py: ".35rem !important" }, "& fieldset": { borderColor: "#cddfd5" } }} />;
 }
 
 export default function CompositionsPage() {
