@@ -39,7 +39,7 @@ export default function MyAreaPage() {
     </Stack>
 
     <Box component="section" aria-labelledby="my-tools-title">
-      <Box mb={{ xs: 1.05, md: 1.5 }}>
+      <Box mb={{ xs: 2.7, md: 1.5 }}>
         <Typography id="my-tools-title" sx={{ fontSize: { xs: 16, md: 19 }, fontWeight: 850, color: "#244d40", letterSpacing: "-.015em" }}>Seu espaço de trabalho</Typography>
         <Typography sx={{ mt: .2, color: "#8a9994", fontSize: { xs: 10.8, md: 12.5 } }}>Atalhos para o que é seu.</Typography>
       </Box>
