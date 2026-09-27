@@ -12,7 +12,7 @@ import PlaylistAddCheckRoundedIcon from "@mui/icons-material/PlaylistAddCheckRou
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {
-  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, CircularProgress, Collapse, Container,
+  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Collapse, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
   Tooltip, Typography, useMediaQuery
 } from "@mui/material";
@@ -521,31 +521,30 @@ export default function CompositionsPage() {
                 </Box> : <Stack divider={<Divider flexItem />}>
                   {composition.items.map(item => {
                     const key = `${composition.id}:${item.id}`;
-                    return <Stack key={item.id} direction="row" gap={.75} py={.55} px={.25} alignItems="center" minWidth={0}>
-                      <ProtectedImage src={item.imageUrl} alt="" sx={{ width: 32, height: 32, borderRadius: 1.5, flexShrink: 0, bgcolor: "#fff" }} />
+                    return <Stack key={item.id} direction="row" gap={{ xs: .55, sm: .85 }} py={.65} px={.25} alignItems="center" minWidth={0}>
+                      <ProtectedImage src={item.imageUrl} alt="" sx={{ width: { xs: 28, sm: 36 }, height: { xs: 28, sm: 36 }, borderRadius: 1.5, flexShrink: 0, bgcolor: "#fff" }} />
                       <Box minWidth={0} flex={1}>
                         <Typography component={RouterLink} to={`/produtos/${encodeURIComponent(item.materialCode)}`}
-                          color="#284d41" fontWeight={750} fontSize={12.5} lineHeight={1.2}
+                          color="#284d41" fontWeight={750} fontSize={{ xs: 11.5, sm: 12.5 }} lineHeight={1.2} noWrap title={item.name}
                           sx={{ textDecoration: "none", display: "block", "&:hover": { color: "primary.main" } }}>{item.name}</Typography>
                         <Typography color="text.secondary" noWrap display="block" fontSize={10}>
                           {item.supplier || "Sem fornecedor"} · {currency.format(item.unitPrice)}/{item.unit}
                         </Typography>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" gap={.6} mt={.35} minWidth={0}>
-                          <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
-                            disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
-                            slotProps={{ htmlInput: { min: .01, step: .01 } }}
-                            onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
-                            onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
-                            sx={{ width: 72, "& .MuiInputBase-root": { borderRadius: "8px", height: 30 }, "& .MuiInputBase-input": { py: .35, fontSize: 11.5 } }} />
-                          <Stack direction="row" alignItems="center" gap={.35}>
-                            <Typography fontWeight={850} color="#176047" fontSize={12.5}>{currency.format(item.quantity * item.unitPrice)}</Typography>
-                            <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
-                              onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b" }}>
-                              {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon fontSize="small" />}
-                            </IconButton></span></Tooltip>
-                          </Stack>
-                        </Stack>
                       </Box>
+                      <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
+                        disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
+                        slotProps={{ htmlInput: { min: .01, step: .01, inputMode: "decimal" } }}
+                        onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
+                        onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
+                        sx={{ width: { xs: 48, sm: 72 }, flexShrink: 0, "& .MuiInputBase-root": { borderRadius: "8px", height: 30 },
+                          "& .MuiInputBase-input": { py: .3, px: { xs: .35, sm: .8 }, textAlign: "center", fontSize: 11.5 } }} />
+                      <Typography fontWeight={850} color="#176047" noWrap sx={{ fontSize: { xs: 10.5, sm: 12.5 }, flexShrink: 0 }}>
+                        {currency.format(item.quantity * item.unitPrice)}
+                      </Typography>
+                      <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
+                        onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b", p: .35, flexShrink: 0 }}>
+                        {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon sx={{ fontSize: 18 }} />}
+                      </IconButton></span></Tooltip>
                     </Stack>;
                   })}
                 </Stack>}
@@ -558,10 +557,17 @@ export default function CompositionsPage() {
                 </Button>
                 {addingTo === composition.id && <CompositionProductPicker composition={composition} onAdded={replace} />}
                 <Divider sx={{ my: .65 }} />
+                <Typography color="#315247" fontWeight={800} sx={{ px: .7, pb: .65, fontSize: 11.5 }}>Obras vinculadas</Typography>
+                {linkedProjects.length ? <Stack direction="row" gap={.6} flexWrap="wrap" sx={{ px: .7, pb: .8 }}>
+                  {linkedProjects.map(project => <Chip key={project.id} size="small" label={project.name} disabled={projectBusy}
+                    onDelete={() => void setLinkedProjects(composition.id, linkedProjects.filter(item => item.id !== project.id).map(item => item.id))}
+                    sx={{ maxWidth: "100%", height: 28, borderRadius: "9px", bgcolor: "#e9f4f0", color: "#245843", fontWeight: 750,
+                      "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" }, "& .MuiChip-deleteIcon": { color: "#6e9183", fontSize: 17 } }} />)}
+                </Stack> : <Typography color="text.secondary" sx={{ px: .7, pb: .8, fontSize: 10.5 }}>Nenhuma obra vinculada.</Typography>}
                 <Button onClick={() => setLinksOpenId(current => current === composition.id ? "" : composition.id)}
                   aria-expanded={linksOpenId === composition.id} fullWidth startIcon={<AddRoundedIcon sx={{ fontSize: 19 }} />}
                   sx={{ justifyContent: "flex-start", textTransform: "none", color: "#176047", fontSize: 11.5, fontWeight: 800, px: .7, minHeight: 40 }}>
-                  Adicionar composições a obras{linkedProjects.length ? ` (${linkedProjects.length})` : ""}
+                  Adicionar composições a obras
                 </Button>
                 <Collapse in={linksOpenId === composition.id} unmountOnExit>
                   <CompositionWorkPicker composition={composition} projects={projects} linkedProjects={linkedProjects} busy={projectBusy}
