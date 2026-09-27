@@ -97,13 +97,13 @@ export default function FavoritesPage() {
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.5, md: 5 }, px: { xs: 2, sm: 3 } }}>
     <Typography variant="overline" color="primary" fontWeight={850}>Meus favoritos</Typography>
     <Typography component="h1" sx={{
-      mt: .2, fontSize: { xs: 30, md: 40 }, fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1.05,
+      mt: .2, fontSize: { xs: 30, md: 38, xl: 49 }, fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1.05,
       background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)",
       WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
     }}>
       Tudo que você salvou
     </Typography>
-    <Typography color="text.secondary" sx={{ mt: .5, mb: 2.3, fontSize: { xs: 12.5, md: 14 } }}>
+    <Typography color="text.secondary" sx={{ mt: .5, mb: 2.3, fontSize: { xs: 12.5, md: 13, xl: 16 } }}>
       Obras, materiais, mão de obra e composições organizados no mesmo lugar.
     </Typography>
 
