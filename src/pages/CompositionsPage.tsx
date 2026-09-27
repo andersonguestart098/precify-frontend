@@ -4,15 +4,13 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
-import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import LinkOffRoundedIcon from "@mui/icons-material/LinkOffRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import PlaylistAddCheckRoundedIcon from "@mui/icons-material/PlaylistAddCheckRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {
-  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Collapse, Container,
+  Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
   Tooltip, Typography, useMediaQuery
 } from "@mui/material";
@@ -131,49 +129,35 @@ function CompositionProductPicker({ composition, onAdded }: {
   </Box>;
 }
 
-function CompositionWorkPicker({ composition, projects, linkedProjects, busy, onToggle }: {
+function CompositionWorkPicker({ composition, projects, linkedProjects, busy, onAdd }: {
   composition: Composition;
   projects: Project[];
   linkedProjects: Project[];
   busy: boolean;
-  onToggle: (project: Project, linked: boolean) => void;
+  onAdd: (project: Project) => void;
 }) {
   const [query, setQuery] = useState("");
   const linkedIds = new Set(linkedProjects.map(project => project.id));
-  const visible = projects.filter(project => project.name.toLocaleLowerCase("pt-BR").includes(query.trim().toLocaleLowerCase("pt-BR")));
+  const available = projects.filter(project => !linkedIds.has(project.id));
 
-  return <Box sx={{ px: .35, pt: .55, pb: 1.1 }}>
-    {projects.length ? <>
-      <TextField fullWidth size="small" value={query} onChange={event => setQuery(event.target.value)}
-        placeholder="Buscar obra pelo nome"
-        slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: 1, fontSize: 19, color: "#698c7b" }} /> },
-          htmlInput: { "aria-label": `Buscar obras para ${composition.name}` } }}
-        sx={{ "& .MuiOutlinedInput-root": { bgcolor: "#fff", borderRadius: "10px", minHeight: 42 } }} />
-      <Box sx={{ mt: .8, height: { xs: "min(320px, 42dvh)", sm: 336 }, overflowY: "auto", overscrollBehavior: "contain",
-        WebkitOverflowScrolling: "touch", touchAction: "pan-y", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}>
-        {visible.length ? <Stack gap={.6}>
-          {visible.map(project => {
-            const linked = linkedIds.has(project.id);
-            return <Stack key={project.id} direction="row" alignItems="center" gap={.8} sx={{
-              px: .85, py: .65, minHeight: 67, minWidth: 0, borderRadius: "9px", bgcolor: linked ? "#f4fbf7" : "#fff", border: "1px solid #e1ece7",
-            }}>
-              <Box sx={{ width: 36, height: 36, display: "grid", placeItems: "center", borderRadius: 1.5, flexShrink: 0,
-                bgcolor: "#e9f4f0", color: "#28634f" }}><HomeWorkOutlinedIcon sx={{ fontSize: 19 }} /></Box>
-              <Box minWidth={0} flex={1}>
-                <Typography fontWeight={800} color="#254b3e" fontSize={12} noWrap>{project.name}</Typography>
-                <Typography color="text.secondary" fontSize={10.5} noWrap>{linked ? "Vinculada à composição" : project.location || "Obra cadastrada"}</Typography>
-              </Box>
-              <IconButton aria-label={linked ? `Remover ${composition.name} da obra ${project.name}` : `Adicionar ${composition.name} à obra ${project.name}`}
-                disabled={busy} onClick={() => onToggle(project, linked)} sx={{ flexShrink: 0, width: 36, height: 36,
-                  color: linked ? "#5b7469" : "#17664f", bgcolor: linked ? "#e8f0ec" : "#e7f4ed", "&:hover": { bgcolor: linked ? "#dae9e1" : "#d7eddf" } }}>
-                {linked ? <LinkOffRoundedIcon sx={{ fontSize: 19 }} /> : <AddRoundedIcon />}
-              </IconButton>
-            </Stack>;
-          })}
-        </Stack> : <Typography color="text.secondary" fontSize={12} py={2} textAlign="center">Nenhuma obra encontrada.</Typography>}
+  return <Autocomplete<Project, false, false, false>
+    options={available} value={null} inputValue={query} disabled={busy}
+    onInputChange={(_, value) => setQuery(value)}
+    onChange={(_, project) => { if (project) { onAdd(project); setQuery(""); } }}
+    getOptionLabel={project => project.name}
+    noOptionsText={available.length ? "Nenhuma obra encontrada" : "Todas as obras estão vinculadas"}
+    blurOnSelect={false} forcePopupIcon={false}
+    renderInput={params => <TextField {...params} autoFocus size="small" placeholder="Buscar outra obra"
+      slotProps={{ htmlInput: { ...params.inputProps, "aria-label": `Buscar obras para ${composition.name}` } }} />}
+    renderOption={(props, project) => <Box component="li" {...props} key={project.id} sx={{ display: "flex", gap: 1, alignItems: "center", minHeight: 42 }}>
+      <AddRoundedIcon sx={{ color: "#3c765e", fontSize: 18 }} />
+      <Box minWidth={0}>
+        <Typography noWrap fontSize={12.5} fontWeight={750}>{project.name}</Typography>
+        {project.location && <Typography noWrap color="text.secondary" fontSize={10.5}>{project.location}</Typography>}
       </Box>
-    </> : <Button component={RouterLink} to="/obras?new=1" size="small" variant="outlined" sx={{ borderRadius: 2, textTransform: "none" }}>Cadastrar obra</Button>}
-  </Box>;
+    </Box>}
+    sx={{ width: { xs: 185, sm: 230 }, maxWidth: "100%", "& .MuiOutlinedInput-root": { borderRadius: "999px", bgcolor: "#fff", minHeight: 36, py: "0 !important" },
+      "& .MuiInputBase-input": { fontSize: 12, py: ".35rem !important" }, "& fieldset": { borderColor: "#cddfd5" } }} />;
 }
 
 export default function CompositionsPage() {
@@ -564,24 +548,21 @@ export default function CompositionsPage() {
                 {addingTo === composition.id && <CompositionProductPicker composition={composition} onAdded={replace} />}
                 <Divider sx={{ my: .65 }} />
                 <Typography color="#315247" fontWeight={800} sx={{ px: .7, pb: .65, fontSize: 11.5 }}>Obras vinculadas</Typography>
-                {linkedProjects.length ? <Stack direction="row" gap={.75} flexWrap="wrap" sx={{ px: .7, pb: 1 }}>
+                <Stack direction="row" gap={.75} alignItems="center" flexWrap="wrap" sx={{ px: .7, pb: 1 }}>
                   {linkedProjects.map(project => <Chip key={project.id} size="small" label={project.name} disabled={projectBusy}
                     onDelete={() => void setLinkedProjects(composition.id, linkedProjects.filter(item => item.id !== project.id).map(item => item.id))}
                     sx={{ maxWidth: "100%", height: 34, borderRadius: 999, bgcolor: "#edf6f2", color: "#245843", fontWeight: 750,
                       border: "1px solid #d9eae2", "& .MuiChip-label": { px: 1.25, overflow: "hidden", textOverflow: "ellipsis", fontSize: 12 },
                       "& .MuiChip-deleteIcon": { color: "#789b8b", fontSize: 18, mr: .8, "&:hover": { color: "#416d59" } } }} />)}
-                </Stack> : <Typography color="text.secondary" sx={{ px: .7, pb: .8, fontSize: 10.5 }}>Nenhuma obra vinculada.</Typography>}
-                <Button onClick={() => setLinksOpenId(current => current === composition.id ? "" : composition.id)}
-                  aria-expanded={linksOpenId === composition.id} fullWidth startIcon={<AddRoundedIcon sx={{ fontSize: 19 }} />}
-                  sx={{ justifyContent: "flex-start", textTransform: "none", color: "#176047", fontSize: 11.5, fontWeight: 800, px: .7, minHeight: 40 }}>
-                  Adicionar composições a obras
-                </Button>
-                <Collapse in={linksOpenId === composition.id} unmountOnExit>
-                  <CompositionWorkPicker composition={composition} projects={projects} linkedProjects={linkedProjects} busy={projectBusy}
-                    onToggle={(project, linked) => void setLinkedProjects(composition.id,
-                      linked ? linkedProjects.filter(item => item.id !== project.id).map(item => item.id)
-                        : [...linkedProjects.map(item => item.id), project.id])} />
-                </Collapse>
+                  <IconButton onClick={() => setLinksOpenId(current => current === composition.id ? "" : composition.id)}
+                    aria-label="Adicionar composições a obras" aria-expanded={linksOpenId === composition.id} disabled={projectBusy}
+                    sx={{ width: 34, height: 34, flexShrink: 0, border: "1px solid #d9eae2", bgcolor: "#edf6f2", color: "#28634f",
+                      "&:hover": { bgcolor: "#e1f1e9" } }}><AddRoundedIcon sx={{ fontSize: 20 }} /></IconButton>
+                  {linksOpenId === composition.id && (projects.length ?
+                    <CompositionWorkPicker composition={composition} projects={projects} linkedProjects={linkedProjects} busy={projectBusy}
+                      onAdd={project => void setLinkedProjects(composition.id, [...linkedProjects.map(item => item.id), project.id])} /> :
+                    <Button component={RouterLink} to="/obras?new=1" size="small" sx={{ borderRadius: 999, textTransform: "none" }}>Cadastrar obra</Button>)}
+                </Stack>
                 <Stack direction="row" justifyContent="flex-end" sx={{ mt: .35 }}>
                   <Button size="small" color="error" disabled={busy === composition.id}
                     startIcon={busy === composition.id ? <CircularProgress size={15} /> : <DeleteOutlineRoundedIcon sx={{ fontSize: 17 }} />}
