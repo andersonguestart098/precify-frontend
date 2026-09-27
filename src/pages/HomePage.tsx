@@ -41,7 +41,7 @@ export default function HomePage() {
 
   return <Container maxWidth="xl" component="main" sx={{
     minHeight: { xs: "calc(100dvh - var(--header-height) - var(--mobile-context-height) - env(safe-area-inset-top, 0px) - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))", md: "calc(100dvh - var(--header-height))" },
-    pt: { xs: 2, md: 2.25, xl: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 2.5, xl: 4 },
+    pt: { xs: 1.5, md: 2.25, xl: 3.5 }, pb: { xs: "calc(var(--ai-overhang) + var(--content-clearance))", md: 2.5, xl: 4 },
     px: { xs: 2, sm: 3, md: 2.75, xl: 3 }, display: "flex", flexDirection: "column"
   }}>
     <AccountGreeting />
@@ -67,7 +67,7 @@ export default function HomePage() {
             Encontre o custo certo para a sua obra.
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 }, maxWidth: { md: 690, xl: 820 } }}
-            mb={{ xs: 2.25, md: 1.75, xl: 3 }}>
+            mb={{ xs: 1.5, md: 1.75, xl: 3 }}>
             Pesquise e compare as opções para o seu projeto.
           </Typography>
         </Box>
@@ -142,7 +142,7 @@ export default function HomePage() {
 
       <QuickAccessStrip />
 
-      <Box sx={{ mt: { xs: .7, md: .95, xl: 1.15 }, pb: { xs: .15, md: .45, xl: .7 } }}>
+      <Box sx={{ mt: { xs: .45, md: .95, xl: 1.15 }, pb: { xs: .15, md: .45, xl: .7 } }}>
         {catalogLoading ? <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography sx={catalogSectionTitleSx}>Explore por segmento</Typography>
