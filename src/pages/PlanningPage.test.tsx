@@ -37,8 +37,9 @@ describe("Vínculo de composições na obra", () => {
 
     fireEvent.click(await screen.findByText("Venda", { selector: ".MuiTypography-root" }));
     const overview = within(screen.getByRole("region", { name: "Composições" }));
-    expect(overview.getByText("Composições vinculadas")).toBeTruthy();
+    expect(overview.queryByText("Composições vinculadas")).toBeNull();
     expect(overview.getByText("Composição atual")).toBeTruthy();
+    expect(overview.queryByText("Composição da obra")).toBeNull();
     expect(overview.getByText(/Total MAT R\$\s*25,00/)).toBeTruthy();
     expect(overview.queryByText("Areia fina natural")).toBeNull();
     expect(screen.queryByRole("button", { name: "Explorar produtos" })).toBeNull();
