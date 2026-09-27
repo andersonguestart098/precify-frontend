@@ -13,7 +13,7 @@
 | Composições | A página adota a hierarquia da Mão de obra: cabeçalho simples, resumo discreto, filtro por obra e cartões compactos. Ao expandir, a ação **Adicionar produtos** vem primeiro; o vínculo com obras fica recolhido até ser solicitado. O seletor preserva tipo, local e observações ao salvar vínculos. |
 | Composições | Ao vir da obra para adicionar produtos, a rolagem espera a composição expandir. No celular, o teclado só abre quando a pessoa toca no campo de busca. |
 | Composições | Dentro de cada composição, os produtos aparecem logo após o nome em cartões arredondados: imagem e nome com espaço de leitura, quantidade editável ao lado do valor na faixa inferior e remoção. A ação **Adicionar produtos à composição** vem abaixo da lista; sua busca não repete título nem botão “Fechar” e oferece uma área de rolagem com cerca de quatro resultados no celular. O próprio botão recolhe a busca. |
-| Composições | As obras vinculadas permanecem visíveis em cápsulas arredondadas e removíveis, com tamanho e espaçamento confortáveis no celular. Por último, **Adicionar composições a obras** abre um mostruário pesquisável como o de produtos. Cada obra pode ser vinculada ou desvinculada ali, sem sair da composição. |
+| Composições | As obras vinculadas permanecem visíveis em cápsulas arredondadas e removíveis, com tamanho e espaçamento confortáveis no celular. Um ícone **+** fica ao lado delas; ao tocar, aparece a busca para vincular outras obras. A nova obra entra na mesma sequência de cápsulas, e a busca continua disponível para adicionar mais uma sem sair da composição. |
 | Minha área | Removido o atalho em cápsula de **Obras**; o acesso continua no menu principal. As demais cápsulas mantêm o mesmo enquadramento. |
 | Sincronização | O modal de adicionar produto a partir do catálogo agora atualiza o cache de composições, para que o item apareça ao retornar à tela. |
 
@@ -24,7 +24,7 @@ O ajuste anterior do botão fixo de **Salvar alterações** da mão de obra perm
 1. Na obra, abrir **Adicionar produtos**: a composição vinculada abre com busca. Escolher um produto deve incluir o item sem sair da página.
 2. Na obra, abrir **Vincular composição**, salvar o vínculo e usar **Gerenciar composições** para ver somente as composições daquela obra.
 3. Em Composições, conferir os produtos primeiro; usar **Adicionar produtos à composição** e rolar quatro resultados com o dedo. Após incluir, conferir a lista e o total.
-4. Em **Adicionar composições a obras**, buscar uma obra, vincular, desvincular e verificar a contagem de obras atualizada.
+4. Tocar em **+** ao lado das obras vinculadas, buscar uma obra, vincular, conferir a nova cápsula e desvincular por ela.
 5. Em uma largura de **390 CSS px** (referência iPhone 16e), conferir títulos, totais, favorito, expansão e os controles de cada item sem rolagem horizontal da página.
 
 ## Verificação técnica
