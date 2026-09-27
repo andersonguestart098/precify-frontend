@@ -6,7 +6,7 @@
 | --- | --- |
 | Produtos | Título alterado para “Encontre o material pela especificação.”, com tamanho fluido no mobile. |
 | Obras | Título, dados e total da obra passam a ocupar linhas próprias em telas estreitas. O valor não disputa espaço com o favorito e o controle de expansão. |
-| Obras | Dentro de cada obra, as ações aparecem em grade na ordem: **Adicionar produtos à composição**, **Vincular composição**, **Explorar produtos**. No celular, a primeira ocupa a largura inteira e as outras duas ficam abaixo. |
+| Obras | Dentro de cada obra há uma única ação em destaque: **Vincular composição**. O botão ocupa a largura disponível e abre diretamente o seletor de composições da obra, sem os campos gerais de edição. A gestão dos produtos continua em **Gerenciar composições** e na aba Produtos. |
 | Obras | O resumo de **Composições** segue o padrão de **Mão de obra**: cabeçalho, acesso a **Gerenciar composições**, contagens, total e cartões compactos dos materiais com quantidade e valor. Até seis produtos aparecem inicialmente; **Ver todos** revela o restante. **Vincular composição** continua na edição da obra. |
 | Composições | **Adicionar produtos** abre uma busca dentro da composição. Cada resultado mostra o produto, fornecedor e cotação quando disponíveis; tocar em “+” inclui uma unidade e atualiza imediatamente os itens e o total. Quantidade pode ser ajustada na própria lista após a inclusão. |
 | Composições | O estado vazio usa “produto” e deixa de levar para o catálogo. **Explorar produtos**, na faixa de ações da obra, continua abrindo a tela de Produtos. |
@@ -21,8 +21,8 @@ O ajuste anterior do botão fixo de **Salvar alterações** da mão de obra perm
 
 ## Fluxos para conferir
 
-1. Na obra, abrir **Adicionar produtos**: a composição vinculada abre com busca. Escolher um produto deve incluir o item sem sair da página.
-2. Na obra, abrir **Vincular composição**, salvar o vínculo e usar **Gerenciar composições** para ver somente as composições daquela obra.
+1. Na obra, abrir **Vincular composição**, escolher uma composição no seletor e salvar a obra.
+2. Usar **Gerenciar composições** para ver as composições daquela obra e adicionar produtos pela busca interna.
 3. Em Composições, conferir os produtos primeiro; usar **Adicionar produtos à composição** e rolar quatro resultados com o dedo. Após incluir, conferir a lista e o total.
 4. Tocar em **+** ao lado das obras vinculadas, buscar uma obra, vincular, conferir a nova cápsula e desvincular por ela.
 5. Em uma largura de **390 CSS px** (referência iPhone 16e), conferir títulos, totais, favorito, expansão e os controles de cada item sem rolagem horizontal da página.
@@ -32,5 +32,6 @@ O ajuste anterior do botão fixo de **Salvar alterações** da mão de obra perm
 - `npm run build`
 - `npx eslint src/pages/CompositionsPage.tsx src/pages/PlanningPage.tsx src/pages/SearchPage.tsx src/pages/MyAreaPage.tsx src/components/AddToCompositionDialog.tsx`
 - `npx vitest run src/pages/CompositionsPage.test.tsx --config vitest.config.ts`
+- `npx vitest run src/pages/PlanningPage.test.tsx --config vitest.config.ts`
 
-O teste automatizado cobre a busca e a inclusão dentro da composição da obra. A verificação visual no navegador local ainda depende de um navegador disponível no ambiente de execução.
+Os testes automatizados cobrem a inclusão de produtos, o vínculo de composições e a preservação dos dados da obra ao salvar. A verificação visual no navegador local ainda depende de um navegador disponível no ambiente de execução.
