@@ -101,14 +101,12 @@ function CompositionOverview({ project, compositions }: { project: Project; comp
         <Chip size="small" label={`Total MAT ${currency.format(total)}`} sx={{ height: 26, borderRadius: "7px", fontSize: 10, fontWeight: 820, bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1" }} />
       </Stack>
       <>
-        <Typography fontWeight={850} color="#315247" sx={{ px: { xs: 1.2, sm: 1.5 }, pb: .75, fontSize: 11.3 }}>Composições vinculadas</Typography>
         <Box sx={{ px: { xs: 1.05, sm: 1.35 }, pb: 1.2, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: .65 }}>
           {visibleCompositions.map(composition => <Stack key={composition.id} direction="row" alignItems="center" gap={.8} sx={{
-            px: 1, py: .75, minWidth: 0, border: "1px solid #e5ece9", borderRadius: "9px", bgcolor: "#fff",
+            px: 1, py: .75, minHeight: 56, minWidth: 0, border: "1px solid #e5ece9", borderRadius: "9px", bgcolor: "#fff",
           }}>
             <Box minWidth={0} flex={1}>
               <Typography fontWeight={760} color="#315247" sx={{ fontSize: 10.6, lineHeight: 1.25, overflowWrap: "anywhere" }}>{composition.name}</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 8.5, mt: .1 }}>Composição da obra</Typography>
             </Box>
             <Typography sx={{ fontSize: 9.8, fontWeight: 820, color: "#176047", whiteSpace: "nowrap" }}>
               {currency.format(composition.total)}
@@ -680,7 +678,7 @@ export default function PlanningPage() {
         slotProps={{ paper: { sx: {
           width: { xs: "100%", sm: "calc(100% - 48px)", md: 680 },
           maxWidth: { xs: "100%", sm: 620, md: 680 },
-          maxHeight: { xs: "85dvh", sm: "min(760px, calc(100dvh - 48px))" },
+          maxHeight: { xs: "92dvh", sm: "min(760px, calc(100dvh - 48px))" },
           borderRadius: { xs: "24px 24px 0 0", sm: "22px" },
           m: { xs: 0, sm: 2 },
           position: { xs: "fixed", sm: "relative" }, bottom: { xs: 0, sm: "auto" },
@@ -740,7 +738,7 @@ export default function PlanningPage() {
               isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(_, selected) => setIds(selected.map(composition => composition.id))}
               noOptionsText="Nenhuma composição encontrada"
-              limitTags={3}
+              limitTags={linkingOnly ? -1 : 3}
               slotProps={{ listbox: { sx: { maxHeight: 260, overflowY: "auto" } } }}
               renderInput={params => <TextField {...params} autoFocus={linkingOnly && isWideScreen} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
               sx={{
