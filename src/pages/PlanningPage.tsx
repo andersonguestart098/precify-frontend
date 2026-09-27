@@ -643,7 +643,7 @@ export default function PlanningPage() {
                           ...workShortcutSx, gridColumn: { xs: "1 / -1", sm: "auto" },
                           bgcolor: "#e9f6ee", borderColor: "#b9ddc8", color: "#195f42",
                           "& .MuiButton-startIcon": { ...workShortcutSx["& .MuiButton-startIcon"], bgcolor: "#d5ebdd" },
-                        }}>Adicionar produtos</Button>
+                        }}>Adicionar produtos à composição</Button>
                       <Button onClick={() => openEdit(project)} startIcon={<LinkRoundedIcon />} sx={workShortcutSx}>Vincular composição</Button>
                       <Button component={RouterLink} to="/produtos" startIcon={<SearchRoundedIcon />} sx={workShortcutSx}>Explorar produtos</Button>
                     </Box>
