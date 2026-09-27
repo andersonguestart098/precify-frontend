@@ -75,13 +75,12 @@ describe("Vincular composição a obras", () => {
     fireEvent.click(await screen.findByText("Materiais cozinha"));
     expect(screen.getByText("Obra Anderson", { selector: ".MuiChip-label" })).toBeTruthy();
     fireEvent.click(await screen.findByRole("button", { name: "Adicionar composições a obras" }));
-    const search = await screen.findByRole("combobox", { name: "Buscar obras para Materiais cozinha" });
-    expect(document.activeElement).not.toBe(search);
-    fireEvent.change(search, { target: { value: "Nova" } });
-    fireEvent.click(await screen.findByRole("option", { name: "Nova obra" }));
+    expect(screen.getByRole("list", { name: "Obras disponíveis para Materiais cozinha" })).toBeTruthy();
+    expect(screen.queryByRole("combobox", { name: "Buscar obras para Materiais cozinha" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Vincular Nova obra" }));
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: ["c1"] }), "p2"));
     expect(await screen.findByText("Nova obra", { selector: ".MuiChip-label" })).toBeTruthy();
-    expect(screen.getByRole("combobox", { name: "Buscar obras para Materiais cozinha" })).toBeTruthy();
+    expect(screen.getByText("Todas as obras já estão vinculadas.")).toBeTruthy();
     const newWorkChip = screen.getByText("Nova obra", { selector: ".MuiChip-label" }).closest(".MuiChip-root");
     fireEvent.click(newWorkChip!.querySelector(".MuiChip-deleteIcon")!);
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: [] }), "p2"));
