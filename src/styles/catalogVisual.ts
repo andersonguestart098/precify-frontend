@@ -10,6 +10,10 @@ export const catalogHeroTitleSx = {
   WebkitTextFillColor: "transparent",
 } as const;
 
+export const catalogHeroSubtitleSx = {
+  fontSize: { xs: 16, md: 13, xl: 16 },
+} as const;
+
 export const catalogSectionTitleSx = {
   fontSize: { xs: 14.8, md: 16, lg: 16.8, xl: 17.4 },
   fontWeight: 900,
