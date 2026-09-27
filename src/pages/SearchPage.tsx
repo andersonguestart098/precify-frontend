@@ -127,7 +127,7 @@ export default function SearchPage() {
       setLoading(true);
     }
 
-    const timer = window.setTimeout(() => {
+    const search = () => {
       (onlyFavorites ? searchFavorites : searchProducts)({ familyCode, query, criteria, includeAlternatives: false }, page, 10, c.signal)
         .then(data => {
           if (c.signal.aborted) return;
@@ -137,8 +137,12 @@ export default function SearchPage() {
         })
         .catch(e => { if (!c.signal.aborted) setError(e.message); })
         .finally(() => { if (!c.signal.aborted) setLoading(false); });
-    }, cached ? 500 : 250);
-    return () => { window.clearTimeout(timer); c.abort(); };
+    };
+    // A submitted search or page change already represents the user's final
+    // choice. Delay only the quiet refresh of results already on screen.
+    const timer = cached ? window.setTimeout(search, 500) : null;
+    if (!cached) search();
+    return () => { if (timer !== null) window.clearTimeout(timer); c.abort(); };
   }, [familyCode, query, criteria, page, onlyFavorites, revision, searchKey]);
 
   useEffect(() => {
