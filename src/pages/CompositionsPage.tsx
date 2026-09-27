@@ -403,12 +403,15 @@ export default function CompositionsPage() {
               : linkedProjects.length === 1
                 ? linkedProjects[0].name
                 : `${linkedProjects[0].name} +${linkedProjects.length - 1} ${linkedProjects.length === 2 ? "obra" : "obras"}`;
-            return <Box key={composition.id} id={`composition-${composition.id}`} sx={{ position: "relative", minWidth: 0, scrollMarginTop: { xs: 90, md: 80 } }}><Accordion
+            return <Box key={composition.id} id={`composition-${composition.id}`} sx={{ minWidth: 0, scrollMarginTop: { xs: 90, md: 80 } }}><Accordion
               expanded={expandedId === composition.id}
               onChange={(_, open) => { setExpandedId(open ? composition.id : ""); if (!open) setAddingTo(""); }}
               disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden", position: "relative", minWidth: 0,
                 "&::before": { display: "none" } }}>
-              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1, minWidth: 0, mr: 6.5 } }}>
+              <Box component="span" id={`composition-heading-${composition.id}`} aria-controls={`composition-details-${composition.id}`}
+                aria-label={composition.name} sx={{ display: "block", position: "relative" }}>
+              <AccordionSummary id={`composition-toggle-${composition.id}`} aria-controls={`composition-details-${composition.id}`}
+                expandIcon={<ExpandMoreRoundedIcon />} sx={{ px: { xs: 1.5, sm: 2 }, minHeight: 62, bgcolor: "#fbfdfc", "& .MuiAccordionSummary-content": { my: 1, minWidth: 0, mr: 6.5 } }}>
                 <Stack direction="row" alignItems="center" width="100%" minWidth={0} pr={.5}>
                   <Box minWidth={0} flex={1}>
                     <Typography fontWeight={800} noWrap>{composition.name}</Typography>
@@ -424,6 +427,26 @@ export default function CompositionsPage() {
                   </Stack>
                 </Stack>
               </AccordionSummary>
+              <IconButton
+                size="small"
+                aria-label={workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "Remover composição dos favoritos" : "Favoritar composição"}
+                aria-pressed={workspaceFavorites.favorites.COMPOSITION.has(composition.id)}
+                disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
+                onClick={() => void workspaceFavorites.toggle("COMPOSITION", composition.id)}
+                sx={{
+                  position: "absolute", top: "50%", right: 46, transform: "translateY(-50%)", zIndex: 1,
+                  width: 34, height: 34, borderRadius: "50%",
+                  color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#a56d00" : "#71867c",
+                  bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff9eb" : "#f8fbfa",
+                  border: "1px solid",
+                  borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#e7d8b0" : "#dce8e4",
+                  "&:hover": { bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff1cc" : "#eaf3ef" },
+                  "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+                }}
+              >
+                {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
+              </IconButton>
+              </Box>
               <AccordionDetails sx={{ p: { xs: 1.25, sm: 2 }, pt: 0, minWidth: 0 }}>
                 <Divider sx={{ mb: 1.25 }} />
 
@@ -503,25 +526,7 @@ export default function CompositionsPage() {
                 </Stack>
                 {addingTo === composition.id && <CompositionProductPicker composition={composition} onAdded={replace} onClose={() => setAddingTo("")} />}
               </AccordionDetails>
-            </Accordion><IconButton
-              size="small"
-              aria-label={workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "Remover composição dos favoritos" : "Favoritar composição"}
-              aria-pressed={workspaceFavorites.favorites.COMPOSITION.has(composition.id)}
-              disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("COMPOSITION", composition.id)}
-              onClick={() => void workspaceFavorites.toggle("COMPOSITION", composition.id)}
-              sx={{
-                position: "absolute", top: 14, right: 46, zIndex: 1,
-                width: 34, height: 34, borderRadius: "50%",
-                color: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#a56d00" : "#71867c",
-                bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff9eb" : "#f8fbfa",
-                border: "1px solid",
-                borderColor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#e7d8b0" : "#dce8e4",
-                "&:hover": { bgcolor: workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? "#fff1cc" : "#eaf3ef" },
-                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-              }}
-            >
-              {workspaceFavorites.favorites.COMPOSITION.has(composition.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
-            </IconButton></Box>;
+            </Accordion></Box>;
           })}
         </Stack>}
 
