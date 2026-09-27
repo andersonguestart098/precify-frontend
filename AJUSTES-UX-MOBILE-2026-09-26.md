@@ -6,11 +6,12 @@
 | --- | --- |
 | Produtos | Título alterado para “Encontre o material pela especificação.”, com tamanho fluido no mobile. |
 | Obras | Título, dados e total da obra passam a ocupar linhas próprias em telas estreitas. O valor não disputa espaço com o favorito e o controle de expansão. |
-| Obras | Dentro de cada obra, as ações aparecem em uma faixa horizontal na ordem: **Adicionar produtos**, **Vincular composição**, **Explorar produtos**. A faixa pode ser rolada lateralmente no celular. |
-| Obras | **Gerenciar composições** abre a página de composições filtrada pela obra; **Vincular composição** abre a edição da obra com o seletor de composições existente. O acesso a **Gerenciar mão de obra** permanece no cartão da obra. |
+| Obras | Dentro de cada obra, as ações aparecem em grade na ordem: **Adicionar produtos à composição**, **Vincular composição**, **Explorar produtos**. No celular, a primeira ocupa a largura inteira e as outras duas ficam abaixo. |
+| Obras | O resumo de **Composições** segue o padrão de **Mão de obra**: cabeçalho, acesso a **Gerenciar composições**, contagens, total e cartões compactos dos materiais com quantidade e valor. Até seis produtos aparecem inicialmente; **Ver todos** revela o restante. **Vincular composição** continua na edição da obra. |
 | Composições | **Adicionar produtos** abre uma busca dentro da composição. Cada resultado mostra o produto, fornecedor e cotação quando disponíveis; tocar em “+” inclui uma unidade e atualiza imediatamente os itens e o total. Quantidade pode ser ajustada na própria lista após a inclusão. |
 | Composições | O estado vazio usa “produto” e deixa de levar para o catálogo. **Explorar produtos**, na faixa de ações da obra, continua abrindo a tela de Produtos. |
-| Composições | O filtro e os atalhos se reorganizam em várias linhas no celular. Nome, vínculo, contagem e total usam espaço próprio nos cabeçalhos. O seletor de obras limita a largura das etiquetas e preserva tipo, local e observações ao salvar vínculos. |
+| Composições | A página adota a hierarquia da Mão de obra: cabeçalho simples, resumo discreto, filtro por obra e cartões compactos. Ao expandir, a ação **Adicionar produtos** vem primeiro; o vínculo com obras fica recolhido até ser solicitado. O seletor preserva tipo, local e observações ao salvar vínculos. |
+| Composições | Ao vir da obra para adicionar produtos, a rolagem espera a composição expandir. No celular, o teclado só abre quando a pessoa toca no campo de busca. |
 | Minha área | Removido o atalho em cápsula de **Obras**; o acesso continua no menu principal. As demais cápsulas mantêm o mesmo enquadramento. |
 | Sincronização | O modal de adicionar produto a partir do catálogo agora atualiza o cache de composições, para que o item apareça ao retornar à tela. |
 
