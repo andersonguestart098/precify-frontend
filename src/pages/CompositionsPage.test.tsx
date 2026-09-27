@@ -76,6 +76,7 @@ describe("Vincular composição a obras", () => {
     expect(screen.getByText("Obra Anderson", { selector: ".MuiChip-label" })).toBeTruthy();
     fireEvent.click(await screen.findByRole("button", { name: "Adicionar composições a obras" }));
     const search = await screen.findByRole("combobox", { name: "Buscar obras para Materiais cozinha" });
+    expect(document.activeElement).not.toBe(search);
     fireEvent.change(search, { target: { value: "Nova" } });
     fireEvent.click(await screen.findByRole("option", { name: "Nova obra" }));
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: ["c1"] }), "p2"));
