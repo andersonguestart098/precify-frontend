@@ -54,7 +54,7 @@ describe("Adicionar produtos à composição", () => {
 });
 
 describe("Vincular composição a obras", () => {
-  it("adiciona e remove uma obra pelo mostruário sem sair da composição", async () => {
+  it("adiciona obras pelo ícone ao lado das cápsulas e remove um vínculo", async () => {
     vi.mocked(api.listProjects).mockResolvedValue([
       { id: "p1", name: "Obra Anderson", compositionIds: ["c1"] },
       { id: "p2", name: "Nova obra", compositionIds: [] },
@@ -75,11 +75,14 @@ describe("Vincular composição a obras", () => {
     fireEvent.click(await screen.findByText("Materiais cozinha"));
     expect(screen.getByText("Obra Anderson", { selector: ".MuiChip-label" })).toBeTruthy();
     fireEvent.click(await screen.findByRole("button", { name: "Adicionar composições a obras" }));
-    await screen.findByRole("textbox", { name: "Buscar obras para Materiais cozinha" });
-    fireEvent.click(screen.getByRole("button", { name: "Adicionar Materiais cozinha à obra Nova obra" }));
+    const search = await screen.findByRole("combobox", { name: "Buscar obras para Materiais cozinha" });
+    fireEvent.change(search, { target: { value: "Nova" } });
+    fireEvent.click(await screen.findByRole("option", { name: "Nova obra" }));
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: ["c1"] }), "p2"));
     expect(await screen.findByText("Nova obra", { selector: ".MuiChip-label" })).toBeTruthy();
-    fireEvent.click(await screen.findByRole("button", { name: "Remover Materiais cozinha da obra Nova obra" }));
+    expect(screen.getByRole("combobox", { name: "Buscar obras para Materiais cozinha" })).toBeTruthy();
+    const newWorkChip = screen.getByText("Nova obra", { selector: ".MuiChip-label" }).closest(".MuiChip-root");
+    fireEvent.click(newWorkChip!.querySelector(".MuiChip-deleteIcon")!);
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: [] }), "p2"));
     await waitFor(() => expect(screen.queryByText("Nova obra", { selector: ".MuiChip-label" })).toBeNull());
   });
