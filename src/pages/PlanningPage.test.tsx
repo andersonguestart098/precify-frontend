@@ -47,6 +47,7 @@ describe("Vínculo de composições na obra", () => {
     expect(screen.getByRole("dialog")).toBeTruthy();
     expect(screen.queryByRole("textbox", { name: "Nome da obra" })).toBeNull();
     const picker = screen.getByRole("combobox", { name: "Composições" });
+    expect(document.activeElement).not.toBe(picker);
     fireEvent.change(picker, { target: { value: "Nova" } });
     fireEvent.click(await screen.findByRole("option", { name: "Nova composição" }));
     fireEvent.click(screen.getByRole("button", { name: "Salvar vínculos" }));
