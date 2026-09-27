@@ -12,7 +12,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, CircularProgress, Container,
   Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField,
-  Tooltip, Typography
+  Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import type { Composition } from "../domain/composition";
 import type { CatalogOffer, CatalogResult, CatalogSearchPage } from "../domain/search";
@@ -40,6 +40,7 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
   onAdded: (updated: Composition) => void;
   onClose: () => void;
 }) {
+  const isWideScreen = useMediaQuery("(min-width:600px)");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<CatalogSearchPage | null>(null);
   const [loading, setLoading] = useState(true);
@@ -89,7 +90,7 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
       </Box>
       <Button size="small" onClick={onClose} sx={{ textTransform: "none", flexShrink: 0 }}>Fechar</Button>
     </Stack>
-    <TextField autoFocus fullWidth size="small" value={query} onChange={event => setQuery(event.target.value)}
+    <TextField autoFocus={isWideScreen} fullWidth size="small" value={query} onChange={event => setQuery(event.target.value)}
       placeholder="Buscar produto ou especificação"
       slotProps={{ input: { startAdornment: <SearchRoundedIcon sx={{ mr: 1, fontSize: 19, color: "#698c7b" }} /> },
         htmlInput: { "aria-label": "Buscar produtos para esta composição" } }}
@@ -150,6 +151,7 @@ export default function CompositionsPage() {
   const [newName, setNewName] = useState("");
   const [expandedId, setExpandedId] = useState("");
   const [addingTo, setAddingTo] = useState("");
+  const [pendingScrollId, setPendingScrollId] = useState("");
 
   useEffect(() => { setProjectFilter(params.get("obra") ?? ""); }, [params]);
 
@@ -207,7 +209,7 @@ export default function CompositionsPage() {
     if (first) {
       setExpandedId(first.id);
       setAddingTo(first.id);
-      window.requestAnimationFrame(() => document.getElementById(`composition-${first.id}`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
+      setPendingScrollId(first.id);
     } else { setError(""); setCreateOpen(true); }
     setParams(current => {
       const next = new URLSearchParams(current);
@@ -424,7 +426,14 @@ export default function CompositionsPage() {
                 : `${linkedProjects[0].name} +${linkedProjects.length - 1} ${linkedProjects.length === 2 ? "obra" : "obras"}`;
             return <Box key={composition.id} id={`composition-${composition.id}`} sx={{ minWidth: 0, scrollMarginTop: { xs: 90, md: 80 } }}><Accordion
               expanded={expandedId === composition.id}
-              onChange={(_, open) => { setExpandedId(open ? composition.id : ""); if (!open) setAddingTo(""); }}
+              onChange={(_, open) => { setExpandedId(open ? composition.id : ""); if (!open) { setAddingTo(""); setPendingScrollId(""); } }}
+              slotProps={{ transition: { onEntered: () => {
+                if (pendingScrollId !== composition.id) return;
+                document.getElementById(`composition-${composition.id}`)?.scrollIntoView({
+                  block: "start", behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+                });
+                setPendingScrollId("");
+              } } }}
               disableGutters elevation={0} sx={{ border: "1px solid #dce9e5", borderRadius: "14px !important", overflow: "hidden", position: "relative", minWidth: 0,
                 "&::before": { display: "none" } }}>
               <Box component="span" id={`composition-heading-${composition.id}`} aria-controls={`composition-details-${composition.id}`}
