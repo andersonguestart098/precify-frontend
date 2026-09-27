@@ -459,18 +459,18 @@ export default function PlanningPage() {
     } finally { setBusy(false); }
   };
 
-  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 2.35, sm: 3, md: 5 } }}>
+  return <Container maxWidth="xl" component="main" sx={{ py: { xs: 1.6, sm: 3, md: 5 } }}>
     <Box sx={{ maxWidth: 1160, mx: "auto" }}>
-      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={{ xs: 1.05, sm: 2 }}>
+      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "end" }} gap={{ xs: .65, sm: 2 }}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.4 }}>Planejamento</Typography>
           <Typography component="h1" sx={{
-            mt: .35, fontSize: { xs: 34, md: 44 }, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-.045em",
+            mt: .2, fontSize: { xs: "clamp(29px, 7.8vw, 34px)", md: 44 }, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-.045em",
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           }}>
             Obras
           </Typography>
-          <Typography color="text.secondary" sx={{ mt: .45, fontSize: { xs: 13.2, sm: 14 }, lineHeight: 1.45 }}>
+          <Typography color="text.secondary" sx={{ mt: .35, fontSize: { xs: 12.5, sm: 14 }, lineHeight: 1.4 }}>
             Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.
           </Typography>
         </Box>
@@ -512,7 +512,7 @@ export default function PlanningPage() {
       </Stack>
 
       <Box sx={{
-        mt: { xs: 1.45, sm: 2.4, md: 3 }, display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3,minmax(0,1fr))" },
+        mt: { xs: 1, sm: 2.4, md: 3 }, display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", sm: "repeat(3,minmax(0,1fr))" },
         border: "1px solid #dce9e5", borderRadius: "12px", overflow: "hidden", bgcolor: "#fbfdfc",
       }}>
         {[
@@ -520,9 +520,10 @@ export default function PlanningPage() {
           { label: "Composições vinculadas", value: String(totalCompositionLinks) },
           { label: "Custo total das obras", value: totalsPending ? "Calculando..." : totalsUnavailable ? "Indisponível" : currency.format(overallTotal) },
         ].map((metric, index) => <Box key={metric.label} sx={{
-          px: { xs: 1.5, sm: 1.7 }, py: 1.35,
-          borderLeft: { xs: 0, sm: index ? "1px solid #e0e9e6" : 0 },
-          borderTop: { xs: index ? "1px solid #e0e9e6" : 0, sm: 0 },
+          px: { xs: 1.5, sm: 1.7 }, py: { xs: 1, sm: 1.35 },
+          gridColumn: { xs: index === 2 ? "1 / -1" : "auto", sm: "auto" },
+          borderLeft: { xs: index === 1 ? "1px solid #e0e9e6" : 0, sm: index ? "1px solid #e0e9e6" : 0 },
+          borderTop: { xs: index === 2 ? "1px solid #e0e9e6" : 0, sm: 0 },
         }}>
           <Typography color="text.secondary" sx={{ fontSize: 9.5, textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 720 }}>{metric.label}</Typography>
           <Typography color="#1d5845" fontWeight={900} sx={{ mt: .25, fontSize: { xs: 18, sm: index === 2 ? 18 : 22 } }}>{metric.value}</Typography>
@@ -558,7 +559,7 @@ export default function PlanningPage() {
             <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={openNew} sx={{ borderRadius: "9px", textTransform: "none" }}>Criar obra</Button>
           </Stack>
         </Box> :
-        <Stack gap={1} mt={3}>
+        <Stack gap={1} mt={{ xs: 2, sm: 3 }}>
           {filteredProjects.map(project => {
             const lists = compositions.filter(composition => project.compositionIds.includes(composition.id));
             const compositionTotal = lists.reduce((sum, composition) => sum + composition.total, 0);
