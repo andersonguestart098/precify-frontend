@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PlanningPage from "./PlanningPage";
 import { SessionContext } from "../auth/session";
@@ -20,7 +20,8 @@ describe("Vínculo de composições na obra", () => {
       notes: "Observação da obra", compositionIds: ["c1"] };
     vi.mocked(api.listProjects).mockResolvedValue([project]);
     vi.mocked(api.listCompositions).mockResolvedValue([
-      { id: "c1", name: "Composição atual", total: 0, items: [], createdAt: "", updatedAt: "" },
+      { id: "c1", name: "Composição atual", total: 25, items: [{ id: "i1", materialCode: "1.1.1",
+        name: "Areia fina natural", unit: "un", quantity: 1, unitPrice: 25 }], createdAt: "", updatedAt: "" },
       { id: "c2", name: "Nova composição", total: 0, items: [], createdAt: "", updatedAt: "" },
     ]);
     vi.mocked(api.getLaborPlan).mockResolvedValue({ projectId: "p1", mode: "", items: [] });
@@ -35,6 +36,11 @@ describe("Vínculo de composições na obra", () => {
     </MemoryRouter></SessionContext.Provider>);
 
     fireEvent.click(await screen.findByText("Venda", { selector: ".MuiTypography-root" }));
+    const overview = within(screen.getByRole("region", { name: "Composições" }));
+    expect(overview.getByText("Composições vinculadas")).toBeTruthy();
+    expect(overview.getByText("Composição atual")).toBeTruthy();
+    expect(overview.getByText(/Total MAT R\$\s*25,00/)).toBeTruthy();
+    expect(overview.queryByText("Areia fina natural")).toBeNull();
     expect(screen.queryByRole("button", { name: "Explorar produtos" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Adicionar produtos à composição" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Vincular composição à obra Venda" }));
@@ -48,5 +54,6 @@ describe("Vínculo de composições na obra", () => {
       name: "Venda", projectType: "COMERCIAL", location: "Porto Alegre", notes: "Observação da obra",
       compositionIds: ["c1", "c2"],
     }, "p1"));
+    expect(await screen.findByText("Nova composição", { selector: ".MuiTypography-root" })).toBeTruthy();
   });
 });
