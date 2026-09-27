@@ -96,14 +96,14 @@ function CompositionOverview({ project, compositions }: { project: Project; comp
     {compositions.length ? <>
       <Divider />
       <Stack direction="row" gap={.6} flexWrap="wrap" px={{ xs: 1.2, sm: 1.5 }} py={1}>
-        <Chip size="small" label={`${compositions.length} ${compositions.length === 1 ? "composição" : "composições"}`} sx={{ height: 26, borderRadius: "7px", fontWeight: 780, fontSize: 10, bgcolor: "#e8f4ef", color: "#245843" }} />
-        <Chip size="small" label={`${productCount} ${productCount === 1 ? "produto" : "produtos"}`} sx={{ height: 26, borderRadius: "7px", fontSize: 10 }} />
-        <Chip size="small" label={`Total MAT ${currency.format(total)}`} sx={{ height: 26, borderRadius: "7px", fontSize: 10, fontWeight: 820, bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1" }} />
+        <Chip size="small" label={`${compositions.length} ${compositions.length === 1 ? "composição" : "composições"}`} sx={{ height: 23, borderRadius: "7px", fontWeight: 780, fontSize: 9.2, bgcolor: "#e8f4ef", color: "#245843" }} />
+        <Chip size="small" label={`${productCount} ${productCount === 1 ? "produto" : "produtos"}`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1 }} />
+        <Chip size="small" label={`Total MAT ${currency.format(total)}`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1, fontWeight: 820, bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1" }} />
       </Stack>
       <>
         <Box sx={{ px: { xs: 1.05, sm: 1.35 }, pb: 1.2, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: .65 }}>
           {visibleCompositions.map(composition => <Stack key={composition.id} direction="row" alignItems="center" gap={.8} sx={{
-            px: 1, py: .75, minHeight: 56, minWidth: 0, border: "1px solid #e5ece9", borderRadius: "9px", bgcolor: "#fff",
+            px: 1, py: .75, minHeight: 40, minWidth: 0, border: "1px solid #e5ece9", borderRadius: "9px", bgcolor: "#fff",
           }}>
             <Box minWidth={0} flex={1}>
               <Typography fontWeight={760} color="#315247" sx={{ fontSize: 10.6, lineHeight: 1.25, overflowWrap: "anywhere" }}>{composition.name}</Typography>
