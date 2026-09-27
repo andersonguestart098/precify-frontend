@@ -6,7 +6,7 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import QuickAccessStrip from "../components/QuickAccessStrip";
-import { catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
+import { catalogHeroSubtitleSx, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import type { CatalogMaterial } from "../domain/search";
 import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
 
@@ -66,7 +66,7 @@ export default function HomePage() {
           <Typography component="h1" sx={catalogHeroTitleSx}>
             Encontre o custo certo para a sua obra.
           </Typography>
-          <Typography color="text.secondary" sx={{ fontSize: { md: 13, xl: 16 }, maxWidth: { md: 690, xl: 820 } }}
+          <Typography color="text.secondary" sx={{ ...catalogHeroSubtitleSx, maxWidth: { md: 690, xl: 820 } }}
             mb={{ xs: 1.5, md: 1.75, xl: 3 }}>
             Pesquise e compare as opções para o seu projeto.
           </Typography>
