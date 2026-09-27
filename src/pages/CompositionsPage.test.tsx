@@ -73,11 +73,14 @@ describe("Vincular composição a obras", () => {
     </MemoryRouter></SessionContext.Provider>);
 
     fireEvent.click(await screen.findByText("Materiais cozinha"));
-    fireEvent.click(await screen.findByRole("button", { name: "Adicionar composições a obras (1)" }));
+    expect(screen.getByText("Obra Anderson", { selector: ".MuiChip-label" })).toBeTruthy();
+    fireEvent.click(await screen.findByRole("button", { name: "Adicionar composições a obras" }));
     await screen.findByRole("textbox", { name: "Buscar obras para Materiais cozinha" });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar Materiais cozinha à obra Nova obra" }));
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: ["c1"] }), "p2"));
+    expect(await screen.findByText("Nova obra", { selector: ".MuiChip-label" })).toBeTruthy();
     fireEvent.click(await screen.findByRole("button", { name: "Remover Materiais cozinha da obra Nova obra" }));
     await waitFor(() => expect(api.saveProject).toHaveBeenCalledWith(expect.objectContaining({ compositionIds: [] }), "p2"));
+    await waitFor(() => expect(screen.queryByText("Nova obra", { selector: ".MuiChip-label" })).toBeNull());
   });
 });
