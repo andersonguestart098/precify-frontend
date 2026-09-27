@@ -556,8 +556,12 @@ export default function CompositionsPage() {
                       "& .MuiChip-deleteIcon": { color: "#789b8b", fontSize: 18, mr: .8, "&:hover": { color: "#416d59" } } }} />)}
                   <IconButton onClick={() => setLinksOpenId(current => current === composition.id ? "" : composition.id)}
                     aria-label="Adicionar composições a obras" aria-expanded={linksOpenId === composition.id} disabled={projectBusy}
-                    sx={{ width: 34, height: 34, flexShrink: 0, border: "1px solid #d9eae2", bgcolor: "#edf6f2", color: "#28634f",
-                      "&:hover": { bgcolor: "#e1f1e9" } }}><AddRoundedIcon sx={{ fontSize: 20 }} /></IconButton>
+                    sx={{ width: 36, height: 36, flexShrink: 0, borderRadius: "50%", border: "1px solid #d9eae2",
+                      bgcolor: "#edf6f2", color: "#28634f", boxShadow: "0 2px 6px rgba(29,91,67,.06)",
+                      "&:hover": { bgcolor: "#e1f1e9", borderColor: "#bddbcc" },
+                      "&.Mui-focusVisible": { outline: "2px solid #64aa87", outlineOffset: 2 } }}>
+                    <AddRoundedIcon sx={{ fontSize: 21 }} />
+                  </IconButton>
                   {linksOpenId === composition.id && (projects.length ?
                     <CompositionWorkPicker composition={composition} projects={projects} linkedProjects={linkedProjects} busy={projectBusy}
                       onAdd={project => void setLinkedProjects(composition.id, [...linkedProjects.map(item => item.id), project.id])} /> :
