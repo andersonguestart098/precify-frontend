@@ -3,10 +3,10 @@ import { useAccount } from "../auth/session";
 
 export default function AccountGreeting() {
   const user = useAccount();
-  return (<Stack direction="row" gap={{ xs: 2.25, md: 1.8, xl: 2.25 }} alignItems="center" mb={{ xs: 3, md: 2.25, xl: 3.5 }}>
+  return (<Stack direction="row" gap={{ xs: 1.5, md: 1.8, xl: 2.25 }} alignItems="center" mb={{ xs: "clamp(12px, 2.7dvh, 24px)", md: 2.25, xl: 3.5 }}>
       <Avatar src={user.avatarUrl || undefined} alt={user.name} sx={{
         bgcolor: "#e3f2ed", color: "primary.dark", border: "2px solid #006b4f",
-        width: { xs: 76, md: 76, xl: 82 }, height: { xs: 76, md: 76, xl: 82 },
+        width: { xs: "clamp(58px, 8.5dvh, 76px)", md: 76, xl: 82 }, height: { xs: "clamp(58px, 8.5dvh, 76px)", md: 76, xl: 82 },
         boxShadow: "0 6px 18px #183c302b"
       }}>
         {user.name.charAt(0).toUpperCase()}
