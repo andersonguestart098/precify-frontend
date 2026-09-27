@@ -194,12 +194,12 @@ export default function SearchPage() {
         onSelect={segmentCode => change({ segmentCode, family: "", materialCode: "", optionCode: "" })} />}
     </Box>
 
-    <Box sx={{ mb: { xs: 1.8, md: 2, xl: 3 }, pt: { xs: 2, md: 0 } }}>
+    <Box sx={{ mb: { xs: 1.25, md: 2, xl: 3 }, pt: { xs: 1.5, md: 0 } }}>
       <AccountGreeting />
       <Typography component="h1" sx={catalogHeroTitleSx}>
         Encontre o material pela especificação.
       </Typography>
-      <Typography color="text.secondary" sx={{ fontSize: { xs: 16, md: 13, xl: 16 } }}>Filtre e compare produtos por especificação.</Typography>
+      <Typography color="text.secondary" sx={{ fontSize: { xs: "clamp(13px, 3.7vw, 16px)", md: 13, xl: 16 } }}>Filtre e compare produtos por especificação.</Typography>
     </Box>
 
     <Box sx={{ display: { xs: "none", md: "block" } }}>{segmentRail}</Box>
