@@ -10,7 +10,7 @@
 | Obras | O resumo de **Composições** segue o padrão de **Mão de obra**: cabeçalho, acesso a **Gerenciar composições**, contagens, **Total MAT** e cartões compactos das composições vinculadas, com valor e número de produtos. As cápsulas e linhas têm a mesma altura compacta da seção de mão de obra. Os cartões começam logo abaixo dos indicadores, sem um título repetido ou subtítulo genérico. Até seis composições aparecem inicialmente; **Ver todas** revela o restante. A área evita o zoom por toque duplo no iPhone. |
 | Navegação | A tela inicial espera somente os dados necessários à página aberta; as demais áreas aquecem em segundo plano. Em Produtos, a pesquisa e a troca de página começam sem a espera artificial de 250 ms, mantendo a atualização discreta dos resultados já em cache. |
 | Telas móveis | O avatar, os títulos, os atalhos e o carrossel de segmentos se ajustam também à altura disponível. Em Obras, os indicadores ocupam duas colunas e o total uma linha inteira no celular; os espaçamentos acima da lista foram reduzidos. Os cartões de Produtos ficam mais baixos em telas curtas, mantendo o conteúdo e as ações legíveis. |
-| Teclado no iPhone | O campo **Buscar outra obra** em Composições deixa de abrir o teclado automaticamente no celular e usa texto de 16 px. Os demais campos editáveis recebem a mesma proteção móvel contra o zoom automático do Safari, sem bloquear o zoom manual. |
+| Teclado no iPhone | O **+** das obras vinculadas abre uma lista rolável das obras cadastradas ainda disponíveis, sem campo de busca e sem teclado. Os demais campos editáveis recebem proteção móvel contra o zoom automático do Safari, sem bloquear o zoom manual. |
 | Composições | **Adicionar produtos** abre uma busca dentro da composição. Cada resultado mostra o produto, fornecedor e cotação quando disponíveis; tocar em “+” inclui uma unidade e atualiza imediatamente os itens e o total. Quantidade pode ser ajustada na própria lista após a inclusão. |
 | Composições | O estado vazio usa “produto” e deixa de levar para o catálogo. **Explorar produtos**, na faixa de ações da obra, continua abrindo a tela de Produtos. |
 | Composições | A página adota a hierarquia da Mão de obra: cabeçalho simples, resumo discreto, filtro por obra e cartões compactos. Ao expandir, a ação **Adicionar produtos** vem primeiro; o vínculo com obras fica recolhido até ser solicitado. O seletor preserva tipo, local e observações ao salvar vínculos. |
@@ -27,7 +27,7 @@ O ajuste anterior do botão fixo de **Salvar alterações** da mão de obra perm
 1. Na obra, abrir **Vincular composição**, escolher uma composição no seletor e salvar a obra.
 2. Usar **Gerenciar composições** para ver as composições daquela obra e adicionar produtos pela busca interna.
 3. Em Composições, conferir os produtos primeiro; usar **Adicionar produtos à composição** e rolar quatro resultados com o dedo. Após incluir, conferir a lista e o total.
-4. Tocar em **+** ao lado das obras vinculadas, buscar uma obra, vincular, conferir a nova cápsula e desvincular por ela.
+4. Tocar em **+** ao lado das obras vinculadas, escolher uma obra cadastrada na lista, conferir a nova cápsula e desvincular por ela.
 5. Em uma largura de **390 CSS px** (referência iPhone 16e), conferir títulos, totais, favorito, expansão e os controles de cada item sem rolagem horizontal da página.
 
 ## Verificação técnica
