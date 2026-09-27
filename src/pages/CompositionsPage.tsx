@@ -48,12 +48,12 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
 
   useEffect(() => {
     const controller = new AbortController();
+    setLoading(true);
+    setError("");
     const timer = window.setTimeout(() => {
-      setLoading(true);
-      setError("");
       searchProducts({ familyCode: "", query: query.trim(), criteria: [], includeAlternatives: false }, 0, 8, controller.signal)
         .then(data => setResults(data))
-        .catch(reason => { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Não foi possível buscar produtos."); })
+        .catch(reason => { if (!controller.signal.aborted) { setResults(null); setError(reason instanceof Error ? reason.message : "Não foi possível buscar produtos."); } })
         .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     }, query ? 250 : 0);
     return () => { window.clearTimeout(timer); controller.abort(); };
@@ -95,9 +95,9 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
       sx={{ "& .MuiOutlinedInput-root": { bgcolor: "#fff", borderRadius: 3 } }} />
     {addedName && <Alert severity="success" sx={{ mt: 1, py: 0 }}>“{addedName}” adicionado à composição.</Alert>}
     {error && <Alert severity="error" sx={{ mt: 1 }}>{error}</Alert>}
-    {loading ? <Box display="grid" sx={{ placeItems: "center", minHeight: 100 }}><CircularProgress size={22} /></Box> :
-      !results?.content.length ? <Typography color="text.secondary" fontSize={12} py={2}>Nenhum produto encontrado. Tente outra especificação.</Typography> :
-        <Stack gap={.75} mt={1.25} sx={{ maxHeight: 340, overflowY: "auto" }}>
+    <Box aria-busy={loading} sx={{ position: "relative", mt: 1.25, height: { xs: 136, sm: 184 }, minWidth: 0 }}>
+      <Box sx={{ height: "100%", overflowY: "auto", scrollbarWidth: "thin", opacity: loading ? .4 : 1, pointerEvents: loading ? "none" : "auto" }}>
+        {results?.content.length ? <Stack gap={.75}>
           {results.content.flatMap(result => (result.offers.length ? result.offers : [undefined]).map((offer, index) => {
             const key = `${result.material.materialCode}:${offer?.productId ?? "catalog"}:${offer?.optionCode ?? ""}`;
             return <Stack key={`${key}:${index}`} direction="row" alignItems="center" gap={1} sx={{
@@ -123,7 +123,15 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
               </IconButton>
             </Stack>;
           }))}
-        </Stack>}
+        </Stack> : !loading && !error ? <Typography color="text.secondary" fontSize={12} py={2} textAlign="center">
+          Nenhum produto encontrado. Tente outra especificação.
+        </Typography> : null}
+      </Box>
+      {loading && <Box role="status" aria-label="Buscando produtos" sx={{
+        position: "absolute", inset: 0, display: "grid", placeItems: "center",
+        bgcolor: "rgba(247,252,249,.68)", borderRadius: 2,
+      }}><CircularProgress size={22} /></Box>}
+    </Box>
   </Box>;
 }
 
