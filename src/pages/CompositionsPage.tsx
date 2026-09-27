@@ -352,9 +352,9 @@ export default function CompositionsPage() {
       <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={1.4}>
         <Box>
           <Typography variant="overline" sx={{ color: "#4f7769", fontWeight: 850, letterSpacing: 1.3 }}>Planejamento de materiais</Typography>
-          <Typography component="h1" sx={{ fontSize: { xs: 30, md: 42 }, fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1.02,
+          <Typography component="h1" sx={{ fontSize: { xs: 30, md: 38, xl: 49 }, fontWeight: 900, letterSpacing: "-.04em", lineHeight: 1.02,
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Minhas composições</Typography>
-          <Typography color="text.secondary" sx={{ mt: .5, fontSize: { xs: 12.5, md: 14 } }}>Organize os produtos e vincule as composições às obras.</Typography>
+          <Typography color="text.secondary" sx={{ mt: .5, fontSize: { xs: 12.5, md: 13, xl: 16 } }}>Organize os produtos e vincule as composições às obras.</Typography>
         </Box>
         <Stack direction="row" justifyContent="flex-end" sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
           <ButtonBase onClick={() => { setError(""); setCreateOpen(true); }} aria-label="Criar nova composição" sx={{
