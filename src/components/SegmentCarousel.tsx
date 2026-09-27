@@ -202,7 +202,7 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
             position: "relative",
             width: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : { xs: 78, md: 68, xl: 78 },
             minWidth: compactMobile ? { xs: 82, sm: 88, md: 68, xl: 78 } : undefined,
-            minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: 94, md: 78, xl: 94 },
+            minHeight: compactMobile ? { xs: 36, md: 78, xl: 94 } : { xs: "clamp(78px, 11.5dvh, 94px)", md: 78, xl: 94 },
             flexShrink: 0,
             display: "flex",
             flexDirection: compactMobile ? { xs: "row", md: "column" } : "column",
@@ -221,8 +221,8 @@ export function SegmentCarousel({ catalog, selected, onSelect, compactMobile = f
           }}>
           <Box className="segment-icon" sx={{
             position: "relative", flexShrink: 0,
-            width: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
-            height: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: 52, md: 44, xl: 52 },
+            width: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: "clamp(44px, 6.2dvh, 52px)", md: 44, xl: 52 },
+            height: compactMobile ? { xs: 22, md: 44, xl: 52 } : { xs: "clamp(44px, 6.2dvh, 52px)", md: 44, xl: 52 },
             borderRadius: compactMobile ? { xs: "6px", md: "50%" } : "50%",
             display: "grid", placeItems: "center",
             color: active ? "#174a39" : "#3f6759",
