@@ -32,9 +32,8 @@ const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
 const UNASSIGNED = "__unassigned__";
 const compositionActionSx = {
-  minWidth: 0, minHeight: { xs: 96, sm: 64 }, p: 1.1, borderRadius: "11px",
-  display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "flex-start", sm: "center" },
-  justifyContent: "flex-start", gap: { xs: .5, sm: 1 }, textAlign: "left",
+  minWidth: 0, minHeight: { xs: 70, sm: 58 }, px: .9, py: .7, borderRadius: "10px",
+  display: "flex", alignItems: "center", justifyContent: "flex-start", gap: .7, textAlign: "left",
   color: "#245b48", bgcolor: "#fbfdfc", border: "1px solid #d7e8e0",
   transition: "background 160ms ease, border-color 160ms ease, box-shadow 160ms ease",
   "&:hover": { bgcolor: "#eff8f3", borderColor: "#a8d3c1", boxShadow: "0 5px 14px rgba(21,72,56,.08)" },
@@ -531,8 +530,8 @@ export default function CompositionsPage() {
                     </Stack>;
                   })}
                 </Stack>}
-                <Divider sx={{ mt: 1.25 }} />
-                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} pt={1.2} pb={.7}>
+                <Divider sx={{ mt: .9 }} />
+                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} pt={.55} pb={.45}>
                   <Typography sx={{ color: "#6b8176", fontSize: 9.5, fontWeight: 850, letterSpacing: ".06em", textTransform: "uppercase" }}>
                     Ações da composição
                   </Typography>
@@ -545,21 +544,21 @@ export default function CompositionsPage() {
                   <ButtonBase onClick={() => setAddingTo(current => current === composition.id ? "" : composition.id)}
                     aria-expanded={addingTo === composition.id} aria-controls={`composition-product-picker-${composition.id}`}
                     sx={{ ...compositionActionSx, bgcolor: addingTo === composition.id ? "#e7f4ec" : "#f1f9f4", borderColor: "#bfdfcb" }}>
-                    <Box component="span" sx={{ width: 28, height: 28, borderRadius: "8px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#dcefe3" }}>
-                      <AddRoundedIcon sx={{ fontSize: 19 }} />
+                    <Box component="span" sx={{ width: 26, height: 26, borderRadius: "7px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#dcefe3" }}>
+                      <AddRoundedIcon sx={{ fontSize: 18 }} />
                     </Box>
                     <Box component="span" sx={{ display: "block", minWidth: 0 }}>
-                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.2, sm: 12 }, fontWeight: 850, lineHeight: 1.22 }}>Adicionar produtos à composição</Typography>
-                      <Typography component="span" sx={{ display: "block", mt: .25, fontSize: 9.5, color: "#658176", lineHeight: 1.2 }}>Buscar nesta tela</Typography>
+                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.4, sm: 12 }, fontWeight: 850, lineHeight: 1.18 }}>Adicionar produtos à composição</Typography>
+                      <Typography component="span" sx={{ display: "block", mt: .2, fontSize: 9.2, color: "#658176", lineHeight: 1.15 }}>Buscar nesta tela</Typography>
                     </Box>
                   </ButtonBase>
                   <ButtonBase component={RouterLink} to="/produtos" sx={compositionActionSx}>
-                    <Box component="span" sx={{ width: 28, height: 28, borderRadius: "8px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#e8f4ee" }}>
-                      <SearchRoundedIcon sx={{ fontSize: 18 }} />
+                    <Box component="span" sx={{ width: 26, height: 26, borderRadius: "7px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#e8f4ee" }}>
+                      <SearchRoundedIcon sx={{ fontSize: 17 }} />
                     </Box>
                     <Box component="span" sx={{ display: "block", minWidth: 0 }}>
-                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.2, sm: 12 }, fontWeight: 850, lineHeight: 1.22 }}>Explorar produtos</Typography>
-                      <Typography component="span" sx={{ display: "block", mt: .25, fontSize: 9.5, color: "#658176", lineHeight: 1.2 }}>Abrir catálogo</Typography>
+                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.4, sm: 12 }, fontWeight: 850, lineHeight: 1.18 }}>Explorar produtos</Typography>
+                      <Typography component="span" sx={{ display: "block", mt: .2, fontSize: 9.2, color: "#658176", lineHeight: 1.15 }}>Abrir catálogo</Typography>
                     </Box>
                   </ButtonBase>
                 </Box>
