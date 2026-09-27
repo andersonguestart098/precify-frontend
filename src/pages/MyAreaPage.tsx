@@ -25,16 +25,16 @@ export default function MyAreaPage() {
   return <Container maxWidth="lg" component="main" sx={{ py: { xs: 2.2, md: 5.5 }, px: { xs: 2, sm: 3, md: 4 } }}>
     <Stack direction="row" alignItems="center" gap={{ xs: 1.2, md: 1.75 }} mb={{ xs: 2.5, md: 4 }}>
       <Box sx={{ position: "relative", flexShrink: 0 }}>
-        <Avatar src={user.avatarUrl || undefined} sx={{ width: { xs: 52, md: 60 }, height: { xs: 52, md: 60 }, bgcolor: "#e5f2ed", color: "#174a39", border: "2px solid #d3e8e0", fontWeight: 850, boxShadow: "0 7px 20px rgba(19,56,46,.10)" }}>
+        <Avatar src={user.avatarUrl || undefined} sx={{ width: { xs: 52, md: 76, xl: 82 }, height: { xs: 52, md: 76, xl: 82 }, bgcolor: "#e5f2ed", color: "#174a39", border: "2px solid #d3e8e0", fontWeight: 850, boxShadow: "0 7px 20px rgba(19,56,46,.10)" }}>
           {user.name.charAt(0).toUpperCase()}
         </Avatar>
       </Box>
       <Box minWidth={0}>
         <Typography variant="overline" sx={{ color: "#6a8279", fontWeight: 850, letterSpacing: 1.45, lineHeight: 1 }}>Minha área</Typography>
-        <Typography component="h1" noWrap sx={{ mt: .4, fontSize: { xs: 27, md: 38 }, lineHeight: 1.04, fontWeight: 900, letterSpacing: "-.04em", background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+        <Typography component="h1" noWrap sx={{ mt: .4, fontSize: { xs: 27, md: 38, xl: 49 }, lineHeight: 1.04, fontWeight: 900, letterSpacing: "-.04em", background: "linear-gradient(112deg,#13382e,#006b4f 70%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
           Olá, {firstName}.
         </Typography>
-        <Typography sx={{ mt: .45, color: "#7b8d86", fontSize: { xs: 12.2, md: 14 } }}>Seu espaço pessoal no Precify.</Typography>
+        <Typography sx={{ mt: .45, color: "#7b8d86", fontSize: { xs: 12.2, md: 13, xl: 16 } }}>Seu espaço pessoal no Precify.</Typography>
       </Box>
     </Stack>
 
