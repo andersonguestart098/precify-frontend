@@ -9,8 +9,6 @@ import HomeWorkOutlinedIcon from "@mui/icons-material/HomeWorkOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { HardHat } from "@phosphor-icons/react";
@@ -37,7 +35,7 @@ const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "
 const workShortcutSx = {
   minWidth: 0, minHeight: { xs: 54, sm: 50 }, px: 1.1, py: .8, borderRadius: "11px",
   textTransform: "none", whiteSpace: "normal", textAlign: "left", lineHeight: 1.2,
-  fontSize: { xs: 10.5, sm: 11.5 }, fontWeight: 800, justifyContent: "flex-start",
+  fontSize: { xs: 12.5, sm: 13 }, fontWeight: 800, justifyContent: "flex-start",
   color: "#245b48", bgcolor: "#fbfdfc", border: "1px solid #d7e8e0",
   boxShadow: "0 2px 8px rgba(21,72,56,.035)",
   "& .MuiButton-startIcon": {
@@ -231,6 +229,7 @@ export default function PlanningPage() {
   const [notes, setNotes] = useState("");
   const [ids, setIds] = useState<string[]>([]);
   const [editing, setEditing] = useState<string>();
+  const [linkingOnly, setLinkingOnly] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [busy, setBusy] = useState(() => !(getCachedProjects(user.id) && getCachedCompositions(user.id)));
   const [saving, setSaving] = useState(false);
@@ -346,6 +345,7 @@ export default function PlanningPage() {
   };
 
   const resetForm = () => {
+    setLinkingOnly(false);
     setEditing(undefined);
     setName("");
     setProjectType("");
@@ -356,6 +356,7 @@ export default function PlanningPage() {
   };
 
   const openNew = () => {
+    setLinkingOnly(false);
     setEditing(undefined);
     setName("");
     setProjectType(typeFilterLabel ? typeFilter : "");
@@ -376,7 +377,8 @@ export default function PlanningPage() {
     }, { replace: true });
   }, [params, setParams]);
 
-  const openEdit = (project: Project) => {
+  const openEdit = (project: Project, linkCompositions = false) => {
+    setLinkingOnly(linkCompositions);
     setEditing(project.id);
     setName(project.name);
     setProjectType(project.projectType ?? "");
@@ -640,15 +642,13 @@ export default function PlanningPage() {
                     <Typography sx={{ mb: .7, color: "#6b8176", fontSize: 9.5, fontWeight: 850, letterSpacing: ".06em", textTransform: "uppercase" }}>
                       Ações da obra
                     </Typography>
-                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", sm: "repeat(3,minmax(0,1fr))" }, gap: .75 }}>
-                      <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}&adicionar=1`}
+                    <Box>
+                      <Button fullWidth onClick={() => openEdit(project, true)} aria-label={`Vincular composição à obra ${project.name}`}
                         startIcon={<AddRoundedIcon />} sx={{
-                          ...workShortcutSx, gridColumn: { xs: "1 / -1", sm: "auto" },
+                          ...workShortcutSx,
                           bgcolor: "#e9f6ee", borderColor: "#b9ddc8", color: "#195f42",
                           "& .MuiButton-startIcon": { ...workShortcutSx["& .MuiButton-startIcon"], bgcolor: "#d5ebdd" },
-                        }}>Adicionar produtos à composição</Button>
-                      <Button onClick={() => openEdit(project)} startIcon={<LinkRoundedIcon />} sx={workShortcutSx}>Vincular composição</Button>
-                      <Button component={RouterLink} to="/produtos" startIcon={<SearchRoundedIcon />} sx={workShortcutSx}>Explorar produtos</Button>
+                        }}>Vincular composição</Button>
                     </Box>
                   </Box>
                   <CompositionOverview project={project} compositions={lists} />
@@ -692,11 +692,11 @@ export default function PlanningPage() {
           <Stack direction="row" alignItems="center" gap={.7}>
             <HomeWorkOutlinedIcon sx={{ fontSize: 19, color: "#087458" }} />
             <Typography variant="overline" sx={{ color: "#087458", fontWeight: 850, letterSpacing: 1.15, lineHeight: 1 }}>
-              {editing ? "Editar planejamento" : "Nova obra"}
+              {linkingOnly ? "Composições da obra" : editing ? "Editar planejamento" : "Nova obra"}
             </Typography>
           </Stack>
           <Typography component="div" sx={{ mt: 1.25, fontSize: { xs: 23, sm: 26 }, lineHeight: 1.05, fontWeight: 900, letterSpacing: "-.035em", color: "#173f34" }}>
-            {editing ? "Editar obra" : "Criar nova obra"}
+            {linkingOnly ? "Vincular composição" : editing ? "Editar obra" : "Criar nova obra"}
           </Typography>
         </DialogTitle>
 
@@ -713,10 +713,10 @@ export default function PlanningPage() {
           "& .MuiAutocomplete-popupIndicator": { color: "#628177" },
         }}>
           <Typography color="text.secondary" sx={{ fontSize: 13, lineHeight: 1.5, mb: 2 }}>
-            Cadastre os dados básicos da obra e vincule as composições que fazem parte dela.
+            {linkingOnly ? `Selecione as composições da obra ${name}.` : "Cadastre os dados básicos da obra e vincule as composições que fazem parte dela."}
           </Typography>
           <Stack gap={1.45}>
-            <TextField autoFocus label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
+            {!linkingOnly && <><TextField autoFocus label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
               onChange={event => setName(event.target.value)} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <Autocomplete
               options={projectTypeOptions}
@@ -731,7 +731,7 @@ export default function PlanningPage() {
               onChange={event => setLocation(event.target.value)} slotProps={{ htmlInput: { maxLength: 180 } }} />
             <TextField label="Observações" placeholder="Informações adicionais sobre a obra" value={notes}
               onChange={event => setNotes(event.target.value)} multiline minRows={3}
-              slotProps={{ htmlInput: { maxLength: 1000 } }} />
+              slotProps={{ htmlInput: { maxLength: 1000 } }} /></>}
             <Autocomplete
               multiple
               options={compositions}
@@ -742,7 +742,7 @@ export default function PlanningPage() {
               noOptionsText="Nenhuma composição encontrada"
               limitTags={3}
               slotProps={{ listbox: { sx: { maxHeight: 260, overflowY: "auto" } } }}
-              renderInput={params => <TextField {...params} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
+              renderInput={params => <TextField {...params} autoFocus={linkingOnly} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
               sx={{
                 "& .MuiChip-root": { height: 25, bgcolor: "#eaf5f1", color: "#245342", borderRadius: "8px", fontWeight: 720, fontSize: 10.5 },
                 "& .MuiAutocomplete-inputRoot": { py: .45 },
@@ -778,10 +778,10 @@ export default function PlanningPage() {
               fontSize: { xs: 12.2, sm: 12.8 }, fontWeight: 830,
               color: saving || !name.trim() ? "#8ca099" : "#2f5c4c", letterSpacing: "-.01em",
             }}>
-              {editing ? "Salvar alterações" : "Criar obra"}
+              {linkingOnly ? "Salvar vínculos" : editing ? "Salvar alterações" : "Criar obra"}
             </Typography>
             <ButtonBase onClick={() => void save()} disabled={saving || !name.trim()}
-              aria-label={editing ? "Salvar alterações" : "Criar obra"} sx={{
+              aria-label={linkingOnly ? "Salvar vínculos" : editing ? "Salvar alterações" : "Criar obra"} sx={{
                 width: { xs: 42, sm: 44 }, height: { xs: 42, sm: 44 }, borderRadius: "50%", flexShrink: 0,
                 color: "#17664f",
                 background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
