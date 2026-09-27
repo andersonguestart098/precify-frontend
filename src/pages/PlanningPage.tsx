@@ -66,12 +66,12 @@ function laborPlanTotal(plan?: LaborPlan) {
 
 function CompositionOverview({ project, compositions }: { project: Project; compositions: Composition[] }) {
   const [showAll, setShowAll] = useState(false);
-  const items = compositions.flatMap(composition => composition.items.map(item => ({ composition, item })));
-  const visibleItems = showAll ? items : items.slice(0, 6);
+  const productCount = compositions.reduce((sum, composition) => sum + composition.items.length, 0);
+  const visibleCompositions = showAll ? compositions : compositions.slice(0, 6);
   const total = compositions.reduce((sum, composition) => sum + composition.total, 0);
 
   return <Box component="section" aria-labelledby={`compositions-${project.id}`} sx={{
-    border: "1px solid #dbe7e3", borderRadius: "11px", bgcolor: "#fbfdfc", overflow: "hidden",
+    border: "1px solid #dbe7e3", borderRadius: "11px", bgcolor: "#fbfdfc", overflow: "hidden", touchAction: "manipulation",
   }}>
     <Stack direction={{ xs: "column", sm: "row" }} alignItems={{ sm: "center" }} gap={1.1} px={{ xs: 1.2, sm: 1.5 }} py={1.2}>
       <Stack direction="row" alignItems="center" gap={1} minWidth={0} flex={1}>
@@ -82,7 +82,7 @@ function CompositionOverview({ project, compositions }: { project: Project; comp
         <Box minWidth={0}>
           <Typography id={`compositions-${project.id}`} fontWeight={850} color="#21483b" sx={{ fontSize: 13.2 }}>Composições</Typography>
           <Typography color="text.secondary" sx={{ fontSize: 10 }}>
-            {compositions.length ? `${compositions.length} ${compositions.length === 1 ? "composição" : "composições"} • ${items.length} ${items.length === 1 ? "produto" : "produtos"} • ${currency.format(total)}` : "Nenhuma composição vinculada"}
+            {compositions.length ? `${compositions.length} ${compositions.length === 1 ? "composição" : "composições"} • ${productCount} ${productCount === 1 ? "produto" : "produtos"} • ${currency.format(total)}` : "Nenhuma composição vinculada"}
           </Typography>
         </Box>
       </Stack>
@@ -96,35 +96,33 @@ function CompositionOverview({ project, compositions }: { project: Project; comp
     {compositions.length ? <>
       <Divider />
       <Stack direction="row" gap={.6} flexWrap="wrap" px={{ xs: 1.2, sm: 1.5 }} py={1}>
-        <Chip size="small" label={`${compositions.length} ${compositions.length === 1 ? "composição" : "composições"}`} sx={{ height: 23, borderRadius: "7px", fontWeight: 780, fontSize: 9.2, bgcolor: "#e8f4ef", color: "#245843" }} />
-        <Chip size="small" label={`${items.length} ${items.length === 1 ? "produto" : "produtos"}`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1 }} />
-        <Chip size="small" label={`Total ${currency.format(total)}`} sx={{ height: 23, borderRadius: "7px", fontSize: 9.1, fontWeight: 820, bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1" }} />
+        <Chip size="small" label={`${compositions.length} ${compositions.length === 1 ? "composição" : "composições"}`} sx={{ height: 26, borderRadius: "7px", fontWeight: 780, fontSize: 10, bgcolor: "#e8f4ef", color: "#245843" }} />
+        <Chip size="small" label={`${productCount} ${productCount === 1 ? "produto" : "produtos"}`} sx={{ height: 26, borderRadius: "7px", fontSize: 10 }} />
+        <Chip size="small" label={`Total MAT ${currency.format(total)}`} sx={{ height: 26, borderRadius: "7px", fontSize: 10, fontWeight: 820, bgcolor: "#edf7f3", color: "#176047", border: "1px solid #d5e9e1" }} />
       </Stack>
-      {items.length ? <>
-        <Typography fontWeight={850} color="#315247" sx={{ px: { xs: 1.2, sm: 1.5 }, pb: .75, fontSize: 11.3 }}>Materiais da obra</Typography>
+      <>
+        <Typography fontWeight={850} color="#315247" sx={{ px: { xs: 1.2, sm: 1.5 }, pb: .75, fontSize: 11.3 }}>Composições vinculadas</Typography>
         <Box sx={{ px: { xs: 1.05, sm: 1.35 }, pb: 1.2, display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: .65 }}>
-          {visibleItems.map(({ composition, item }) => <Stack key={`${composition.id}:${item.id}`} direction="row" alignItems="center" gap={.8} sx={{
+          {visibleCompositions.map(composition => <Stack key={composition.id} direction="row" alignItems="center" gap={.8} sx={{
             px: 1, py: .75, minWidth: 0, border: "1px solid #e5ece9", borderRadius: "9px", bgcolor: "#fff",
           }}>
             <Box minWidth={0} flex={1}>
-              <Typography fontWeight={760} color="#315247" sx={{ fontSize: 10.6, lineHeight: 1.25 }}>{item.name}</Typography>
-              <Typography color="text.secondary" sx={{ fontSize: 8.5, mt: .1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {composition.name} • {item.materialCode}
-              </Typography>
+              <Typography fontWeight={760} color="#315247" sx={{ fontSize: 10.6, lineHeight: 1.25, overflowWrap: "anywhere" }}>{composition.name}</Typography>
+              <Typography color="text.secondary" sx={{ fontSize: 8.5, mt: .1 }}>Composição da obra</Typography>
             </Box>
             <Typography sx={{ fontSize: 9.8, fontWeight: 820, color: "#176047", whiteSpace: "nowrap" }}>
-              {currency.format(item.quantity * item.unitPrice)}
+              {currency.format(composition.total)}
             </Typography>
-            <Chip size="small" label={`${item.quantity} ${item.unit}`} sx={{
+            <Chip size="small" label={`${composition.items.length} ${composition.items.length === 1 ? "produto" : "produtos"}`} sx={{
               height: 21, borderRadius: "6px", flexShrink: 0, fontSize: 8.7, fontWeight: 760,
               bgcolor: "#e9f5f0", color: "#31594b", maxWidth: 95,
             }} />
           </Stack>)}
         </Box>
-        {items.length > 6 && <Button size="small" onClick={() => setShowAll(value => !value)} sx={{ mx: 1.2, mb: 1.1, textTransform: "none", fontSize: 10.5, fontWeight: 800 }}>
-          {showAll ? "Mostrar menos" : `Ver todos os ${items.length} produtos`}
+        {compositions.length > 6 && <Button size="small" onClick={() => setShowAll(value => !value)} sx={{ mx: 1.2, mb: 1.1, textTransform: "none", fontSize: 10.5, fontWeight: 800, touchAction: "manipulation" }}>
+          {showAll ? "Mostrar menos" : `Ver todas as ${compositions.length} composições`}
         </Button>}
-      </> : <Typography color="text.secondary" sx={{ px: 1.5, pb: 1.4, fontSize: 10.5 }}>As composições vinculadas ainda não têm produtos.</Typography>}
+      </>
     </> : null}
   </Box>;
 }
