@@ -14,7 +14,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { HardHat } from "@phosphor-icons/react";
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, ButtonBase, Chip, CircularProgress, Container,
-  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, TextField, Tooltip, Typography
+  Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, TextField, Tooltip, Typography, useMediaQuery
 } from "@mui/material";
 import {
   deleteProject, saveProject,
@@ -209,6 +209,7 @@ function LaborOverview({
 
 export default function PlanningPage() {
   const user = useAccount();
+  const isWideScreen = useMediaQuery("(min-width:600px)");
   const [params, setParams] = useSearchParams();
   const workspaceFavorites = useWorkspaceFavorites();
   const [projects, setProjects] = useState<Project[]>(() => getCachedProjects(user.id) ?? []);
@@ -701,20 +702,21 @@ export default function PlanningPage() {
         <DialogContent sx={{
           px: { xs: 2.5, sm: 3 }, pt: "18px !important", pb: 1.5,
           "& .MuiOutlinedInput-root": {
-            minHeight: 52, borderRadius: "26px", bgcolor: "#f8faf9", fontSize: 14,
+            minHeight: 52, borderRadius: "26px", bgcolor: "#f8faf9", fontSize: { xs: 16, sm: 14 },
             transition: "background-color 180ms, box-shadow 180ms",
             "& fieldset": { borderColor: "#dfe7e4" },
             "&:hover": { bgcolor: "#f1f7f5", "& fieldset": { borderColor: "#a6c8bd" } },
             "&.Mui-focused": { bgcolor: "#fff", boxShadow: "0 0 0 3px #006b4f12", "& fieldset": { borderColor: "#006b4f", borderWidth: 1 } },
           },
-          "& .MuiInputLabel-root": { color: "#62766f", fontSize: 14 },
+          "& .MuiInputBase-input": { fontSize: { xs: 16, sm: 14 } },
+          "& .MuiInputLabel-root": { color: "#62766f", fontSize: { xs: 16, sm: 14 } },
           "& .MuiAutocomplete-popupIndicator": { color: "#628177" },
         }}>
           <Typography color="text.secondary" sx={{ fontSize: 13, lineHeight: 1.5, mb: 2 }}>
             {linkingOnly ? `Selecione as composições da obra ${name}.` : "Cadastre os dados básicos da obra e vincule as composições que fazem parte dela."}
           </Typography>
           <Stack gap={1.45}>
-            {!linkingOnly && <><TextField autoFocus label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
+            {!linkingOnly && <><TextField autoFocus={isWideScreen} label="Nome da obra" placeholder="Ex.: Residencial Centro" value={name}
               onChange={event => setName(event.target.value)} slotProps={{ htmlInput: { maxLength: 80 } }} />
             <Autocomplete
               options={projectTypeOptions}
@@ -740,7 +742,7 @@ export default function PlanningPage() {
               noOptionsText="Nenhuma composição encontrada"
               limitTags={3}
               slotProps={{ listbox: { sx: { maxHeight: 260, overflowY: "auto" } } }}
-              renderInput={params => <TextField {...params} autoFocus={linkingOnly} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
+              renderInput={params => <TextField {...params} autoFocus={linkingOnly && isWideScreen} label="Composições" placeholder={selectedCompositions.length ? "Buscar outra composição" : "Buscar e selecionar composições"} />}
               sx={{
                 "& .MuiChip-root": { height: 25, bgcolor: "#eaf5f1", color: "#245342", borderRadius: "8px", fontWeight: 720, fontSize: 10.5 },
                 "& .MuiAutocomplete-inputRoot": { py: .45 },
