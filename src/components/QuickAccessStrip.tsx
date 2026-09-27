@@ -59,10 +59,10 @@ const shortcuts = [
 
 export default function QuickAccessStrip() {
   return <Box component="section" aria-labelledby="quick-access-title" sx={{
-    mt: { xs: .9, md: 1.15, xl: 1.5 },
-    pb: { xs: .5, md: .8 },
+    mt: { xs: .6, md: 1.15, xl: 1.5 },
+    pb: { xs: .25, md: .8 },
   }}>
-    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .9, md: 1 }}>
+    <Stack direction="row" alignItems="center" justifyContent="space-between" mb={{ xs: .5, md: 1 }}>
       <Box>
         <Stack direction="row" alignItems="center" gap={.45}>
           <Typography id="quick-access-title" sx={{ ...catalogSectionTitleSx, lineHeight: 1.1 }}>
@@ -84,7 +84,7 @@ export default function QuickAccessStrip() {
     </Stack>
 
     <Box sx={{
-      display: "flex", gap: { xs: .95, md: 1.1, xl: 1.25 }, overflowX: "auto", pt: .75, pb: .75, px: .5,
+      display: "flex", gap: { xs: .8, md: 1.1, xl: 1.25 }, overflowX: "auto", pt: .5, pb: .5, px: .5,
       scrollSnapType: "x proximity", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" }
     }}>
       {shortcuts.map(({ to, label, description, icon, featured, art, available }, index) => <ButtonBase
@@ -97,13 +97,13 @@ export default function QuickAccessStrip() {
           position: "relative", overflow: "hidden",
           width: featured
             ? { xs: 178, sm: 196, md: 204, lg: 220, xl: 236 }
-            : { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+            : { xs: "clamp(146px, 42vw, 166px)", sm: 184, md: 190, lg: 204, xl: 224 },
           minWidth: featured
             ? { xs: 178, sm: 196, md: 204, lg: 220, xl: 236 }
-            : { xs: 166, sm: 184, md: 190, lg: 204, xl: 224 },
+            : { xs: "clamp(146px, 42vw, 166px)", sm: 184, md: 190, lg: 204, xl: 224 },
           minHeight: featured
             ? { xs: 116, sm: 120, md: 124, xl: 132 }
-            : { xs: 104, sm: 108, md: 110, xl: 120 },
+            : { xs: "clamp(88px, 12dvh, 104px)", sm: 108, md: 110, xl: 120 },
           px: { xs: 1.3, md: 1.4, xl: 1.55 },
           py: featured ? { xs: 1.35, md: 1.4, xl: 1.5 } : { xs: 1.2, md: 1.25, xl: 1.4 },
           borderRadius: featured
@@ -162,7 +162,7 @@ export default function QuickAccessStrip() {
       >
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between" position="relative" zIndex={1}>
           <Box sx={{
-            width: { xs: 41, md: 42, xl: 46 }, height: { xs: 41, md: 42, xl: 46 },
+            width: { xs: "clamp(35px, 5dvh, 41px)", md: 42, xl: 46 }, height: { xs: "clamp(35px, 5dvh, 41px)", md: 42, xl: 46 },
             borderRadius: featured ? { xs: "14px", md: "14px", xl: "16px" } : { xs: "12px", md: "12px", xl: "14px" },
             display: "grid", placeItems: "center", position: "relative", flexShrink: 0,
             overflow: "hidden",
