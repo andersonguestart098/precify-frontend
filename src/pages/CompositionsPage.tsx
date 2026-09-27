@@ -518,34 +518,40 @@ export default function CompositionsPage() {
                 {!composition.items.length ? <Box textAlign="center" py={2.5} sx={{ bgcolor: "#fbfdfc", borderRadius: 2 }}>
                   <Inventory2OutlinedIcon sx={{ color: "#87a096", fontSize: 26 }} />
                   <Typography color="text.secondary" fontSize={11.5}>Nenhum produto nesta composição.</Typography>
-                </Box> : <Stack divider={<Divider flexItem />}>
+                </Box> : <Stack gap={.7}>
                   {composition.items.map(item => {
                     const key = `${composition.id}:${item.id}`;
-                    return <Stack key={item.id} direction="row" gap={{ xs: .55, sm: .85 }} py={.65} px={.25} alignItems="center" minWidth={0}>
-                      <ProtectedImage src={item.imageUrl} alt="" sx={{ width: { xs: 28, sm: 36 }, height: { xs: 28, sm: 36 }, borderRadius: 1.5, flexShrink: 0, bgcolor: "#fff" }} />
-                      <Box minWidth={0} flex={1}>
-                        <Typography component={RouterLink} to={`/produtos/${encodeURIComponent(item.materialCode)}`}
-                          color="#284d41" fontWeight={750} fontSize={{ xs: 11.5, sm: 12.5 }} lineHeight={1.2} noWrap title={item.name}
-                          sx={{ textDecoration: "none", display: "block", "&:hover": { color: "primary.main" } }}>{item.name}</Typography>
-                        <Typography color="text.secondary" noWrap display="block" fontSize={10}>
-                          {item.supplier || "Sem fornecedor"} · {currency.format(item.unitPrice)}/{item.unit}
+                    return <Box key={item.id} sx={{ py: 1, px: { xs: 1, sm: 1.3 }, minWidth: 0, borderRadius: "18px",
+                      border: "1px solid #dce9e3", bgcolor: "#fbfdfc" }}>
+                      <Stack direction="row" gap={.9} alignItems="center" minWidth={0}>
+                        <ProtectedImage src={item.imageUrl} alt="" sx={{ width: 34, height: 34, borderRadius: 1.5, flexShrink: 0, bgcolor: "#fff" }} />
+                        <Box minWidth={0} flex={1}>
+                          <Typography component={RouterLink} to={`/produtos/${encodeURIComponent(item.materialCode)}`}
+                            color="#284d41" fontWeight={750} fontSize={{ xs: 12, sm: 13 }} lineHeight={1.25} noWrap title={item.name}
+                            sx={{ textDecoration: "none", display: "block", "&:hover": { color: "primary.main" } }}>{item.name}</Typography>
+                          <Typography color="text.secondary" noWrap display="block" fontSize={10.5}>
+                            {item.supplier || "Sem fornecedor"} · {currency.format(item.unitPrice)}/{item.unit}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      <Stack direction="row" gap={.85} alignItems="center" justifyContent="flex-end" mt={.65} minWidth={0}>
+                        <Typography color="text.secondary" fontSize={10.5} fontWeight={700}>Qtd.</Typography>
+                        <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
+                          disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
+                          slotProps={{ htmlInput: { min: .01, step: .01, inputMode: "decimal" } }}
+                          onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
+                          onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
+                          sx={{ width: { xs: 64, sm: 72 }, flexShrink: 0, "& .MuiInputBase-root": { borderRadius: "12px", height: 34, bgcolor: "#fff" },
+                            "& .MuiInputBase-input": { py: .35, px: .5, textAlign: "center", fontSize: 12 } }} />
+                        <Typography fontWeight={850} color="#176047" noWrap sx={{ fontSize: { xs: 12, sm: 13 }, minWidth: { xs: 64, sm: 76 }, textAlign: "right" }}>
+                          {currency.format(item.quantity * item.unitPrice)}
                         </Typography>
-                      </Box>
-                      <TextField key={item.quantity} type="number" size="small" defaultValue={item.quantity}
-                        disabled={busy === key} aria-label={`Quantidade de ${item.name}`}
-                        slotProps={{ htmlInput: { min: .01, step: .01, inputMode: "decimal" } }}
-                        onBlur={event => { const value = Number(event.target.value); if (value !== item.quantity) void changeQuantity(composition.id, item.id, value); }}
-                        onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }}
-                        sx={{ width: { xs: 48, sm: 72 }, flexShrink: 0, "& .MuiInputBase-root": { borderRadius: "8px", height: 30 },
-                          "& .MuiInputBase-input": { py: .3, px: { xs: .35, sm: .8 }, textAlign: "center", fontSize: 11.5 } }} />
-                      <Typography fontWeight={850} color="#176047" noWrap sx={{ fontSize: { xs: 10.5, sm: 12.5 }, flexShrink: 0 }}>
-                        {currency.format(item.quantity * item.unitPrice)}
-                      </Typography>
-                      <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
-                        onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b", p: .35, flexShrink: 0 }}>
-                        {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon sx={{ fontSize: 18 }} />}
-                      </IconButton></span></Tooltip>
-                    </Stack>;
+                        <Tooltip title="Remover item"><span><IconButton disabled={busy === key} aria-label={`Remover ${item.name}`}
+                          onClick={() => void removeItem(composition.id, item.id)} size="small" sx={{ color: "#9d4b4b", width: 32, height: 32, flexShrink: 0 }}>
+                          {busy === key ? <CircularProgress size={16} /> : <DeleteOutlineRoundedIcon sx={{ fontSize: 19 }} />}
+                        </IconButton></span></Tooltip>
+                      </Stack>
+                    </Box>;
                   })}
                 </Stack>}
 
@@ -558,11 +564,12 @@ export default function CompositionsPage() {
                 {addingTo === composition.id && <CompositionProductPicker composition={composition} onAdded={replace} />}
                 <Divider sx={{ my: .65 }} />
                 <Typography color="#315247" fontWeight={800} sx={{ px: .7, pb: .65, fontSize: 11.5 }}>Obras vinculadas</Typography>
-                {linkedProjects.length ? <Stack direction="row" gap={.6} flexWrap="wrap" sx={{ px: .7, pb: .8 }}>
+                {linkedProjects.length ? <Stack direction="row" gap={.75} flexWrap="wrap" sx={{ px: .7, pb: 1 }}>
                   {linkedProjects.map(project => <Chip key={project.id} size="small" label={project.name} disabled={projectBusy}
                     onDelete={() => void setLinkedProjects(composition.id, linkedProjects.filter(item => item.id !== project.id).map(item => item.id))}
-                    sx={{ maxWidth: "100%", height: 28, borderRadius: "9px", bgcolor: "#e9f4f0", color: "#245843", fontWeight: 750,
-                      "& .MuiChip-label": { overflow: "hidden", textOverflow: "ellipsis" }, "& .MuiChip-deleteIcon": { color: "#6e9183", fontSize: 17 } }} />)}
+                    sx={{ maxWidth: "100%", height: 34, borderRadius: 999, bgcolor: "#edf6f2", color: "#245843", fontWeight: 750,
+                      border: "1px solid #d9eae2", "& .MuiChip-label": { px: 1.25, overflow: "hidden", textOverflow: "ellipsis", fontSize: 12 },
+                      "& .MuiChip-deleteIcon": { color: "#789b8b", fontSize: 18, mr: .8, "&:hover": { color: "#416d59" } } }} />)}
                 </Stack> : <Typography color="text.secondary" sx={{ px: .7, pb: .8, fontSize: 10.5 }}>Nenhuma obra vinculada.</Typography>}
                 <Button onClick={() => setLinksOpenId(current => current === composition.id ? "" : composition.id)}
                   aria-expanded={linksOpenId === composition.id} fullWidth startIcon={<AddRoundedIcon sx={{ fontSize: 19 }} />}
