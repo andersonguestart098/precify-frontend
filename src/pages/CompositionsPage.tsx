@@ -83,7 +83,7 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
   return <Box sx={{ mt: 1.5, p: { xs: 1.25, sm: 1.75 }, border: "1px solid #c9e2d7", borderRadius: 3, bgcolor: "#f7fcf9" }}>
     <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mb={1}>
       <Box minWidth={0}>
-        <Typography fontWeight={850} color="#21483b" fontSize={14}>Adicionar produtos</Typography>
+        <Typography fontWeight={850} color="#21483b" fontSize={14}>Adicionar produtos à composição</Typography>
         <Typography color="text.secondary" fontSize={11}>Busque e selecione sem sair da composição.</Typography>
       </Box>
       <Button size="small" onClick={onClose} sx={{ textTransform: "none", flexShrink: 0 }}>Fechar</Button>
@@ -523,10 +523,13 @@ export default function CompositionsPage() {
                   })}
                 </Stack>}
                 <Divider sx={{ mt: 1.25 }} />
-                <Stack direction="row" alignItems="center" justifyContent="space-between" pt={1.5}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} pt={1.5}>
                   <Button onClick={() => setAddingTo(current => current === composition.id ? "" : composition.id)}
                     aria-expanded={addingTo === composition.id} size="small" startIcon={<AddRoundedIcon />}
-                    sx={{ textTransform: "none", fontWeight: 800 }}>Adicionar produtos</Button>
+                    sx={{ minWidth: 0, textTransform: "none", textAlign: "left", whiteSpace: "normal", lineHeight: 1.2, fontWeight: 800,
+                      "& .MuiButton-startIcon": { flexShrink: 0 } }}>
+                    Adicionar produtos à composição
+                  </Button>
                   <Tooltip title="Excluir composição"><span><IconButton size="small" disabled={busy === composition.id}
                     aria-label={`Excluir composição ${composition.name}`} onClick={() => void removeList(composition)} sx={{ color: "#9d4b4b" }}>
                     {busy === composition.id ? <CircularProgress size={18} /> : <DeleteOutlineRoundedIcon />}
