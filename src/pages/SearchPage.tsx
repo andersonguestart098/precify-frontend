@@ -1,6 +1,6 @@
 import { ResultSkeletons } from "../components/SearchSkeleton";
 import { SegmentCarousel } from "../components/SegmentCarousel";
-import { catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
+import { catalogHeroSubtitleSx, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { Alert, Box, Button, ButtonBase, CircularProgress, Container, Drawer, IconButton, Paper, Pagination, Skeleton, Stack, Typography } from "@mui/material";
@@ -199,7 +199,7 @@ export default function SearchPage() {
       <Typography component="h1" sx={catalogHeroTitleSx}>
         Encontre o material pela especificação.
       </Typography>
-      <Typography color="text.secondary" sx={{ fontSize: { xs: "clamp(13px, 3.7vw, 16px)", md: 13, xl: 16 } }}>Filtre e compare produtos por especificação.</Typography>
+      <Typography color="text.secondary" sx={catalogHeroSubtitleSx}>Filtre e compare produtos por especificação.</Typography>
     </Box>
 
     <Box sx={{ display: { xs: "none", md: "block" } }}>{segmentRail}</Box>
