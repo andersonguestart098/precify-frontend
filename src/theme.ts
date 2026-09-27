@@ -15,6 +15,13 @@ export const theme = createTheme({
   },
   components: {
     MuiCssBaseline: { styleOverrides: {
+      // iOS Safari enlarges the viewport when a small text field receives focus.
+      // Keep native and MUI inputs readable without disabling pinch zoom.
+      "@media (max-width: 599.95px) and (pointer: coarse)": {
+        "input:not([type='checkbox']):not([type='radio']), textarea, select, .MuiInputBase-input, .MuiSelect-select": {
+          fontSize: "16px !important",
+        },
+      },
       "@media (hover: hover) and (pointer: fine)": {
         body: { cursor: "default" },
         "input, textarea, [contenteditable='true'], .MuiInputBase-input": { cursor: "text" },
