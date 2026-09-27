@@ -136,29 +136,33 @@ function CompositionWorkPicker({ composition, projects, linkedProjects, busy, on
   busy: boolean;
   onAdd: (project: Project) => void;
 }) {
-  const isWideScreen = useMediaQuery("(min-width:600px)");
-  const [query, setQuery] = useState("");
   const linkedIds = new Set(linkedProjects.map(project => project.id));
   const available = projects.filter(project => !linkedIds.has(project.id));
 
-  return <Autocomplete<Project, false, false, false>
-    options={available} value={null} inputValue={query} disabled={busy}
-    onInputChange={(_, value) => setQuery(value)}
-    onChange={(_, project) => { if (project) { onAdd(project); setQuery(""); } }}
-    getOptionLabel={project => project.name}
-    noOptionsText={available.length ? "Nenhuma obra encontrada" : "Todas as obras estão vinculadas"}
-    blurOnSelect={false} forcePopupIcon={false}
-    renderInput={params => <TextField {...params} autoFocus={isWideScreen} size="small" placeholder="Buscar outra obra"
-      slotProps={{ htmlInput: { ...params.inputProps, "aria-label": `Buscar obras para ${composition.name}` } }} />}
-    renderOption={(props, project) => <Box component="li" {...props} key={project.id} sx={{ display: "flex", gap: 1, alignItems: "center", minHeight: 42 }}>
-      <AddRoundedIcon sx={{ color: "#3c765e", fontSize: 18 }} />
-      <Box minWidth={0}>
-        <Typography noWrap fontSize={12.5} fontWeight={750}>{project.name}</Typography>
-        {project.location && <Typography noWrap color="text.secondary" fontSize={10.5}>{project.location}</Typography>}
-      </Box>
-    </Box>}
-    sx={{ width: { xs: 185, sm: 230 }, maxWidth: "100%", "& .MuiOutlinedInput-root": { borderRadius: "999px", bgcolor: "#fff", minHeight: 36, py: "0 !important" },
-      "& .MuiInputBase-input": { fontSize: { xs: 16, sm: 12 }, py: ".35rem !important" }, "& fieldset": { borderColor: "#cddfd5" } }} />;
+  return <Box sx={{ flexBasis: "100%", minWidth: 0, mt: .35 }}>
+    <Typography color="#315247" fontWeight={800} sx={{ fontSize: 11.5, mb: .6 }}>
+      Selecione uma obra cadastrada
+    </Typography>
+    {available.length ? <Box component="ul" aria-label={`Obras disponíveis para ${composition.name}`} sx={{
+      listStyle: "none", m: 0, p: .45, maxHeight: 224, overflowY: "auto", overscrollBehavior: "contain",
+      WebkitOverflowScrolling: "touch", border: "1px solid #d9eae2", borderRadius: "12px", bgcolor: "#fff",
+    }}>
+      {available.map(project => <Box component="li" key={project.id}>
+        <ButtonBase onClick={() => onAdd(project)} disabled={busy} aria-label={`Vincular ${project.name}`}
+          sx={{ width: "100%", minHeight: 44, px: 1, py: .65, gap: 1, borderRadius: "8px",
+            justifyContent: "flex-start", textAlign: "left", "&:hover": { bgcolor: "#edf6f2" },
+            "&.Mui-focusVisible": { outline: "2px solid #64aa87" } }}>
+          <AddRoundedIcon sx={{ color: "#3c765e", fontSize: 19, flexShrink: 0 }} />
+          <Box minWidth={0}>
+            <Typography fontSize={12.5} fontWeight={750} color="#284d41">{project.name}</Typography>
+            {project.location && <Typography color="text.secondary" fontSize={10.5}>{project.location}</Typography>}
+          </Box>
+        </ButtonBase>
+      </Box>)}
+    </Box> : <Typography color="text.secondary" sx={{ fontSize: 11.5, py: .7 }}>
+      Todas as obras já estão vinculadas.
+    </Typography>}
+  </Box>;
 }
 
 export default function CompositionsPage() {
