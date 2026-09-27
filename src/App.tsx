@@ -80,7 +80,7 @@ function SessionRoutes() {
     const cacheTimeout = new Promise<void>(resolve => window.setTimeout(resolve, 6500));
 
     void Promise.all([
-      Promise.race([warmAppCache(user.id), cacheTimeout]),
+      Promise.race([warmAppCache(user.id, window.location.pathname), cacheTimeout]),
       minimumSplash,
     ]).finally(() => {
       if (active) {
