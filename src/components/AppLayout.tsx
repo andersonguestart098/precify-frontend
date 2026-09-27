@@ -87,7 +87,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const showSearch = location.pathname === "/inicio" || location.pathname === "/produtos";
   const isProducts = location.pathname === "/produtos";
-  const keepWideCatalogLayout = location.pathname === "/inicio" || location.pathname === "/produtos";
+  const useNaturalDesktopScale = ["/inicio", "/produtos", "/composicoes", "/favoritos", "/perfil"].includes(location.pathname);
   const isProductDetailPage = location.pathname.startsWith("/produtos/");
   const isComparePage = location.pathname.startsWith("/comparar");
   const savedLocation = readSavedLocation();
@@ -278,7 +278,7 @@ export default function AppLayout() {
       <Box key={location.pathname} sx={{
         pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 },
         animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
-        "@media (min-width:900px) and (max-width:1799.95px)": (isComparePage || isProductDetailPage || keepWideCatalogLayout) ? {
+        "@media (min-width:900px) and (max-width:1799.95px)": (isComparePage || isProductDetailPage || useNaturalDesktopScale) ? {
           width: "100%", zoom: 1, translate: "0 0",
         } : {
           width: "119.05%", zoom: .84, translate: "-10.6% 0",
