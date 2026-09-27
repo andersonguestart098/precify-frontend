@@ -26,6 +26,13 @@ import {
 } from "../services/appWarmCache";
 
 const searchResponseCache = new Map<string, CatalogSearchPage>();
+const resultToolsLabelSx = {
+  fontSize: { xs: 10.8, md: 10.5, xl: 11.3 },
+  fontWeight: 800,
+  lineHeight: 1.1,
+  letterSpacing: ".055em",
+  textTransform: "uppercase",
+} as const;
 
 function isInitialSearch(query: string, familyCode: string, criteria: TechnicalCriterion[], page: number, onlyFavorites: boolean) {
   return !query.trim() && !familyCode && page === 0 && !onlyFavorites && criteria.every(criterion => !criterion.value.trim());
@@ -215,14 +222,14 @@ export default function SearchPage() {
         <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between"
           alignItems={{ xs: "stretch", sm: "center" }} gap={{ xs: .9, sm: 1 }} mb={{ xs: 1.2, md: 1.25, xl: 2 }}>
           <Box minWidth={0}>
-            <Typography variant="overline" color="primary" fontWeight={800} sx={{ fontSize: { xs: 9.6, md: 10.5, xl: 11.3 }, lineHeight: 1.1 }}>Resultados classificados</Typography>
+            <Typography variant="overline" color="primary" sx={resultToolsLabelSx}>Resultados classificados</Typography>
             <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
               {loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`}
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" justifyContent={{ xs: "space-between", sm: "flex-end" }} gap={.65}>
             <Button variant="text" startIcon={<TuneOutlinedIcon />} onClick={() => setFilterOpen(true)}
-              sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .65, fontSize: 10.8, fontWeight: 760 }}>
+              sx={{ ...resultToolsLabelSx, display: { xs: "inline-flex", md: "none" }, minWidth: 0, px: .65 }}>
               {hasFilters ? "Filtros ativos" : "Filtros"}
             </Button>
             <Stack direction="row" alignItems="center" gap={.4}>
