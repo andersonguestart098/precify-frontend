@@ -383,7 +383,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         gridTemplateColumns: layout === "mosaic"
           ? { xs: "1fr", sm: "1fr", md: "1fr" }
           : { xs: "38% minmax(0,62%)", sm: "180px minmax(0,1fr)", md: "150px minmax(0,1fr)", xl: "190px minmax(0,1fr)" },
-        minHeight: layout === "mosaic" ? { xs: 292, sm: 330, md: 390, xl: 430 } : { xs: 184, sm: 206, md: 166, xl: 210 },
+        minHeight: layout === "mosaic" ? { xs: 292, sm: 330, md: 390, xl: 430 } : { xs: "clamp(164px, 23dvh, 184px)", sm: 206, md: 166, xl: 210 },
       }}>
         <Box sx={{
           position: "relative",
@@ -402,8 +402,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
             sx={{
               width: "100%",
               height: "100%",
-              maxHeight: layout === "mosaic" ? { xs: 118, sm: 150, md: 190, xl: 220 } : { xs: 150, sm: 178, md: 140, xl: 178 },
-              minHeight: layout === "mosaic" ? { xs: 108, sm: 138, md: 170, xl: 195 } : { xs: 132, sm: 150, md: 126, xl: 150 },
+              maxHeight: layout === "mosaic" ? { xs: 118, sm: 150, md: 190, xl: 220 } : { xs: "clamp(130px, 19dvh, 150px)", sm: 178, md: 140, xl: 178 },
+              minHeight: layout === "mosaic" ? { xs: 108, sm: 138, md: 170, xl: 195 } : { xs: "clamp(116px, 17dvh, 132px)", sm: 150, md: 126, xl: 150 },
               bgcolor: "transparent",
               border: 0,
               borderRadius: 0,
