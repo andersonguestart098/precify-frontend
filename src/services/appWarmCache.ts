@@ -241,12 +241,22 @@ export function loadFavoriteCodesCached(userId: string, force = false) {
   return request;
 }
 
-export async function warmAppCache(userId: string) {
-  await Promise.allSettled([
-    loadCatalogCached(),
-    loadInitialSearchCached(),
-    loadProjectsCached(userId),
-    loadCompositionsCached(userId),
+export async function warmAppCache(userId: string, pathname = "/inicio") {
+  const planningPage = pathname === "/obras" || pathname === "/composicoes";
+  const productPage = pathname === "/produtos";
+
+  // Show the requested screen as soon as its own data is ready. Other sections
+  // can warm in the background without keeping the whole app on the splash.
+  await Promise.allSettled(planningPage
+    ? [loadProjectsCached(userId), loadCompositionsCached(userId)]
+    : productPage
+      ? [loadCatalogCached(), loadInitialSearchCached()]
+      : [loadCatalogCached()]);
+
+  void Promise.allSettled([
+    ...(!planningPage && !productPage ? [] : [loadCatalogCached()]),
+    ...(!productPage ? [loadInitialSearchCached()] : []),
+    ...(!planningPage ? [loadProjectsCached(userId), loadCompositionsCached(userId)] : []),
     loadFavoriteCodesCached(userId),
   ]);
 }
