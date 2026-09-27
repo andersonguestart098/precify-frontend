@@ -495,7 +495,7 @@ export default function PlanningPage() {
             <Typography component="span" sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, letterSpacing: "-.01em" }}>
               Nova obra
             </Typography>
-            <Box className="new-work-icon" sx={{
+            <Box component="span" className="new-work-icon" sx={{
               width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
               display: "grid", placeItems: "center", color: "#17664f",
               background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
