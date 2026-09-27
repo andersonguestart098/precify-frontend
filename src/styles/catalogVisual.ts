@@ -1,10 +1,10 @@
 export const catalogHeroTitleSx = {
   maxWidth: { md: 690, xl: 820 },
   fontWeight: 900,
-  fontSize: { xs: "clamp(29px, 8vw, 35px)", md: 38, xl: 49 },
+  fontSize: { xs: "clamp(27px, min(7.6vw, 4.2dvh), 35px)", md: 38, xl: 49 },
   letterSpacing: "-.045em",
   lineHeight: 1.03,
-  mb: { xs: 1, md: .65, xl: 1 },
+  mb: { xs: .8, md: .65, xl: 1 },
   background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
