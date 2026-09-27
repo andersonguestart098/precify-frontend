@@ -533,21 +533,25 @@ export default function LaborPage() {
           <Typography color="text.secondary" sx={{ mt: .55, fontSize: { xs: 12.5, md: 14 } }}>Defina como a obra será atendida e selecione somente o que ela precisa.</Typography>
         </Box>
         <Stack gap={1} sx={{ alignSelf: { xs: "stretch", lg: "auto" }, alignItems: { xs: "stretch", lg: "flex-end" } }}>
-          <Stack direction="row" alignItems="center" gap={{ xs: .8, md: 1 }} flexWrap="wrap"
-            sx={{ justifyContent: { xs: "flex-start", lg: "flex-end" } }}>
+          <Box sx={{
+            display: { xs: "grid", sm: "flex" },
+            gridTemplateColumns: { xs: "minmax(0,1fr) auto", sm: "none" },
+            alignItems: "center", justifyContent: { sm: "flex-end" },
+            flexWrap: "wrap", gap: { xs: .8, md: 1 }, width: { xs: "100%", lg: "auto" },
+          }}>
             <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}`}
-              startIcon={<CalculateOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+              startIcon={<CalculateOutlinedIcon sx={{ fontSize: 18 }} />} sx={{ ...headerActionSx, justifySelf: "start" }}>
               Composições ({project.compositionIds.length})
             </Button>
             <Button component={RouterLink} to="/produtos"
-              startIcon={<Inventory2OutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+              startIcon={<Inventory2OutlinedIcon sx={{ fontSize: 18 }} />} sx={{ ...headerActionSx, justifySelf: "end" }}>
               Produtos
             </Button>
             {selectedItems.length > 0 && <Button onClick={openSummary} aria-label="Abrir resumo da obra"
-              startIcon={<SummarizeOutlinedIcon sx={{ fontSize: 18 }} />} sx={headerActionSx}>
+              startIcon={<SummarizeOutlinedIcon sx={{ fontSize: 18 }} />} sx={{ ...headerActionSx, gridColumn: { xs: 1, sm: "auto" }, justifySelf: "start" }}>
               Resumo da obra
             </Button>}
-          </Stack>
+          </Box>
           <Button component={RouterLink} to="/mao-de-obra"
             startIcon={<SwapHorizRoundedIcon sx={{ fontSize: 19 }} />}
             sx={{ ...headerActionSx, alignSelf: "flex-end", borderColor: "#d4e2dd", background: "#fff", color: "#315e4e" }}>
