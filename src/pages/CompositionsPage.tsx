@@ -31,14 +31,6 @@ import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
 const UNASSIGNED = "__unassigned__";
-const compositionActionSx = {
-  minWidth: 0, minHeight: { xs: 70, sm: 58 }, px: .9, py: .7, borderRadius: "10px",
-  display: "flex", alignItems: "center", justifyContent: "flex-start", gap: .7, textAlign: "left",
-  color: "#245b48", bgcolor: "#fbfdfc", border: "1px solid #d7e8e0",
-  transition: "background 160ms ease, border-color 160ms ease, box-shadow 160ms ease",
-  "&:hover": { bgcolor: "#eff8f3", borderColor: "#a8d3c1", boxShadow: "0 5px 14px rgba(21,72,56,.08)" },
-  "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-} as const;
 
 type ProjectOption = { id: string; label: string };
 
@@ -88,7 +80,7 @@ function CompositionProductPicker({ composition, onAdded, onClose }: {
     } finally { setBusyCode(""); }
   };
 
-  return <Box id={`composition-product-picker-${composition.id}`} sx={{ mt: 1.5, p: { xs: 1.25, sm: 1.75 }, border: "1px solid #c9e2d7", borderRadius: 3, bgcolor: "#f7fcf9" }}>
+  return <Box sx={{ mt: 1.5, p: { xs: 1.25, sm: 1.75 }, border: "1px solid #c9e2d7", borderRadius: 3, bgcolor: "#f7fcf9" }}>
     <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} mb={1}>
       <Box minWidth={0}>
         <Typography fontWeight={850} color="#21483b" fontSize={14}>Adicionar produtos à composição</Typography>
@@ -330,30 +322,38 @@ export default function CompositionsPage() {
             background: "linear-gradient(112deg,#13382e,#006b4f 65%,#269b78)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Minhas composições</Typography>
           <Typography color="text.secondary" mt={.5}>Organize produtos em composições e acompanhe o valor estimado.</Typography>
         </Box>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}
-          sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
-          <Typography sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
-            Nova composição
-          </Typography>
+        <Stack direction="row" justifyContent="flex-end" sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
           <ButtonBase onClick={() => setCreateOpen(true)} aria-label="Criar nova composição" sx={{
-            width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
-            color: "#17664f",
-            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-            border: "1px solid rgba(0,107,79,.14)",
-            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            display: "inline-flex", alignItems: "center", gap: { xs: .85, md: 1 },
+            minHeight: 44, pl: 1.2, borderRadius: 999, color: "#2f5c4c",
             transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
             "&:active": { transform: "scale(.96)" },
             "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
             "@media (hover:hover)": {
               "&:hover": {
-                transform: "translateY(-1px)", borderColor: "rgba(0,107,79,.24)",
-                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                transform: "translateY(-1px)", color: "#17664f",
+                "& .new-composition-icon": {
+                  borderColor: "rgba(0,107,79,.24)",
+                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                },
               },
             },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
           }}>
-            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+            <Typography component="span" sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, letterSpacing: "-.01em" }}>
+              Nova composição
+            </Typography>
+            <Box component="span" className="new-composition-icon" sx={{
+              width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
+              display: "grid", placeItems: "center", color: "#17664f",
+              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+              border: "1px solid rgba(0,107,79,.14)",
+              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+              transition: "box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            }}>
+              <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+            </Box>
           </ButtonBase>
         </Stack>
       </Stack>
@@ -530,38 +530,19 @@ export default function CompositionsPage() {
                     </Stack>;
                   })}
                 </Stack>}
-                <Divider sx={{ mt: .9 }} />
-                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} pt={.55} pb={.45}>
-                  <Typography sx={{ color: "#6b8176", fontSize: 9.5, fontWeight: 850, letterSpacing: ".06em", textTransform: "uppercase" }}>
-                    Ações da composição
-                  </Typography>
+                <Divider sx={{ mt: 1.25 }} />
+                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} pt={1.5}>
+                  <Button onClick={() => setAddingTo(current => current === composition.id ? "" : composition.id)}
+                    aria-expanded={addingTo === composition.id} size="small" startIcon={<AddRoundedIcon />}
+                    sx={{ minWidth: 0, textTransform: "none", textAlign: "left", whiteSpace: "normal", lineHeight: 1.2, fontWeight: 800,
+                      "& .MuiButton-startIcon": { flexShrink: 0 } }}>
+                    Adicionar produtos à composição
+                  </Button>
                   <Tooltip title="Excluir composição"><span><IconButton size="small" disabled={busy === composition.id}
                     aria-label={`Excluir composição ${composition.name}`} onClick={() => void removeList(composition)} sx={{ color: "#9d4b4b" }}>
                     {busy === composition.id ? <CircularProgress size={18} /> : <DeleteOutlineRoundedIcon />}
                   </IconButton></span></Tooltip>
                 </Stack>
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: .8 }}>
-                  <ButtonBase onClick={() => setAddingTo(current => current === composition.id ? "" : composition.id)}
-                    aria-expanded={addingTo === composition.id} aria-controls={`composition-product-picker-${composition.id}`}
-                    sx={{ ...compositionActionSx, bgcolor: addingTo === composition.id ? "#e7f4ec" : "#f1f9f4", borderColor: "#bfdfcb" }}>
-                    <Box component="span" sx={{ width: 26, height: 26, borderRadius: "7px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#dcefe3" }}>
-                      <AddRoundedIcon sx={{ fontSize: 18 }} />
-                    </Box>
-                    <Box component="span" sx={{ display: "block", minWidth: 0 }}>
-                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.4, sm: 12 }, fontWeight: 850, lineHeight: 1.18 }}>Adicionar produtos à composição</Typography>
-                      <Typography component="span" sx={{ display: "block", mt: .2, fontSize: 9.2, color: "#658176", lineHeight: 1.15 }}>Buscar nesta tela</Typography>
-                    </Box>
-                  </ButtonBase>
-                  <ButtonBase component={RouterLink} to="/produtos" sx={compositionActionSx}>
-                    <Box component="span" sx={{ width: 26, height: 26, borderRadius: "7px", display: "grid", placeItems: "center", flexShrink: 0, bgcolor: "#e8f4ee" }}>
-                      <SearchRoundedIcon sx={{ fontSize: 17 }} />
-                    </Box>
-                    <Box component="span" sx={{ display: "block", minWidth: 0 }}>
-                      <Typography component="span" sx={{ display: "block", fontSize: { xs: 11.4, sm: 12 }, fontWeight: 850, lineHeight: 1.18 }}>Explorar produtos</Typography>
-                      <Typography component="span" sx={{ display: "block", mt: .2, fontSize: 9.2, color: "#658176", lineHeight: 1.15 }}>Abrir catálogo</Typography>
-                    </Box>
-                  </ButtonBase>
-                </Box>
                 {addingTo === composition.id && <CompositionProductPicker composition={composition} onAdded={replace} onClose={() => setAddingTo("")} />}
               </AccordionDetails>
             </Accordion></Box>;
