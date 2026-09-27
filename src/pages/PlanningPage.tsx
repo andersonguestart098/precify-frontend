@@ -551,13 +551,16 @@ export default function PlanningPage() {
             const projectTotal = compositionTotal + laborTotal;
             const projectTotalPending = !laborPlan && !laborErrors[project.id];
 
-            return <Box key={project.id} sx={{ position: "relative" }}><Accordion disableGutters elevation={0}
+            return <Box key={project.id}><Accordion disableGutters elevation={0}
               onChange={(_, expanded) => { if (expanded) void ensureLaborPlan(project.id); }}
               sx={{
                 border: "1px solid #d9e6e1", borderRadius: "11px !important", overflow: "hidden", bgcolor: "#fff", position: "relative",
                 boxShadow: "0 3px 14px rgba(21,72,56,.025)", "&::before": { display: "none" },
               }}>
-              <AccordionSummary expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
+              <Box component="span" id={`project-heading-${project.id}`} aria-controls={`project-details-${project.id}`}
+                aria-label={project.name} sx={{ display: "block", position: "relative" }}>
+              <AccordionSummary id={`project-toggle-${project.id}`} aria-controls={`project-details-${project.id}`}
+                expandIcon={<ExpandMoreRoundedIcon sx={{ color: "#6d837b" }} />} sx={{
                 px: { xs: 1.25, sm: 1.7 }, minHeight: 70, bgcolor: "#fbfdfc",
                 "& .MuiAccordionSummary-content": { my: 1, minWidth: 0, mr: 6.5 },
               }}>
@@ -592,6 +595,26 @@ export default function PlanningPage() {
                   </Stack>
                 </Stack>
               </AccordionSummary>
+              <IconButton
+                size="small"
+                aria-label={workspaceFavorites.favorites.WORK.has(project.id) ? "Remover obra dos favoritos" : "Favoritar obra"}
+                aria-pressed={workspaceFavorites.favorites.WORK.has(project.id)}
+                disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
+                onClick={() => void workspaceFavorites.toggle("WORK", project.id)}
+                sx={{
+                  position: "absolute", top: "50%", right: 46, transform: "translateY(-50%)", zIndex: 1,
+                  width: 34, height: 34, borderRadius: "50%",
+                  color: workspaceFavorites.favorites.WORK.has(project.id) ? "#a56d00" : "#71867c",
+                  bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff9eb" : "#f8fbfa",
+                  border: "1px solid",
+                  borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#e7d8b0" : "#dce8e4",
+                  "&:hover": { bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff1cc" : "#eaf3ef" },
+                  "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
+                }}
+              >
+                {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
+              </IconButton>
+              </Box>
               <AccordionDetails sx={{ p: { xs: 1.15, sm: 1.5 }, pt: 0, minWidth: 0 }}>
                 <Divider sx={{ mb: 1.15 }} />
 
@@ -647,25 +670,7 @@ export default function PlanningPage() {
                   </Stack>
                 </Stack>
               </AccordionDetails>
-            </Accordion><IconButton
-              size="small"
-              aria-label={workspaceFavorites.favorites.WORK.has(project.id) ? "Remover obra dos favoritos" : "Favoritar obra"}
-              aria-pressed={workspaceFavorites.favorites.WORK.has(project.id)}
-              disabled={workspaceFavorites.loading || workspaceFavorites.isBusy("WORK", project.id)}
-              onClick={() => void workspaceFavorites.toggle("WORK", project.id)}
-              sx={{
-                position: "absolute", top: 18, right: 46, zIndex: 1,
-                width: 34, height: 34, borderRadius: "50%",
-                color: workspaceFavorites.favorites.WORK.has(project.id) ? "#a56d00" : "#71867c",
-                bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff9eb" : "#f8fbfa",
-                border: "1px solid",
-                borderColor: workspaceFavorites.favorites.WORK.has(project.id) ? "#e7d8b0" : "#dce8e4",
-                "&:hover": { bgcolor: workspaceFavorites.favorites.WORK.has(project.id) ? "#fff1cc" : "#eaf3ef" },
-                "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
-              }}
-            >
-              {workspaceFavorites.favorites.WORK.has(project.id) ? <StarRoundedIcon sx={{ fontSize: 19 }} /> : <StarBorderRoundedIcon sx={{ fontSize: 19 }} />}
-            </IconButton></Box>;
+            </Accordion></Box>;
           })}
         </Stack>}
 
