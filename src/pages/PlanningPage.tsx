@@ -472,31 +472,39 @@ export default function PlanningPage() {
             Veja tudo que pertence a cada obra: composições, itens, custos e mão de obra.
           </Typography>
         </Box>
-        <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={{ xs: .85, md: 1 }}
-          sx={{ mt: { xs: .15, sm: 0 } }}>
-          <Typography sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, color: "#2f5c4c", letterSpacing: "-.01em" }}>
-            Nova obra
-          </Typography>
+        <Stack direction="row" justifyContent="flex-end" sx={{ mt: { xs: .15, sm: 0 } }}>
           <ButtonBase onClick={openNew} aria-label="Criar nova obra" sx={{
-            width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
-            color: "#17664f",
-            background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
-            border: "1px solid rgba(0,107,79,.14)",
-            boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+            display: "inline-flex", alignItems: "center", gap: { xs: .85, md: 1 },
+            minHeight: 44, pl: 1.2, borderRadius: 999, color: "#2f5c4c",
             transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
             "&:active": { transform: "scale(.96)" },
             "&.Mui-focusVisible": { outline: "2px solid rgba(38,155,120,.35)", outlineOffset: 3 },
             "@media (hover:hover)": {
               "&:hover": {
                 transform: "translateY(-1px)",
-                borderColor: "rgba(0,107,79,.24)",
-                background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
-                boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                color: "#17664f",
+                "& .new-work-icon": {
+                  borderColor: "rgba(0,107,79,.24)",
+                  background: "linear-gradient(145deg,#ffffff,#e3f1ec)",
+                  boxShadow: "0 6px 15px rgba(24,60,48,.11), inset 0 1px 0 rgba(255,255,255,.96)",
+                },
               },
             },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
           }}>
-            <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+            <Typography component="span" sx={{ fontSize: { xs: 12.4, md: 13 }, fontWeight: 820, letterSpacing: "-.01em" }}>
+              Nova obra
+            </Typography>
+            <Box className="new-work-icon" sx={{
+              width: { xs: 42, md: 44 }, height: { xs: 42, md: 44 }, borderRadius: "50%", flexShrink: 0,
+              display: "grid", placeItems: "center", color: "#17664f",
+              background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
+              border: "1px solid rgba(0,107,79,.14)",
+              boxShadow: "0 4px 12px rgba(24,60,48,.08), inset 0 1px 0 rgba(255,255,255,.92)",
+              transition: "box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
+            }}>
+              <AddRoundedIcon sx={{ fontSize: { xs: 22, md: 23 } }} />
+            </Box>
           </ButtonBase>
         </Stack>
       </Stack>
