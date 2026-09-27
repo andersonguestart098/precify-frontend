@@ -35,11 +35,17 @@ import { projectTypeLabel, projectTypeOptions } from "../data/projectTypes";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 const workShortcutSx = {
-  minHeight: 42, flexShrink: 0, px: 1.5, borderRadius: 999,
-  textTransform: "none", whiteSpace: "nowrap", fontSize: 11.5, fontWeight: 800,
-  color: "#245b48", bgcolor: "#f1f8f5", border: "1px solid #d3e7de",
-  scrollSnapAlign: "start",
-  "&:hover": { bgcolor: "#e5f3ed", borderColor: "#a8d3c1" },
+  minWidth: 0, minHeight: { xs: 54, sm: 50 }, px: 1.1, py: .8, borderRadius: "11px",
+  textTransform: "none", whiteSpace: "normal", textAlign: "left", lineHeight: 1.2,
+  fontSize: { xs: 10.5, sm: 11.5 }, fontWeight: 800, justifyContent: "flex-start",
+  color: "#245b48", bgcolor: "#fbfdfc", border: "1px solid #d7e8e0",
+  boxShadow: "0 2px 8px rgba(21,72,56,.035)",
+  "& .MuiButton-startIcon": {
+    width: 28, height: 28, ml: 0, mr: .8, flexShrink: 0,
+    display: "grid", placeItems: "center", borderRadius: "8px", bgcolor: "#e8f4ee",
+    "& > *:nth-of-type(1)": { fontSize: 18 },
+  },
+  "&:hover": { bgcolor: "#eff8f3", borderColor: "#acd4bf", boxShadow: "0 5px 14px rgba(21,72,56,.09)" },
   "&.Mui-focusVisible": { outline: "2px solid #269b78", outlineOffset: 2 },
 } as const;
 
@@ -619,14 +625,20 @@ export default function PlanningPage() {
                 <Divider sx={{ mb: 1.15 }} />
 
                 <Stack gap={1.1}>
-                  <Box component="nav" aria-label={`Ações da obra ${project.name}`} sx={{
-                    display: "flex", gap: .75, overflowX: "auto", pb: .6,
-                    scrollSnapType: "x proximity", scrollbarWidth: "thin",
-                  }}>
-                    <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}&adicionar=1`}
-                      startIcon={<AddRoundedIcon />} sx={workShortcutSx}>Adicionar produtos</Button>
-                    <Button onClick={() => openEdit(project)} startIcon={<LinkRoundedIcon />} sx={workShortcutSx}>Vincular composição</Button>
-                    <Button component={RouterLink} to="/produtos" startIcon={<SearchRoundedIcon />} sx={workShortcutSx}>Explorar produtos</Button>
+                  <Box component="nav" aria-label={`Ações da obra ${project.name}`}>
+                    <Typography sx={{ mb: .7, color: "#6b8176", fontSize: 9.5, fontWeight: 850, letterSpacing: ".06em", textTransform: "uppercase" }}>
+                      Ações da obra
+                    </Typography>
+                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "repeat(2,minmax(0,1fr))", sm: "repeat(3,minmax(0,1fr))" }, gap: .75 }}>
+                      <Button component={RouterLink} to={`/composicoes?obra=${encodeURIComponent(project.id)}&adicionar=1`}
+                        startIcon={<AddRoundedIcon />} sx={{
+                          ...workShortcutSx, gridColumn: { xs: "1 / -1", sm: "auto" },
+                          bgcolor: "#e9f6ee", borderColor: "#b9ddc8", color: "#195f42",
+                          "& .MuiButton-startIcon": { ...workShortcutSx["& .MuiButton-startIcon"], bgcolor: "#d5ebdd" },
+                        }}>Adicionar produtos</Button>
+                      <Button onClick={() => openEdit(project)} startIcon={<LinkRoundedIcon />} sx={workShortcutSx}>Vincular composição</Button>
+                      <Button component={RouterLink} to="/produtos" startIcon={<SearchRoundedIcon />} sx={workShortcutSx}>Explorar produtos</Button>
+                    </Box>
                   </Box>
                   <Box component="section" aria-labelledby={`compositions-${project.id}`}>
                     <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" alignItems={{ sm: "center" }} gap={.8} mb={.8}>
