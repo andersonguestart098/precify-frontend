@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
@@ -198,6 +199,7 @@ export default function CompositionsPage() {
   }, [compositions, projects, projectFilter, assignedIds]);
   const grandTotal = useMemo(() => visibleCompositions.reduce((sum, composition) => sum + composition.total, 0), [visibleCompositions]);
   const itemCount = useMemo(() => visibleCompositions.reduce((sum, composition) => sum + composition.items.length, 0), [visibleCompositions]);
+  const creationProject = projects.find(project => project.id === projectFilter);
 
   useEffect(() => {
     if (loading || params.get("adicionar") !== "1") return;
@@ -206,7 +208,7 @@ export default function CompositionsPage() {
       setExpandedId(first.id);
       setAddingTo(first.id);
       window.requestAnimationFrame(() => document.getElementById(`composition-${first.id}`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
-    } else setCreateOpen(true);
+    } else { setError(""); setCreateOpen(true); }
     setParams(current => {
       const next = new URLSearchParams(current);
       next.delete("adicionar");
@@ -278,6 +280,7 @@ export default function CompositionsPage() {
   };
 
   const create = async () => {
+    if (busy === "new") return;
     const name = newName.trim();
     if (!name) { setError("Dê um nome para a composição."); return; }
     setBusy("new"); setError("");
@@ -323,7 +326,7 @@ export default function CompositionsPage() {
           <Typography color="text.secondary" mt={.5}>Organize produtos em composições e acompanhe o valor estimado.</Typography>
         </Box>
         <Stack direction="row" justifyContent="flex-end" sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}>
-          <ButtonBase onClick={() => setCreateOpen(true)} aria-label="Criar nova composição" sx={{
+          <ButtonBase onClick={() => { setError(""); setCreateOpen(true); }} aria-label="Criar nova composição" sx={{
             display: "inline-flex", alignItems: "center", gap: { xs: .85, md: 1 },
             minHeight: 44, pl: 1.2, borderRadius: 999, color: "#2f5c4c",
             transition: "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease",
@@ -399,12 +402,12 @@ export default function CompositionsPage() {
           <PlaylistAddCheckRoundedIcon color="primary" sx={{ fontSize: 42 }} />
           <Typography variant="h6" fontWeight={800} mt={1}>Sua primeira lista começa aqui</Typography>
           <Typography color="text.secondary" variant="body2" mt={.5}>Crie uma composição para adicionar produtos e vincular obras.</Typography>
-          <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)} sx={{ mt: 2, borderRadius: 999 }}>Criar composição</Button>
+          <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => { setError(""); setCreateOpen(true); }} sx={{ mt: 2, borderRadius: 999 }}>Criar composição</Button>
         </Paper> : !visibleCompositions.length ? <Box sx={{ py: 5, textAlign: "center", borderTop: "1px solid #e6eeeb", borderBottom: "1px solid #e6eeeb" }}>
           <Typography fontWeight={800} color="#294d41">Nenhuma composição nessa obra.</Typography>
           <Typography color="text.secondary" fontSize={14} mt={.5}>Crie uma composição ou vincule uma existente a esta obra.</Typography>
           <Stack direction="row" gap={1} flexWrap="wrap" justifyContent="center" mt={2}>
-            <Button variant="outlined" onClick={() => setCreateOpen(true)} sx={{ textTransform: "none", borderRadius: 999 }}>Criar composição</Button>
+            <Button variant="outlined" onClick={() => { setError(""); setCreateOpen(true); }} sx={{ textTransform: "none", borderRadius: 999 }}>Criar composição</Button>
             {projects.some(project => project.id === projectFilter) && <Button component={RouterLink}
               to={`/obras?vincular=${encodeURIComponent(projectFilter)}`}
               sx={{ textTransform: "none", borderRadius: 999 }}>Vincular existente</Button>}
@@ -549,19 +552,57 @@ export default function CompositionsPage() {
           })}
         </Stack>}
 
-      <Dialog open={createOpen} onClose={busy === "new" ? undefined : () => setCreateOpen(false)} fullWidth maxWidth="xs"
-        slotProps={{ paper: { sx: { borderRadius: 4 } } }}>
-        <DialogTitle fontWeight={800}>Nova composição</DialogTitle>
-        <DialogContent>
-          <Typography color="text.secondary" variant="body2" mb={2}>Crie uma lista para uma obra, cômodo ou etapa do projeto.</Typography>
-          <TextField autoFocus fullWidth label="Nome" placeholder="Ex.: Alvenaria interna" value={newName}
-            onChange={event => setNewName(event.target.value)}
-            onKeyDown={event => { if (event.key === "Enter") void create(); }} />
+      <Dialog open={createOpen} onClose={busy === "new" ? undefined : () => setCreateOpen(false)} fullWidth maxWidth={false}
+        slotProps={{ paper: { sx: {
+          width: { xs: "100%", sm: "calc(100% - 48px)" }, maxWidth: { xs: "100%", sm: 460 },
+          maxHeight: { xs: "88dvh", sm: "calc(100dvh - 48px)" },
+          m: { xs: 0, sm: 2 }, position: { xs: "fixed", sm: "relative" }, bottom: { xs: 0, sm: "auto" },
+          borderRadius: { xs: "24px 24px 0 0", sm: "22px" }, overflow: "hidden", bgcolor: "#fff",
+          boxShadow: { xs: "0 -12px 38px rgba(14,47,37,.18)", sm: "0 22px 60px rgba(14,47,37,.16)" },
+        } } }}>
+        <DialogTitle sx={{ px: { xs: 2.5, sm: 3 }, pt: { xs: 2.3, sm: 2.6 }, pb: 1.7, borderBottom: "1px solid #e7eeeb" }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
+            <Stack direction="row" alignItems="center" gap={.8}>
+              <Box sx={{ width: 34, height: 34, borderRadius: "10px", display: "grid", placeItems: "center", bgcolor: "#e8f5ee", color: "#19684c" }}>
+                <PlaylistAddCheckRoundedIcon sx={{ fontSize: 20 }} />
+              </Box>
+              <Typography variant="overline" sx={{ color: "#33705a", fontWeight: 850, letterSpacing: 1.1, lineHeight: 1 }}>
+                Planejamento
+              </Typography>
+            </Stack>
+            <IconButton aria-label="Fechar criação de composição" disabled={busy === "new"} onClick={() => setCreateOpen(false)}
+              sx={{ width: 36, height: 36, color: "#698278", bgcolor: "#f4f8f6" }}>
+              <CloseRoundedIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </Stack>
+          <Typography component="h2" sx={{ mt: 1.3, fontSize: { xs: 24, sm: 27 }, lineHeight: 1.08, fontWeight: 900, letterSpacing: "-.035em", color: "#173f34" }}>
+            Nova composição
+          </Typography>
+          <Typography sx={{ mt: .65, fontSize: 12.5, lineHeight: 1.45, color: "#61796e", fontWeight: 450 }}>
+            Dê um nome para organizar os produtos de um ambiente ou etapa da obra.
+          </Typography>
+        </DialogTitle>
+        <DialogContent sx={{ px: { xs: 2.5, sm: 3 }, pt: "20px !important", pb: 1 }}>
+          <TextField fullWidth label="Nome da composição" placeholder="Ex.: Reforma da cozinha" value={newName}
+            onChange={event => { setNewName(event.target.value); if (error) setError(""); }}
+            onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); void create(); } }}
+            helperText="Você poderá adicionar os produtos logo depois."
+            sx={{ "& .MuiOutlinedInput-root": { borderRadius: "12px", bgcolor: "#fbfdfc" }, "& .MuiFormHelperText-root": { mx: .3, mt: .8, fontSize: 11 } }} />
+          {creationProject && <Typography sx={{ mt: 1.5, px: 1.3, py: 1, borderRadius: "10px", bgcolor: "#edf7f1", color: "#326a52", fontSize: 11.5, fontWeight: 700 }}>
+            Vincular à obra: {creationProject.name}
+          </Typography>}
+          {error && <Alert severity="error" sx={{ mt: 1.5, borderRadius: "10px" }}>{error}</Alert>}
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2.5 }}>
-          <Button onClick={() => setCreateOpen(false)} disabled={busy === "new"}>Cancelar</Button>
-          <Button variant="contained" onClick={create} disabled={busy === "new"}
-            startIcon={busy === "new" ? <CircularProgress color="inherit" size={16} /> : <AddRoundedIcon />}>Criar</Button>
+        <DialogActions sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, px: { xs: 2.5, sm: 3 }, pt: 1.5, pb: { xs: "calc(env(safe-area-inset-bottom) + 24px)", sm: 3 } }}>
+          <Button variant="outlined" onClick={() => setCreateOpen(false)} disabled={busy === "new"}
+            sx={{ m: "0 !important", minHeight: 46, borderRadius: "11px", textTransform: "none", fontWeight: 800, color: "#315e4e", borderColor: "#d3e4dc" }}>
+            Cancelar
+          </Button>
+          <Button variant="contained" onClick={() => void create()} disabled={busy === "new" || !newName.trim()}
+            startIcon={busy === "new" ? <CircularProgress color="inherit" size={16} /> : <AddRoundedIcon />}
+            sx={{ m: "0 !important", minHeight: 46, borderRadius: "11px", textTransform: "none", fontWeight: 850, boxShadow: "0 6px 14px rgba(0,107,79,.16)" }}>
+            Criar composição
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
