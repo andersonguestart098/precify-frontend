@@ -5,6 +5,7 @@ const emptyFavorites = () => ({
   WORK: new Set<string>(),
   LABOR: new Set<string>(),
   COMPOSITION: new Set<string>(),
+  PRODUCT: new Set<string>(),
 });
 
 export function useWorkspaceFavorites() {
@@ -25,6 +26,7 @@ export function useWorkspaceFavorites() {
           WORK: new Set(data.WORK ?? []),
           LABOR: new Set(data.LABOR ?? []),
           COMPOSITION: new Set(data.COMPOSITION ?? []),
+          PRODUCT: new Set(data.PRODUCT ?? []),
         });
       })
       .catch(reason => {
@@ -56,6 +58,7 @@ export function useWorkspaceFavorites() {
             WORK: new Set(current.WORK),
             LABOR: new Set(current.LABOR),
             COMPOSITION: new Set(current.COMPOSITION),
+            PRODUCT: new Set(current.PRODUCT),
           };
           if (next) updated[type].add(id); else updated[type].delete(id);
           return updated;
@@ -75,6 +78,7 @@ export function useWorkspaceFavorites() {
     WORK: favorites.WORK.size,
     LABOR: favorites.LABOR.size,
     COMPOSITION: favorites.COMPOSITION.size,
+    PRODUCT: favorites.PRODUCT.size,
   }), [favorites]);
 
   return {

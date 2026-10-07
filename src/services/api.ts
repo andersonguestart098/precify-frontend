@@ -1,4 +1,4 @@
-import type { CatalogMaterial, Product, ProductInput, CatalogSearchPage, SearchRequest } from "../domain/search";
+import type { CatalogMaterial, CatalogProduct, Product, ProductInput, CatalogSearchPage, ProductSearchPage, ProductSearchRequest, SearchRequest } from "../domain/search";
 import type { Composition, CompositionItemInput } from "../domain/composition";
 
 const API_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:8080/api").replace(/\/$/, "");
@@ -64,6 +64,18 @@ export function searchProducts(request: SearchRequest, page = 0, size = 10, sign
   });
 }
 
+/** Products (last level) for the search screen; segment/family/material/brand are exact filters. */
+export function searchCatalogProducts(request: ProductSearchRequest, page = 0, size = 10, signal?: AbortSignal) {
+  const payload = Object.fromEntries(Object.entries(request).filter(([, value]) => value !== "" && value !== undefined && value !== false));
+  return apiRequest<ProductSearchPage>(`/catalog/products/search?page=${page}&size=${size}`, {
+    method: "POST", body: JSON.stringify(payload), signal,
+  });
+}
+export const catalogProduct = (code: string, signal?: AbortSignal) =>
+  apiRequest<CatalogProduct>(`/catalog/products/${encodeURIComponent(code)}`, { signal });
+export const materialProducts = (materialCode: string, signal?: AbortSignal) =>
+  apiRequest<CatalogProduct[]>(`/catalog/${encodeURIComponent(materialCode)}/products`, { signal });
+
 export function getProducts(signal?: AbortSignal) { return apiRequest<Product[]>("/products", { signal }); }
 export function createProduct(product: ProductInput) {
   return apiRequest<Product>("/products", { method: "POST", body: JSON.stringify(product) });
@@ -79,8 +91,9 @@ export const favoriteCodes = () => apiRequest<string[]>("/favorites");
 export const saveFavorite = (code: string, favorite: boolean) =>
   apiRequest<{ favorite: boolean }>(`/favorites/${encodeURIComponent(code)}`, { method: "PUT", body: JSON.stringify({ favorite }) });
 
-export type WorkspaceFavoriteType = "WORK" | "LABOR" | "COMPOSITION";
-export type WorkspaceFavorites = Record<WorkspaceFavoriteType, string[]>;
+export type WorkspaceFavoriteType = "WORK" | "LABOR" | "COMPOSITION" | "PRODUCT";
+// PRODUCT is optional: backends before the catalog products release do not return it.
+export type WorkspaceFavorites = Record<Exclude<WorkspaceFavoriteType, "PRODUCT">, string[]> & { PRODUCT?: string[] };
 export const workspaceFavorites = () => apiRequest<WorkspaceFavorites>("/favorites/workspace");
 export const saveWorkspaceFavorite = (type: WorkspaceFavoriteType, id: string, favorite: boolean) =>
   apiRequest<{ favorite: boolean }>(`/favorites/workspace/${type}/${encodeURIComponent(id)}`, {

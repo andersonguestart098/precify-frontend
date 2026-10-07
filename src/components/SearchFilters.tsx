@@ -3,19 +3,27 @@ import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import { useEffect, useId, useState, type ReactNode } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import { Box, Button, FormControl, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { materialByCode, stateOptions, uniqueBy } from "../data/familyConfig";
-import type { CatalogMaterial, TechnicalCriterion } from "../domain/search";
+import type { CatalogMaterial, ProductFacet, TechnicalCriterion } from "../domain/search";
+import { sortMaterials } from "../data/catalogProduct";
+import { SearchableFilter } from "./SearchableFilter";
 
 interface Props {
   catalog: CatalogMaterial[]; criteria: TechnicalCriterion[]; familyCode: string; onlyFavorites: boolean;
   onCriterionChange: (index: number, update: Partial<TechnicalCriterion>) => void;
   onFamilyChange: (familyCode: string, segmentCode: string) => void;
   onOnlyFavoritesChange: (value: boolean) => void; onClearFilters: () => void;
+  /** "products" lists the last level (default screen); "materials" keeps the quote-based material view. */
+  mode?: "products" | "materials";
+  brand?: string; brands?: ProductFacet[]; onBrandChange?: (brand: string) => void;
+  materialCounts?: Record<string, number>;
+  onMaterialChange?: (material: CatalogMaterial | null) => void;
 }
 
 function decodePrice(value: string) {
@@ -74,7 +82,9 @@ function priceInputToRaw(input: string) {
   return decimalDigits ? `${integerDigits || "0"}.${decimalDigits}` : integerDigits || "0";
 }
 
-export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, onOnlyFavoritesChange, onCriterionChange, onFamilyChange, onClearFilters }: Props) {
+export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, onOnlyFavoritesChange, onCriterionChange, onFamilyChange, onClearFilters,
+  mode = "materials", brand = "", brands = [], onBrandChange, materialCounts, onMaterialChange }: Props) {
+  const productMode = mode === "products";
   const id = useId();
   const value = (key: string) => criteria.find((criterion) => criterion.key === key)?.value ?? "";
   const update = (key: string, next: string) => { const index = criteria.findIndex((criterion) => criterion.key === key); if (index >= 0) onCriterionChange(index, { value: next }); };
@@ -85,7 +95,7 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
   const [editingPrice, setEditingPrice] = useState<"min" | "max" | null>(null);
   const segments = uniqueBy(catalog, (item) => item.segmentCode);
   const families = uniqueBy(catalog.filter((item) => !segmentCode || item.segmentCode === segmentCode), (item) => item.familyCode);
-  const materials = catalog.filter((item) => (!segmentCode || item.segmentCode === segmentCode) && (!familyCode || item.familyCode === familyCode));
+  const materials = sortMaterials(catalog.filter((item) => (!segmentCode || item.segmentCode === segmentCode) && (!familyCode || item.familyCode === familyCode)));
   const selectedMaterial = materialByCode(catalog, materialCode);
   const options = selectedMaterial?.variations.flatMap((variation) => variation.options.map((option) => ({ ...option, variationName: variation.name }))) ?? [];
 
@@ -149,10 +159,20 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
       {select("scope", "Exibir", onlyFavorites ? "favorites" : "", [{ code: "favorites", name: "Meus favoritos" }], "Todos", next => onOnlyFavoritesChange(next === "favorites"))}
       {select("segmentCode", "Segmento", segmentCode, segments.map((item) => ({ code: item.segmentCode, name: item.segmentName })), "Todos", (next) => onFamilyChange("", next))}
       <Box sx={{ py: { xs: 1.25, md: .65, xl: 1.25 } }}><FormControl fullWidth size="small"><InputLabel id={`${id}-family-label`}>Família</InputLabel><Select startAdornment={<InputAdornment position="start" sx={{ color: "#518070", ml: { xs: .5, md: .2, xl: .5 } }}><LayersOutlinedIcon fontSize="small" /></InputAdornment>} labelId={`${id}-family-label`} value={familyCode} label="Família" onChange={(event) => { const item = catalog.find((entry) => entry.familyCode === event.target.value); onFamilyChange(event.target.value, item?.segmentCode ?? segmentCode); }}><MenuItem value="">Todas</MenuItem>{families.map((item) => <MenuItem key={item.familyCode} value={item.familyCode}>{item.familyName}</MenuItem>)}</Select></FormControl></Box>
-      {select("materialCode", "Material", materialCode, materials.map((item) => ({ code: item.materialCode, name: item.materialName })))}
-      {options.length ? select("optionCode", "Opção técnica", value("optionCode"), options.map((item) => ({ code: item.optionCode, name: `${item.variationName}: ${item.name}` })), "Todas") : null}
+      <SearchableFilter label="Material" placeholder="Buscar por código ou nome" icon={<Inventory2OutlinedIcon fontSize="small" />}
+        emptyText="Nenhum material encontrado" value={materialCode}
+        options={materials.map(item => ({
+          code: item.materialCode, hint: item.materialCode, name: item.materialName,
+          count: productMode && materialCounts ? materialCounts[item.materialCode] ?? 0 : undefined,
+        }))}
+        onChange={code => onMaterialChange ? onMaterialChange(materialByCode(catalog, code) ?? null) : update("materialCode", code)} />
+      {productMode && <SearchableFilter label="Marca" placeholder="Buscar marca" icon={<SellOutlinedIcon fontSize="small" />}
+        emptyText="Nenhuma marca neste filtro" value={brand}
+        options={brands.map(item => ({ code: item.name, name: item.name, count: item.count }))}
+        onChange={next => onBrandChange?.(next)} />}
+      {!productMode && options.length ? select("optionCode", "Opção técnica", value("optionCode"), options.map((item) => ({ code: item.optionCode, name: `${item.variationName}: ${item.name}` })), "Todas") : null}
 
-      <Box sx={{ py: { xs: 1.25, md: .65, xl: 1.25 } }}>
+      {!productMode && <><Box sx={{ py: { xs: 1.25, md: .65, xl: 1.25 } }}>
         <Stack direction="row" alignItems="center" gap={{ xs: .75, md: .45, xl: .75 }} mb={{ xs: .8, md: .45, xl: .8 }}>
           <PaymentsOutlinedIcon sx={{ fontSize: { xs: 18, md: 18, xl: 20 }, color: "#518070" }} />
           <Typography sx={{ fontSize: { xs: 12.5, md: 12, xl: 13 }, fontWeight: 700, color: "#62766f" }}>Faixa de preço</Typography>
@@ -168,7 +188,7 @@ export function SearchFilters({ catalog, criteria, familyCode, onlyFavorites, on
         <Typography sx={{ mt: { xs: .7, md: .45, xl: .7 }, px: .5, fontSize: { xs: 11.5, md: 10.5, xl: 11.5 }, lineHeight: 1.3, color: "#879791" }}>Digite o mínimo, o máximo ou os dois valores.</Typography>
       </Box>
 
-      {select("state", "Estado", value("state"), stateOptions.map((name) => ({ code: name, name })))}
+      {select("state", "Estado", value("state"), stateOptions.map((name) => ({ code: name, name })))}</>}
     </Box>
   </Box>;
 }

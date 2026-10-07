@@ -20,9 +20,13 @@ const units = ["un", "m²", "m", "kg", "L", "saco", "caixa"];
 const UNASSIGNED = "__unassigned__";
 type ProjectOption = { id: string; label: string };
 
-export function AddToCompositionDialog({ open, result, onClose }: {
+/** Catalog product (last level) added without a quote: price starts at zero until it is quoted. */
+export interface CompositionProductRef { productCode: string; name: string; unit?: string | null; imageUrl?: string | null; }
+
+export function AddToCompositionDialog({ open, result, product, onClose }: {
   open: boolean;
   result: CatalogResult;
+  product?: CompositionProductRef;
   onClose: () => void;
 }) {
   const user = useAccount();
@@ -33,15 +37,17 @@ export function AddToCompositionDialog({ open, result, onClose }: {
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
   const [quantity, setQuantity] = useState("1");
-  const [unit, setUnit] = useState("un");
+  const [unit, setUnit] = useState(product?.unit || "un");
+  const unitChoices = useMemo(() => product?.unit && !units.includes(product.unit) ? [product.unit, ...units] : units, [product?.unit]);
   const [error, setError] = useState("");
   const [savedName, setSavedName] = useState("");
   const [compositionQuery, setCompositionQuery] = useState("");
   const [projectFilter, setProjectFilter] = useState("");
 
-  const featured = useMemo(() => [...result.offers].sort((a, b) =>
-    a.quote.value - b.quote.value || a.productId.localeCompare(b.productId))[0], [result.offers]);
-  const photo = result.imageUrl || featured?.imageUrl || result.material.imageUrl;
+  const featured = useMemo(() => product ? undefined : [...result.offers].sort((a, b) =>
+    a.quote.value - b.quote.value || a.productId.localeCompare(b.productId))[0], [result.offers, product]);
+  const photo = product ? product.imageUrl || result.material.imageUrl : result.imageUrl || featured?.imageUrl || result.material.imageUrl;
+  const itemName = product?.name ?? result.material.materialName;
   const assignedIds = useMemo(() => new Set(projects.flatMap(project => project.compositionIds)), [projects]);
   const projectOptions = useMemo<ProjectOption[]>(() => [
     { id: "", label: "Todas as obras" },
@@ -76,8 +82,8 @@ export function AddToCompositionDialog({ open, result, onClose }: {
 
   const itemPayload = () => ({
     materialCode: result.material.materialCode,
-    productId: featured?.productId ?? null,
-    name: result.material.materialName,
+    productId: product?.productCode ?? featured?.productId ?? null,
+    name: itemName,
     imageUrl: photo ?? null,
     supplier: featured?.quote.supplier ?? null,
     unit,
@@ -181,7 +187,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
             }} />
             <Box minWidth={0} flex={1}>
               <Typography fontWeight={820} sx={{ fontSize: { xs: 13.5, sm: 14 }, lineHeight: 1.25 }}>
-                {result.material.materialName}
+                {itemName}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: .3, lineHeight: 1.3 }}>
                 {featured ? `${featured.quote.supplier} · ${currency.format(featured.quote.value)}` : "Sem cotação disponível"}
@@ -208,7 +214,7 @@ export function AddToCompositionDialog({ open, result, onClose }: {
               size="small"
               sx={{ width: 104, flexShrink: 0, "& .MuiOutlinedInput-root": { borderRadius: 2.2, bgcolor: "#fff" } }}
             >
-              {units.map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+              {unitChoices.map(value => <MenuItem key={value} value={value}>{value}</MenuItem>)}
             </TextField>
           </Stack>
         </Stack>

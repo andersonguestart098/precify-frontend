@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import AiPage from "./pages/AiPage";
 import ProductPage from "./pages/ProductPage";
+import CatalogProductPage from "./pages/CatalogProductPage";
 import ProductRegistrationPage from "./pages/ProductRegistrationPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -137,6 +138,7 @@ function SessionRoutes() {
         <Route path="/institucional" element={<InstitutionalPage />} />
         <Route path="/contato" element={<ContactPage />} />
         <Route path="/produtos/:code" element={<ProductPage />} />
+        <Route path="/produto/:code" element={<CatalogProductPage />} />
         <Route path="/busca" element={<Navigate to="/produtos" replace />} />
         <Route element={<ProtectedRoute admin />}>
           <Route path="/produtos/novo" element={<ProductRegistrationPage />} />

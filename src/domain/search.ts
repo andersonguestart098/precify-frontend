@@ -32,3 +32,34 @@ export interface CatalogResult { material: CatalogMaterial; offers: CatalogOffer
 export interface CatalogSearchPage {
   content: CatalogResult[]; page: number; size: number; totalElements: number; totalPages: number;
 }
+
+/** Catalog product (last level: Segmento > Família > Material > Produto > SKU). Documented data, no quotes. */
+export interface CatalogSkuValue {
+  variationCode: string; attribute: string; value?: string | null; numericValue?: number | null;
+  dimensions?: number[] | null; unit?: string | null; optionCode?: string | null; qualifier?: string | null;
+  originalValue?: string | null; sourceUrl?: string | null;
+}
+export interface CatalogSku {
+  skuCode: string; sourceCode?: string | null; manufacturerSku?: string | null; gtin?: string | null;
+  commercialUnit?: string | null; commercialUnitDetail?: string | null; presentation?: string | null;
+  sourceUrl?: string | null; consultedAt?: string | null; pendingVariationCodes?: string[] | null;
+  values?: CatalogSkuValue[] | null;
+}
+export interface CatalogProduct {
+  productCode: string; sourceCode?: string | null; materialCode: string; familyCode: string; segmentCode: string;
+  name: string; brand?: string | null; manufacturer?: string | null; model?: string | null;
+  sourceUrl?: string | null; documentalCoverage?: string | null; consultedAt?: string | null;
+  skus: CatalogSku[]; imageUrl?: string | null; active?: boolean | null;
+}
+export interface ProductSearchRequest {
+  query?: string; segmentCode?: string; familyCode?: string; materialCode?: string; brand?: string; onlyFavorites?: boolean;
+}
+export interface ProductSearchResult {
+  product: CatalogProduct; segmentName?: string | null; familyName?: string | null; materialName?: string | null;
+  materialImageUrl?: string | null;
+}
+export interface ProductFacet { name: string; count: number; }
+export interface ProductSearchPage {
+  content: ProductSearchResult[]; page: number; size: number; totalElements: number; totalPages: number;
+  brands: ProductFacet[]; materialCounts: Record<string, number>;
+}

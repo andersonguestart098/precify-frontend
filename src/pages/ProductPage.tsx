@@ -21,6 +21,7 @@ import type { CatalogOffer } from "../domain/search";
 import { ProtectedImage } from "../components/ProtectedImage";
 import { ProductImagesDialog } from "../components/ProductImagesDialog";
 import { SegmentMaterialPlaceholder } from "../components/SegmentMaterialPlaceholder";
+import { MaterialProductsSection } from "../components/MaterialProductsSection";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -385,7 +386,7 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
                 <TextField
                   label="Cotação (R$)"
                   value={quoteDraft}
-                  onChange={event => setQuoteDraft(event.target.value.replace(/[^0-9,\.]/g, ""))}
+                  onChange={event => setQuoteDraft(event.target.value.replace(/[^0-9,.]/g, ""))}
                   slotProps={{ htmlInput: { inputMode: "decimal" } }}
                   size="small"
                   fullWidth
@@ -543,6 +544,8 @@ function ProductContent({ code, fromSearch }: { code: string; fromSearch?: strin
         </Box>
       </Box>
     </Paper>
+
+    <MaterialProductsSection materialCode={code} />
 
     {imageOffer && <ProductImagesDialog
       key={imageOffer.productId}
