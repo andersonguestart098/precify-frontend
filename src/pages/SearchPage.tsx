@@ -37,6 +37,15 @@ const resultToolsLabelSx = {
   textTransform: "uppercase",
 } as const;
 
+function productCountLabel(page: ProductSearchPage | null) {
+  const products = page?.productElements ?? page?.totalElements ?? 0;
+  const materials = page?.materialElements ?? 0;
+  const label = `${products.toLocaleString("pt-BR")} produto${products === 1 ? "" : "s"} encontrado${products === 1 ? "" : "s"}`;
+  const materialLabel = `${materials.toLocaleString("pt-BR")} ${materials === 1 ? "material sem produto" : "materiais sem produto"}`;
+  if (!materials) return label;
+  return products ? `${label} · ${materialLabel}` : materialLabel;
+}
+
 function isInitialSearch(query: string, familyCode: string, criteria: TechnicalCriterion[], page: number, onlyFavorites: boolean) {
   return !query.trim() && !familyCode && page === 0 && !onlyFavorites && criteria.every(criterion => !criterion.value.trim());
 }
@@ -266,7 +275,7 @@ export default function SearchPage() {
             <Typography variant="overline" color="primary" sx={resultToolsLabelSx}>Resultados classificados</Typography>
             <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
               {mode === "products"
-                ? (productLoading && !productResponse ? "Buscando..." : `${(productResponse?.totalElements ?? 0).toLocaleString("pt-BR")} produto${productResponse?.totalElements === 1 ? "" : "s"} encontrado${productResponse?.totalElements === 1 ? "" : "s"}`)
+                ? (productLoading && !productResponse ? "Buscando..." : productCountLabel(productResponse))
                 : (loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`)}
             </Typography>
           </Box>
@@ -343,15 +352,24 @@ export default function SearchPage() {
             gridTemplateColumns: resultView === "mosaic" ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" } : "1fr",
             gap: resultView === "list" ? { xs: .45, md: .65, xl: .8 } : resultView === "mosaic" ? { xs: .8, sm: 1, md: 1.25, xl: 2 } : { xs: 1.1, md: 1.25, xl: 2 },
             alignItems: "stretch", opacity: productLoading ? .6 : 1, transition: "opacity 160ms",
-          }}>{productResponse?.content.map(result => <CatalogProductCard key={result.product.productCode} result={result} layout={resultView}
-            material={catalog.find(item => item.materialCode === result.product.materialCode)}
-            favorite={productFavorites.favorites.PRODUCT.has(result.product.productCode)}
-            favoriteBusy={productFavorites.loading || productFavorites.isBusy("PRODUCT", result.product.productCode)}
-            onFavorite={() => { void productFavorites.toggle("PRODUCT", result.product.productCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />)}</Box>}
+          }}>{productResponse?.content.map(result => {
+            // The product's parent is the material: a material without products is shown as the material itself.
+            if (result.type === "MATERIAL" && result.material) {
+              const code = result.material.material.materialCode;
+              return <CatalogResultCard key={`material:${code}`} result={result.material} layout={resultView}
+                favorite={favorites.codes.has(code)} favoriteBusy={favorites.loading || favorites.busy.has(code)}
+                onFavorite={() => { void favorites.toggle(code); }} />;
+            }
+            const product = result.product;
+            if (!product) return null;
+            return <CatalogProductCard key={product.productCode} result={{ ...result, product }} layout={resultView}
+              material={catalog.find(item => item.materialCode === product.materialCode)}
+              favorite={productFavorites.favorites.PRODUCT.has(product.productCode)}
+              favoriteBusy={productFavorites.loading || productFavorites.isBusy("PRODUCT", product.productCode)}
+              onFavorite={() => { void productFavorites.toggle("PRODUCT", product.productCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />;
+          })}</Box>}
           {!productLoading && !productError && productResponse && !productResponse.content.length && <Alert severity="info">
-            {onlyFavorites ? "Nenhum produto favorito corresponde aos filtros." : params.get("materialCode")
-              ? "Este material ainda não tem produtos cadastrados. Veja o material em Materiais ou amplie a busca."
-              : "Nenhum produto corresponde aos filtros. Tente ampliar sua busca."}
+            {onlyFavorites ? "Nenhum produto favorito corresponde aos filtros." : "Nenhum produto corresponde aos filtros. Tente ampliar sua busca."}
           </Alert>}
           {(productResponse?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary"
             count={productResponse!.totalPages} page={page + 1} disabled={productLoading}

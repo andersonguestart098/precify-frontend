@@ -19,7 +19,7 @@ const product: CatalogProduct = {
     ],
   }],
 };
-const result: ProductSearchResult = { product, materialName: "Areia fina natural", familyName: "Areias", segmentName: "Agregados" };
+const result: ProductSearchResult & { product: CatalogProduct } = { type: "PRODUCT", product, materialName: "Areia fina natural", familyName: "Areias", segmentName: "Agregados" };
 
 describe("Produtos do catálogo (último nível)", () => {
   it("mostra o produto com hierarquia, SKUs e link para o detalhe", () => {

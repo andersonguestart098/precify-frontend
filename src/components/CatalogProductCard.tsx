@@ -9,13 +9,13 @@ import { ProtectedImage } from "./ProtectedImage";
 import { AddToCompositionDialog } from "./AddToCompositionDialog";
 import { SegmentMaterialPlaceholder } from "./SegmentMaterialPlaceholder";
 import { coverageLabel, productHighlights, productSubtitle, productUnits, skuSummary } from "../data/catalogProduct";
-import type { CatalogMaterial, ProductSearchResult } from "../domain/search";
+import type { CatalogMaterial, CatalogProduct, ProductSearchResult } from "../domain/search";
 
 const chipSx = { height: { xs: 19, md: 20, xl: 22 }, fontSize: { xs: 8.8, md: 9.5, xl: 10 } } as const;
 
 /** Result card for a catalog product (last level of the hierarchy). */
 export function CatalogProductCard({ result, material, layout = "single", favorite = false, favoriteBusy = false, onFavorite }: {
-  result: ProductSearchResult;
+  result: ProductSearchResult & { product: CatalogProduct };
   material?: CatalogMaterial;
   layout?: "single" | "mosaic" | "list";
   favorite?: boolean;

@@ -54,12 +54,14 @@ export interface CatalogProduct {
 export interface ProductSearchRequest {
   query?: string; segmentCode?: string; familyCode?: string; materialCode?: string; brand?: string; onlyFavorites?: boolean;
 }
+/** PRODUCT: last level. MATERIAL: a material with no product yet, shown with the material view's card. */
 export interface ProductSearchResult {
-  product: CatalogProduct; segmentName?: string | null; familyName?: string | null; materialName?: string | null;
-  materialImageUrl?: string | null;
+  type?: "PRODUCT" | "MATERIAL"; product?: CatalogProduct | null; material?: CatalogResult | null;
+  segmentName?: string | null; familyName?: string | null; materialName?: string | null; materialImageUrl?: string | null;
 }
 export interface ProductFacet { name: string; count: number; }
 export interface ProductSearchPage {
   content: ProductSearchResult[]; page: number; size: number; totalElements: number; totalPages: number;
+  productElements?: number; materialElements?: number;
   brands: ProductFacet[]; materialCounts: Record<string, number>;
 }
