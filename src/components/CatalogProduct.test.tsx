@@ -6,6 +6,8 @@ import { SearchableFilter } from "./SearchableFilter";
 import { compareCodes, productHighlights } from "../data/catalogProduct";
 import type { CatalogProduct, ProductSearchResult } from "../domain/search";
 
+vi.mock("../auth/session", () => ({ useAccount: () => ({ id: "u1", name: "Usuário", email: "u1@precify.test", role: "USER", active: true }) }));
+
 afterEach(() => { cleanup(); vi.clearAllMocks(); });
 
 const product: CatalogProduct = {
@@ -25,12 +27,12 @@ describe("Produtos do catálogo (último nível)", () => {
   it("mostra o produto com hierarquia, SKUs e link para o detalhe", () => {
     render(<MemoryRouter><CatalogProductCard result={result} layout="single" /></MemoryRouter>);
     expect(screen.getByRole("heading", { name: "Areia fina natural de Jacareí" })).toBeTruthy();
-    expect(screen.getByText("1.1.1 · Areia fina natural")).toBeTruthy();
+    expect(screen.getByText((_, element) => element?.tagName === "P" && element.textContent === "1.1.1.P0022 · Areia fina natural")).toBeTruthy();
+    expect(screen.getByText("JRCAMPEÃO")).toBeTruthy();
     expect(screen.getByText("1 SKU")).toBeTruthy();
     expect(screen.getByText("Sem cotação")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Ver detalhes" }).getAttribute("href")).toBe("/produto/1.1.1.P0022");
-    // Without the material loaded the product cannot be added to a composition yet.
-    expect((screen.getByRole("button", { name: /Adicionar/ }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByRole("link", { name: /Ver detalhes/ }).getAttribute("href")).toBe("/produto/1.1.1.P0022");
+    expect(screen.getByText("Cotação pendente")).toBeTruthy();
   });
 
   it("não repete unidade quando o valor já é a própria unidade", () => {

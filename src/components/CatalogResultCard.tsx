@@ -8,12 +8,14 @@ import { Box, Button, Chip, IconButton, Paper, Stack, Tooltip, Typography } from
 import { ProtectedImage } from "./ProtectedImage";
 import { AddToCompositionDialog } from "./AddToCompositionDialog";
 import { SegmentMaterialPlaceholder } from "./SegmentMaterialPlaceholder";
-import type { CatalogResult } from "../domain/search";
+import { productSubtitle } from "../data/catalogProduct";
+import type { CatalogProduct, CatalogResult } from "../domain/search";
 
 const currency = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
-export function CatalogResultCard({ result, favorite = false, favoriteBusy = false, onFavorite, layout = "list" }: {
-  result: CatalogResult; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void; layout?: "list" | "mosaic" | "single";
+/** Result card of the catalog. With {@code product} it shows that product (last level) in the same layout as the material. */
+export function CatalogResultCard({ result, product, favorite = false, favoriteBusy = false, onFavorite, layout = "list" }: {
+  result: CatalogResult; product?: CatalogProduct; favorite?: boolean; favoriteBusy?: boolean; onFavorite?: () => void; layout?: "list" | "mosaic" | "single";
 }) {
   const location = useLocation();
   const [animateFavorite, setAnimateFavorite] = useState(false);
@@ -26,7 +28,15 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
     return score(b) - score(a) || a.quote.value - b.quote.value || a.productId.localeCompare(b.productId);
   })[0];
 
-  const photo = result.imageUrl || featured?.imageUrl || material.imageUrl;
+  const photo = product ? product.imageUrl || result.imageUrl || material.imageUrl : result.imageUrl || featured?.imageUrl || material.imageUrl;
+  const code = product?.productCode ?? material.materialCode;
+  const title = product?.name ?? material.materialName;
+  const imageAlt = product?.name ?? featured?.name ?? material.materialName;
+  const parentLabel = product ? material.materialName : material.familyName;
+  const caption = product ? productSubtitle(product) || material.familyName : material.segmentName;
+  const statusLabel = product ? `${product.skus.length} SKU${product.skus.length > 1 ? "s" : ""}` : material.status.replaceAll("_", " ");
+  const detailsTo = product ? `/produto/${encodeURIComponent(product.productCode)}` : `/produtos/${encodeURIComponent(material.materialCode)}`;
+  const compositionProduct = product && { productCode: product.productCode, name: product.name, unit: product.skus[0]?.commercialUnit, imageUrl: photo };
   const logoUrl = featured?.supplierLogoUrl || result.supplierLogoUrl || material.supplierLogoUrl;
   const highlighted = result.featured === true;
 
@@ -63,7 +73,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         }}>
           <ProtectedImage
             src={photo}
-            alt={featured?.name ?? material.materialName}
+            alt={imageAlt}
             fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
             sx={{
               width: "100%", height: "100%", bgcolor: "transparent", border: 0,
@@ -94,7 +104,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         <Box minWidth={0}>
           <Stack direction="row" alignItems="center" gap={.4} minWidth={0}>
             <Typography color="primary" noWrap sx={{ fontSize: 8.6, fontWeight: 850, letterSpacing: ".01em" }}>
-              {material.materialCode}
+              {code}
             </Typography>
             {highlighted && <Chip label="Destaque" size="small" sx={{
               height: 15, fontSize: 7.2, bgcolor: "#edf6f3", color: "#235847",
@@ -106,12 +116,12 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
             mt: .08, fontSize: 11.6, lineHeight: 1.2, fontWeight: 820,
             letterSpacing: "-.01em", color: "#173f33",
           }}>
-            {material.materialName}
+            {title}
           </Typography>
 
           <Stack direction="row" alignItems="center" justifyContent="space-between" gap={.6} mt={.28} minWidth={0}>
             <Typography noWrap sx={{ minWidth: 0, flex: 1, fontSize: 8.2, color: "#7b8d86" }}>
-              {material.familyName}
+              {parentLabel}
             </Typography>
             {featured ? <Typography noWrap sx={{ fontSize: 9.4, fontWeight: 850, color: "#214d3f", flexShrink: 0 }}>
               {currency.format(featured.quote.value)}
@@ -141,7 +151,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <Tooltip title="Ver detalhes">
             <IconButton
               component={RouterLink}
-              to={`/produtos/${encodeURIComponent(material.materialCode)}`}
+              to={detailsTo}
               state={{ fromSearch: location.pathname + location.search }}
               aria-label="Ver detalhes"
               sx={{
@@ -205,7 +215,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         }}>
           <ProtectedImage
             src={photo}
-            alt={featured?.name ?? material.materialName}
+            alt={imageAlt}
             fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
             sx={{
               width: "100%", height: "100%", bgcolor: "transparent", border: 0,
@@ -253,7 +263,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               minWidth: 0, fontSize: { xs: 9.6, md: 9.4, xl: 10.2 },
               fontWeight: 850, letterSpacing: ".015em",
             }}>
-              {material.materialCode}
+              {code}
             </Typography>
           </Stack>
           <Typography component="h2" sx={{
@@ -261,13 +271,13 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
             fontWeight: 820, letterSpacing: "-.012em", color: "#173f33",
             display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
           }}>
-            {material.materialName}
+            {title}
           </Typography>
           <Typography noWrap sx={{ mt: .2, fontSize: { xs: 9.7, md: 9.2, xl: 10.2 }, color: "#7b8d86" }}>
-            {material.familyName}
+            {parentLabel}
           </Typography>
           <Stack direction="row" gap={.4} flexWrap="wrap" mt={.55} sx={{ display: { xs: "flex", md: "none" } }}>
-            <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
+            <Chip size="small" variant="outlined" label={statusLabel}
               sx={{ height: 19, fontSize: 8.7, borderColor: "#dce6e2", color: "#526861" }} />
             <Chip size="small" label={offers.length ? `${offers.length} oferta${offers.length > 1 ? "s" : ""}` : "Sem cotação"}
               sx={{ height: 19, fontSize: 8.7, bgcolor: "#eef7f4", color: "#2c6652" }} />
@@ -284,7 +294,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         </Box>
 
         <Stack sx={{ display: { xs: "none", md: "flex" } }} gap={.35} alignItems="flex-start">
-          <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
+          <Chip size="small" variant="outlined" label={statusLabel}
             sx={{
               maxWidth: "100%", height: { md: 19, xl: 21 }, fontSize: { md: 8.4, xl: 9.1 },
               borderColor: "#dce6e2", color: "#526861", "& .MuiChip-label": { px: .7, overflow: "hidden", textOverflow: "ellipsis" },
@@ -350,7 +360,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
           <Tooltip title="Ver detalhes">
             <IconButton
               component={RouterLink}
-              to={`/produtos/${encodeURIComponent(material.materialCode)}`}
+              to={detailsTo}
               state={{ fromSearch: location.pathname + location.search }}
               aria-label="Ver detalhes"
               sx={{
@@ -365,7 +375,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         </Stack>
       </Box>
     </Paper>
-    <AddToCompositionDialog open={compositionOpen} result={result} onClose={() => setCompositionOpen(false)} />
+    <AddToCompositionDialog open={compositionOpen} result={result} product={compositionProduct} onClose={() => setCompositionOpen(false)} />
   </>;
 
   return <>
@@ -397,7 +407,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         }}>
           <ProtectedImage
             src={photo}
-            alt={featured?.name ?? material.materialName}
+            alt={imageAlt}
             fallback={<SegmentMaterialPlaceholder segmentCode={material.segmentCode} label={material.materialName} />}
             sx={{
               width: "100%",
@@ -457,8 +467,8 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
                 fontWeight: 800, letterSpacing: ".01em",
                 overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
-                {material.materialCode}
-                <Box component="span" sx={{ display: layout === "mosaic" ? { xs: "none", sm: "inline" } : "inline" }}> · {material.familyName}</Box>
+                {code}
+                <Box component="span" sx={{ display: layout === "mosaic" ? { xs: "none", sm: "inline" } : "inline" }}> · {parentLabel}</Box>
               </Typography>
             </Stack>
 
@@ -473,18 +483,18 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
             }}>
-              {material.materialName}
+              {title}
             </Typography>
 
             <Typography color="text.secondary" sx={{
               mt: .3,
               fontSize: layout === "mosaic" ? { xs: 9.2, sm: 10.2, md: 11, xl: 12 } : { xs: 10.2, md: 11, xl: 12 },
             }} noWrap>
-              {material.segmentName}
+              {caption}
             </Typography>
 
             <Stack direction="row" gap={.35} flexWrap="wrap" mt={layout === "mosaic" ? { xs: .55, md: .5, xl: .75 } : { xs: .65, md: .5, xl: .75 }}>
-              <Chip size="small" variant="outlined" label={material.status.replaceAll("_", " ")}
+              <Chip size="small" variant="outlined" label={statusLabel}
                 sx={{
                   height: layout === "mosaic" ? { xs: 18, sm: 20, md: 20, xl: 22 } : { xs: 19, md: 20, xl: 22 },
                   fontSize: layout === "mosaic" ? { xs: 8, sm: 9, md: 9.5, xl: 10 } : { xs: 8.8, md: 9.5, xl: 10 },
@@ -575,7 +585,7 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
 
               <Button
                 component={RouterLink}
-                to={`/produtos/${encodeURIComponent(material.materialCode)}`}
+                to={detailsTo}
                 state={{ fromSearch: location.pathname + location.search }}
                 startIcon={<VisibilityOutlinedIcon />}
                 sx={{
@@ -603,6 +613,6 @@ export function CatalogResultCard({ result, favorite = false, favoriteBusy = fal
         </Stack>
       </Box>
     </Paper>
-    <AddToCompositionDialog open={compositionOpen} result={result} onClose={() => setCompositionOpen(false)} />
+    <AddToCompositionDialog open={compositionOpen} result={result} product={compositionProduct} onClose={() => setCompositionOpen(false)} />
   </>;
 }
