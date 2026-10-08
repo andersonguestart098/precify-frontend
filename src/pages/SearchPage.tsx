@@ -13,22 +13,17 @@ import ViewListRoundedIcon from "@mui/icons-material/ViewListRounded";
 import AccountGreeting from "../components/AccountGreeting";
 import { useAccount } from "../auth/session";
 import { useFavorites } from "../hooks/useFavorites";
-import { searchCatalogProducts, searchFavorites, searchProducts } from "../services/api";
+import { searchCatalogProducts } from "../services/api";
 import { useWorkspaceFavorites } from "../hooks/useWorkspaceFavorites";
 import { CatalogProductCard } from "../components/CatalogProductCard";
 import { createCatalogCriteria } from "../data/familyConfig";
-import type { CatalogMaterial, CatalogSearchPage, ProductSearchPage, TechnicalCriterion } from "../domain/search";
+import type { CatalogMaterial, ProductSearchPage, TechnicalCriterion } from "../domain/search";
 import { SearchFilters } from "../components/SearchFilters";
 import { CatalogResultCard } from "../components/CatalogResultCard";
-import {
-  getCachedCatalog,
-  getCachedInitialSearch,
-  loadCatalogCached,
-  saveCachedInitialSearch,
-} from "../services/appWarmCache";
+import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
+import { PRODUCT_PAGE_SIZE, productResponseCache, productSearchKey } from "../services/productSearchCache";
+import { pageEnterSx } from "../styles/pageEnter";
 
-const searchResponseCache = new Map<string, CatalogSearchPage>();
-const productResponseCache = new Map<string, ProductSearchPage>();
 const resultToolsLabelSx = {
   fontSize: { xs: 10.8, md: 10.5, xl: 11.3 },
   fontWeight: 800,
@@ -40,14 +35,9 @@ const resultToolsLabelSx = {
 function productCountLabel(page: ProductSearchPage | null) {
   const products = page?.productElements ?? page?.totalElements ?? 0;
   const materials = page?.materialElements ?? 0;
-  const label = `${products.toLocaleString("pt-BR")} produto${products === 1 ? "" : "s"} encontrado${products === 1 ? "" : "s"}`;
-  const materialLabel = `${materials.toLocaleString("pt-BR")} ${materials === 1 ? "material sem produto" : "materiais sem produto"}`;
-  if (!materials) return label;
-  return products ? `${label} · ${materialLabel}` : materialLabel;
-}
-
-function isInitialSearch(query: string, familyCode: string, criteria: TechnicalCriterion[], page: number, onlyFavorites: boolean) {
-  return !query.trim() && !familyCode && page === 0 && !onlyFavorites && criteria.every(criterion => !criterion.value.trim());
+  // Only materials matched: count them instead of showing "0 produtos".
+  const [count, noun] = !products && materials ? [materials, materials === 1 ? "material" : "materiais"] : [products, products === 1 ? "produto" : "produtos"];
+  return `${count.toLocaleString("pt-BR")} ${noun} encontrado${count === 1 ? "" : "s"}`;
 }
 
 function SegmentRailSkeleton({ compact = false }: { compact?: boolean }) {
@@ -75,8 +65,6 @@ export default function SearchPage() {
   const favorites = useFavorites();
   const productFavorites = useWorkspaceFavorites();
   const [params, setParams] = useSearchParams();
-  // Products (last level) are the default listing; the material view keeps quotes and offers.
-  const mode: "products" | "materials" = params.get("view") === "materials" ? "materials" : "products";
   const brand = params.get("brand") ?? "";
   const query = params.get("q") ?? ""; const familyCode = params.get("family") ?? "";
   const onlyFavorites = params.get("scope") === "favorites";
@@ -89,20 +77,6 @@ export default function SearchPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [revision, setRevision] = useState(0);
   const [resultView, setResultView] = useState<"single" | "mosaic" | "list">("single");
-
-  const searchKey = useMemo(() => JSON.stringify({
-    query,
-    familyCode,
-    criteria: criteria.map(({ key, value }) => [key, value]),
-    page,
-    onlyFavorites,
-    revision,
-  }), [query, familyCode, criteria, page, onlyFavorites, revision]);
-
-  const initialCachedResponse = isInitialSearch(query, familyCode, criteria, page, onlyFavorites) ? getCachedInitialSearch() : null;
-  const [response, setResponse] = useState<CatalogSearchPage | null>(() => searchResponseCache.get(searchKey) ?? initialCachedResponse);
-  const [loading, setLoading] = useState(() => !(searchResponseCache.has(searchKey) || initialCachedResponse));
-  const [error, setError] = useState("");
 
   const change = (values: Record<string, string>, reset = true) => setParams(current => {
     const next = new URLSearchParams(current);
@@ -121,22 +95,15 @@ export default function SearchPage() {
     const syncFromCache = () => {
       const cachedCatalog = getCachedCatalog();
       if (cachedCatalog) setCatalog(cachedCatalog);
-      if (isInitialSearch(query, familyCode, criteria, page, onlyFavorites)) {
-        const cachedInitial = getCachedInitialSearch();
-        if (cachedInitial) {
-          setResponse(cachedInitial);
-          setLoading(false);
-        }
-      }
     };
     window.addEventListener("precify-app-data-refreshed", syncFromCache);
     return () => {
       active = false;
       window.removeEventListener("precify-app-data-refreshed", syncFromCache);
     };
-  }, [query, familyCode, criteria, page, onlyFavorites]);
+  }, []);
 
-  const productKey = useMemo(() => JSON.stringify({
+  const productKey = useMemo(() => productSearchKey({
     query, familyCode, segmentCode: params.get("segmentCode") ?? "", materialCode: params.get("materialCode") ?? "",
     brand, page, onlyFavorites, revision,
   }), [query, familyCode, params, brand, page, onlyFavorites, revision]);
@@ -145,7 +112,6 @@ export default function SearchPage() {
   const [productError, setProductError] = useState("");
 
   useEffect(() => {
-    if (mode !== "products") return;
     const c = new AbortController();
     const cached = productResponseCache.get(productKey);
     setProductError("");
@@ -155,45 +121,12 @@ export default function SearchPage() {
     searchCatalogProducts({
       query: request.query, segmentCode: request.segmentCode, familyCode: request.familyCode,
       materialCode: request.materialCode, brand: request.brand, onlyFavorites: request.onlyFavorites,
-    }, request.page, 10, c.signal)
+    }, request.page, PRODUCT_PAGE_SIZE, c.signal)
       .then(data => { if (c.signal.aborted) return; productResponseCache.set(productKey, data); setProductResponse(data); })
       .catch(e => { if (!c.signal.aborted) setProductError(e.message); })
       .finally(() => { if (!c.signal.aborted) setProductLoading(false); });
     return () => c.abort();
-  }, [mode, productKey]);
-
-  useEffect(() => {
-    if (mode !== "materials") return;
-    const c = new AbortController();
-    const defaultSearch = isInitialSearch(query, familyCode, criteria, page, onlyFavorites);
-    const cached = searchResponseCache.get(searchKey) ?? (defaultSearch ? getCachedInitialSearch() : null);
-    setError("");
-    if (cached) {
-      searchResponseCache.set(searchKey, cached);
-      setResponse(cached);
-      setLoading(false);
-    } else {
-      setResponse(null);
-      setLoading(true);
-    }
-
-    const search = () => {
-      (onlyFavorites ? searchFavorites : searchProducts)({ familyCode, query, criteria, includeAlternatives: false }, page, 10, c.signal)
-        .then(data => {
-          if (c.signal.aborted) return;
-          searchResponseCache.set(searchKey, data);
-          if (defaultSearch) saveCachedInitialSearch(data);
-          setResponse(data);
-        })
-        .catch(e => { if (!c.signal.aborted) setError(e.message); })
-        .finally(() => { if (!c.signal.aborted) setLoading(false); });
-    };
-    // A submitted search or page change already represents the user's final
-    // choice. Delay only the quiet refresh of results already on screen.
-    const timer = cached ? window.setTimeout(search, 500) : null;
-    if (!cached) search();
-    return () => { if (timer !== null) window.clearTimeout(timer); c.abort(); };
-  }, [familyCode, query, criteria, page, onlyFavorites, revision, searchKey, mode]);
+  }, [productKey]);
 
   useEffect(() => {
     const openFilters = () => setFilterOpen(true);
@@ -223,7 +156,7 @@ export default function SearchPage() {
     })}
     onFamilyChange={(family, segment) => change({ family, segmentCode: segment, materialCode: "", optionCode: "", brand: "" })}
     onClearFilters={clearFilters}
-    mode={mode} brand={brand} brands={productResponse?.brands} materialCounts={productResponse?.materialCounts}
+    mode="products" brand={brand} brands={productResponse?.brands} materialCounts={productResponse?.materialCounts}
     onBrandChange={next => change({ brand: next })}
     onMaterialChange={material => change({
       materialCode: material?.materialCode ?? "", optionCode: "", brand: "",
@@ -252,16 +185,18 @@ export default function SearchPage() {
 
     <Box sx={{ mb: { xs: 1.25, md: 2, xl: 3 }, pt: { xs: 1.5, md: 0 } }}>
       <AccountGreeting />
-      <Typography component="h1" sx={catalogHeroTitleSx}>
-        Encontre o material pela especificação.
-      </Typography>
-      <Typography color="text.secondary" sx={catalogHeroSubtitleSx}>Filtre e compare produtos por especificação.</Typography>
+      <Box sx={pageEnterSx}>
+        <Typography component="h1" sx={catalogHeroTitleSx}>
+          Encontre o material pela especificação.
+        </Typography>
+        <Typography color="text.secondary" sx={catalogHeroSubtitleSx}>Filtre e compare produtos por especificação.</Typography>
+      </Box>
     </Box>
 
-    <Box sx={{ display: { xs: "none", md: "block" } }}>{segmentRail}</Box>
+    <Box sx={{ ...pageEnterSx, display: { xs: "none", md: "block" } }}>{segmentRail}</Box>
 
     <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "250px minmax(0,1fr)", xl: "300px minmax(0,1fr)" }}
-      gap={{ xs: 3, md: 2, xl: 3 }} alignItems="start">
+      gap={{ xs: 3, md: 2, xl: 3 }} alignItems="start" sx={pageEnterSx}>
       <Paper variant="outlined" sx={{
         display: { xs: "none", md: "block" }, borderRadius: { md: 3, xl: 4 }, overflow: "hidden", position: "sticky",
         top: { md: 78, xl: 95 }
@@ -274,9 +209,7 @@ export default function SearchPage() {
           <Box minWidth={0}>
             <Typography variant="overline" color="primary" sx={resultToolsLabelSx}>Resultados classificados</Typography>
             <Typography component="h2" sx={{ ...catalogSectionTitleSx, lineHeight: 1.2, mt: .25 }}>
-              {mode === "products"
-                ? (productLoading && !productResponse ? "Buscando..." : productCountLabel(productResponse))
-                : (loading && !response ? "Buscando..." : `${response?.totalElements ?? 0} materiais encontrados`)}
+              {productLoading && !productResponse ? "Buscando..." : productCountLabel(productResponse)}
             </Typography>
           </Box>
           <Stack direction="row" alignItems="center" justifyContent={{ xs: "space-between", sm: "flex-end" }} gap={.65}
@@ -286,17 +219,6 @@ export default function SearchPage() {
               {hasFilters ? "Filtros ativos" : "Filtros"}
             </Button>
             <Stack direction="row" alignItems="center" gap={.4}>
-              <Box role="group" aria-label="Nível exibido" sx={{
-                display: { xs: "none", sm: "flex" }, alignItems: "center", gap: .12, p: .18, mr: .4,
-                border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.78)",
-              }}>
-                {([["products", "Produtos"], ["materials", "Materiais"]] as const).map(([value, label]) => <ButtonBase key={value}
-                  aria-pressed={mode === value} onClick={() => change({ view: value === "materials" ? "materials" : "", brand: "" })}
-                  sx={{
-                    height: { xs: 32, md: 30 }, px: { xs: 1.1, md: 1.2 }, borderRadius: "7px", fontSize: { xs: 12, md: 12.5 }, fontWeight: 800,
-                    color: mode === value ? "#17664f" : "#789087", bgcolor: mode === value ? "#e8f4ef" : "transparent",
-                  }}>{label}</ButtonBase>)}
-              </Box>
               <Box sx={{
                 display: "flex", alignItems: "center", gap: .12, p: .18,
                 border: "1px solid rgba(0,107,79,.10)", borderRadius: "9px", bgcolor: "rgba(255,255,255,.78)",
@@ -333,94 +255,34 @@ export default function SearchPage() {
           </Stack>
         </Stack>
 
-        <Box role="group" aria-label="Nível exibido" sx={{
-          display: { xs: "flex", sm: "none" }, gap: .3, p: .25, mb: 1.1,
-          border: "1px solid rgba(0,107,79,.10)", borderRadius: "10px", bgcolor: "rgba(255,255,255,.78)",
-        }}>
-          {([["products", "Produtos"], ["materials", "Materiais"]] as const).map(([value, label]) => <ButtonBase key={value}
-            aria-pressed={mode === value} onClick={() => change({ view: value === "materials" ? "materials" : "", brand: "" })}
-            sx={{
-              flex: 1, height: 34, borderRadius: "8px", fontSize: 13, fontWeight: 800,
-              color: mode === value ? "#17664f" : "#789087", bgcolor: mode === value ? "#e8f4ef" : "transparent",
-            }}>{label}</ButtonBase>)}
-        </Box>
-        {mode === "materials" && (error || catalogError || favorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{error || catalogError || favorites.error}</Alert>}
-        {mode === "products" && (productError || catalogError || productFavorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{productError || catalogError || productFavorites.error}</Alert>}
-        {mode === "products" && <>
-          {productLoading && !productResponse ? <ResultSkeletons /> : <Box sx={{
-            display: "grid",
-            gridTemplateColumns: resultView === "mosaic" ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" } : "1fr",
-            gap: resultView === "list" ? { xs: .45, md: .65, xl: .8 } : resultView === "mosaic" ? { xs: .8, sm: 1, md: 1.25, xl: 2 } : { xs: 1.1, md: 1.25, xl: 2 },
-            alignItems: "stretch", opacity: productLoading ? .6 : 1, transition: "opacity 160ms",
-          }}>{productResponse?.content.map(result => {
-            // The product's parent is the material: a material without products is shown as the material itself.
-            if (result.type === "MATERIAL" && result.material) {
-              const code = result.material.material.materialCode;
-              return <CatalogResultCard key={`material:${code}`} result={result.material} layout={resultView}
-                favorite={favorites.codes.has(code)} favoriteBusy={favorites.loading || favorites.busy.has(code)}
-                onFavorite={() => { void favorites.toggle(code); }} />;
-            }
-            const product = result.product;
-            if (!product) return null;
-            return <CatalogProductCard key={product.productCode} result={{ ...result, product }} layout={resultView}
-              material={catalog.find(item => item.materialCode === product.materialCode)}
-              favorite={productFavorites.favorites.PRODUCT.has(product.productCode)}
-              favoriteBusy={productFavorites.loading || productFavorites.isBusy("PRODUCT", product.productCode)}
-              onFavorite={() => { void productFavorites.toggle("PRODUCT", product.productCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />;
-          })}</Box>}
-          {!productLoading && !productError && productResponse && !productResponse.content.length && <Alert severity="info">
-            {onlyFavorites ? "Nenhum produto favorito corresponde aos filtros." : "Nenhum produto corresponde aos filtros. Tente ampliar sua busca."}
-          </Alert>}
-          {(productResponse?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary"
-            count={productResponse!.totalPages} page={page + 1} disabled={productLoading}
-            onChange={(_, value) => change({ page: String(value - 1) }, false)} /></Stack>}
-        </>}
-        {mode === "materials" && <>
-        {resultView === "list" && !loading && Boolean(response?.content.length) && <Box sx={{
-          display: { xs: "none", md: "grid" },
-          gridTemplateColumns: {
-            md: "64px minmax(150px,1.8fr) minmax(95px,.9fr) minmax(88px,.75fr) minmax(105px,.8fr) minmax(170px,1.2fr)",
-            xl: "72px minmax(240px,2.1fr) minmax(150px,1fr) minmax(120px,.8fr) minmax(145px,.9fr) minmax(235px,1.35fr)",
-          },
-          columnGap: { md: 1, xl: 1.4 },
-          px: { md: 1.2, xl: 1.5 },
-          pb: .65,
-          color: "#7e8f89",
-          "& > span": {
-            fontSize: { md: 8.6, xl: 9.4 },
-            fontWeight: 820,
-            letterSpacing: ".055em",
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-          },
-        }}>
-          <Box component="span" aria-hidden="true" />
-          <Box component="span">Material</Box>
-          <Box component="span">Classificação</Box>
-          <Box component="span">Status</Box>
-          <Box component="span" sx={{ textAlign: "right" }}>Preço</Box>
-          <Box component="span" sx={{ textAlign: "right" }}>Ações</Box>
-        </Box>}
-        {loading && !response ? <ResultSkeletons /> :
-          <Box sx={{
-            display: "grid",
-            gridTemplateColumns: resultView === "mosaic"
-              ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" }
-              : "1fr",
-            gap: resultView === "list"
-              ? { xs: .45, md: .65, xl: .8 }
-              : resultView === "mosaic"
-                ? { xs: .8, sm: 1, md: 1.25, xl: 2 }
-                : { xs: 1.1, md: 1.25, xl: 2 },
-            alignItems: "stretch",
-          }}>{response?.content.map(result => <CatalogResultCard key={result.material.materialCode} result={result}
-            layout={resultView}
-            favorite={favorites.codes.has(result.material.materialCode)} favoriteBusy={favorites.loading || favorites.busy.has(result.material.materialCode)}
-            onFavorite={() => { void favorites.toggle(result.material.materialCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />)}</Box>}
-        {!loading && !error && !response?.content.length && <Alert severity="info">{onlyFavorites ? "Nenhum favorito corresponde aos filtros selecionados." : "Nenhum material corresponde aos filtros. Tente ampliar sua busca."}</Alert>}
-        {(response?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary" count={response!.totalPages} page={page + 1} disabled={loading}
+        {(productError || catalogError || productFavorites.error) && <Alert severity="error" sx={{ mb: 2 }}>{productError || catalogError || productFavorites.error}</Alert>}
+        {productLoading && !productResponse ? <ResultSkeletons /> : <Box sx={{
+          display: "grid",
+          gridTemplateColumns: resultView === "mosaic" ? { xs: "repeat(2,minmax(0,1fr))", md: "repeat(2,minmax(0,1fr))" } : "1fr",
+          gap: resultView === "list" ? { xs: .45, md: .65, xl: .8 } : resultView === "mosaic" ? { xs: .8, sm: 1, md: 1.25, xl: 2 } : { xs: 1.1, md: 1.25, xl: 2 },
+          alignItems: "stretch", opacity: productLoading ? .6 : 1, transition: "opacity 160ms",
+        }}>{productResponse?.content.map(result => {
+          // The product's parent is the material: a material without products is shown as the material itself.
+          if (result.type === "MATERIAL" && result.material) {
+            const code = result.material.material.materialCode;
+            return <CatalogResultCard key={`material:${code}`} result={result.material} layout={resultView}
+              favorite={favorites.codes.has(code)} favoriteBusy={favorites.loading || favorites.busy.has(code)}
+              onFavorite={() => { void favorites.toggle(code); }} />;
+          }
+          const product = result.product;
+          if (!product) return null;
+          return <CatalogProductCard key={product.productCode} result={{ ...result, product }} layout={resultView}
+            material={catalog.find(item => item.materialCode === product.materialCode)}
+            favorite={productFavorites.favorites.PRODUCT.has(product.productCode)}
+            favoriteBusy={productFavorites.loading || productFavorites.isBusy("PRODUCT", product.productCode)}
+            onFavorite={() => { void productFavorites.toggle("PRODUCT", product.productCode).then(saved => { if (saved && onlyFavorites) setRevision(n => n + 1); }); }} />;
+        })}</Box>}
+        {!productLoading && !productError && productResponse && !productResponse.content.length && <Alert severity="info">
+          {onlyFavorites ? "Nenhum produto favorito corresponde aos filtros." : "Nenhum produto corresponde aos filtros. Tente ampliar sua busca."}
+        </Alert>}
+        {(productResponse?.totalPages ?? 0) > 1 && <Stack mt={{ xs: 3, md: 2, xl: 3 }} alignItems="center"><Pagination color="primary"
+          count={productResponse!.totalPages} page={page + 1} disabled={productLoading}
           onChange={(_, value) => change({ page: String(value - 1) }, false)} /></Stack>}
-        </>}
       </Box>
     </Box>
 
@@ -435,7 +297,7 @@ export default function SearchPage() {
           }}>
             Ver resultados
           </Typography>
-          <ButtonBase onClick={() => setFilterOpen(false)} disabled={mode === "products" ? productLoading : loading} aria-label="Ver resultados" sx={{
+          <ButtonBase onClick={() => setFilterOpen(false)} disabled={productLoading} aria-label="Ver resultados" sx={{
             width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
             color: "#17664f",
             background: "linear-gradient(145deg,rgba(255,255,255,.98),rgba(232,244,239,.96))",
@@ -454,7 +316,7 @@ export default function SearchPage() {
             },
             "@media (prefers-reduced-motion: reduce)": { transition: "none", "&:hover": { transform: "none" } },
           }}>
-            {(mode === "products" ? productLoading : loading) ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 21 }} />}
+            {productLoading ? <CircularProgress size={18} sx={{ color: "inherit" }} /> : <VisibilityOutlinedIcon sx={{ fontSize: 21 }} />}
           </ButtonBase>
         </Stack>
       </Box>

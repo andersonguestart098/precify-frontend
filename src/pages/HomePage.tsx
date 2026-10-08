@@ -7,6 +7,7 @@ import AccountGreeting from "../components/AccountGreeting";
 import { SegmentCarousel } from "../components/SegmentCarousel";
 import QuickAccessStrip from "../components/QuickAccessStrip";
 import { catalogHeroSubtitleSx, catalogHeroTitleSx, catalogSectionTitleSx } from "../styles/catalogVisual";
+import { pageEnterSx } from "../styles/pageEnter";
 import type { CatalogMaterial } from "../domain/search";
 import { getCachedCatalog, loadCatalogCached } from "../services/appWarmCache";
 
@@ -47,6 +48,7 @@ export default function HomePage() {
     <AccountGreeting />
 
     <Box sx={{
+      ...pageEnterSx,
       flex: { xs: 1, md: "initial" }, minHeight: 0, display: "flex", flexDirection: "column",
       justifyContent: { xs: "flex-end", md: "flex-start" },
     }}>

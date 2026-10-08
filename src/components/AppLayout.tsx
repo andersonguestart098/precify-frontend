@@ -9,6 +9,8 @@ import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import { BottomNav } from "./BottomNav";
 import DesktopSidebar from "./DesktopSidebar";
 import { rememberSearch } from "../services/api";
+import { prefetchDefaultProducts } from "../services/productSearchCache";
+import { pageEnterSx } from "../styles/pageEnter";
 
 type GeoStatus = "idle" | "loading" | "ready" | "error";
 type SavedLocation = {
@@ -87,6 +89,8 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const showSearch = location.pathname === "/inicio" || location.pathname === "/produtos";
   const isProducts = location.pathname === "/produtos";
+  // Início and Produtos share the greeting; it stays put and only the content below it animates.
+  const hasFixedGreeting = showSearch;
   const useNaturalDesktopScale = ["/inicio", "/produtos", "/composicoes", "/favoritos", "/perfil"].includes(location.pathname);
   const isProductDetailPage = location.pathname.startsWith("/produtos/");
   const isComparePage = location.pathname.startsWith("/comparar");
@@ -96,6 +100,10 @@ export default function AppLayout() {
   const [geoLabel, setGeoLabel] = useState(() => savedLocation?.label ?? "");
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
+  useEffect(() => {
+    const id = window.setTimeout(prefetchDefaultProducts, 600);
+    return () => window.clearTimeout(id);
+  }, []);
   useEffect(() => {
     setQuery(new URLSearchParams(location.search).get("q") ?? "");
   }, [location.pathname, location.search]);
@@ -277,14 +285,12 @@ export default function AppLayout() {
 
       <Box key={location.pathname} sx={{
         pb: { xs: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))", md: 0 },
-        animation: "pageEnter 260ms cubic-bezier(.2,.8,.2,1) both",
+        ...(hasFixedGreeting ? {} : pageEnterSx),
         "@media (min-width:900px) and (max-width:1799.95px)": (isComparePage || isProductDetailPage || useNaturalDesktopScale) ? {
           width: "100%", zoom: 1, translate: "0 0",
         } : {
           width: "119.05%", zoom: .84, translate: "-10.6% 0",
         },
-        "@keyframes pageEnter": { from: { opacity: .55, transform: "translateY(5px)" }, to: { opacity: 1, transform: "translateY(0)" } },
-        "@media (prefers-reduced-motion: reduce)": { animation: "none" }
       }}><Outlet context={{ geoStatus, geoLabel, locationText, requestLocation }} /></Box>
     </Box>
     <BottomNav />
