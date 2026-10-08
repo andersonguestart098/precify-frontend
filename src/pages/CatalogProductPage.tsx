@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
@@ -22,7 +21,7 @@ function SectionTitle({ id, children }: { id: string; children: React.ReactNode 
   return <Typography id={id} variant="h6" fontWeight={850} mb={1.5} color="#173f33">{children}</Typography>;
 }
 
-function InfoList({ id, title, rows, footer }: { id: string; title: string; rows: InfoRow[]; footer?: React.ReactNode }) {
+function InfoList({ id, title, rows }: { id: string; title: string; rows: InfoRow[] }) {
   return <Box component="section" aria-labelledby={id} minWidth={0}>
     <SectionTitle id={id}>{title}</SectionTitle>
     <Box component="dl" sx={{ m: 0 }}>
@@ -39,7 +38,6 @@ function InfoList({ id, title, rows, footer }: { id: string; title: string; rows
         </Typography>
       </Box>)}
     </Box>
-    {footer}
   </Box>;
 }
 
@@ -258,10 +256,7 @@ export default function CatalogProductPage() {
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2,minmax(0,1fr))" }, gap: { xs: 3.5, md: 5 }, mt: { xs: 4, md: 5 } }}>
         <InfoList id="origin-title" title="Marca e classificação" rows={origin} />
-        {sku && <InfoList id="identification-title" title="Identificação" rows={identification} footer={sku.sourceUrl &&
-          <Link href={sku.sourceUrl} target="_blank" rel="noopener noreferrer" sx={{ fontSize: 13, display: "inline-flex", alignItems: "center", gap: .5, mt: 1.25 }}>
-            Ver fonte do fabricante <OpenInNewRoundedIcon sx={{ fontSize: 15 }} />
-          </Link>} />}
+        {sku && <InfoList id="identification-title" title="Identificação" rows={identification} />}
       </Box>
 
       {material?.observation && <Box component="section" aria-labelledby="notes-title" sx={{ mt: { xs: 4, md: 5 } }}>
